@@ -488,7 +488,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
 const SUPA_URL = 'https://nogfrvpvknaqlgfnrjol.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vZ2ZydnB2a25hcWxnZm5yam9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODczMzUsImV4cCI6MjA5MDY2MzMzNX0.t9RzZ2g8YqOR2dCZOyfl2AveA4BssQYzmW7LXxfn1i4';
 const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
-const DEVICE_ID = localStorage.getItem('tr_device_id') || (() => { const id = 'user_' + Math.random().toString(36).substr(2,9); localStorage.setItem('tr_device_id', id); return id; })();
+const DEVICE_ID = 'user_cmqlipot4';
 
 // ── DATA ──
 let T = [];
