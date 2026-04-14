@@ -1106,7 +1106,14 @@ async function addTrade(){
   const tradeMonth = JOURNAL_MONTH_FILTER !== null ? JOURNAL_MONTH_FILTER : now.getMonth();
   const tradeYear = GLOBAL_YEAR || now.getFullYear();
   const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear};
-  const {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
+  let {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
+  // Fallback : si les colonnes psych n'existent pas encore dans Supabase, on réessaie sans elles
+  if(error && error.message && (error.message.includes('psych_errors')||error.message.includes('psych_good'))){
+    const {psych_errors, psych_good, ...tradeDataFallback} = tradeData;
+    const res2 = await sb.from('trades').insert([tradeDataFallback]).select();
+    saved = res2.data; error = res2.error;
+    if(!error) toast('✅ Trade sauvegardé ! (Ajouter colonnes psych_errors/psych_good dans Supabase pour activer le tracking psychologie)');
+  }
   if(error){
     console.error('Erreur trade:', error);
     toast('❌ Erreur: '+error.message);
