@@ -91,6 +91,10 @@ canvas{display:block;width:100%!important;}
 .tag.conf.sel{background:rgba(0,245,255,0.18);border-color:var(--cy);color:#fff;}
 .tag.pat{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.18);color:var(--gb);}
 .tag.pat.sel{background:rgba(245,158,11,0.22);border-color:var(--go);color:#fff;}
+.tag.perr{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.2);color:var(--reb);}
+.tag.perr.sel{background:rgba(239,68,68,0.28);border-color:var(--reb);color:#fff;}
+.tag.pgood{background:rgba(16,185,129,0.07);border-color:rgba(16,185,129,0.2);color:var(--grb);}
+.tag.pgood.sel{background:rgba(16,185,129,0.28);border-color:var(--grb);color:#fff;}
 .tsec{font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;margin:12px 0 7px;display:flex;align-items:center;gap:8px;}
 .tsec::after{content:'';flex:1;height:1px;background:var(--bo);}
 /* PHASE UPLOAD */
@@ -400,6 +404,63 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       </div>
     </div>
 
+    <!-- ERREURS PSYCHOLOGIQUES -->
+    <div style="margin-bottom:12px">
+      <div class="tsec">⚠ Erreurs Psychologiques</div>
+      <div class="tags" id="perr-tags">
+        <span class="tag perr" onclick="toggleTag(this)">Impatience</span>
+        <span class="tag perr" onclick="toggleTag(this)">Gourmandise</span>
+        <span class="tag perr" onclick="toggleTag(this)">Peur</span>
+        <span class="tag perr" onclick="toggleTag(this)">Pas de setup</span>
+        <span class="tag perr" onclick="toggleTag(this)">Pas concentré</span>
+        <span class="tag perr" onclick="toggleTag(this)">Augmentation de lot</span>
+        <span class="tag perr" onclick="toggleTag(this)">Excitation</span>
+        <span class="tag perr" onclick="toggleTag(this)">Peur de perdre</span>
+        <span class="tag perr" onclick="toggleTag(this)">Over-managing</span>
+        <span class="tag perr" onclick="toggleTag(this)">Manque de discipline</span>
+        <span class="tag perr" onclick="toggleTag(this)">Revenge Trading</span>
+        <span class="tag perr" onclick="toggleTag(this)">FOMO</span>
+        <span class="tag perr" onclick="toggleTag(this)">Overtrading</span>
+        <span class="tag perr" onclick="toggleTag(this)">Sortie prématurée</span>
+        <span class="tag perr" onclick="toggleTag(this)">Refus de couper la perte</span>
+        <span class="tag perr" onclick="toggleTag(this)">Trading sans plan</span>
+        <span class="tag perr" onclick="toggleTag(this)">Déplacer le SL</span>
+        <span class="tag perr" onclick="toggleTag(this)">Biais de confirmation</span>
+        <span class="tag perr" onclick="toggleTag(this)">Trading émotionnel</span>
+        <span class="tag perr" onclick="toggleTag(this)">Double mise</span>
+        <span class="tag perr" onclick="toggleTag(this)">Entrée tardive</span>
+        <span class="tag perr" onclick="toggleTag(this)">Mauvais timing</span>
+        <span class="tag perr" onclick="toggleTag(this)">Contre la tendance</span>
+      </div>
+    </div>
+
+    <!-- BONNE PSYCHOLOGIE -->
+    <div style="margin-bottom:16px">
+      <div class="tsec">✅ Bonne Psychologie</div>
+      <div class="tags" id="pgood-tags">
+        <span class="tag pgood" onclick="toggleTag(this)">Confiant</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Patient</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Objectif</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Discipliné</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Focus total</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Respect du plan</span>
+        <span class="tag pgood" onclick="toggleTag(this)">SL respecté</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Détaché du résultat</span>
+        <span class="tag pgood" onclick="toggleTag(this)">En flow</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Gestionnaire du risque</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Calme</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Lucide</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Humble</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Process avant résultat</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Attente du setup</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Gestion émotionnelle</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Accept les pertes</span>
+        <span class="tag pgood" onclick="toggleTag(this)">TP laissé courir</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Analyse avant entrée</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Aucune pression</span>
+      </div>
+    </div>
+
     <hr class="sd">
 
     <!-- PHOTOS -->
@@ -430,7 +491,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
           <th>#</th><th>Paire</th><th>Cat.</th><th>Jour</th><th>Session</th><th>Dir.</th>
           <th>Entrée</th><th>Sortie</th><th>Durée</th><th>Lot</th><th>Risque%</th>
           <th>Risque$</th><th>RR</th><th>CA$</th><th>Comm$</th><th>Net$</th><th>Clôture</th>
-          <th>Strat</th><th>Confs</th><th>Patterns</th><th>★</th><th>Fonda</th><th>✕</th>
+          <th>Strat</th><th>Confs</th><th>Patterns</th><th>★</th><th>Fonda</th><th>⚠ Psy</th><th>✅ Psy</th><th>✕</th>
         </tr></thead>
         <tbody id="t-tbody"></tbody>
       </table>
@@ -515,6 +576,21 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
         <thead><tr><th>Session</th><th>Trades</th><th>Win</th><th>Loss</th><th>WR%</th><th>P&L$</th><th>RRR Moy.</th><th>Profit Factor</th></tr></thead>
         <tbody id="sess-tbody"></tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- ANALYSE PSYCHOLOGIQUE -->
+  <div class="card" style="margin-top:14px">
+    <div class="ct">🧠 Analyse Psychologique</div>
+    <div class="g2">
+      <div>
+        <div style="font-size:8px;letter-spacing:2px;color:var(--reb);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:3px;height:10px;background:var(--reb);border-radius:2px;flex-shrink:0;display:inline-block"></span>Erreurs — Fréquence & Impact</div>
+        <div id="psych-err-content"><div style="text-align:center;padding:20px;color:var(--td)">Aucune erreur trackée</div></div>
+      </div>
+      <div>
+        <div style="font-size:8px;letter-spacing:2px;color:var(--grb);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:3px;height:10px;background:var(--grb);border-radius:2px;flex-shrink:0;display:inline-block"></span>Bon Mindset — Corrélation Performance</div>
+        <div id="psych-good-content"><div style="text-align:center;padding:20px;color:var(--td)">Aucun mindset tracké</div></div>
+      </div>
     </div>
   </div>
 
@@ -1015,6 +1091,8 @@ async function addTrade(){
   const strats=[...document.querySelectorAll('#strat-tags .tag.sel')].map(t=>t.textContent);
   const confs=[...document.querySelectorAll('#conf-tags .tag.sel')].map(t=>t.textContent);
   const pats=[...document.querySelectorAll('#pat-tags .tag.sel')].map(t=>t.textContent);
+  const psychErrors=[...document.querySelectorAll('#perr-tags .tag.sel')].map(t=>t.textContent);
+  const psychGood=[...document.querySelectorAll('#pgood-tags .tag.sel')].map(t=>t.textContent);
   const dur=calcDur(en,ex);
   const res=document.getElementById('f-result').value||'WIN';
   const comm=parseFloat(document.getElementById('f-comm').value)||0;
@@ -1027,7 +1105,7 @@ async function addTrade(){
   // Utilise le mois sélectionné dans le filtre journal, sinon le mois actuel
   const tradeMonth = JOURNAL_MONTH_FILTER !== null ? JOURNAL_MONTH_FILTER : now.getMonth();
   const tradeYear = GLOBAL_YEAR || now.getFullYear();
-  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),star:STAR,trade_month:tradeMonth,trade_year:tradeYear};
+  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear};
   const {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
   if(error){
     console.error('Erreur trade:', error);
@@ -1069,7 +1147,7 @@ function renderTable(){
   tb.innerHTML='';
   let filtered = T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
   if(JOURNAL_MONTH_FILTER!==null) filtered=filtered.filter(t=>parseInt(t.trade_month)===JOURNAL_MONTH_FILTER);
-  if(!filtered.length){tb.innerHTML=`<tr><td colspan="23" style="text-align:center;padding:24px;color:var(--td)"><div style="font-size:22px">📋</div><div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;margin-top:6px">Aucun trade ${JOURNAL_MONTH_FILTER!==null?'ce mois':'cette année'} — commence !</div></td></tr>`;return;}
+  if(!filtered.length){tb.innerHTML=`<tr><td colspan="25" style="text-align:center;padding:24px;color:var(--td)"><div style="font-size:22px">📋</div><div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;margin-top:6px">Aucun trade ${JOURNAL_MONTH_FILTER!==null?'ce mois':'cette année'} — commence !</div></td></tr>`;return;}
   [...filtered].reverse().forEach((t,i)=>{
     const cls=t.result==='WIN'?'win':t.result==='LOSS'?'loss':'be-r';
     const bc=pbc(t.pair);
@@ -1098,6 +1176,8 @@ function renderTable(){
       <td style="font-size:9px;color:var(--gb);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(JSON.parse(t.pats||'[]')).slice(0,2).join(', ')||'—'}</td>
       <td style="color:var(--gb);font-size:10px">${t.star?'★'.repeat(t.star):'—'}</td>
       <td style="font-size:10px;color:var(--ts)">${t.fonda?t.fonda+'/5':'—'}</td>
+      <td style="font-size:9px">${(()=>{const e=JSON.parse(t.psych_errors||'[]');return e.length?`<span style="color:var(--reb)" title="${e.join(', ')}">⚠ ${e.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
+      <td style="font-size:9px">${(()=>{const g=JSON.parse(t.psych_good||'[]');return g.length?`<span style="color:var(--grb)" title="${g.join(', ')}">✅ ${g.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
       <td style="display:flex;gap:4px"><button onclick="openEditTrade('${t.id}')" style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
     `;
     tb.appendChild(row);
@@ -1437,6 +1517,85 @@ function initBilan(){
   // ── DONUT ──
   const ctx2=document.getElementById('resChart');
   if(ctx2){DC('res');CI['res']=new Chart(ctx2,{type:'doughnut',data:{labels:['TP','SL','Break Even','Manuel'],datasets:[{data:[T.filter(t=>t.cl==='TP').length,T.filter(t=>t.cl==='SL').length,T.filter(t=>t.cl==='BE').length,T.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)','rgba(245,158,11,0.8)','rgba(14,165,233,0.8)'],borderColor:['#10b981','#ef4444','#f59e0b','#0ea5e9'],borderWidth:2,hoverOffset:8}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11},padding:10}},tooltip:{backgroundColor:'#0a1628',borderColor:'#2563eb',borderWidth:1}}}});}
+
+  // ── PSYCHO ──
+  initPsychStats();
+}
+
+// ── PSYCHO STATS ──
+function initPsychStats(){
+  const yr=GLOBAL_YEAR;
+  const TY=T.filter(t=>parseInt(t.trade_year)===yr);
+
+  // ── Erreurs ──
+  const errMap={};
+  TY.forEach(t=>{
+    JSON.parse(t.psych_errors||'[]').forEach(e=>{
+      if(!errMap[e])errMap[e]={n:0,w:0,pnl:0};
+      errMap[e].n++;
+      if(t.result==='WIN')errMap[e].w++;
+      errMap[e].pnl+=parseFloat(t.pnl_amt||0);
+    });
+  });
+  const errKeys=Object.keys(errMap).sort((a,b)=>errMap[b].n-errMap[a].n);
+  const ec=document.getElementById('psych-err-content');
+  if(ec){
+    if(!errKeys.length){ec.innerHTML='<div style="text-align:center;padding:20px;color:var(--td);font-size:11px">Aucune erreur trackée pour cette année</div>';}
+    else{
+      const maxN=Math.max(...errKeys.map(k=>errMap[k].n));
+      ec.innerHTML=errKeys.map(k=>{
+        const d=errMap[k];
+        const wr=(d.w/d.n*100).toFixed(0);
+        const pnl=d.pnl.toFixed(0);
+        const barW=Math.round(d.n/maxN*100);
+        const col=d.pnl>=0?'var(--grb)':'var(--reb)';
+        return `<div style="margin-bottom:11px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-size:10px;color:var(--reb);font-weight:600">${k}</span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td)">${d.n}x · WR <span style="color:${parseFloat(wr)>=50?'var(--grb)':'var(--reb)'}">${wr}%</span> · <span style="color:${col}">${pnl>=0?'+':''}$${pnl}</span></span>
+          </div>
+          <div style="background:rgba(30,58,95,0.4);border-radius:20px;height:5px;overflow:hidden">
+            <div style="width:${barW}%;height:100%;background:var(--reb);border-radius:20px;opacity:0.65"></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ── Bon mindset ──
+  const goodMap={};
+  TY.forEach(t=>{
+    JSON.parse(t.psych_good||'[]').forEach(g=>{
+      if(!goodMap[g])goodMap[g]={n:0,w:0,pnl:0};
+      goodMap[g].n++;
+      if(t.result==='WIN')goodMap[g].w++;
+      goodMap[g].pnl+=parseFloat(t.pnl_amt||0);
+    });
+  });
+  const goodKeys=Object.keys(goodMap).sort((a,b)=>goodMap[b].n-goodMap[a].n);
+  const gc=document.getElementById('psych-good-content');
+  if(gc){
+    if(!goodKeys.length){gc.innerHTML='<div style="text-align:center;padding:20px;color:var(--td);font-size:11px">Aucun mindset tracké pour cette année</div>';}
+    else{
+      const maxN=Math.max(...goodKeys.map(k=>goodMap[k].n));
+      gc.innerHTML=goodKeys.map(k=>{
+        const d=goodMap[k];
+        const wr=(d.w/d.n*100).toFixed(0);
+        const pnl=d.pnl.toFixed(0);
+        const barW=Math.round(d.n/maxN*100);
+        const col=d.pnl>=0?'var(--grb)':'var(--reb)';
+        return `<div style="margin-bottom:11px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-size:10px;color:var(--grb);font-weight:600">${k}</span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td)">${d.n}x · WR <span style="color:${parseFloat(wr)>=50?'var(--grb)':'var(--reb)'}">${wr}%</span> · <span style="color:${col}">${pnl>=0?'+':''}$${pnl}</span></span>
+          </div>
+          <div style="background:rgba(30,58,95,0.4);border-radius:20px;height:5px;overflow:hidden">
+            <div style="width:${barW}%;height:100%;background:var(--grb);border-radius:20px;opacity:0.65"></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
 }
 
 // ── YEAR NAVIGATION ──
