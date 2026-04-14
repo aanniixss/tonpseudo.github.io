@@ -678,6 +678,33 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
   </div>
 </div>
 
+<!-- EDIT TRADE MODAL -->
+<div class="mo" id="editModal">
+  <div class="mb" style="width:560px;max-width:95vw;max-height:85vh;overflow-y:auto">
+    <div class="mt">✎ Modifier le Trade</div>
+    <input type="hidden" id="edit-id">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="fld"><label>Clôture</label><select id="edit-close" onchange="editSyncResult()"><option value="TP">✅ TP Atteint</option><option value="SL">❌ SL Touché</option><option value="BE">◈ Break Even</option><option value="MANUEL">⚡ Manuel</option></select></div>
+      <div class="fld"><label>Résultat</label><select id="edit-result"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
+      <div class="fld"><label>Direction</label><select id="edit-dir"><option value="LONG">↑ LONG</option><option value="SHORT">↓ SHORT</option></select></div>
+      <div class="fld"><label>Session</label><select id="edit-sess"><option>London</option><option>New York</option><option>Tokyo / Asia</option><option>Overlap Lon/NY</option></select></div>
+      <div class="fld"><label>Heure Entrée</label><input type="time" id="edit-en" oninput="editCalcNet()"></div>
+      <div class="fld"><label>Heure Sortie</label><input type="time" id="edit-ex" oninput="editCalcNet()"></div>
+      <div class="fld"><label>Lot Size</label><input type="number" id="edit-lot" step="0.01" min="0.01"></div>
+      <div class="fld"><label>% Capital Risqué</label><input type="number" id="edit-rsk" step="0.1"></div>
+      <div class="fld"><label>R:R Réalisé</label><input type="number" id="edit-rr" step="0.1"></div>
+      <div class="fld"><label>💰 CA ($)</label><input type="number" id="edit-ca" step="0.01" oninput="editCalcNet()"></div>
+      <div class="fld"><label>💸 Commission ($)</label><input type="number" id="edit-comm" step="0.01" oninput="editCalcNet()"></div>
+      <div class="fld"><label>✅ Net ($)</label><div class="calc-box" id="edit-net">—</div></div>
+    </div>
+    <div class="fld" style="margin-bottom:16px"><label>Notes</label><textarea id="edit-notes" style="min-height:60px"></textarea></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-p" onclick="saveEditTrade()">✅ Sauvegarder</button>
+      <button class="btn btn-g" onclick="closeEditModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <!-- NEW ACCOUNT MODAL -->
 <div class="mo" id="newAccountModal">
   <div class="mb">
@@ -1071,7 +1098,7 @@ function renderTable(){
       <td style="font-size:9px;color:var(--gb);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(JSON.parse(t.pats||'[]')).slice(0,2).join(', ')||'—'}</td>
       <td style="color:var(--gb);font-size:10px">${t.star?'★'.repeat(t.star):'—'}</td>
       <td style="font-size:10px;color:var(--ts)">${t.fonda?t.fonda+'/5':'—'}</td>
-      <td><button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
+      <td style="display:flex;gap:4px"><button onclick="openEditTrade('${t.id}')" style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
     `;
     tb.appendChild(row);
   });
@@ -1681,6 +1708,72 @@ function closeMonthDetail(){
   renderMonthBtns();
 }
 
+// ── EDIT TRADE ──
+function openEditTrade(id){
+  const t=T.find(x=>String(x.id)===String(id));
+  if(!t) return;
+  document.getElementById('edit-id').value=id;
+  document.getElementById('edit-close').value=t.cl||'TP';
+  document.getElementById('edit-result').value=t.result||'WIN';
+  document.getElementById('edit-dir').value=t.dir||'LONG';
+  document.getElementById('edit-sess').value=t.sess||'London';
+  document.getElementById('edit-en').value=t.entry_time||'';
+  document.getElementById('edit-ex').value=t.exit_time||'';
+  document.getElementById('edit-lot').value=t.lot_size||'';
+  document.getElementById('edit-rsk').value=t.risk_pct||'';
+  document.getElementById('edit-rr').value=t.rr||'';
+  document.getElementById('edit-ca').value=t.ca_amt||'';
+  document.getElementById('edit-comm').value=t.commission||'';
+  document.getElementById('edit-notes').value=t.notes||'';
+  editCalcNet();
+  document.getElementById('editModal').classList.add('show');
+}
+function closeEditModal(){document.getElementById('editModal').classList.remove('show');}
+function editSyncResult(){
+  const cl=document.getElementById('edit-close').value;
+  const r=document.getElementById('edit-result');
+  if(cl==='TP') r.value='WIN';
+  else if(cl==='SL') r.value='LOSS';
+  else if(cl==='BE') r.value='BE';
+}
+function editCalcNet(){
+  const ca=parseFloat(document.getElementById('edit-ca').value)||0;
+  const comm=parseFloat(document.getElementById('edit-comm').value)||0;
+  const net=ca-comm;
+  const nd=document.getElementById('edit-net');
+  if(document.getElementById('edit-ca').value!==''){
+    nd.textContent=(net>=0?'+':'')+'$'+net.toFixed(2);
+    nd.style.color=net>=0?'var(--grb)':'var(--reb)';
+  } else {nd.textContent='—';nd.style.color='';}
+}
+async function saveEditTrade(){
+  const id=document.getElementById('edit-id').value;
+  const t=T.find(x=>String(x.id)===String(id));
+  if(!t){toast('❌ Trade introuvable');return;}
+  const cl=document.getElementById('edit-close').value;
+  const result=document.getElementById('edit-result').value;
+  const dir=document.getElementById('edit-dir').value;
+  const sess=document.getElementById('edit-sess').value;
+  const en=document.getElementById('edit-en').value;
+  const ex=document.getElementById('edit-ex').value;
+  const lot=parseFloat(document.getElementById('edit-lot').value)||0;
+  const rsk=parseFloat(document.getElementById('edit-rsk').value)||0;
+  const rr=parseFloat(document.getElementById('edit-rr').value)||0;
+  const ca=parseFloat(document.getElementById('edit-ca').value)||0;
+  const comm=parseFloat(document.getElementById('edit-comm').value)||0;
+  const notes=document.getElementById('edit-notes').value;
+  const net=parseFloat((ca-comm).toFixed(2));
+  const pnlPct=CAP>0?parseFloat((net/CAP*100).toFixed(4)):0;
+  const dur=calcDur(en,ex);
+  const updates={cl,result,dir,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0};
+  const {error}=await sb.from('trades').update(updates).eq('id',id);
+  if(error){toast('❌ Erreur: '+error.message);return;}
+  Object.assign(t,updates);
+  closeEditModal();renderTable();updateDash();
+  toast('✅ Trade modifié !');
+}
+document.addEventListener('click',e=>{if(e.target.id==='editModal')closeEditModal();});
+
 // ── PDF / RAPPORT ──
 const mn_pdf=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
@@ -1821,10 +1914,12 @@ function exportMonthPDF(){
     const st=mt.filter(t=>t.sess===s);
     if(!st.length) return `<tr><td>${s}</td><td style="color:#94a3b8">—</td><td style="color:#94a3b8">—</td><td style="color:#94a3b8">—</td><td style="color:#94a3b8">—</td></tr>`;
     const sw=st.filter(t=>t.result==='WIN').length;
+    const sl=st.filter(t=>t.result==='LOSS').length;
+    const sbe=st.filter(t=>t.result==='BE').length;
     const swr=(sw/st.length*100).toFixed(0);
     const spnl=st.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);
     const cls=spnl>=0?'win':'loss';
-    return `<tr><td><b>${s}</b></td><td>${st.length}</td><td>${sw}W / ${st.length-sw}L</td><td class="${parseFloat(swr)>=60?'win':parseFloat(swr)>=50?'be':'loss'}">${swr}%</td><td class="${cls}">${spnl>=0?'+':''}$${spnl.toFixed(2)}</td></tr>`;
+    return `<tr><td><b>${s}</b></td><td>${st.length}</td><td>${sw}W / ${sl}L${sbe>0?' / '+sbe+'BE':''}</td><td class="${parseFloat(swr)>=60?'win':parseFloat(swr)>=50?'be':'loss'}">${swr}%</td><td class="${cls}">${spnl>=0?'+':''}$${spnl.toFixed(2)}</td></tr>`;
   }).join('');
 
   // Trades
@@ -1886,7 +1981,7 @@ function exportMonthPDF(){
 function exportAnnualPDF(){
   const yr=GLOBAL_YEAR;
   const TY=T.filter(t=>parseInt(t.trade_year)===yr);
-  const tot=TY.length,w=TY.filter(t=>t.result==='WIN').length,l=TY.filter(t=>t.result==='LOSS').length;
+  const tot=TY.length,w=TY.filter(t=>t.result==='WIN').length,l=TY.filter(t=>t.result==='LOSS').length,b=TY.filter(t=>t.result==='BE').length;
   const wr=tot>0?(w/tot*100).toFixed(1):0;
   const tca=TY.reduce((s,t)=>s+parseFloat(t.ca_amt||t.pnl_amt||0),0);
   const tcomm=TY.reduce((s,t)=>s+parseFloat(t.commission||0),0);
@@ -1908,12 +2003,15 @@ function exportAnnualPDF(){
     {label:'RRR Moyen',value:avgRR,cls:'blue'},
     {label:'Gagnants',value:w,cls:'green'},
     {label:'Perdants',value:l,cls:'red'},
+    {label:'Break Even',value:b,cls:'gold'},
   ];
 
   // Monthly breakdown
   const monthRows=Array.from({length:12},(_,m)=>{
     const mt=TY.filter(t=>parseInt(t.trade_month)===m);
     const mw=mt.filter(t=>t.result==='WIN').length;
+    const ml=mt.filter(t=>t.result==='LOSS').length;
+    const mbe=mt.filter(t=>t.result==='BE').length;
     const mnet=mt.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
     const mpct=mt.reduce((s,t)=>s+parseFloat(t.pnl_pct||0),0);
     const mwr=mt.length?(mw/mt.length*100).toFixed(0):null;
@@ -1921,7 +2019,7 @@ function exportAnnualPDF(){
     return `<tr>
       <td><b>${mn_pdf[m]}</b></td>
       <td>${mt.length||'—'}</td>
-      <td>${mt.length?mw+'W / '+(mt.length-mw)+'L':'—'}</td>
+      <td>${mt.length?mw+'W / '+ml+'L'+(mbe>0?' / '+mbe+'BE':''):'—'}</td>
       <td class="${mwr>=60?'win':mwr>=50?'be':'loss'}">${mwr?mwr+'%':'—'}</td>
       <td class="${cls}">${mnet>0?'+$'+mnet.toFixed(2):mnet<0?'-$'+Math.abs(mnet).toFixed(2):'—'}</td>
       <td class="${cls}">${mpct>0?'+'+mpct.toFixed(2)+'%':mpct<0?mpct.toFixed(2)+'%':'—'}</td>
