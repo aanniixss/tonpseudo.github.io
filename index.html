@@ -285,7 +285,8 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       <div class="fld"><label>Jour</label><select id="f-day"><option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option></select></div>
       <div class="fld"><label>Session</label><select id="f-sess"><option>London</option><option>New York</option><option>Tokyo / Asia</option><option>Overlap Lon/NY</option></select></div>
       <div class="fld"><label>Direction</label><select id="f-dir"><option value="LONG">↑ LONG</option><option value="SHORT">↓ SHORT</option></select></div>
-      <div class="fld"><label>Clôture</label><select id="f-close" onchange="calcAll()"><option value="TP">✅ TP Atteint</option><option value="SL">❌ SL Touché</option><option value="BE">◈ Break Even</option><option value="MANUEL">⚡ Manuel</option></select></div>
+      <div class="fld"><label>Clôture</label><select id="f-close" onchange="calcAll();syncResult()"><option value="TP">✅ TP Atteint</option><option value="SL">❌ SL Touché</option><option value="BE">◈ Break Even</option><option value="MANUEL">⚡ Manuel</option></select></div>
+      <div class="fld"><label>Résultat</label><select id="f-result"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
     </div>
 
     <div class="fg" style="margin-bottom:12px">
@@ -477,7 +478,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     <div class="ct">📅 Détail Mensuel — 12 Mois</div>
     <div style="overflow-x:auto">
       <table class="tbl">
-        <thead><tr><th>Mois</th><th>Trades</th><th>Win</th><th>Loss</th><th>WR%</th><th>P&L$</th><th>P&L%</th><th>Capital</th><th>Meilleure Paire</th><th>Meilleure Session</th></tr></thead>
+        <thead><tr><th>Mois</th><th>Trades</th><th>Win</th><th>Loss</th><th>BE</th><th>WR%</th><th>P&L$</th><th>P&L%</th><th>Capital</th><th>Meilleure Paire</th><th>Meilleure Session</th></tr></thead>
         <tbody id="monthly-tbody"></tbody>
       </table>
     </div>
@@ -952,6 +953,14 @@ function calcAll(){
   }
 }
 
+function syncResult(){
+  const cl=document.getElementById('f-close').value;
+  const r=document.getElementById('f-result');
+  if(cl==='TP') r.value='WIN';
+  else if(cl==='SL') r.value='LOSS';
+  else if(cl==='BE') r.value='BE';
+}
+
 // ── UPLOAD ──
 function trigUp(p){document.getElementById('f-'+p).click();}
 function prevUp(e,p){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{document.getElementById(p+'-prev').innerHTML=`<img src="${ev.target.result}" style="max-width:100%;max-height:80px;border-radius:5px;object-fit:cover">`;};r.readAsDataURL(f);}
@@ -980,7 +989,7 @@ async function addTrade(){
   const confs=[...document.querySelectorAll('#conf-tags .tag.sel')].map(t=>t.textContent);
   const pats=[...document.querySelectorAll('#pat-tags .tag.sel')].map(t=>t.textContent);
   const dur=calcDur(en,ex);
-  const res=cl==='TP'?'WIN':cl==='SL'?'LOSS':cl==='BE'?'BE':'MANUEL';
+  const res=document.getElementById('f-result').value||'WIN';
   const comm=parseFloat(document.getElementById('f-comm').value)||0;
   const rskAmt=CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0;
   const caAmt=parseFloat(document.getElementById('f-ca').value)||0;
@@ -1007,6 +1016,7 @@ async function addTrade(){
 function clearForm(){
   ['f-lot','f-rr','f-ca','f-notes','f-comm'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-fon').value='';
+  document.getElementById('f-result').value='WIN';
   document.getElementById('d-dur').textContent='—';
   document.getElementById('d-rsk').textContent='—';
   document.getElementById('d-net').textContent='—';document.getElementById('d-net').style.color='';
@@ -1251,6 +1261,7 @@ function initBilan(){
       const mt=T.filter(t=>parseInt(t.trade_month)===m&&parseInt(t.trade_year)===yr);
       const mw=mt.filter(t=>t.result==='WIN').length;
       const ml=mt.filter(t=>t.result==='LOSS').length;
+      const mb=mt.filter(t=>t.result==='BE').length;
       const mpa=mt.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
       const mpp=mt.reduce((s,t)=>s+(parseFloat(t.pnl_pct||0)),0);
       const mwr=mt.length?(mw/mt.length*100).toFixed(0):null;
@@ -1264,7 +1275,7 @@ function initBilan(){
         <div style="font-family:Orbitron,sans-serif;font-size:8px;letter-spacing:2px;color:${isCurrentMonth?'var(--be)':'var(--td)'};margin-bottom:6px">${mn[m].toUpperCase()} ${hasData?'':'—'}</div>
         <div style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:700;color:${hasData?col:'var(--td)'}">${hasData?(mpa>=0?'+':'')+'$'+Math.abs(mpa).toFixed(0):'$0'}</div>
         <div style="font-size:9px;color:var(--ts);margin-top:3px">${hasData?mpp.toFixed(2)+'% · '+mt.length+' trades':'En attente'}</div>
-        ${hasData?`<div style="font-size:8px;margin-top:4px;color:var(--td)">${mw}W · ${ml}L · WR ${mwr}%</div>`:''}
+        ${hasData?`<div style="font-size:8px;margin-top:4px;color:var(--td)">${mw}W · ${ml}L · ${mb}BE · WR ${mwr}%</div>`:''}
       </div>`;
     }
   }
@@ -1276,11 +1287,11 @@ function initBilan(){
     for(let m=0;m<12;m++){
       const mt=T.filter(t=>parseInt(t.trade_month)===m&&parseInt(t.trade_year)===yr);
       if(!mt.length){
-        tb.innerHTML+=`<tr><td style="color:var(--td)">${fm[m]}</td><td colspan="9" style="color:var(--td);font-size:9px">— Aucun trade —</td></tr>`;
+        tb.innerHTML+=`<tr><td style="color:var(--td)">${fm[m]}</td><td colspan="10" style="color:var(--td);font-size:9px">— Aucun trade —</td></tr>`;
         continue;
       }
       ok=true;
-      const mw=mt.filter(t=>t.result==='WIN').length,ml=mt.filter(t=>t.result==='LOSS').length;
+      const mw=mt.filter(t=>t.result==='WIN').length,ml=mt.filter(t=>t.result==='LOSS').length,mb=mt.filter(t=>t.result==='BE').length;
       const mwr=(mw/mt.length*100).toFixed(1);
       const mpa=mt.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0).toFixed(0);
       const mpp=mt.reduce((s,t)=>s+(parseFloat(t.pnl_pct||0)),0).toFixed(2);
@@ -1293,7 +1304,7 @@ function initBilan(){
       const bestSess=sessions.sort((a,b)=>mt.filter(t=>t.sess===b).reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0)-mt.filter(t=>t.sess===a).reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0))[0]||'—';
       tb.innerHTML+=`<tr>
         <td style="color:var(--tp);font-weight:600">${fm[m]}</td>
-        <td>${mt.length}</td><td class="win">${mw}</td><td class="loss">${ml}</td>
+        <td>${mt.length}</td><td class="win">${mw}</td><td class="loss">${ml}</td><td class="be-r">${mb}</td>
         <td class="${parseFloat(mwr)>=65?'win':parseFloat(mwr)>=50?'be-r':'loss'}">${mwr}%</td>
         <td class="${mpa>=0?'win':'loss'}" style="font-family:'Share Tech Mono',monospace">${mpa>=0?'+':''}$${Math.abs(mpa)}</td>
         <td class="${mpp>=0?'win':'loss'}">${mpp>=0?'+':''}${mpp}%</td>
