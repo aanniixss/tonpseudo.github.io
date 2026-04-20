@@ -1293,12 +1293,13 @@ function initCapChart(){
 function initPairChart(){
   DC('pair');
   const ctx=document.getElementById('pairChart');if(!ctx)return;
-  const ap=[...new Set(T.map(t=>t.pair))];
+  const TY=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const ap=[...new Set(TY.map(t=>t.pair))];
   if(!ap.length)return;
   CI['pair']=new Chart(ctx,{type:'bar',data:{labels:ap,datasets:[
-    {label:'Win',data:ap.map(p=>T.filter(t=>t.pair===p&&t.result==='WIN').length),backgroundColor:'rgba(16,185,129,0.7)',borderRadius:5},
-    {label:'Loss',data:ap.map(p=>TPY.filter(t=>t.pair===p&&t.result==='LOSS').length),backgroundColor:'rgba(239,68,68,0.7)',borderRadius:5},
-    {label:'BE',data:ap.map(p=>TPY.filter(t=>t.pair===p&&t.result==='BE').length),backgroundColor:'rgba(245,158,11,0.7)',borderRadius:5}
+    {label:'Win',data:ap.map(p=>TY.filter(t=>t.pair===p&&t.result==='WIN').length),backgroundColor:'rgba(16,185,129,0.7)',borderRadius:5},
+    {label:'Loss',data:ap.map(p=>TY.filter(t=>t.pair===p&&t.result==='LOSS').length),backgroundColor:'rgba(239,68,68,0.7)',borderRadius:5},
+    {label:'BE',data:ap.map(p=>TY.filter(t=>t.pair===p&&t.result==='BE').length),backgroundColor:'rgba(245,158,11,0.7)',borderRadius:5}
   ]},options:{...CD,scales:{x:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani',size:9}}},y:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'},stepSize:1}}}}});
 }
 
