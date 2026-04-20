@@ -204,7 +204,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
 
   <div class="g2">
     <div class="card" style="grid-column:1/-1">
-      <div class="ct">Évolution du Capital</div>
+      <div class="ct">P&L Mensuel (%)</div>
       <div id="no-cap-msg" style="text-align:center;padding:32px;color:var(--td)"><div style="font-size:28px">📈</div><div style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;margin-top:8px">Définis ton capital et ajoute des trades</div></div>
       <canvas id="capChart" height="72" style="display:none"></canvas>
     </div>
@@ -1284,9 +1284,11 @@ function initCapChart(){
   const TCC=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
   if(!TCC.length||!CAP){ctx.style.display='none';if(msg)msg.style.display='block';return;}
   ctx.style.display='block';if(msg)msg.style.display='none';
-  let cp=CAP;const lbl=['Départ'],dat=[CAP];
-  [...T].forEach((t,i)=>{cp+=t.pnl_amt||0;lbl.push('T'+(i+1));dat.push(parseFloat(cp.toFixed(2)));});
-  CI['cap']=new Chart(ctx,{type:'line',data:{labels:lbl,datasets:[{label:'Capital ($)',data:dat,borderColor:'#0ea5e9',backgroundColor:'rgba(14,165,233,0.08)',borderWidth:2,fill:true,tension:0.4,pointBackgroundColor:'#0ea5e9',pointRadius:3,pointHoverRadius:6}]},options:{...CD,plugins:{...CD.plugins,tooltip:{backgroundColor:'#0a1628',borderColor:'#2563eb',borderWidth:1,callbacks:{label:c=>'$'+c.raw.toLocaleString()}}}}});
+  const MONTHS=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const pcts=MONTHS.map((_,m)=>{const mt=TCC.filter(t=>parseInt(t.trade_month)===m);const pnl=mt.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);return mt.length?parseFloat((pnl/CAP*100).toFixed(2)):0;});
+  const bg=pcts.map(v=>v>0?'rgba(16,185,129,0.75)':v<0?'rgba(239,68,68,0.75)':'rgba(30,58,95,0.4)');
+  const bc=pcts.map(v=>v>0?'#10b981':v<0?'#ef4444':'#1e3a5f');
+  CI['cap']=new Chart(ctx,{type:'bar',data:{labels:MONTHS,datasets:[{label:'P&L %',data:pcts,backgroundColor:bg,borderColor:bc,borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0a1628',borderColor:'#2563eb',borderWidth:1,callbacks:{label:c=>(c.raw>0?'+':'')+c.raw+'%'}}},scales:{x:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani',size:11}}},y:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'},callback:v=>v+'%'}}}}});
 }
 
 function initPairChart(){
