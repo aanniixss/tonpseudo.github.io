@@ -844,6 +844,28 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
   </div>
 </div>
 
+<!-- TRADE DETAIL MODAL -->
+<div class="mo" id="tradeDetailModal">
+  <div class="mb" style="width:580px;max-width:96vw;max-height:88vh;overflow-y:auto">
+    <div class="mt" id="tdm-title">📋 Détail du Trade</div>
+    <!-- STATS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:16px" id="tdm-stats"></div>
+    <!-- NOTES -->
+    <div id="tdm-notes-wrap" style="display:none;margin-bottom:16px">
+      <div style="font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;margin-bottom:8px">📝 Notes / Analyse</div>
+      <div id="tdm-notes" style="background:var(--card2);border:1px solid var(--bo);border-radius:8px;padding:12px;font-size:12px;color:var(--tp);line-height:1.7;white-space:pre-wrap"></div>
+    </div>
+    <!-- PHOTOS -->
+    <div id="tdm-photos" style="display:none;margin-bottom:16px">
+      <div style="font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;margin-bottom:10px">📷 Screenshots</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px" id="tdm-photos-grid"></div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-g" onclick="document.getElementById('tradeDetailModal').classList.remove('show')">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1142,11 +1164,13 @@ async function addTrade(){
   // Utilise le mois sélectionné dans le filtre journal, sinon le mois actuel
   const tradeMonth = JOURNAL_MONTH_FILTER !== null ? JOURNAL_MONTH_FILTER : now.getMonth();
   const tradeYear = GLOBAL_YEAR || now.getFullYear();
-  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear};
+  const getPhoto=id=>{const img=document.querySelector('#'+id+'-prev img');return img?img.src:null;};
+  const photoAv=getPhoto('av'),photoCo=getPhoto('co'),photoAp=getPhoto('ap');
+  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear,photo_av:photoAv,photo_co:photoCo,photo_ap:photoAp};
   let {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
   // Fallback : si les colonnes psych n'existent pas encore dans Supabase, on réessaie sans elles
-  if(error && error.message && (error.message.includes('psych_errors')||error.message.includes('psych_good'))){
-    const {psych_errors, psych_good, ...tradeDataFallback} = tradeData;
+  if(error && error.message && (error.message.includes('psych_errors')||error.message.includes('psych_good')||error.message.includes('photo_av'))){
+    const {psych_errors, psych_good, photo_av, photo_co, photo_ap, ...tradeDataFallback} = tradeData;
     const res2 = await sb.from('trades').insert([tradeDataFallback]).select();
     saved = res2.data; error = res2.error;
     if(!error) toast('✅ Trade sauvegardé ! (Ajouter colonnes psych_errors/psych_good dans Supabase pour activer le tracking psychologie)');
@@ -1174,6 +1198,40 @@ function clearForm(){
   document.querySelectorAll('#t-stars .star').forEach(s=>s.classList.remove('on'));
   document.getElementById('star-lbl').textContent='Non noté';
   ['av','co','ap'].forEach(p=>{const i={av:'📊',co:'⚡',ap:'✅'};document.getElementById(p+'-prev').innerHTML=`<div style="font-size:20px">${i[p]}</div><div style="font-size:9px;color:var(--td)">Cliquer / glisser</div>`;});
+}
+
+function openTradeDetail(id){
+  const t=T.find(x=>String(x.id)===String(id));
+  if(!t)return;
+  const cls=t.result==='WIN'?'var(--grb)':t.result==='LOSS'?'var(--reb)':'var(--gb)';
+  document.getElementById('tdm-title').textContent=t.pair+' — '+t.result+' · '+(t.pnl_amt>=0?'+':'')+'$'+parseFloat(t.pnl_amt||0).toFixed(2);
+  // Stats grid
+  const stats=[
+    {l:'Session',v:t.sess,c:'var(--bb)'},
+    {l:'Direction',v:t.dir==='LONG'?'↑ LONG':'↓ SHORT',c:t.dir==='LONG'?'var(--grb)':'var(--reb)'},
+    {l:'Clôture',v:t.cl,c:'var(--ts)'},
+    {l:'Résultat',v:t.result,c:cls},
+    {l:'Durée',v:t.duration||'—',c:'var(--ts)'},
+    {l:'Lot Size',v:t.lot_size||'—',c:'var(--tp)'},
+    {l:'R:R',v:t.rr||'—',c:'var(--be)'},
+    {l:'Net $',v:(t.pnl_amt>=0?'+':'')+'$'+parseFloat(t.pnl_amt||0).toFixed(2),c:cls},
+    {l:'Note',v:t.star?'★'.repeat(t.star):'—',c:'var(--gb)'},
+  ];
+  document.getElementById('tdm-stats').innerHTML=stats.map(s=>`<div style="background:var(--card2);border:1px solid var(--bo);border-radius:8px;padding:10px;text-align:center"><div style="font-size:7px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">${s.l}</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:${s.c}">${s.v}</div></div>`).join('');
+  // Notes
+  const notesWrap=document.getElementById('tdm-notes-wrap');
+  if(t.notes&&t.notes.trim()){document.getElementById('tdm-notes').textContent=t.notes;notesWrap.style.display='block';}
+  else notesWrap.style.display='none';
+  // Photos
+  const photosWrap=document.getElementById('tdm-photos');
+  const grid=document.getElementById('tdm-photos-grid');
+  const photos=[{k:'photo_av',l:'Avant — Analyse'},{k:'photo_co',l:'En Cours — Gestion'},{k:'photo_ap',l:'Après — Résultat'}];
+  const hasPhoto=photos.some(p=>t[p.k]);
+  if(hasPhoto){
+    grid.innerHTML=photos.filter(p=>t[p.k]).map(p=>`<div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;overflow:hidden"><div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;padding:6px 10px;border-bottom:1px solid var(--bo)">${p.l}</div><img src="${t[p.k]}" style="width:100%;max-height:200px;object-fit:contain;display:block;cursor:pointer" onclick="this.style.maxHeight=this.style.maxHeight==='none'?'200px':'none'"></div>`).join('');
+    photosWrap.style.display='block';
+  } else photosWrap.style.display='none';
+  document.getElementById('tradeDetailModal').classList.add('show');
 }
 
 async function delTrade(id){
@@ -1222,7 +1280,7 @@ function renderTable(){
       <td style="font-size:10px;color:var(--ts)">${t.fonda?t.fonda+'/5':'—'}</td>
       <td style="font-size:9px">${(()=>{const e=JSON.parse(t.psych_errors||'[]');return e.length?`<span style="color:var(--reb)" title="${e.join(', ')}">⚠ ${e.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
       <td style="font-size:9px">${(()=>{const g=JSON.parse(t.psych_good||'[]');return g.length?`<span style="color:var(--grb)" title="${g.join(', ')}">✅ ${g.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
-      <td style="display:flex;gap:4px"><button onclick="openEditTrade('${t.id}')" style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
+      <td style="display:flex;gap:4px"><button onclick="openTradeDetail('${t.id}')" style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button><button onclick="openEditTrade('${t.id}')" style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
     `;
     tb.appendChild(row);
   });
@@ -1755,6 +1813,7 @@ function filterWeekInMonth(w, btn){
         <td><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'var(--grb)':t.result==='LOSS'?'var(--reb)':'var(--gb)'}">${t.result}</span></td>
         <td style="font-size:9px;color:var(--bb)">${strs[0]||'—'}</td>
         <td style="color:var(--gb);font-size:9px">${t.star?'★'.repeat(t.star):'—'}</td>
+        <td><button onclick="openTradeDetail('${t.id}')" style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button></td>
       </tr>`;
     }).join('');
   }
@@ -1948,6 +2007,7 @@ function openMonth(m){
         <td><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'var(--grb)':t.result==='LOSS'?'var(--reb)':'var(--gb)'}">${t.result}</span></td>
         <td style="font-size:9px;color:var(--bb)">${strs[0]||'—'}</td>
         <td style="color:var(--gb);font-size:9px">${t.star?'★'.repeat(t.star):'—'}</td>
+        <td><button onclick="openTradeDetail('${t.id}')" style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button></td>
       </tr>`;
     }).join('');
   }
