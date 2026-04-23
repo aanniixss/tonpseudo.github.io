@@ -183,8 +183,6 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
   <button class="tab" onclick="showTab('analyse',this)">◈ Analytique</button>
   <button class="tab" onclick="showTab('bilan',this)">▲ Bilan</button>
   <button class="tab" onclick="showTab('setups',this)">⬢ Setups</button>
-  <button class="tab" onclick="showTab('erreurs',this)">⚠ Erreurs</button>
-  <button class="tab" onclick="showTab('charts',this)">◎ Charts</button>
 </div>
 
 <div class="main">
@@ -731,47 +729,6 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
   </div>
 </div>
 
-<!-- ══ ERREURS ══ -->
-<div id="erreurs" class="sec">
-  <div class="g2">
-    <div class="card">
-      <div class="ct">⚠ Erreurs Fréquentes</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="card" style="background:var(--card2);border-left:3px solid var(--re);padding:12px"><div style="font-family:'Orbitron',sans-serif;font-size:9px;color:var(--reb);margin-bottom:5px">01 — FOMO / ENTRÉE TARDIVE</div><div style="font-size:11px;color:var(--ts)">Entrer sur un mouvement déjà lancé. RR dégradé ou SL immédiat. Attendre toujours un retest.</div></div>
-        <div class="card" style="background:var(--card2);border-left:3px solid #f97316;padding:12px"><div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#fb923c;margin-bottom:5px">02 — REVENGE TRADING</div><div style="font-size:11px;color:var(--ts)">Reprendre immédiatement après une perte. Suivi d'une 2ème perte dans 70% des cas.</div></div>
-        <div class="card" style="background:var(--card2);border-left:3px solid var(--go);padding:12px"><div style="font-family:'Orbitron',sans-serif;font-size:9px;color:var(--gb);margin-bottom:5px">03 — SORTIE PRÉMATURÉE</div><div style="font-size:11px;color:var(--ts)">Clôturer avant le TP par peur. Coûte ~30% du P&L annuel. Faire confiance au setup.</div></div>
-        <div class="card" style="background:var(--card2);border-left:3px solid var(--ba);padding:12px"><div style="font-family:'Orbitron',sans-serif;font-size:9px;color:var(--bb);margin-bottom:5px">04 — OVER-TRADING</div><div style="font-size:11px;color:var(--ts)">Trader par ennui ou pour rattraper. Sans setup = sans edge. Qualité > Quantité.</div></div>
-        <div class="card" style="background:var(--card2);border-left:3px solid #8b5cf6;padding:12px"><div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#a78bfa;margin-bottom:5px">05 — DÉPLACER LE SL</div><div style="font-size:11px;color:var(--ts)">Agrandir le SL pour laisser "respirer". Transforme petite perte en grosse perte.</div></div>
-        <div class="card" style="background:var(--card2);border-left:3px solid var(--cy);padding:12px"><div style="font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cy);margin-bottom:5px">06 — IGNORER LA MACRO</div><div style="font-size:11px;color:var(--ts)">Trade technique contre une news majeure (NFP, CPI, FOMC...). Attendre la réaction.</div></div>
-        <div class="card" style="background:var(--card2);border-left:3px solid var(--grb);padding:12px"><div style="font-family:'Orbitron',sans-serif;font-size:9px;color:var(--grb);margin-bottom:5px">07 — MANQUE DE CONFLUENCE</div><div style="font-size:11px;color:var(--ts)">Entrer avec 1 seule confirmation. Minimum 3 confluences avant de valider un setup.</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="ct">📚 Leçons Clés</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="border:1px solid rgba(245,158,11,0.2);border-radius:9px;padding:12px;background:rgba(245,158,11,0.02)"><div style="font-family:'Orbitron',sans-serif;font-size:8px;color:var(--gb);letter-spacing:2px;margin-bottom:6px">01 — PATIENCE</div><div style="font-size:11px;color:var(--tp);line-height:1.6">Attendre le setup parfait. Le marché offre des opportunités chaque jour.</div></div>
-        <div style="border:1px solid rgba(14,165,233,0.2);border-radius:9px;padding:12px;background:rgba(14,165,233,0.02)"><div style="font-family:'Orbitron',sans-serif;font-size:8px;color:var(--bb);letter-spacing:2px;margin-bottom:6px">02 — PLAN AVANT TOUT</div><div style="font-size:11px;color:var(--tp);line-height:1.6">TP, SL, BE et lot définis avant l'entrée. Un trade sans plan est un pari.</div></div>
-        <div style="border:1px solid rgba(16,185,129,0.2);border-radius:9px;padding:12px;background:rgba(16,185,129,0.02)"><div style="font-family:'Orbitron',sans-serif;font-size:8px;color:var(--grb);letter-spacing:2px;margin-bottom:6px">03 — GESTION DU RISQUE</div><div style="font-size:11px;color:var(--tp);line-height:1.6">1% max/trade, 3% max/jour. Le capital est l'outil. Le protéger est la priorité #1.</div></div>
-        <div style="border:1px solid rgba(139,92,246,0.2);border-radius:9px;padding:12px;background:rgba(139,92,246,0.02)"><div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#a78bfa;letter-spacing:2px;margin-bottom:6px">04 — CONTRÔLE ÉMOTIONNEL</div><div style="font-size:11px;color:var(--tp);line-height:1.6">2 pertes = pause. Trader sous émotion annule tout avantage statistique.</div></div>
-        <div style="border:1px solid rgba(239,68,68,0.2);border-radius:9px;padding:12px;background:rgba(239,68,68,0.02)"><div style="font-family:'Orbitron',sans-serif;font-size:8px;color:var(--reb);letter-spacing:2px;margin-bottom:6px">05 — LAISSER COURIR</div><div style="font-size:11px;color:var(--tp);line-height:1.6">Faire confiance au plan. Les sorties prématurées = -30% de P&L sur l'année.</div></div>
-        <div style="border:1px solid rgba(0,245,255,0.2);border-radius:9px;padding:12px;background:rgba(0,245,255,0.02)"><div style="font-family:'Orbitron',sans-serif;font-size:8px;color:var(--cy);letter-spacing:2px;margin-bottom:6px">06 — CONFLUENCE MINIMUM 3</div><div style="font-size:11px;color:var(--tp);line-height:1.6">Plus la confluence est forte, plus la probabilité de succès est élevée.</div></div>
-        <div style="border:1px solid rgba(16,185,129,0.2);border-radius:9px;padding:12px;background:rgba(16,185,129,0.02)"><div style="font-family:'Orbitron',sans-serif;font-size:8px;color:var(--grb);letter-spacing:2px;margin-bottom:6px">07 — REVOIR SON JOURNAL</div><div style="font-size:11px;color:var(--tp);line-height:1.6">Analyse hebdomadaire obligatoire. Identifier les patterns d'erreurs et les corriger.</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ CHARTS ══ -->
-<div id="charts" class="sec">
-  <div class="card">
-    <div class="ct">📷 Galerie de Charts</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="btn btn-p" onclick="document.getElementById('bulk-up').click()">📁 Uploader Charts</button>
-      <input type="file" id="bulk-up" multiple accept="image/*" style="display:none" onchange="bulkUp(event)">
-    </div>
-    <div id="gallery" class="ig"><div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--td)"><div style="font-size:30px">🖼️</div><div style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;margin-top:8px">Aucun chart uploadé</div></div></div>
-  </div>
-</div>
 
 </div><!-- /main -->
 
