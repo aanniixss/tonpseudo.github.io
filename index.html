@@ -632,6 +632,43 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     <!-- KPI ROW -->
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:14px" id="md-kpis"></div>
 
+    <!-- WEEK FILTER -->
+    <div id="md-week-filter" style="display:none;margin-bottom:14px">
+      <div class="card" style="padding:12px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span style="font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;flex-shrink:0">Semaine :</span>
+          <button onclick="filterWeekInMonth(null,this)" id="wk-btn-all" style="padding:5px 12px;border-radius:20px;background:rgba(14,165,233,0.2);border:1px solid var(--be);color:var(--be);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">TOUT</button>
+          <button onclick="filterWeekInMonth(1,this)" id="wk-btn-1" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S1</button>
+          <button onclick="filterWeekInMonth(2,this)" id="wk-btn-2" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S2</button>
+          <button onclick="filterWeekInMonth(3,this)" id="wk-btn-3" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S3</button>
+          <button onclick="filterWeekInMonth(4,this)" id="wk-btn-4" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S4</button>
+          <button onclick="filterWeekInMonth(5,this)" id="wk-btn-5" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S5</button>
+        </div>
+        <div id="md-week-stats" style="display:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:8px" id="md-week-stats">
+          <div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;text-align:center">
+            <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">Trades</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--be)" id="wks-tot">0</div>
+          </div>
+          <div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;text-align:center">
+            <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">Win Rate</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--grb)" id="wks-wr">—</div>
+          </div>
+          <div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;text-align:center">
+            <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">W/L/BE</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--ts)" id="wks-wlb">—</div>
+          </div>
+          <div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;text-align:center">
+            <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">Net $</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700" id="wks-net">—</div>
+          </div>
+          <div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;text-align:center">
+            <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">P&L %</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700" id="wks-pct">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- CHARTS ROW -->
     <div class="g2" style="margin-bottom:14px">
       <div class="card"><div class="ct">📈 Évolution Capital</div><canvas id="md-cap-chart" height="160"></canvas></div>
@@ -1655,6 +1692,74 @@ function changeYear(dir){
   renderMonthBtns();
 }
 
+let CURRENT_MONTH_TRADES = [];
+
+function getTradeWeek(t){
+  // Use created_at to find day of month, then week number
+  if(t.created_at){
+    const d = new Date(t.created_at).getDate();
+    return Math.min(Math.ceil(d/7), 5);
+  }
+  return 1;
+}
+
+function filterWeekInMonth(w, btn){
+  // Highlight active button
+  document.querySelectorAll('#md-week-filter button').forEach(b=>{
+    b.style.background='var(--card2)';
+    b.style.borderColor='var(--bo)';
+    b.style.color='var(--ts)';
+  });
+  if(btn){btn.style.background='rgba(14,165,233,0.2)';btn.style.borderColor='var(--be)';btn.style.color='var(--be)';}
+
+  const trades = w===null ? CURRENT_MONTH_TRADES : CURRENT_MONTH_TRADES.filter(t=>getTradeWeek(t)===w);
+  const statsEl = document.getElementById('md-week-stats');
+  const ttb = document.getElementById('md-trades-tbody');
+
+  if(w===null){
+    if(statsEl) statsEl.style.display='none';
+  } else {
+    // Compute weekly stats
+    const tot=trades.length,wins=trades.filter(t=>t.result==='WIN').length,losses=trades.filter(t=>t.result==='LOSS').length,bes=trades.filter(t=>t.result==='BE').length;
+    const net=trades.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
+    const wr=tot>0?(wins/tot*100).toFixed(1)+'%':'—';
+    const pct=CAP>0?(net/CAP*100).toFixed(2):'—';
+    document.getElementById('wks-tot').textContent=tot;
+    document.getElementById('wks-wr').textContent=wr;
+    document.getElementById('wks-wlb').textContent=wins+'W · '+losses+'L · '+bes+' BE';
+    const netEl=document.getElementById('wks-net');
+    netEl.textContent=(net>=0?'+':'')+'$'+Math.abs(net).toFixed(2);
+    netEl.style.color=net>=0?'var(--grb)':'var(--reb)';
+    const pctEl=document.getElementById('wks-pct');
+    pctEl.textContent=pct==='—'?'—':(parseFloat(pct)>=0?'+':'')+pct+'%';
+    pctEl.style.color=pct==='—'?'var(--ts)':parseFloat(pct)>=0?'var(--grb)':'var(--reb)';
+    if(statsEl) statsEl.style.display='grid';
+  }
+
+  // Re-render trade table with filtered trades
+  if(ttb){
+    if(!trades.length){ttb.innerHTML='<tr><td colspan="12" style="text-align:center;padding:14px;color:var(--td)">Aucun trade cette semaine</td></tr>';return;}
+    ttb.innerHTML=trades.map((t,i)=>{
+      const cls=t.result==='WIN'?'win':t.result==='LOSS'?'loss':'be-r';
+      const strs=JSON.parse(t.strats||'[]');
+      const net2=parseFloat(t.pnl_amt||0);
+      return`<tr>
+        <td style="color:var(--td);font-family:monospace;font-size:9px">#${i+1}</td>
+        <td><span class="pb ${pbc(t.pair)}">${t.pair}</span></td>
+        <td style="color:${t.dir==='LONG'?'var(--grb)':'var(--reb)'};font-weight:700">${t.dir==='LONG'?'↑':'↓'}</td>
+        <td style="font-size:9px;color:var(--bb)">${t.sess}</td>
+        <td style="font-size:9px;color:var(--ts)">${t.duration}</td>
+        <td style="font-family:monospace;font-size:9px">${t.rr||'—'}</td>
+        <td style="font-family:monospace;font-size:9px;color:var(--ts)">${net2>=0?'+':''}$${Math.abs(net2).toFixed(2)}</td>
+        <td class="${cls}" style="font-family:monospace;font-size:9px">${net2>=0?'+':''}$${net2.toFixed(2)}</td>
+        <td><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'var(--grb)':t.result==='LOSS'?'var(--reb)':'var(--gb)'}">${t.result}</span></td>
+        <td style="font-size:9px;color:var(--bb)">${strs[0]||'—'}</td>
+        <td style="color:var(--gb);font-size:9px">${t.star?'★'.repeat(t.star):'—'}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
 function initSetups(){
   document.getElementById('year-display').textContent = SELECTED_YEAR;
   renderMonthBtns();
@@ -1696,6 +1801,17 @@ function openMonth(m){
   const fm=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const mt = T.filter(t=>parseInt(t.trade_month)===m && parseInt(t.trade_year)===SELECTED_YEAR);
   renderMonthBtns();
+
+  // Setup week filter buttons
+  CURRENT_MONTH_TRADES = mt;
+  const weeksPresent = new Set(mt.map(t=>getTradeWeek(t)));
+  document.getElementById('md-week-filter').style.display = mt.length ? 'block' : 'none';
+  [1,2,3,4,5].forEach(w=>{
+    const btn = document.getElementById('wk-btn-'+w);
+    if(btn) btn.style.display = weeksPresent.has(w) ? 'inline-block' : 'none';
+  });
+  // Reset week filter
+  filterWeekInMonth(null, document.getElementById('wk-btn-all'));
 
   const detail = document.getElementById('month-detail');
   detail.style.display = 'block';
