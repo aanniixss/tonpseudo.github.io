@@ -200,6 +200,14 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     <div class="kpi"><div class="kl">Note Moy. ★</div><div class="kv" id="k-star" style="color:var(--gb)">—</div><div class="ks" id="k-star-s">Setup quality</div></div>
   </div>
 
+  <!-- RECOVERY BUTTON (shown only when no trades) -->
+  <div id="recovery-bar" style="display:none;margin-bottom:14px">
+    <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:11px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:var(--reb);letter-spacing:1px">⚠ Aucun trade détecté</div>
+      <button onclick="forceRecover()" style="background:linear-gradient(135deg,rgba(239,68,68,0.3),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.5);color:var(--reb);padding:7px 16px;border-radius:7px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px">🔄 Récupérer mes trades</button>
+    </div>
+  </div>
+
   <div class="g2">
     <div class="card" style="grid-column:1/-1">
       <div class="ct">Évolution du Capital</div>
@@ -980,6 +988,28 @@ async function deleteAccount(id){
 // Close account menu on outside click
 document.addEventListener('click',e=>{ if(!e.target.closest('#account-selector-wrap')) document.getElementById('account-menu').style.display='none'; });
 
+async function forceRecover(){
+  toast('🔄 Recherche en cours...');
+  try {
+    // Try fetching all trades regardless of user_id
+    const {data,error} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
+    if(error){ toast('❌ Erreur Supabase: '+error.message); return; }
+    if(!data || !data.length){ toast('❌ Aucun trade dans Supabase'); return; }
+    T = data;
+    const realId = [...new Set(data.map(t=>t.user_id))][0];
+    if(realId){
+      ACTIVE_ACCOUNT.id = realId;
+      if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
+      localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+      localStorage.setItem('tr_active_account', realId);
+    }
+    toast('✅ '+T.length+' trades récupérés !');
+    document.getElementById('recovery-bar').style.display='none';
+    renderTable(); updateDash(); buildHM();
+    setTimeout(()=>{initCapChart();initPairChart();},100);
+  } catch(e){ toast('❌ Exception: '+e.message); }
+}
+
 async function loadTrades(){
   if(!ACTIVE_ACCOUNT) return;
   try {
@@ -993,7 +1023,7 @@ async function loadTrades(){
     }
     // Recovery level 2: fetch ALL trades in the table (last resort)
     if(!T.length){
-      const {data:d3} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(500);
+      const {data:d3} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
       if(d3 && d3.length){ T=d3; }
     }
     if(T.length){
@@ -1007,6 +1037,9 @@ async function loadTrades(){
       }
     }
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
+  // Show recovery button if still no trades
+  const rb=document.getElementById('recovery-bar');
+  if(rb) rb.style.display=!T.length?'block':'none';
   renderTable(); updateDash(); buildHM();
   setTimeout(()=>{initCapChart();initPairChart();},100);
 }
