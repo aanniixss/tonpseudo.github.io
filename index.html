@@ -986,6 +986,22 @@ async function loadTrades(){
     const {data,error} = await sb.from('trades').select('*').eq('user_id', ACTIVE_ACCOUNT.id).order('created_at',{ascending:true});
     if(error){ console.error('loadTrades error:', JSON.stringify(error)); T=[]; }
     else { T = data || []; }
+    // Recovery: if no trades found, search by owner prefix (account ID may have changed after cache clear)
+    if(!T.length){
+      const {data:allData} = await sb.from('trades').select('*').like('user_id', OWNER_ID+'%').order('created_at',{ascending:true});
+      if(allData && allData.length){
+        T = allData;
+        // Restore the real account ID
+        const realId = [...new Set(allData.map(t=>t.user_id))][0];
+        if(realId && realId !== ACTIVE_ACCOUNT.id){
+          ACTIVE_ACCOUNT.id = realId;
+          ACCOUNTS[0].id = realId;
+          localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+          localStorage.setItem('tr_active_account', realId);
+          toast('✅ Données récupérées !');
+        }
+      }
+    }
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
   renderTable(); updateDash(); buildHM();
   setTimeout(()=>{initCapChart();initPairChart();},100);
