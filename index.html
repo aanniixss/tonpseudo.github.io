@@ -206,6 +206,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:var(--reb);letter-spacing:1px">⚠ Aucun trade détecté</div>
       <button onclick="forceRecover()" style="background:linear-gradient(135deg,rgba(239,68,68,0.3),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.5);color:var(--reb);padding:7px 16px;border-radius:7px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px">🔄 Récupérer mes trades</button>
     </div>
+    <div id="recovery-diag" style="font-size:9px;color:var(--td);margin-top:6px;font-family:monospace"></div>
   </div>
 
   <div class="g2">
@@ -1007,7 +1008,11 @@ async function forceRecover(){
     document.getElementById('recovery-bar').style.display='none';
     renderTable(); updateDash(); buildHM();
     setTimeout(()=>{initCapChart();initPairChart();},100);
-  } catch(e){ toast('❌ Exception: '+e.message); }
+  } catch(e){ 
+    toast('❌ Exception: '+e.message);
+    const d=document.getElementById('recovery-diag');
+    if(d) d.textContent='Erreur: '+e.message;
+  }
 }
 
 async function loadTrades(){
@@ -1039,7 +1044,11 @@ async function loadTrades(){
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
   // Show recovery button if still no trades
   const rb=document.getElementById('recovery-bar');
-  if(rb) rb.style.display=!T.length?'block':'none';
+  if(rb){
+    rb.style.display=!T.length?'block':'none';
+    const diagEl=document.getElementById('recovery-diag');
+    if(diagEl && !T.length) diagEl.textContent='ID compte: '+(ACTIVE_ACCOUNT?ACTIVE_ACCOUNT.id:'?');
+  }
   renderTable(); updateDash(); buildHM();
   setTimeout(()=>{initCapChart();initPairChart();},100);
 }
