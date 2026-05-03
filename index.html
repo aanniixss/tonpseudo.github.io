@@ -986,20 +986,24 @@ async function loadTrades(){
     const {data,error} = await sb.from('trades').select('*').eq('user_id', ACTIVE_ACCOUNT.id).order('created_at',{ascending:true});
     if(error){ console.error('loadTrades error:', JSON.stringify(error)); T=[]; }
     else { T = data || []; }
-    // Recovery: if no trades found, search by owner prefix (account ID may have changed after cache clear)
+    // Recovery level 1: search by owner prefix
     if(!T.length){
-      const {data:allData} = await sb.from('trades').select('*').like('user_id', OWNER_ID+'%').order('created_at',{ascending:true});
-      if(allData && allData.length){
-        T = allData;
-        // Restore the real account ID
-        const realId = [...new Set(allData.map(t=>t.user_id))][0];
-        if(realId && realId !== ACTIVE_ACCOUNT.id){
-          ACTIVE_ACCOUNT.id = realId;
-          ACCOUNTS[0].id = realId;
-          localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
-          localStorage.setItem('tr_active_account', realId);
-          toast('✅ Données récupérées !');
-        }
+      const {data:d2} = await sb.from('trades').select('*').like('user_id', OWNER_ID+'%').order('created_at',{ascending:true});
+      if(d2 && d2.length){ T=d2; }
+    }
+    // Recovery level 2: fetch ALL trades in the table (last resort)
+    if(!T.length){
+      const {data:d3} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(500);
+      if(d3 && d3.length){ T=d3; }
+    }
+    if(T.length){
+      const realId = [...new Set(T.map(t=>t.user_id))][0];
+      if(realId && realId !== ACTIVE_ACCOUNT.id){
+        ACTIVE_ACCOUNT.id = realId;
+        if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
+        localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+        localStorage.setItem('tr_active_account', realId);
+        toast('✅ '+T.length+' trades récupérés !');
       }
     }
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
