@@ -772,6 +772,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       <div class="fld"><label>Lot Size</label><input type="number" id="edit-lot" step="0.01" min="0.01"></div>
       <div class="fld"><label>% Capital Risqué</label><input type="number" id="edit-rsk" step="0.1"></div>
       <div class="fld"><label>R:R Réalisé</label><input type="number" id="edit-rr" step="0.1"></div>
+      <div class="fld"><label>📅 Mois</label><select id="edit-month"><option value="0">Janvier</option><option value="1">Février</option><option value="2">Mars</option><option value="3">Avril</option><option value="4">Mai</option><option value="5">Juin</option><option value="6">Juillet</option><option value="7">Août</option><option value="8">Septembre</option><option value="9">Octobre</option><option value="10">Novembre</option><option value="11">Décembre</option></select></div>
       <div class="fld"><label>💰 CA ($)</label><input type="number" id="edit-ca" step="0.01" oninput="editCalcNet()"></div>
       <div class="fld"><label>💸 Commission ($)</label><input type="number" id="edit-comm" step="0.01" oninput="editCalcNet()"></div>
       <div class="fld"><label>✅ Net ($)</label><div class="calc-box" id="edit-net">—</div></div>
@@ -2088,6 +2089,7 @@ function openEditTrade(id){
   document.getElementById('edit-ca').value=t.ca_amt||'';
   document.getElementById('edit-comm').value=t.commission||'';
   document.getElementById('edit-notes').value=t.notes||'';
+  document.getElementById('edit-month').value=t.trade_month!=null?t.trade_month:new Date().getMonth();
   editCalcNet();
   document.getElementById('editModal').classList.add('show');
 }
@@ -2128,7 +2130,8 @@ async function saveEditTrade(){
   const net=parseFloat((ca-comm).toFixed(2));
   const pnlPct=CAP>0?parseFloat((net/CAP*100).toFixed(4)):0;
   const dur=calcDur(en,ex);
-  const updates={cl,result,dir,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0};
+  const trade_month=parseInt(document.getElementById('edit-month').value);
+  const updates={cl,result,dir,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month};
   const {error}=await sb.from('trades').update(updates).eq('id',id);
   if(error){toast('❌ Erreur: '+error.message);return;}
   Object.assign(t,updates);
