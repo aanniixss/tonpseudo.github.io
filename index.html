@@ -959,7 +959,7 @@ function switchAccount(id){
   DRSK = ACTIVE_ACCOUNT.risk || 1;
   document.getElementById('account-menu').style.display='none';
   updateAccountUI();
-  loadTrades();
+  loadTrades(true); // strict=true : pas de recovery sur les autres comptes
   toast('🔄 '+ACTIVE_ACCOUNT.name+' — $'+(CAP||'?'));
 }
 
@@ -1043,34 +1043,37 @@ async function forceRecover(){
   }
 }
 
-async function loadTrades(){
+async function loadTrades(strict=false){
   if(!ACTIVE_ACCOUNT) return;
+  // Vider immédiatement pour éviter d'afficher les données de l'ancien compte
+  T=[];
+  renderTable(); updateDash(); buildHM();
   try {
     const {data,error} = await sb.from('trades').select('*').eq('user_id', ACTIVE_ACCOUNT.id).order('created_at',{ascending:true});
     if(error){ console.error('loadTrades error:', JSON.stringify(error)); T=[]; }
     else { T = data || []; }
-    // Recovery level 1: search by owner prefix
-    if(!T.length){
-      const {data:d2} = await sb.from('trades').select('*').like('user_id', OWNER_ID+'%').order('created_at',{ascending:true});
-      if(d2 && d2.length){ T=d2; }
-    }
-    // Recovery level 2: fetch ALL trades in the table (last resort)
-    if(!T.length){
-      const {data:d3} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
-      if(d3 && d3.length){ T=d3; }
-    }
-    if(T.length){
-      const realId = [...new Set(T.map(t=>t.user_id))][0];
-      if(realId && realId !== ACTIVE_ACCOUNT.id){
-        ACTIVE_ACCOUNT.id = realId;
-        if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
-        localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
-        localStorage.setItem('tr_active_account', realId);
-        toast('✅ '+T.length+' trades récupérés !');
+    // Recovery: uniquement si chargement initial (pas en mode strict = changement de compte)
+    if(!strict){
+      if(!T.length){
+        const {data:d2} = await sb.from('trades').select('*').like('user_id', OWNER_ID+'%').order('created_at',{ascending:true});
+        if(d2 && d2.length){ T=d2; }
+      }
+      if(!T.length){
+        const {data:d3} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
+        if(d3 && d3.length){ T=d3; }
+      }
+      if(T.length){
+        const realId = [...new Set(T.map(t=>t.user_id))][0];
+        if(realId && realId !== ACTIVE_ACCOUNT.id){
+          ACTIVE_ACCOUNT.id = realId;
+          if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
+          localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+          localStorage.setItem('tr_active_account', realId);
+          toast('✅ '+T.length+' trades récupérés !');
+        }
       }
     }
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
-  // Show recovery button if still no trades
   const rb=document.getElementById('recovery-bar');
   if(rb){
     rb.style.display=!T.length?'block':'none';
@@ -1805,8 +1808,10 @@ function changeGlobalYear(dir){
   renderTable();
   updateDash();
   buildHM();
+  setTimeout(()=>{initCapChart();initPairChart();},100);
   if(document.getElementById('bilan').classList.contains('active'))initBilan();
   if(document.getElementById('setups').classList.contains('active'))initSetups();
+  if(document.getElementById('analyse').classList.contains('active'))initAnalyse();
   toast('📅 Année '+GLOBAL_YEAR);
 }
 
@@ -1826,10 +1831,18 @@ function filterJournalMonth(m, el){
 
 function changeYear(dir){
   SELECTED_YEAR += dir;
+  GLOBAL_YEAR = SELECTED_YEAR;
   SELECTED_MONTH = null;
+  JOURNAL_MONTH_FILTER = null;
   document.getElementById('year-display').textContent = SELECTED_YEAR;
+  if(document.getElementById('global-year-display')) document.getElementById('global-year-display').textContent = GLOBAL_YEAR;
+  if(document.getElementById('journal-year-label')) document.getElementById('journal-year-label').textContent = GLOBAL_YEAR;
   document.getElementById('month-detail').style.display = 'none';
   renderMonthBtns();
+  renderTable();
+  updateDash();
+  buildHM();
+  setTimeout(()=>{initCapChart();initPairChart();},100);
 }
 
 let CURRENT_MONTH_TRADES = [];
