@@ -699,6 +699,11 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
             <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">P&L %</div>
             <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700" id="wks-pct">—</div>
           </div>
+          <div style="background:var(--card2);border:1px solid rgba(16,185,129,0.3);border-radius:9px;padding:10px 12px;text-align:center;border-top:2px solid var(--grb)">
+            <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">💰 Profit Brut</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--grb)" id="wks-gross">—</div>
+            <div style="font-size:8px;color:var(--ts);margin-top:2px" id="wks-gross-pct">wins seuls</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1445,10 +1450,12 @@ function updateDash(){
   const psp=document.getElementById('profit-stats-panel');
   if(s.tot>0){
     if(psp) psp.style.display='block';
-    if(kgp){kgp.textContent='+$'+s.grossProfit.toFixed(0);kgp.style.color='var(--grb)';}
-    if(kgps){kgps.innerHTML=`<span style="color:var(--grb)">+${s.grossPct.toFixed(2)}%</span> · ${s.w} win${s.w>1?'s':''}`;}
-    if(kpan){kpan.textContent=(s.pnlAvecNorm>=0?'+':'')+'$'+Math.abs(s.pnlAvecNorm).toFixed(0);kpan.style.color=s.pnlAvecNorm>=0?'var(--grb)':'var(--reb)';}
-    if(kpans){kpans.innerHTML=`<span style="color:${s.pnlAvecNormPct>=0?'var(--grb)':'var(--reb)'}">${s.pnlAvecNormPct>=0?'+':''}${s.pnlAvecNormPct.toFixed(2)}%</span>`;}
+    if(kgp){kgp.textContent=s.w>0?'+$'+s.grossProfit.toFixed(0):'—';kgp.style.color='var(--grb)';}
+    if(kgps){kgps.innerHTML=s.w>0?`<span style="color:var(--grb)">+${s.grossPct.toFixed(2)}%</span> · ${s.w} win${s.w>1?'s':''}`:s.w+' wins';}
+    // N'afficher "Sans pertes à la con" que si des pertes ont été taguées
+    const hasTaggedLosses=(s.lCon+s.lNorm)>0;
+    if(kpan){kpan.textContent=hasTaggedLosses?(s.pnlAvecNorm>=0?'+':'')+'$'+Math.abs(s.pnlAvecNorm).toFixed(0):'—';kpan.style.color=s.pnlAvecNorm>=0?'var(--grb)':'var(--reb)';}
+    if(kpans){kpans.innerHTML=hasTaggedLosses?`<span style="color:${s.pnlAvecNormPct>=0?'var(--grb)':'var(--reb)'}">${s.pnlAvecNormPct>=0?'+':''}${s.pnlAvecNormPct.toFixed(2)}%</span>`:'Tagge tes pertes pour voir';}
   } else {
     if(psp) psp.style.display='none';
   }
@@ -1922,6 +1929,8 @@ function filterWeekInMonth(w, btn){
     const pct=CAP>0?(net/CAP*100).toFixed(2):'—';
     const wCon=trades.filter(t=>t.result==='LOSS'&&t.loss_type==='CON').length;
     const wNorm=trades.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL').length;
+    const grossW=trades.filter(t=>t.result==='WIN').reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
+    const grossWPct=CAP>0?(grossW/CAP*100).toFixed(2):null;
     document.getElementById('wks-tot').textContent=tot;
     document.getElementById('wks-wr').textContent=wr;
     document.getElementById('wks-wlb').innerHTML=`${wins}W · ${losses}L${wCon>0?` <span style="color:var(--reb)">(🤦${wCon})</span>`:''}${wNorm>0?` <span style="color:var(--grb)">(✅${wNorm})</span>`:''} · ${bes} BE`;
@@ -1931,6 +1940,8 @@ function filterWeekInMonth(w, btn){
     const pctEl=document.getElementById('wks-pct');
     pctEl.textContent=pct==='—'?'—':(parseFloat(pct)>=0?'+':'')+pct+'%';
     pctEl.style.color=pct==='—'?'var(--ts)':parseFloat(pct)>=0?'var(--grb)':'var(--reb)';
+    const gwEl=document.getElementById('wks-gross');if(gwEl){gwEl.textContent=wins>0?'+$'+grossW.toFixed(0):'—';}
+    const gwpEl=document.getElementById('wks-gross-pct');if(gwpEl){gwpEl.textContent=grossWPct?'+'+grossWPct+'%':wins+' win'+(wins>1?'s':'');}
     if(statsEl) statsEl.style.display='grid';
   }
 
@@ -2034,12 +2045,15 @@ function openMonth(m){
   document.getElementById('md-sub').textContent = mt.length+' trades · Net '+( mpnl>=0?'+':'' )+'$'+mpnl.toFixed(2)+' · CA $'+mca.toFixed(2)+' · Comm -$'+mcomm.toFixed(2);
 
   // KPIs
+  const grossM=wp; // wp = wins pnl sum (déjà calculé)
+  const grossMPct=CAP>0?parseFloat((grossM/CAP*100).toFixed(2)):0;
   const kdata=[
     {l:'Trades',v:mt.length,s:'Total mois',c:'var(--be)'},
     {l:'Win Rate',v:mwr?mwr+'%':'—',s:mw+'W · '+ml+'L · '+mb2+'BE',c:mwr>=60?'var(--grb)':mwr>=50?'var(--gb)':'var(--reb)'},
+    {l:'💰 Profit Brut',v:mw>0?'+$'+grossM.toFixed(0):'—',s:mw>0?'+'+grossMPct.toFixed(2)+'% · wins seuls':'Aucun win',c:'var(--grb)'},
+    {l:'Net P&L',v:(mpnl>=0?'+':'')+'$'+mpnl.toFixed(2),s:(mpct>=0?'+':'')+mpct.toFixed(2)+'%',c:mpnl>=0?'var(--grb)':'var(--reb)'},
     {l:'CA Brut',v:mca>=0?'+$'+mca.toFixed(0):'-$'+Math.abs(mca).toFixed(0),s:'Avant commission',c:mca>=0?'var(--grb)':'var(--reb)'},
     {l:'Commission',v:'-$'+mcomm.toFixed(2),s:'Total frais',c:'var(--reb)'},
-    {l:'Net P&L',v:(mpnl>=0?'+':'')+'$'+mpnl.toFixed(2),s:(mpct>=0?'+':'')+mpct.toFixed(2)+'%',c:mpnl>=0?'var(--grb)':'var(--reb)'},
     {l:'RRR Moyen',v:mrr||'—',s:'Par trade',c:'var(--gb)'},
     {l:'Profit Factor',v:pf,s:'',c:parseFloat(pf)>=2?'var(--grb)':parseFloat(pf)>=1?'var(--gb)':'var(--reb)'},
     {l:'Capital',v:CAP>0?'$'+Math.round(CAP+mpnl).toLocaleString():'—',s:'Fin de mois',c:mpnl>=0?'var(--grb)':'var(--reb)'},
