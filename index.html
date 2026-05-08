@@ -735,6 +735,18 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       </div>
     </div>
 
+    <!-- ANALYSE PSYCHOLOGIQUE DU MOIS -->
+    <div class="g2" style="margin-top:14px">
+      <div class="card">
+        <div class="ct">🧠 Erreurs Psycho — Fréquence &amp; Impact</div>
+        <div id="md-psych-err" style="display:flex;flex-direction:column;gap:8px;padding-top:4px"></div>
+      </div>
+      <div class="card">
+        <div class="ct">💚 Bon Mindset — Corrélation Performance</div>
+        <div id="md-psych-good" style="display:flex;flex-direction:column;gap:8px;padding-top:4px"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -2064,6 +2076,27 @@ function openMonth(m){
     erEl.innerHTML=errors.map(e=>`<div style="border-left:3px solid var(--reb);padding:10px;border-radius:0 7px 7px 0;background:rgba(239,68,68,0.05)"><div style="font-size:9px;color:var(--reb);font-weight:700;letter-spacing:1px;margin-bottom:3px">${e.t}</div><div style="font-size:10px;color:var(--ts)">${e.d}</div></div>`).join('');
     posEl.innerHTML=positifs.map(p=>`<div style="border-left:3px solid var(--grb);padding:10px;border-radius:0 7px 7px 0;background:rgba(16,185,129,0.05)"><div style="font-size:9px;color:var(--grb);font-weight:700;letter-spacing:1px;margin-bottom:3px">${p.t}</div><div style="font-size:10px;color:var(--ts)">${p.d}</div></div>`).join('');
   }
+
+  // Psychologie du mois
+  const psychErrEl=document.getElementById('md-psych-err');
+  const psychGoodEl=document.getElementById('md-psych-good');
+  if(psychErrEl&&psychGoodEl){
+    const errMap=new Map(),goodMap=new Map();
+    mt.forEach(t=>{
+      JSON.parse(t.psych_errors||'[]').forEach(e=>{if(!errMap.has(e))errMap.set(e,{n:0,pnl:0,wins:0});const v=errMap.get(e);v.n++;v.pnl+=parseFloat(t.pnl_amt||0);if(t.result==='WIN')v.wins++;});
+      JSON.parse(t.psych_good||'[]').forEach(g=>{if(!goodMap.has(g))goodMap.set(g,{n:0,pnl:0,wins:0});const v=goodMap.get(g);v.n++;v.pnl+=parseFloat(t.pnl_amt||0);if(t.result==='WIN')v.wins++;});
+    });
+    const maxErr=errMap.size?Math.max(...[...errMap.values()].map(v=>v.n)):1;
+    const maxGood=goodMap.size?Math.max(...[...goodMap.values()].map(v=>v.n)):1;
+    psychErrEl.innerHTML=errMap.size?[...errMap.entries()].sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>{
+      const wr=v.n?(v.wins/v.n*100).toFixed(0):0;const pct=Math.round(v.n/maxErr*100);
+      return`<div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px"><span style="color:var(--tp)">${k}</span><span style="color:var(--td);font-family:monospace">${v.n}x · WR ${wr}% · <span style="color:${v.pnl>=0?'var(--grb)':'var(--reb)'}">${v.pnl>=0?'+':''}$${Math.round(v.pnl)}</span></span></div><div style="background:var(--card2);border-radius:3px;height:4px"><div style="background:var(--reb);width:${pct}%;height:100%;border-radius:3px"></div></div></div>`;
+    }).join(''):'<div style="text-align:center;padding:14px;color:var(--td);font-size:10px">Aucune erreur trackée ce mois</div>';
+    psychGoodEl.innerHTML=goodMap.size?[...goodMap.entries()].sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>{
+      const wr=v.n?(v.wins/v.n*100).toFixed(0):0;const pct=Math.round(v.n/maxGood*100);
+      return`<div><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px"><span style="color:var(--grb)">${k}</span><span style="color:var(--td);font-family:monospace">${v.n}x · WR ${wr}% · <span style="color:${v.pnl>=0?'var(--grb)':'var(--reb)'}">${v.pnl>=0?'+':''}$${Math.round(v.pnl)}</span></span></div><div style="background:var(--card2);border-radius:3px;height:4px"><div style="background:var(--grb);width:${pct}%;height:100%;border-radius:3px"></div></div></div>`;
+    }).join(''):'<div style="text-align:center;padding:14px;color:var(--td);font-size:10px">Aucun mindset tracké ce mois</div>';
+  }
 }
 
 function closeMonthDetail(){
@@ -2325,6 +2358,9 @@ function exportMonthPDF(){
     return `<tr><td><b>${p}</b></td><td>${pt.length}</td><td>${pw}W / ${pt.length-pw}L</td><td class="${parseFloat(pwr)>=60?'win':'loss'}">${pwr}%</td><td class="${ppnl>=0?'win':'loss'}">${ppnl>=0?'+':''}$${ppnl.toFixed(2)}</td></tr>`;
   }).join('');
 
+  const notesWithTrades=mt.filter(t=>t.notes&&t.notes.trim());
+  const notesSection=notesWithTrades.length?`<div class="section"><div class="section-title">📝 Notes des Trades</div>${notesWithTrades.map((t,i)=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');return`<div style="margin-bottom:12px;padding:14px;background:#0d1b2e;border-radius:8px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;gap:14px;flex-wrap:wrap"><b style="color:#e2e8f0">${t.pair}</b><span style="color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'}">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'}">${net>=0?'+':''}$${net.toFixed(2)}</span><span>${t.duration||'—'}</span>${strs[0]?`<span style="color:#0ea5e9">${strs[0]}</span>`:''}</div><div style="font-size:11px;color:#cbd5e1;white-space:pre-line;line-height:1.6">Note ${i+1} : ${t.notes.trim()}</div></div>`}).join('')}</div>`:'';
+
   const sections=`
     <div class="section"><div class="section-title">📊 Performance par Session</div>
       <table><thead><tr><th>Session</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>Net P&L</th></tr></thead><tbody>${sessRows}</tbody></table>
@@ -2334,7 +2370,8 @@ function exportMonthPDF(){
     </div>
     <div class="section"><div class="section-title">📋 Historique Complet des Trades</div>
       <table><thead><tr><th>#</th><th>Paire</th><th>Direction</th><th>Session</th><th>Durée</th><th>RR</th><th>CA $</th><th>Comm.</th><th>Net $</th><th>Résultat</th><th>Setup</th><th>★</th></tr></thead><tbody>${tradeRows}</tbody></table>
-    </div>`;
+    </div>
+    ${notesSection}`;
 
   const html=buildReportHTML(
     mn_pdf[m]+' '+yr+' — Rapport Mensuel',
