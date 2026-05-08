@@ -198,8 +198,25 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     <div class="kpi"><div class="kl">Max Drawdown</div><div class="kv" id="k-dd" style="color:var(--reb)">—</div><div class="ks" id="k-dd-s">—</div></div>
     <div class="kpi"><div class="kl">Durée Moyenne</div><div class="kv" id="k-dur">—</div><div class="ks">Par trade</div></div>
     <div class="kpi"><div class="kl">Note Moy. ★</div><div class="kv" id="k-star" style="color:var(--gb)">—</div><div class="ks" id="k-star-s">Setup quality</div></div>
-    <div class="kpi"><div class="kl">💰 Profit Brut</div><div class="kv" id="k-gross">—</div><div class="ks" id="k-gross-s">Wins uniquement</div></div>
-    <div class="kpi"><div class="kl">📊 P&amp;L Pertes Norm.</div><div class="kv" id="k-pnl-norm">—</div><div class="ks" id="k-pnl-norm-s">Sans pertes à la con</div></div>
+  </div>
+
+  <!-- PROFIT STATS PANEL -->
+  <div id="profit-stats-panel" style="display:none;margin-bottom:14px">
+    <div class="card" style="padding:16px">
+      <div class="ct" style="margin-bottom:12px">💹 Analyse Profit</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:var(--card2);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:13px;border-top:2px solid var(--grb)">
+          <div style="font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;margin-bottom:6px">💰 Profit Brut</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:var(--grb)" id="k-gross">—</div>
+          <div style="font-size:9px;color:var(--ts);margin-top:3px" id="k-gross-s">Wins uniquement</div>
+        </div>
+        <div style="background:var(--card2);border:1px solid rgba(14,165,233,0.3);border-radius:10px;padding:13px;border-top:2px solid var(--be)">
+          <div style="font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;margin-bottom:6px">📊 Sans Pertes à la con</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700" id="k-pnl-norm">—</div>
+          <div style="font-size:9px;color:var(--ts);margin-top:3px" id="k-pnl-norm-s">Wins + pertes normales</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- RECOVERY BUTTON (shown only when no trades) -->
@@ -1424,11 +1441,17 @@ function updateDash(){
   document.getElementById('k-star').textContent=s.as?s.as+'★':'—';
   // Nouvelles stats
   const kgp=document.getElementById('k-gross');const kgps=document.getElementById('k-gross-s');
-  if(kgp){kgp.textContent=s.grossProfit?'+$'+s.grossProfit.toFixed(0):'—';kgp.style.color='var(--grb)';}
-  if(kgps){kgps.innerHTML=s.grossPct?`<span style="color:var(--grb)">+${s.grossPct.toFixed(2)}%</span> · ${s.w} wins`:'—';}
   const kpan=document.getElementById('k-pnl-norm');const kpans=document.getElementById('k-pnl-norm-s');
-  if(kpan){kpan.textContent=s.pnlAvecNorm?(s.pnlAvecNorm>=0?'+':'')+'$'+Math.abs(s.pnlAvecNorm).toFixed(0):'—';kpan.style.color=s.pnlAvecNorm>=0?'var(--grb)':'var(--reb)';}
-  if(kpans){kpans.innerHTML=s.pnlAvecNormPct?`<span style="color:${s.pnlAvecNormPct>=0?'var(--grb)':'var(--reb)'}">${s.pnlAvecNormPct>=0?'+':''}${s.pnlAvecNormPct.toFixed(2)}%</span>`:'—';}
+  const psp=document.getElementById('profit-stats-panel');
+  if(s.tot>0){
+    if(psp) psp.style.display='block';
+    if(kgp){kgp.textContent='+$'+s.grossProfit.toFixed(0);kgp.style.color='var(--grb)';}
+    if(kgps){kgps.innerHTML=`<span style="color:var(--grb)">+${s.grossPct.toFixed(2)}%</span> · ${s.w} win${s.w>1?'s':''}`;}
+    if(kpan){kpan.textContent=(s.pnlAvecNorm>=0?'+':'')+'$'+Math.abs(s.pnlAvecNorm).toFixed(0);kpan.style.color=s.pnlAvecNorm>=0?'var(--grb)':'var(--reb)';}
+    if(kpans){kpans.innerHTML=`<span style="color:${s.pnlAvecNormPct>=0?'var(--grb)':'var(--reb)'}">${s.pnlAvecNormPct>=0?'+':''}${s.pnlAvecNormPct.toFixed(2)}%</span>`;}
+  } else {
+    if(psp) psp.style.display='none';
+  }
   // circle
   const p=parseFloat(s.wr)||0,circ=314.16;
   document.getElementById('wr-arc').setAttribute('stroke-dashoffset',circ-(p/100)*circ);
