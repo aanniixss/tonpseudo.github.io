@@ -1047,22 +1047,23 @@ async function forceRecover(){
     const {data,error} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
     if(error){ toast('❌ Erreur Supabase: '+error.message); return; }
     if(!data || !data.length){ toast('❌ Aucun trade dans Supabase'); return; }
-    // Filtrer les trades qui appartiennent au compte actif si possible
     const ownIds=[...new Set(data.map(t=>t.user_id))];
-    // Prendre l'id dont on a le plus de trades (le vrai compte principal)
     const realId=ownIds.sort((a,b)=>data.filter(t=>t.user_id===b).length-data.filter(t=>t.user_id===a).length)[0];
-    T = data.filter(t=>t.user_id===realId);
-    // Only ever update ACCOUNTS[0] — never corrupt other accounts' IDs
-    if(realId && ACCOUNTS[0] && realId!==ACCOUNTS[0].id){
-      ACCOUNTS[0].id = realId;
-      if(ACTIVE_ACCOUNT===ACCOUNTS[0]){
-        ACTIVE_ACCOUNT.id = realId;
-        localStorage.setItem('tr_active_account', realId);
-      }
-      localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
-      updateAccountUI();
+    // Fix ACCOUNTS[0] with the real ID
+    if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
+    // Clean any other account that accidentally has realId (corruption cleanup)
+    for(let i=1;i<ACCOUNTS.length;i++){
+      if(ACCOUNTS[i].id===realId) ACCOUNTS[i].id=OWNER_ID+'_acc'+(i+1)+'_'+Date.now();
     }
-    toast('✅ '+T.length+' trades récupérés !');
+    // Always switch app to account 1 — that's whose data we recovered
+    ACTIVE_ACCOUNT = ACCOUNTS[0];
+    CAP = ACTIVE_ACCOUNT.capital||0;
+    DRSK = ACTIVE_ACCOUNT.risk||1;
+    localStorage.setItem('tr_active_account', realId);
+    localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+    updateAccountUI();
+    T = data.filter(t=>t.user_id===realId);
+    toast('✅ '+T.length+' trades récupérés sur '+ACTIVE_ACCOUNT.name+' !');
     document.getElementById('recovery-bar').style.display='none';
     renderTable(); updateDash(); buildHM();
     setTimeout(()=>{initCapChart();initPairChart();},100);
@@ -1082,8 +1083,9 @@ async function loadTrades(strict=false){
     const {data,error} = await sb.from('trades').select('*').eq('user_id', ACTIVE_ACCOUNT.id).order('created_at',{ascending:true});
     if(error){ console.error('loadTrades error:', JSON.stringify(error)); T=[]; }
     else { T = data || []; }
-    // Recovery: uniquement si chargement initial (pas en mode strict = changement de compte)
-    if(!strict){
+    // Recovery fallback: UNIQUEMENT pour le compte principal (ACCOUNTS[0])
+    // Ne jamais corrompre les IDs des autres comptes
+    if(!strict && ACTIVE_ACCOUNT===ACCOUNTS[0]){
       if(!T.length){
         const {data:d2} = await sb.from('trades').select('*').like('user_id', OWNER_ID+'%').order('created_at',{ascending:true});
         if(d2 && d2.length){ T=d2; }
@@ -1094,9 +1096,9 @@ async function loadTrades(strict=false){
       }
       if(T.length){
         const realId = [...new Set(T.map(t=>t.user_id))][0];
-        if(realId && realId !== ACTIVE_ACCOUNT.id){
+        if(realId && realId !== ACCOUNTS[0].id){
+          ACCOUNTS[0].id = realId;
           ACTIVE_ACCOUNT.id = realId;
-          if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
           localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
           localStorage.setItem('tr_active_account', realId);
           toast('✅ '+T.length+' trades récupérés !');
@@ -1106,9 +1108,11 @@ async function loadTrades(strict=false){
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
   const rb=document.getElementById('recovery-bar');
   if(rb){
-    rb.style.display=!T.length?'block':'none';
+    // Afficher la barre de récupération seulement pour le compte principal (ACCOUNTS[0])
+    const isMainAccount = ACTIVE_ACCOUNT===ACCOUNTS[0];
+    rb.style.display=(!T.length && isMainAccount)?'block':'none';
     const diagEl=document.getElementById('recovery-diag');
-    if(diagEl && !T.length) diagEl.textContent='ID compte: '+(ACTIVE_ACCOUNT?ACTIVE_ACCOUNT.id:'?');
+    if(diagEl && !T.length && isMainAccount) diagEl.textContent='ID compte: '+(ACTIVE_ACCOUNT?ACTIVE_ACCOUNT.id:'?');
   }
   renderTable(); updateDash(); buildHM();
   setTimeout(()=>{initCapChart();initPairChart();},100);
