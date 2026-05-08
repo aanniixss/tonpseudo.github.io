@@ -198,6 +198,8 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     <div class="kpi"><div class="kl">Max Drawdown</div><div class="kv" id="k-dd" style="color:var(--reb)">—</div><div class="ks" id="k-dd-s">—</div></div>
     <div class="kpi"><div class="kl">Durée Moyenne</div><div class="kv" id="k-dur">—</div><div class="ks">Par trade</div></div>
     <div class="kpi"><div class="kl">Note Moy. ★</div><div class="kv" id="k-star" style="color:var(--gb)">—</div><div class="ks" id="k-star-s">Setup quality</div></div>
+    <div class="kpi"><div class="kl">💰 Profit Brut</div><div class="kv" id="k-gross">—</div><div class="ks" id="k-gross-s">Wins uniquement</div></div>
+    <div class="kpi"><div class="kl">📊 P&amp;L Pertes Norm.</div><div class="kv" id="k-pnl-norm">—</div><div class="ks" id="k-pnl-norm-s">Sans pertes à la con</div></div>
   </div>
 
   <!-- RECOVERY BUTTON (shown only when no trades) -->
@@ -1020,23 +1022,28 @@ document.addEventListener('click',e=>{ if(!e.target.closest('#account-selector-w
 async function forceRecover(){
   toast('🔄 Recherche en cours...');
   try {
-    // Try fetching all trades regardless of user_id
     const {data,error} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
     if(error){ toast('❌ Erreur Supabase: '+error.message); return; }
     if(!data || !data.length){ toast('❌ Aucun trade dans Supabase'); return; }
-    T = data;
-    const realId = [...new Set(data.map(t=>t.user_id))][0];
-    if(realId){
+    // Filtrer les trades qui appartiennent au compte actif si possible
+    const ownIds=[...new Set(data.map(t=>t.user_id))];
+    // Prendre l'id dont on a le plus de trades (le vrai compte principal)
+    const realId=ownIds.sort((a,b)=>data.filter(t=>t.user_id===b).length-data.filter(t=>t.user_id===a).length)[0];
+    T = data.filter(t=>t.user_id===realId);
+    if(realId && realId!==ACTIVE_ACCOUNT.id){
       ACTIVE_ACCOUNT.id = realId;
-      if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
+      // Mettre à jour uniquement CE compte dans ACCOUNTS, pas tous les autres
+      const idx=ACCOUNTS.findIndex(a=>a===ACTIVE_ACCOUNT);
+      if(idx>=0) ACCOUNTS[idx].id=realId;
       localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
       localStorage.setItem('tr_active_account', realId);
+      updateAccountUI();
     }
     toast('✅ '+T.length+' trades récupérés !');
     document.getElementById('recovery-bar').style.display='none';
     renderTable(); updateDash(); buildHM();
     setTimeout(()=>{initCapChart();initPairChart();},100);
-  } catch(e){ 
+  } catch(e){
     toast('❌ Exception: '+e.message);
     const d=document.getElementById('recovery-diag');
     if(d) d.textContent='Erreur: '+e.message;
@@ -1383,7 +1390,12 @@ function stats(){
   const lNorm=TY.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL');
   const pacPnl=lCon.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
   const tpnlSansPac=parseFloat((tpnl-pacPnl).toFixed(2));
-  return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd,lCon:lCon.length,lNorm:lNorm.length,pacPnl,tpnlSansPac};
+  const grossProfit=TY.filter(t=>t.result==='WIN').reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
+  const grossPct=CAP>0?parseFloat((grossProfit/CAP*100).toFixed(2)):0;
+  // P&L avec pertes normales seulement (wins + pertes normales, sans les PAC)
+  const pnlAvecNorm=parseFloat((grossProfit+lNorm.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0)).toFixed(2));
+  const pnlAvecNormPct=CAP>0?parseFloat((pnlAvecNorm/CAP*100).toFixed(2)):0;
+  return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd,lCon:lCon.length,lNorm:lNorm.length,pacPnl,tpnlSansPac,grossProfit,grossPct,pnlAvecNorm,pnlAvecNormPct};
 }
 
 function updateDash(){
@@ -1410,6 +1422,13 @@ function updateDash(){
   document.getElementById('k-dd').textContent=s.dd?s.dd.toFixed(1)+'%':'—';
   document.getElementById('k-dur').textContent=s.ads||'—';
   document.getElementById('k-star').textContent=s.as?s.as+'★':'—';
+  // Nouvelles stats
+  const kgp=document.getElementById('k-gross');const kgps=document.getElementById('k-gross-s');
+  if(kgp){kgp.textContent=s.grossProfit?'+$'+s.grossProfit.toFixed(0):'—';kgp.style.color='var(--grb)';}
+  if(kgps){kgps.innerHTML=s.grossPct?`<span style="color:var(--grb)">+${s.grossPct.toFixed(2)}%</span> · ${s.w} wins`:'—';}
+  const kpan=document.getElementById('k-pnl-norm');const kpans=document.getElementById('k-pnl-norm-s');
+  if(kpan){kpan.textContent=s.pnlAvecNorm?(s.pnlAvecNorm>=0?'+':'')+'$'+Math.abs(s.pnlAvecNorm).toFixed(0):'—';kpan.style.color=s.pnlAvecNorm>=0?'var(--grb)':'var(--reb)';}
+  if(kpans){kpans.innerHTML=s.pnlAvecNormPct?`<span style="color:${s.pnlAvecNormPct>=0?'var(--grb)':'var(--reb)'}">${s.pnlAvecNormPct>=0?'+':''}${s.pnlAvecNormPct.toFixed(2)}%</span>`:'—';}
   // circle
   const p=parseFloat(s.wr)||0,circ=314.16;
   document.getElementById('wr-arc').setAttribute('stroke-dashoffset',circ-(p/100)*circ);
@@ -1485,14 +1504,15 @@ function initPairChart(){
 
 function initAnalyse(){
   DC('day');DC('sess');DC('close');
+  const TY=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
   // Pair table
   const tb=document.getElementById('pair-tbody');
-  const ap=[...new Set(T.map(t=>t.pair))];
+  const ap=[...new Set(TY.map(t=>t.pair))];
   if(tb){
     if(!ap.length){tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:16px;color:var(--td)">Aucun trade</td></tr>`;return;}
     tb.innerHTML='';
     ap.forEach(p=>{
-      const pt=T.filter(t=>t.pair===p),pw=pt.filter(t=>t.result==='WIN').length,pl=pt.filter(t=>t.result==='LOSS').length;
+      const pt=TY.filter(t=>t.pair===p),pw=pt.filter(t=>t.result==='WIN').length,pl=pt.filter(t=>t.result==='LOSS').length;
       const pwr=(pw/pt.length*100).toFixed(1);
       const wp2=pt.filter(t=>t.result==='WIN').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
       const lp2=Math.abs(pt.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0));
@@ -1510,7 +1530,7 @@ function initAnalyse(){
     if(!ap.length){ct.innerHTML='<tr><td style="text-align:center;padding:16px;color:var(--td)">Aucun trade</td></tr>';return;}
     let h=`<thead><tr><th>Session</th>${ap.map(p=>`<th>${p}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
     sess.forEach(s=>{
-      const st=T.filter(t=>t.sess===s);if(!st.length)return;
+      const st=TY.filter(t=>t.sess===s);if(!st.length)return;
       const tot=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);
       h+=`<tr><td style="color:var(--bb);font-weight:700;font-size:10px">${s}</td>`;
       ap.forEach(p=>{const v=st.filter(t=>t.pair===p).reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const c=st.filter(t=>t.pair===p).length;h+=`<td class="${c?v>=0?'win':'loss':''}" style="${!c?'color:var(--td)':''};font-size:10px">${c?(v>=0?'+':'')+'$'+v.toFixed(0):'—'}</td>`;});
@@ -1520,25 +1540,25 @@ function initAnalyse(){
   }
   // Day chart
   const days=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
-  const dwr=days.map(d=>{const dt=T.filter(t=>t.day===d);return dt.length?parseFloat((dt.filter(t=>t.result==='WIN').length/dt.length*100).toFixed(1)):0;});
+  const dwr=days.map(d=>{const dt=TY.filter(t=>t.day===d);return dt.length?parseFloat((dt.filter(t=>t.result==='WIN').length/dt.length*100).toFixed(1)):0;});
   const c1=document.getElementById('dayChart');
   if(c1)CI['day']=new Chart(c1,{type:'bar',data:{labels:days,datasets:[{label:'Win Rate %',data:dwr,backgroundColor:dwr.map(v=>v>=70?'rgba(16,185,129,0.7)':v>=60?'rgba(14,165,233,0.7)':v>0?'rgba(245,158,11,0.7)':'rgba(30,58,95,0.4)'),borderRadius:7}]},options:{...CD,scales:{x:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'}}},y:{grid:{color:'rgba(30,58,95,0.4)'},min:0,max:100,ticks:{color:'#94a3b8',font:{family:'Rajdhani'},callback:v=>v+'%'}}}}});
   // Session radar
   const sc=['London','New York','Tokyo / Asia','Overlap Lon/NY'];
   const cols=['#0ea5e9','#10b981','#94a3b8','#fbbf24'];
-  const sd=sc.map(s=>{const st=T.filter(t=>t.sess===s);const wr=st.length?st.filter(t=>t.result==='WIN').length/st.length*100:0;const vol=T.length?st.length/T.length*100:0;const p=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const rr=st.length?st.reduce((a,t)=>a+(t.rr||0),0)/st.length:0;const wp=st.filter(t=>t.result==='WIN').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const lp=Math.abs(st.filter(t=>t.result==='LOSS').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0));const pf=lp>0?Math.min(wp/lp*20,100):0;return[wr,vol,Math.min(Math.abs(p/Math.max(CAP,1))*500,100),rr*15,pf];});
+  const sd=sc.map(s=>{const st=TY.filter(t=>t.sess===s);const wr=st.length?st.filter(t=>t.result==='WIN').length/st.length*100:0;const vol=TY.length?st.length/TY.length*100:0;const p=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const rr=st.length?st.reduce((a,t)=>a+(t.rr||0),0)/st.length:0;const wp=st.filter(t=>t.result==='WIN').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const lp=Math.abs(st.filter(t=>t.result==='LOSS').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0));const pf=lp>0?Math.min(wp/lp*20,100):0;return[wr,vol,Math.min(Math.abs(p/Math.max(CAP,1))*500,100),rr*15,pf];});
   const c2=document.getElementById('sessChart');
   if(c2)CI['sess']=new Chart(c2,{type:'radar',data:{labels:['WR%','Volume','P&L','RRR','PF'],datasets:sc.map((s,i)=>({label:s,data:sd[i],borderColor:cols[i],backgroundColor:cols[i]+'1a',pointBackgroundColor:cols[i]}))},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Rajdhani',size:10}}}},scales:{r:{angleLines:{color:'rgba(30,58,95,0.5)'},grid:{color:'rgba(30,58,95,0.5)'},pointLabels:{color:'#94a3b8',font:{family:'Rajdhani',size:10}},ticks:{display:false}}}}});
   // Close polar
   const c3=document.getElementById('closeChart');
-  if(c3)CI['close']=new Chart(c3,{type:'polarArea',data:{labels:['TP','SL','BE','Manuel'],datasets:[{data:[T.filter(t=>t.cl==='TP').length,T.filter(t=>t.cl==='SL').length,T.filter(t=>t.cl==='BE').length,T.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(14,165,233,0.7)'],borderColor:['#10b981','#ef4444','#f59e0b','#0ea5e9'],borderWidth:2}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11}}}},scales:{r:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{display:false}}}}});
+  if(c3)CI['close']=new Chart(c3,{type:'polarArea',data:{labels:['TP','SL','BE','Manuel'],datasets:[{data:[TY.filter(t=>t.cl==='TP').length,TY.filter(t=>t.cl==='SL').length,TY.filter(t=>t.cl==='BE').length,TY.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(14,165,233,0.7)'],borderColor:['#10b981','#ef4444','#f59e0b','#0ea5e9'],borderWidth:2}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11}}}},scales:{r:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{display:false}}}}});
 }
 
 function initBilan(){
   DC('annual');DC('res');
   const mn=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   const fm=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  const yr=new Date().getFullYear();
+  const yr=GLOBAL_YEAR;
 
   // ── ANNUAL CHART ──
   const ctx=document.getElementById('annualChart');
@@ -2316,6 +2336,7 @@ function buildReportHTML(title, subtitle, kpis, sections){
 </head>
 <body>
 <button class="no-print print-btn" onclick="window.print()">🖨️ Imprimer / Enregistrer PDF</button>
+<button class="no-print" onclick="window.close()" style="position:fixed;top:16px;left:16px;background:#1e293b;color:#94a3b8;border:1px solid #334155;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;z-index:999;transition:all .2s" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#94a3b8'">← Retour</button>
 
 <div class="header">
   <div class="header-top">
