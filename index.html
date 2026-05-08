@@ -1052,13 +1052,14 @@ async function forceRecover(){
     // Prendre l'id dont on a le plus de trades (le vrai compte principal)
     const realId=ownIds.sort((a,b)=>data.filter(t=>t.user_id===b).length-data.filter(t=>t.user_id===a).length)[0];
     T = data.filter(t=>t.user_id===realId);
-    if(realId && realId!==ACTIVE_ACCOUNT.id){
-      ACTIVE_ACCOUNT.id = realId;
-      // Mettre à jour uniquement CE compte dans ACCOUNTS, pas tous les autres
-      const idx=ACCOUNTS.findIndex(a=>a===ACTIVE_ACCOUNT);
-      if(idx>=0) ACCOUNTS[idx].id=realId;
+    // Only ever update ACCOUNTS[0] — never corrupt other accounts' IDs
+    if(realId && ACCOUNTS[0] && realId!==ACCOUNTS[0].id){
+      ACCOUNTS[0].id = realId;
+      if(ACTIVE_ACCOUNT===ACCOUNTS[0]){
+        ACTIVE_ACCOUNT.id = realId;
+        localStorage.setItem('tr_active_account', realId);
+      }
       localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
-      localStorage.setItem('tr_active_account', realId);
       updateAccountUI();
     }
     toast('✅ '+T.length+' trades récupérés !');
@@ -1406,8 +1407,8 @@ function stats(){
   let mx=0,cu=0;TY.forEach(t=>{if(t.result==='WIN'){cu++;mx=Math.max(mx,cu);}else cu=0;});
   const adm=tot>0?TY.reduce((s,t)=>s+(parseFloat(t.duration_mins||0)),0)/tot:0;
   const ads=adm>0?(()=>{const h=Math.floor(adm/60),m=Math.round(adm%60);return h>0?h+'h '+m+'m':m+'m';})():null;
-  const sa=T.filter(t=>t.star>0);const as=sa.length>0?(sa.reduce((s,t)=>s+(t.star||0),0)/sa.length).toFixed(1):null;
-  let pk=CAP,cp=CAP,dd=0;T.forEach(t=>{cp+=t.pnl_amt||0;if(cp>pk)pk=cp;const d=(cp-pk)/pk*100;if(d<dd)dd=d;});
+  const sa=TY.filter(t=>t.star>0);const as=sa.length>0?(sa.reduce((s,t)=>s+(t.star||0),0)/sa.length).toFixed(1):null;
+  let pk=CAP,cp=CAP,dd=0;TY.forEach(t=>{cp+=t.pnl_amt||0;if(cp>pk)pk=cp;const d=(cp-pk)/pk*100;if(d<dd)dd=d;});
   const lCon=TY.filter(t=>t.result==='LOSS'&&t.loss_type==='CON');
   const lNorm=TY.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL');
   const pacPnl=lCon.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
@@ -1480,6 +1481,7 @@ function updateDash(){
     document.getElementById('s-'+key+'-b').style.cssText=`width:${st.length?Math.min(Math.abs(p2/Math.max(CAP,1))*500,100):0}%;background:${bg};height:100%;border-radius:20px;`;
     document.getElementById('s-'+key+'-d').textContent=st.length+' trade'+(st.length>1?'s':'')+' · WR '+wr2;
   });
+  buildHM();
 }
 
 // ── HEATMAP ──
@@ -2442,6 +2444,7 @@ function exportMonthPDF(){
     {label:'🤦 Pertes à la con',value:mCon.length,cls:'red',sub:mCon.length?pacPnlM.toFixed(2)+'$':'—'},
     {label:'✅ Pertes normales',value:mNorm.length,cls:'gold'},
     {label:'Sans Pertes à la con',value:(pnlSansPac>=0?'+':'')+'$'+pnlSansPac.toFixed(2),cls:pnlSansPac>=0?'green':'red',sub:'P&L virtuel'},
+    {label:'💰 Profit Brut',value:mw>0?'+$'+wp.toFixed(2):'—',cls:'green',sub:mw>0&&CAP>0?'+'+( wp/CAP*100).toFixed(2)+'% · '+mw+' win'+(mw>1?'s':''):'wins seuls'},
     {label:'Break Even',value:mb,cls:'gold'},
     {label:'RRR Moyen',value:mrr,cls:'blue'},
     {label:'Profit Factor',value:pf,cls:parseFloat(pf)>=2?'green':parseFloat(pf)>=1?'gold':'red'},
