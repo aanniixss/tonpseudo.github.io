@@ -2543,12 +2543,14 @@ function exportAnnualPDF(){
   const pf=lp>0?(wp/lp).toFixed(2):'∞';
   const avgRR=tot>0?(TY.reduce((s,t)=>s+(t.rr||0),0)/tot).toFixed(1):0;
 
+  const grossPctAnnual=CAP>0?(wp/CAP*100).toFixed(2):0;
   const kpis=[
     {label:'Total Trades',value:tot,cls:'blue'},
     {label:'Win Rate',value:wr+'%',cls:parseFloat(wr)>=60?'green':parseFloat(wr)>=50?'gold':'red'},
+    {label:'💰 Profit Brut',value:w>0?'+$'+Math.round(wp):'—',cls:'green',sub:w>0?'+'+grossPctAnnual+'% · wins seuls':'—'},
+    {label:'Net P&L',value:(tnet>=0?'+':'')+'$'+tnet.toFixed(2),cls:tnet>=0?'green':'red',sub:(tpct>=0?'+':'')+tpct.toFixed(2)+'%'},
     {label:'CA Brut',value:(tca>=0?'+':'')+'$'+tca.toFixed(2),cls:tca>=0?'green':'red'},
     {label:'Commission',value:'-$'+tcomm.toFixed(2),cls:'red'},
-    {label:'Net P&L',value:(tnet>=0?'+':'')+'$'+tnet.toFixed(2),cls:tnet>=0?'green':'red',sub:(tpct>=0?'+':'')+tpct.toFixed(2)+'%'},
     {label:'Capital Final',value:CAP>0?'$'+Math.round(CAP+tnet).toLocaleString():'—',cls:tnet>=0?'green':'red'},
     {label:'Profit Factor',value:pf,cls:parseFloat(pf)>=2?'green':parseFloat(pf)>=1?'gold':'red'},
     {label:'RRR Moyen',value:avgRR,cls:'blue'},
