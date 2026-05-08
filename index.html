@@ -2437,21 +2437,22 @@ function exportMonthPDF(){
   const mNorm=mt.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL');
   const pacPnlM=mCon.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
   const pnlSansPac=parseFloat((mnet-pacPnlM).toFixed(2));
+  const grossPct=CAP>0?(wp/CAP*100).toFixed(2):0;
   const kpis=[
     {label:'Total Trades',value:mt.length,cls:'blue'},
     {label:'Win Rate',value:mwr+'%',cls:parseFloat(mwr)>=60?'green':parseFloat(mwr)>=50?'gold':'red'},
+    {label:'💰 Profit Brut',value:mw>0?'+$'+Math.round(wp):'—',cls:'green',sub:mw>0?'+'+grossPct+'% · wins seuls':'—'},
+    {label:'Net P&L',value:(mnet>=0?'+':'')+'$'+mnet.toFixed(2),cls:mnet>=0?'green':'red',sub:(mpct>=0?'+':'')+mpct.toFixed(2)+'%'},
     {label:'CA Brut',value:(mca>=0?'+':'')+'$'+mca.toFixed(2),cls:mca>=0?'green':'red'},
     {label:'Commission',value:'-$'+mcomm.toFixed(2),cls:'red'},
-    {label:'Net P&L',value:(mnet>=0?'+':'')+'$'+mnet.toFixed(2),cls:mnet>=0?'green':'red',sub:(mpct>=0?'+':'')+mpct.toFixed(2)+'%'},
     {label:'Gagnants',value:mw,cls:'green'},
     {label:'Perdants',value:ml,cls:'red'},
-    {label:'🤦 Pertes à la con',value:mCon.length,cls:'red',sub:mCon.length?pacPnlM.toFixed(2)+'$':'—'},
-    {label:'✅ Pertes normales',value:mNorm.length,cls:'gold'},
-    {label:'Sans Pertes à la con',value:(pnlSansPac>=0?'+':'')+'$'+pnlSansPac.toFixed(2),cls:pnlSansPac>=0?'green':'red',sub:'P&L virtuel'},
-    {label:'💰 Profit Brut',value:mw>0?'+$'+wp.toFixed(2):'—',cls:'green',sub:mw>0&&CAP>0?'+'+( wp/CAP*100).toFixed(2)+'% · '+mw+' win'+(mw>1?'s':''):'wins seuls'},
     {label:'Break Even',value:mb,cls:'gold'},
     {label:'RRR Moyen',value:mrr,cls:'blue'},
     {label:'Profit Factor',value:pf,cls:parseFloat(pf)>=2?'green':parseFloat(pf)>=1?'gold':'red'},
+    {label:'🤦 Pertes à la con',value:mCon.length,cls:'red',sub:mCon.length?pacPnlM.toFixed(2)+'$':'—'},
+    {label:'✅ Pertes normales',value:mNorm.length,cls:'gold'},
+    {label:'Sans Pertes à la con',value:(pnlSansPac>=0?'+':'')+'$'+pnlSansPac.toFixed(2),cls:pnlSansPac>=0?'green':'red',sub:'P&L virtuel'},
   ];
 
   // Sessions
