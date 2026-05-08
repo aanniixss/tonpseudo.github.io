@@ -297,7 +297,15 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       <div class="fld"><label>Session</label><select id="f-sess"><option>London</option><option>New York</option><option>Tokyo / Asia</option><option>Overlap Lon/NY</option></select></div>
       <div class="fld"><label>Direction</label><select id="f-dir"><option value="LONG">↑ LONG</option><option value="SHORT">↓ SHORT</option></select></div>
       <div class="fld"><label>Clôture</label><select id="f-close" onchange="calcAll();syncResult()"><option value="TP">✅ TP Atteint</option><option value="SL">❌ SL Touché</option><option value="BE">◈ Break Even</option><option value="MANUEL">⚡ Manuel</option></select></div>
-      <div class="fld"><label>Résultat</label><select id="f-result"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
+      <div class="fld"><label>Résultat</label><select id="f-result" onchange="onResultChange()"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
+    </div>
+
+    <div id="loss-type-wrap" style="display:none;margin-bottom:12px">
+      <label style="font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;display:block;margin-bottom:7px">⚠ TYPE DE PERTE</label>
+      <div style="display:flex;gap:8px">
+        <button type="button" id="lt-normal" onclick="setLossType('NORMAL')" style="flex:1;padding:10px;border-radius:8px;border:2px solid var(--bo);background:var(--card2);color:var(--ts);cursor:pointer;font-size:9px;letter-spacing:1px;transition:all .2s;font-family:'Orbitron',sans-serif">✅ PERTE NORMALE</button>
+        <button type="button" id="lt-con" onclick="setLossType('CON')" style="flex:1;padding:10px;border-radius:8px;border:2px solid var(--bo);background:var(--card2);color:var(--ts);cursor:pointer;font-size:9px;letter-spacing:1px;transition:all .2s;font-family:'Orbitron',sans-serif">🤦 PERTE À LA CON</button>
+      </div>
     </div>
 
     <div class="fg" style="margin-bottom:12px">
@@ -776,7 +784,14 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     <input type="hidden" id="edit-id">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
       <div class="fld"><label>Clôture</label><select id="edit-close" onchange="editSyncResult()"><option value="TP">✅ TP Atteint</option><option value="SL">❌ SL Touché</option><option value="BE">◈ Break Even</option><option value="MANUEL">⚡ Manuel</option></select></div>
-      <div class="fld"><label>Résultat</label><select id="edit-result"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
+      <div class="fld"><label>Résultat</label><select id="edit-result" onchange="onEditResultChange()"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
+      <div id="edit-loss-type-wrap" style="grid-column:1/-1;display:none">
+        <label style="font-size:8px;letter-spacing:2px;color:var(--td);text-transform:uppercase;display:block;margin-bottom:7px">⚠ TYPE DE PERTE</label>
+        <div style="display:flex;gap:8px">
+          <button type="button" id="elt-normal" onclick="setEditLossType('NORMAL')" style="flex:1;padding:8px;border-radius:8px;border:2px solid var(--bo);background:var(--card2);color:var(--ts);cursor:pointer;font-size:9px;transition:all .2s;font-family:'Orbitron',sans-serif;letter-spacing:1px">✅ PERTE NORMALE</button>
+          <button type="button" id="elt-con" onclick="setEditLossType('CON')" style="flex:1;padding:8px;border-radius:8px;border:2px solid var(--bo);background:var(--card2);color:var(--ts);cursor:pointer;font-size:9px;transition:all .2s;font-family:'Orbitron',sans-serif;letter-spacing:1px">🤦 PERTE À LA CON</button>
+        </div>
+      </div>
       <div class="fld"><label>Direction</label><select id="edit-dir"><option value="LONG">↑ LONG</option><option value="SHORT">↓ SHORT</option></select></div>
       <div class="fld"><label>Session</label><select id="edit-sess"><option>London</option><option>New York</option><option>Tokyo / Asia</option><option>Overlap Lon/NY</option></select></div>
       <div class="fld"><label>Heure Entrée</label><input type="time" id="edit-en" oninput="editCalcNet()"></div>
@@ -860,7 +875,7 @@ const OWNER_ID = 'user_cmqlipot4';
 let ACCOUNTS = [];
 let ACTIVE_ACCOUNT = null;
 let T = [];
-let CAP = 0, DRSK = 1, STAR = 0;
+let CAP = 0, DRSK = 1, STAR = 0, LOSS_TYPE = null, EDIT_LOSS_TYPE = null;
 let SELECTED_COLOR = '#0ea5e9';
 
 async function saveAccounts(){
@@ -1153,6 +1168,31 @@ function syncResult(){
   if(cl==='TP') r.value='WIN';
   else if(cl==='SL') r.value='LOSS';
   else if(cl==='BE') r.value='BE';
+  onResultChange();
+}
+function onResultChange(){
+  const isLoss=document.getElementById('f-result').value==='LOSS';
+  document.getElementById('loss-type-wrap').style.display=isLoss?'block':'none';
+  if(!isLoss){LOSS_TYPE=null;['lt-normal','lt-con'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.borderColor='var(--bo)';b.style.background='var(--card2)';b.style.color='var(--ts)';}});}
+}
+function setLossType(t){
+  LOSS_TYPE=t;
+  const isNormal=t==='NORMAL';
+  const nb=document.getElementById('lt-normal'),cb=document.getElementById('lt-con');
+  if(nb){nb.style.borderColor=isNormal?'var(--grb)':'var(--bo)';nb.style.background=isNormal?'rgba(16,185,129,0.15)':'var(--card2)';nb.style.color=isNormal?'var(--grb)':'var(--ts)';}
+  if(cb){cb.style.borderColor=!isNormal?'var(--reb)':'var(--bo)';cb.style.background=!isNormal?'rgba(239,68,68,0.15)':'var(--card2)';cb.style.color=!isNormal?'var(--reb)':'var(--ts)';}
+}
+function onEditResultChange(){
+  const isLoss=document.getElementById('edit-result').value==='LOSS';
+  document.getElementById('edit-loss-type-wrap').style.display=isLoss?'block':'none';
+  if(!isLoss){EDIT_LOSS_TYPE=null;['elt-normal','elt-con'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.borderColor='var(--bo)';b.style.background='var(--card2)';b.style.color='var(--ts)';}});}
+}
+function setEditLossType(t){
+  EDIT_LOSS_TYPE=t;
+  const isNormal=t==='NORMAL';
+  const nb=document.getElementById('elt-normal'),cb=document.getElementById('elt-con');
+  if(nb){nb.style.borderColor=isNormal?'var(--grb)':'var(--bo)';nb.style.background=isNormal?'rgba(16,185,129,0.15)':'var(--card2)';nb.style.color=isNormal?'var(--grb)':'var(--ts)';}
+  if(cb){cb.style.borderColor=!isNormal?'var(--reb)':'var(--bo)';cb.style.background=!isNormal?'rgba(239,68,68,0.15)':'var(--card2)';cb.style.color=!isNormal?'var(--reb)':'var(--ts)';}
 }
 
 // ── UPLOAD ──
@@ -1198,14 +1238,14 @@ async function addTrade(){
   const tradeYear = GLOBAL_YEAR || now.getFullYear();
   const getPhoto=id=>{const img=document.querySelector('#'+id+'-prev img');return img?img.src:null;};
   const photoAv=getPhoto('av'),photoCo=getPhoto('co'),photoAp=getPhoto('ap');
-  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear,photo_av:photoAv,photo_co:photoCo,photo_ap:photoAp};
+  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear,photo_av:photoAv,photo_co:photoCo,photo_ap:photoAp,loss_type:res==='LOSS'?(LOSS_TYPE||null):null};
   let {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
-  // Fallback : si les colonnes psych n'existent pas encore dans Supabase, on réessaie sans elles
-  if(error && error.message && (error.message.includes('psych_errors')||error.message.includes('psych_good')||error.message.includes('photo_av'))){
-    const {psych_errors, psych_good, photo_av, photo_co, photo_ap, ...tradeDataFallback} = tradeData;
+  // Fallback : si les colonnes psych/loss_type n'existent pas encore dans Supabase, on réessaie sans elles
+  if(error && error.message && (error.message.includes('psych_errors')||error.message.includes('psych_good')||error.message.includes('photo_av')||error.message.includes('loss_type'))){
+    const {psych_errors, psych_good, photo_av, photo_co, photo_ap, loss_type, ...tradeDataFallback} = tradeData;
     const res2 = await sb.from('trades').insert([tradeDataFallback]).select();
     saved = res2.data; error = res2.error;
-    if(!error) toast('✅ Trade sauvegardé ! (Ajouter colonnes psych_errors/psych_good dans Supabase pour activer le tracking psychologie)');
+    if(!error) toast('✅ Trade sauvegardé ! (Ajouter colonne loss_type dans Supabase pour activer le tracking)');
   }
   if(error){
     console.error('Erreur trade:', error);
@@ -1222,6 +1262,8 @@ function clearForm(){
   ['f-lot','f-rr','f-ca','f-notes','f-comm'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-fon').value='';
   document.getElementById('f-result').value='WIN';
+  LOSS_TYPE=null;document.getElementById('loss-type-wrap').style.display='none';
+  ['lt-normal','lt-con'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.borderColor='var(--bo)';b.style.background='var(--card2)';b.style.color='var(--ts)';}});
   document.getElementById('d-dur').textContent='—';
   document.getElementById('d-rsk').textContent='—';
   document.getElementById('d-net').textContent='—';document.getElementById('d-net').style.color='';
@@ -1334,7 +1376,11 @@ function stats(){
   const ads=adm>0?(()=>{const h=Math.floor(adm/60),m=Math.round(adm%60);return h>0?h+'h '+m+'m':m+'m';})():null;
   const sa=T.filter(t=>t.star>0);const as=sa.length>0?(sa.reduce((s,t)=>s+(t.star||0),0)/sa.length).toFixed(1):null;
   let pk=CAP,cp=CAP,dd=0;T.forEach(t=>{cp+=t.pnl_amt||0;if(cp>pk)pk=cp;const d=(cp-pk)/pk*100;if(d<dd)dd=d;});
-  return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd};
+  const lCon=TY.filter(t=>t.result==='LOSS'&&t.loss_type==='CON');
+  const lNorm=TY.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL');
+  const pacPnl=lCon.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
+  const tpnlSansPac=parseFloat((tpnl-pacPnl).toFixed(2));
+  return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd,lCon:lCon.length,lNorm:lNorm.length,pacPnl,tpnlSansPac};
 }
 
 function updateDash(){
@@ -1350,7 +1396,11 @@ function updateDash(){
   we.style.color=s.wr>=60?'var(--grb)':s.wr>=50?'var(--gb)':'var(--reb)';
   document.getElementById('k-wr-s').textContent=s.tot+' trade'+(s.tot>1?'s':'');
   document.getElementById('k-tot').textContent=s.tot;
-  document.getElementById('k-tot-s').textContent=s.w+' W · '+s.l+' L · '+s.b+' BE';
+  const lDetail=s.lCon>0?` (🤦 ${s.lCon} à la con)`:'';
+  document.getElementById('k-tot-s').innerHTML=`${s.w} W · ${s.l} L${lDetail} · ${s.b} BE`;
+  const kddS=document.getElementById('k-dd-s');
+  if(kddS&&s.lCon>0){kddS.innerHTML=`<span style="color:var(--reb);cursor:help" title="P&L si tu n'avais pas fait les pertes à la con">Sans PAC : <b>${s.tpnlSansPac>=0?'+':''}$${s.tpnlSansPac.toFixed(0)}</b></span>`;}
+  else if(kddS) kddS.textContent='';
   const pe=document.getElementById('k-pf');
   pe.textContent=s.pf||'—';pe.style.color=s.pf>=2?'var(--grb)':s.pf>=1?'var(--gb)':'var(--reb)';
   document.getElementById('k-pf-s').textContent='RRR '+( s.avgRR||'—');
@@ -1814,9 +1864,11 @@ function filterWeekInMonth(w, btn){
     const net=trades.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
     const wr=tot>0?(wins/tot*100).toFixed(1)+'%':'—';
     const pct=CAP>0?(net/CAP*100).toFixed(2):'—';
+    const wCon=trades.filter(t=>t.result==='LOSS'&&t.loss_type==='CON').length;
+    const wNorm=trades.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL').length;
     document.getElementById('wks-tot').textContent=tot;
     document.getElementById('wks-wr').textContent=wr;
-    document.getElementById('wks-wlb').textContent=wins+'W · '+losses+'L · '+bes+' BE';
+    document.getElementById('wks-wlb').innerHTML=`${wins}W · ${losses}L${wCon>0?` <span style="color:var(--reb)">(🤦${wCon})</span>`:''}${wNorm>0?` <span style="color:var(--grb)">(✅${wNorm})</span>`:''} · ${bes} BE`;
     const netEl=document.getElementById('wks-net');
     netEl.textContent=(net>=0?'+':'')+'$'+Math.abs(net).toFixed(2);
     netEl.style.color=net>=0?'var(--grb)':'var(--reb)';
@@ -2050,8 +2102,13 @@ function openMonth(m){
   if(resumeEl&&mt.length){
     const bestSess=['London','New York','Tokyo / Asia','Overlap Lon/NY'].reduce((best,s)=>{const st=mt.filter(t=>t.sess===s);const p=st.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);return p>best.p?{s,p}:best;},{s:'—',p:-Infinity});
     const bestPair2=[...new Set(mt.map(t=>t.pair))].reduce((best,p)=>{const pt=mt.filter(t=>t.pair===p);const p2=pt.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);return p2>best.p?{p,p2}:best;},{p:'—',p2:-Infinity});
-    const avgStar=mt.filter(t=>t.star>0).length?( mt.filter(t=>t.star>0).reduce((s,t)=>s+t.star,0)/mt.filter(t=>t.star>0).length).toFixed(1):'—';
-    resumeEl.innerHTML=`<div>📊 <b>${mt.length} trades</b> · ${mw}W · ${ml}L · ${mb2}BE</div><div>💰 CA: <b style="color:var(--ts)">$${mca.toFixed(2)}</b> · Comm: <b style="color:var(--reb)">-$${mcomm.toFixed(2)}</b> · Net: <b style="color:${mpnl>=0?'var(--grb)':'var(--reb)'}">${mpnl>=0?'+':''}$${mpnl.toFixed(2)}</b></div><div>🎯 WR: <b style="color:${mwr>=60?'var(--grb)':'var(--reb)'}">${mwr||'—'}%</b> · RRR: <b>${mrr||'—'}</b> · PF: <b>${pf}</b></div><div>☀️ Meilleure session: <b style="color:var(--bb)">${bestSess.s}</b></div><div>💱 Meilleure paire: <b style="color:var(--gb)">${bestPair2.p}</b></div><div>★ Note moy. setup: <b style="color:var(--gb)">${avgStar}/5</b></div>`;
+    const avgStar=mt.filter(t=>t.star>0).length?(mt.filter(t=>t.star>0).reduce((s,t)=>s+t.star,0)/mt.filter(t=>t.star>0).length).toFixed(1):'—';
+    const mCon=mt.filter(t=>t.result==='LOSS'&&t.loss_type==='CON');
+    const mNorm=mt.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL');
+    const pacPnlM=mCon.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
+    const pnlSansPac=parseFloat((mpnl-pacPnlM).toFixed(2));
+    const lossDetail=ml>0?` dont <span style="color:var(--reb)">🤦 ${mCon.length} à la con</span>${mNorm.length?` · ✅ ${mNorm.length} normale`:''}`:'' ;
+    resumeEl.innerHTML=`<div>📊 <b>${mt.length} trades</b> · ${mw}W · ${ml}L${lossDetail} · ${mb2}BE</div><div>💰 CA: <b style="color:var(--ts)">$${mca.toFixed(2)}</b> · Comm: <b style="color:var(--reb)">-$${mcomm.toFixed(2)}</b> · Net: <b style="color:${mpnl>=0?'var(--grb)':'var(--reb)'}">${mpnl>=0?'+':''}$${mpnl.toFixed(2)}</b></div>${mCon.length?`<div>🚫 Sans pertes à la con : <b style="color:${pnlSansPac>=0?'var(--grb)':'var(--reb)'}">${pnlSansPac>=0?'+':''}$${pnlSansPac.toFixed(2)}</b> <span style="color:var(--td);font-size:9px">(tu aurais ${pnlSansPac>mpnl?'gagné':'perdu'} ${Math.abs(pnlSansPac-mpnl).toFixed(0)}$ de plus)</span></div>`:''}<div>🎯 WR: <b style="color:${mwr>=60?'var(--grb)':'var(--reb)'}">${mwr||'—'}%</b> · RRR: <b>${mrr||'—'}</b> · PF: <b>${pf}</b></div><div>☀️ Meilleure session: <b style="color:var(--bb)">${bestSess.s}</b></div><div>💱 Meilleure paire: <b style="color:var(--gb)">${bestPair2.p}</b></div><div>★ Note moy. setup: <b style="color:var(--gb)">${avgStar}/5</b></div>`;
   }
 
   const erEl=document.getElementById('md-errors');
@@ -2123,6 +2180,9 @@ function openEditTrade(id){
   document.getElementById('edit-comm').value=t.commission||'';
   document.getElementById('edit-notes').value=t.notes||'';
   document.getElementById('edit-month').value=t.trade_month!=null?t.trade_month:new Date().getMonth();
+  EDIT_LOSS_TYPE=t.loss_type||null;
+  onEditResultChange();
+  if(EDIT_LOSS_TYPE) setEditLossType(EDIT_LOSS_TYPE);
   editCalcNet();
   document.getElementById('editModal').classList.add('show');
 }
@@ -2133,6 +2193,7 @@ function editSyncResult(){
   if(cl==='TP') r.value='WIN';
   else if(cl==='SL') r.value='LOSS';
   else if(cl==='BE') r.value='BE';
+  onEditResultChange();
 }
 function editCalcNet(){
   const ca=parseFloat(document.getElementById('edit-ca').value)||0;
@@ -2164,7 +2225,8 @@ async function saveEditTrade(){
   const pnlPct=CAP>0?parseFloat((net/CAP*100).toFixed(4)):0;
   const dur=calcDur(en,ex);
   const trade_month=parseInt(document.getElementById('edit-month').value);
-  const updates={cl,result,dir,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month};
+  const loss_type=result==='LOSS'?(EDIT_LOSS_TYPE||null):null;
+  const updates={cl,result,dir,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,loss_type};
   const {error}=await sb.from('trades').update(updates).eq('id',id);
   if(error){toast('❌ Erreur: '+error.message);return;}
   Object.assign(t,updates);
@@ -2294,6 +2356,10 @@ function exportMonthPDF(){
   const lp=Math.abs(mt.filter(t=>t.result==='LOSS').reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0));
   const pf=lp>0?(wp/lp).toFixed(2):'∞';
 
+  const mCon=mt.filter(t=>t.result==='LOSS'&&t.loss_type==='CON');
+  const mNorm=mt.filter(t=>t.result==='LOSS'&&t.loss_type==='NORMAL');
+  const pacPnlM=mCon.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
+  const pnlSansPac=parseFloat((mnet-pacPnlM).toFixed(2));
   const kpis=[
     {label:'Total Trades',value:mt.length,cls:'blue'},
     {label:'Win Rate',value:mwr+'%',cls:parseFloat(mwr)>=60?'green':parseFloat(mwr)>=50?'gold':'red'},
@@ -2302,6 +2368,9 @@ function exportMonthPDF(){
     {label:'Net P&L',value:(mnet>=0?'+':'')+'$'+mnet.toFixed(2),cls:mnet>=0?'green':'red',sub:(mpct>=0?'+':'')+mpct.toFixed(2)+'%'},
     {label:'Gagnants',value:mw,cls:'green'},
     {label:'Perdants',value:ml,cls:'red'},
+    {label:'🤦 Pertes à la con',value:mCon.length,cls:'red',sub:mCon.length?pacPnlM.toFixed(2)+'$':'—'},
+    {label:'✅ Pertes normales',value:mNorm.length,cls:'gold'},
+    {label:'Sans Pertes à la con',value:(pnlSansPac>=0?'+':'')+'$'+pnlSansPac.toFixed(2),cls:pnlSansPac>=0?'green':'red',sub:'P&L virtuel'},
     {label:'Break Even',value:mb,cls:'gold'},
     {label:'RRR Moyen',value:mrr,cls:'blue'},
     {label:'Profit Factor',value:pf,cls:parseFloat(pf)>=2?'green':parseFloat(pf)>=1?'gold':'red'},
