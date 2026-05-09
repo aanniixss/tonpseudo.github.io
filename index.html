@@ -2303,7 +2303,12 @@ async function saveEditTrade(){
   const trade_month=parseInt(document.getElementById('edit-month').value);
   const loss_type=result==='LOSS'?(EDIT_LOSS_TYPE||null):null;
   const updates={cl,result,dir,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,loss_type};
-  const {error}=await sb.from('trades').update(updates).eq('id',id);
+  let {error}=await sb.from('trades').update(updates).eq('id',id);
+  if(error && error.message && error.message.includes('loss_type')){
+    const {loss_type:_lt, ...updatesFallback}=updates;
+    const {error:e2}=await sb.from('trades').update(updatesFallback).eq('id',id);
+    error=e2;
+  }
   if(error){toast('❌ Erreur: '+error.message);return;}
   Object.assign(t,updates);
   closeEditModal();renderTable();updateDash();
@@ -2509,6 +2514,29 @@ function exportMonthPDF(){
   const notesWithTrades=mt.filter(t=>t.notes&&t.notes.trim());
   const notesSection=notesWithTrades.length?`<div class="section"><div class="section-title">📝 Notes des Trades</div>${notesWithTrades.map((t,i)=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');return`<div style="margin-bottom:12px;padding:14px;background:#0d1b2e;border-radius:8px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;gap:14px;flex-wrap:wrap"><b style="color:#e2e8f0">${t.pair}</b><span style="color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'}">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'}">${net>=0?'+':''}$${net.toFixed(2)}</span><span>${t.duration||'—'}</span>${strs[0]?`<span style="color:#0ea5e9">${strs[0]}</span>`:''}</div><div style="font-size:11px;color:#cbd5e1;white-space:pre-line;line-height:1.6">Note ${i+1} : ${t.notes.trim()}</div></div>`}).join('')}</div>`:'';
 
+  const tradesWithPhotos=mt.filter(t=>t.photo_av||t.photo_co||t.photo_ap);
+  const photosSection=tradesWithPhotos.length?`<div class="section"><div class="section-title">📊 Graphiques des Setups</div>
+    ${tradesWithPhotos.map(t=>{
+      const net=parseFloat(t.pnl_amt||0);
+      const strs=JSON.parse(t.strats||'[]');
+      const pics=[{k:'photo_av',l:'Avant — Analyse'},{k:'photo_co',l:'En cours — Gestion'},{k:'photo_ap',l:'Après — Résultat'}].filter(p=>t[p.k]);
+      return`<div style="margin-bottom:20px;padding:16px;background:#0d1b2e;border-radius:10px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+          <b style="color:#e2e8f0;font-size:13px">${t.pair}</b>
+          <span style="color:${t.dir==='LONG'?'#10b981':'#ef4444'};font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span>
+          <span style="background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${t.result}</span>
+          <span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'};font-size:12px;font-weight:700">${net>=0?'+':''}$${net.toFixed(2)}</span>
+          <span style="color:#94a3b8;font-size:10px">${t.sess||''} · ${t.duration||''}</span>
+          ${strs[0]?`<span style="background:rgba(14,165,233,0.15);color:#0ea5e9;padding:2px 8px;border-radius:20px;font-size:10px">${strs[0]}</span>`:''}
+          ${t.star?`<span style="color:#f59e0b;font-size:11px">${'★'.repeat(t.star)}</span>`:''}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(${pics.length},1fr);gap:10px">
+          ${pics.map(p=>`<div><div style="font-size:9px;letter-spacing:1px;color:#64748b;text-transform:uppercase;margin-bottom:5px">${p.l}</div><img src="${t[p.k]}" style="width:100%;border-radius:6px;border:1px solid #1e3a5f;display:block"></div>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`:'';
+
   const sections=`
     <div class="section"><div class="section-title">📊 Performance par Session</div>
       <table><thead><tr><th>Session</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>Net P&L</th></tr></thead><tbody>${sessRows}</tbody></table>
@@ -2519,7 +2547,8 @@ function exportMonthPDF(){
     <div class="section"><div class="section-title">📋 Historique Complet des Trades</div>
       <table><thead><tr><th>#</th><th>Paire</th><th>Direction</th><th>Session</th><th>Durée</th><th>RR</th><th>CA $</th><th>Comm.</th><th>Net $</th><th>Résultat</th><th>Setup</th><th>★</th></tr></thead><tbody>${tradeRows}</tbody></table>
     </div>
-    ${notesSection}`;
+    ${notesSection}
+    ${photosSection}`;
 
   const html=buildReportHTML(
     mn_pdf[m]+' '+yr+' — Rapport Mensuel',
@@ -2592,13 +2621,38 @@ function exportAnnualPDF(){
     return `<tr><td><b>${p}</b></td><td>${pt.length}</td><td>${pw}W / ${pt.length-pw}L</td><td class="${parseFloat(pwr)>=60?'win':'loss'}">${pwr}%</td><td class="${ppnl>=0?'positive':'negative'}">${ppnl>=0?'+':''}$${ppnl.toFixed(2)}</td></tr>`;
   }).join('');
 
+  const annualTradesWithPhotos=TY.filter(t=>t.photo_av||t.photo_co||t.photo_ap);
+  const annualPhotosSection=annualTradesWithPhotos.length?`<div class="section"><div class="section-title">📊 Graphiques des Setups — ${yr}</div>
+    ${annualTradesWithPhotos.map(t=>{
+      const net=parseFloat(t.pnl_amt||0);
+      const mn_short=['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+      const strs=JSON.parse(t.strats||'[]');
+      const pics=[{k:'photo_av',l:'Avant'},{k:'photo_co',l:'En cours'},{k:'photo_ap',l:'Après'}].filter(p=>t[p.k]);
+      return`<div style="margin-bottom:20px;padding:16px;background:#0d1b2e;border-radius:10px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+          <b style="color:#e2e8f0;font-size:13px">${t.pair}</b>
+          <span style="color:#64748b;font-size:10px">${mn_short[parseInt(t.trade_month)]||''}</span>
+          <span style="color:${t.dir==='LONG'?'#10b981':'#ef4444'};font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span>
+          <span style="background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${t.result}</span>
+          <span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'};font-size:12px;font-weight:700">${net>=0?'+':''}$${net.toFixed(2)}</span>
+          ${strs[0]?`<span style="background:rgba(14,165,233,0.15);color:#0ea5e9;padding:2px 8px;border-radius:20px;font-size:10px">${strs[0]}</span>`:''}
+          ${t.star?`<span style="color:#f59e0b;font-size:11px">${'★'.repeat(t.star)}</span>`:''}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(${pics.length},1fr);gap:10px">
+          ${pics.map(p=>`<div><div style="font-size:9px;letter-spacing:1px;color:#64748b;text-transform:uppercase;margin-bottom:5px">${p.l}</div><img src="${t[p.k]}" style="width:100%;border-radius:6px;border:1px solid #1e3a5f;display:block"></div>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`:'';
+
   const sections=`
     <div class="section"><div class="section-title">📅 Bilan Mensuel ${yr}</div>
       <table class="month-table"><thead><tr><th>Mois</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>Net P&L $</th><th>Perf %</th><th>Capital estimé</th></tr></thead><tbody>${monthRows}</tbody></table>
     </div>
     <div class="section"><div class="section-title">💱 Top Paires ${yr}</div>
       <table><thead><tr><th>Paire</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>Net P&L</th></tr></thead><tbody>${pairRows}</tbody></table>
-    </div>`;
+    </div>
+    ${annualPhotosSection}`;
 
   const html=buildReportHTML(
     'Bilan Annuel '+yr,
