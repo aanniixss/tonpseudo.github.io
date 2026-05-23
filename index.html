@@ -767,17 +767,30 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       <div class="fld"><label>Résultat</label><select id="edit-result"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
       <div class="fld"><label>Direction</label><select id="edit-dir"><option value="LONG">↑ LONG</option><option value="SHORT">↓ SHORT</option></select></div>
       <div class="fld"><label>Session</label><select id="edit-sess"><option>London</option><option>New York</option><option>Tokyo / Asia</option><option>Overlap Lon/NY</option></select></div>
+      <div class="fld"><label>Jour</label><select id="edit-day"><option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option></select></div>
+      <div class="fld"><label>📅 Mois</label><select id="edit-month"><option value="0">Janvier</option><option value="1">Février</option><option value="2">Mars</option><option value="3">Avril</option><option value="4">Mai</option><option value="5">Juin</option><option value="6">Juillet</option><option value="7">Août</option><option value="8">Septembre</option><option value="9">Octobre</option><option value="10">Novembre</option><option value="11">Décembre</option></select></div>
       <div class="fld"><label>Heure Entrée</label><input type="time" id="edit-en" oninput="editCalcNet()"></div>
       <div class="fld"><label>Heure Sortie</label><input type="time" id="edit-ex" oninput="editCalcNet()"></div>
       <div class="fld"><label>Lot Size</label><input type="number" id="edit-lot" step="0.01" min="0.01"></div>
       <div class="fld"><label>% Capital Risqué</label><input type="number" id="edit-rsk" step="0.1"></div>
       <div class="fld"><label>R:R Réalisé</label><input type="number" id="edit-rr" step="0.1"></div>
-      <div class="fld"><label>📅 Mois</label><select id="edit-month"><option value="0">Janvier</option><option value="1">Février</option><option value="2">Mars</option><option value="3">Avril</option><option value="4">Mai</option><option value="5">Juin</option><option value="6">Juillet</option><option value="7">Août</option><option value="8">Septembre</option><option value="9">Octobre</option><option value="10">Novembre</option><option value="11">Décembre</option></select></div>
       <div class="fld"><label>💰 CA ($)</label><input type="number" id="edit-ca" step="0.01" oninput="editCalcNet()"></div>
       <div class="fld"><label>💸 Commission ($)</label><input type="number" id="edit-comm" step="0.01" oninput="editCalcNet()"></div>
       <div class="fld"><label>✅ Net ($)</label><div class="calc-box" id="edit-net">—</div></div>
     </div>
-    <div class="fld" style="margin-bottom:16px"><label>Notes</label><textarea id="edit-notes" style="min-height:60px"></textarea></div>
+    <div class="fld" style="margin-bottom:14px"><label>Notes</label><textarea id="edit-notes" style="min-height:60px"></textarea></div>
+    <div style="margin-bottom:12px">
+      <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ Erreurs Psychologiques</div>
+      <div class="tags" id="edit-perr-tags">
+        <span class="tag perr" onclick="toggleTag(this)">Impatience</span><span class="tag perr" onclick="toggleTag(this)">Gourmandise</span><span class="tag perr" onclick="toggleTag(this)">Peur</span><span class="tag perr" onclick="toggleTag(this)">Pas de setup</span><span class="tag perr" onclick="toggleTag(this)">Pas concentré</span><span class="tag perr" onclick="toggleTag(this)">Augmentation de lot</span><span class="tag perr" onclick="toggleTag(this)">Excitation</span><span class="tag perr" onclick="toggleTag(this)">Peur de perdre</span><span class="tag perr" onclick="toggleTag(this)">Over-managing</span><span class="tag perr" onclick="toggleTag(this)">Manque de discipline</span><span class="tag perr" onclick="toggleTag(this)">Revenge Trading</span><span class="tag perr" onclick="toggleTag(this)">FOMO</span><span class="tag perr" onclick="toggleTag(this)">Overtrading</span><span class="tag perr" onclick="toggleTag(this)">Sortie prématurée</span><span class="tag perr" onclick="toggleTag(this)">Refus de couper la perte</span><span class="tag perr" onclick="toggleTag(this)">Trading sans plan</span><span class="tag perr" onclick="toggleTag(this)">Déplacer le SL</span><span class="tag perr" onclick="toggleTag(this)">Biais de confirmation</span><span class="tag perr" onclick="toggleTag(this)">Trading émotionnel</span><span class="tag perr" onclick="toggleTag(this)">Double mise</span><span class="tag perr" onclick="toggleTag(this)">Entrée tardive</span><span class="tag perr" onclick="toggleTag(this)">Mauvais timing</span><span class="tag perr" onclick="toggleTag(this)">Contre la tendance</span>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ Bonne Psychologie</div>
+      <div class="tags" id="edit-pgood-tags">
+        <span class="tag pgood" onclick="toggleTag(this)">Confiant</span><span class="tag pgood" onclick="toggleTag(this)">Patient</span><span class="tag pgood" onclick="toggleTag(this)">Objectif</span><span class="tag pgood" onclick="toggleTag(this)">Discipliné</span><span class="tag pgood" onclick="toggleTag(this)">Focus total</span><span class="tag pgood" onclick="toggleTag(this)">Respect du plan</span><span class="tag pgood" onclick="toggleTag(this)">SL respecté</span><span class="tag pgood" onclick="toggleTag(this)">Détaché du résultat</span><span class="tag pgood" onclick="toggleTag(this)">En flow</span><span class="tag pgood" onclick="toggleTag(this)">Gestionnaire du risque</span><span class="tag pgood" onclick="toggleTag(this)">Calme</span><span class="tag pgood" onclick="toggleTag(this)">Lucide</span><span class="tag pgood" onclick="toggleTag(this)">Humble</span><span class="tag pgood" onclick="toggleTag(this)">Process avant résultat</span><span class="tag pgood" onclick="toggleTag(this)">Attente du setup</span><span class="tag pgood" onclick="toggleTag(this)">Gestion émotionnelle</span><span class="tag pgood" onclick="toggleTag(this)">Accept les pertes</span><span class="tag pgood" onclick="toggleTag(this)">TP laissé courir</span><span class="tag pgood" onclick="toggleTag(this)">Analyse avant entrée</span><span class="tag pgood" onclick="toggleTag(this)">Aucune pression</span>
+      </div>
+    </div>
     <div style="display:flex;gap:10px;justify-content:center">
       <button class="btn btn-p" onclick="saveEditTrade()">✅ Sauvegarder</button>
       <button class="btn btn-g" onclick="closeEditModal()">Annuler</button>
@@ -2090,6 +2103,15 @@ function openEditTrade(id){
   document.getElementById('edit-comm').value=t.commission||'';
   document.getElementById('edit-notes').value=t.notes||'';
   document.getElementById('edit-month').value=t.trade_month!=null?t.trade_month:new Date().getMonth();
+  document.getElementById('edit-day').value=t.day||'Lundi';
+  // Reset psych tags
+  document.querySelectorAll('#edit-perr-tags .tag').forEach(el=>el.classList.remove('sel'));
+  document.querySelectorAll('#edit-pgood-tags .tag').forEach(el=>el.classList.remove('sel'));
+  // Select saved psych errors
+  const savedErr=JSON.parse(t.psych_errors||'[]');
+  const savedGood=JSON.parse(t.psych_good||'[]');
+  document.querySelectorAll('#edit-perr-tags .tag').forEach(el=>{if(savedErr.includes(el.textContent))el.classList.add('sel');});
+  document.querySelectorAll('#edit-pgood-tags .tag').forEach(el=>{if(savedGood.includes(el.textContent))el.classList.add('sel');});
   editCalcNet();
   document.getElementById('editModal').classList.add('show');
 }
@@ -2131,7 +2153,10 @@ async function saveEditTrade(){
   const pnlPct=CAP>0?parseFloat((net/CAP*100).toFixed(4)):0;
   const dur=calcDur(en,ex);
   const trade_month=parseInt(document.getElementById('edit-month').value);
-  const updates={cl,result,dir,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month};
+  const day=document.getElementById('edit-day').value;
+  const psychErrors=[...document.querySelectorAll('#edit-perr-tags .tag.sel')].map(el=>el.textContent);
+  const psychGood=[...document.querySelectorAll('#edit-pgood-tags .tag.sel')].map(el=>el.textContent);
+  const updates={cl,result,dir,day,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood)};
   const {error}=await sb.from('trades').update(updates).eq('id',id);
   if(error){toast('❌ Erreur: '+error.message);return;}
   Object.assign(t,updates);
@@ -2325,6 +2350,29 @@ function exportMonthPDF(){
     return `<tr><td><b>${p}</b></td><td>${pt.length}</td><td>${pw}W / ${pt.length-pw}L</td><td class="${parseFloat(pwr)>=60?'win':'loss'}">${pwr}%</td><td class="${ppnl>=0?'win':'loss'}">${ppnl>=0?'+':''}$${ppnl.toFixed(2)}</td></tr>`;
   }).join('');
 
+  // Notes
+  const notesWithTrades=mt.filter(t=>t.notes&&t.notes.trim());
+  const notesSection=notesWithTrades.length?`<div class="section"><div class="section-title">📝 Notes des Trades</div>${notesWithTrades.map((t,i)=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');return`<div style="margin-bottom:12px;padding:14px;background:#0d1b2e;border-radius:8px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;gap:14px;flex-wrap:wrap"><b style="color:#e2e8f0">${t.pair}</b><span style="color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'}">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'}">${net>=0?'+':''}$${net.toFixed(2)}</span><span>${t.duration||'—'}</span>${strs[0]?`<span style="color:#0ea5e9">${strs[0]}</span>`:''}</div><div style="font-size:11px;color:#cbd5e1;white-space:pre-line;line-height:1.6">Note ${i+1} : ${t.notes.trim()}</div></div>`}).join('')}</div>`:'';
+
+  // Photos setups
+  const tradesWithPhotos=mt.filter(t=>t.photo_av||t.photo_co||t.photo_ap);
+  const photosSection=tradesWithPhotos.length?`<div class="section"><div class="section-title">📊 Graphiques des Setups</div>${tradesWithPhotos.map(t=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');const pics=[{k:'photo_av',l:'Avant — Analyse'},{k:'photo_co',l:'En cours — Gestion'},{k:'photo_ap',l:'Après — Résultat'}].filter(p=>t[p.k]);return`<div style="margin-bottom:20px;padding:16px;background:#0d1b2e;border-radius:10px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><b style="color:#e2e8f0;font-size:13px">${t.pair}</b><span style="color:${t.dir==='LONG'?'#10b981':'#ef4444'};font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span><span style="background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'};font-size:12px;font-weight:700">${net>=0?'+':''}$${net.toFixed(2)}</span><span style="color:#94a3b8;font-size:10px">${t.sess||''} · ${t.duration||''}</span>${strs[0]?`<span style="background:rgba(14,165,233,0.15);color:#0ea5e9;padding:2px 8px;border-radius:20px;font-size:10px">${strs[0]}</span>`:''}</div><div style="display:grid;grid-template-columns:repeat(${pics.length},1fr);gap:10px">${pics.map(p=>`<div><div style="font-size:9px;letter-spacing:1px;color:#64748b;text-transform:uppercase;margin-bottom:5px">${p.l}</div><img src="${t[p.k]}" style="width:100%;border-radius:6px;border:1px solid #1e3a5f;display:block"></div>`).join('')}</div></div>`;}).join('')}</div>`:'';
+
+  // Psychologie du mois
+  const errMap={};const goodMap={};
+  mt.forEach(t=>{
+    JSON.parse(t.psych_errors||'[]').forEach(e=>{if(!errMap[e])errMap[e]={n:0,w:0,pnl:0};errMap[e].n++;if(t.result==='WIN')errMap[e].w++;errMap[e].pnl+=parseFloat(t.pnl_amt||0);});
+    JSON.parse(t.psych_good||'[]').forEach(g=>{if(!goodMap[g])goodMap[g]={n:0,w:0,pnl:0};goodMap[g].n++;if(t.result==='WIN')goodMap[g].w++;goodMap[g].pnl+=parseFloat(t.pnl_amt||0);});
+  });
+  const errKeys=Object.keys(errMap).sort((a,b)=>errMap[b].n-errMap[a].n);
+  const goodKeys=Object.keys(goodMap).sort((a,b)=>goodMap[b].n-goodMap[a].n);
+  const psychSection=(errKeys.length||goodKeys.length)?`<div class="section"><div class="section-title">🧠 Analyse Psychologique</div>
+    ${errKeys.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:#ef4444;letter-spacing:2px;margin-bottom:10px">⚠ ERREURS PSYCHOLOGIQUES</div>
+      <table><thead><tr><th>Erreur</th><th>Fréquence</th><th>Win Rate</th><th>Impact $</th></tr></thead><tbody>${errKeys.map(k=>{const d=errMap[k];const wr=(d.w/d.n*100).toFixed(0);const cls=d.pnl>=0?'win':'loss';return`<tr><td style="font-weight:600">${k}</td><td>${d.n}x</td><td class="${parseFloat(wr)>=50?'win':'loss'}">${wr}%</td><td class="${cls}">${d.pnl>=0?'+':''}$${d.pnl.toFixed(0)}</td></tr>`;}).join('')}</tbody></table></div>`:''}
+    ${goodKeys.length?`<div><div style="font-size:10px;font-weight:700;color:#10b981;letter-spacing:2px;margin-bottom:10px">✅ BON MINDSET</div>
+      <table><thead><tr><th>Mindset</th><th>Fréquence</th><th>Win Rate</th><th>Impact $</th></tr></thead><tbody>${goodKeys.map(k=>{const d=goodMap[k];const wr=(d.w/d.n*100).toFixed(0);const cls=d.pnl>=0?'win':'loss';return`<tr><td style="font-weight:600">${k}</td><td>${d.n}x</td><td class="${parseFloat(wr)>=50?'win':'loss'}">${wr}%</td><td class="${cls}">${d.pnl>=0?'+':''}$${d.pnl.toFixed(0)}</td></tr>`;}).join('')}</tbody></table></div>`:''}
+  </div>`:'';
+
   const sections=`
     <div class="section"><div class="section-title">📊 Performance par Session</div>
       <table><thead><tr><th>Session</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>Net P&L</th></tr></thead><tbody>${sessRows}</tbody></table>
@@ -2334,7 +2382,10 @@ function exportMonthPDF(){
     </div>
     <div class="section"><div class="section-title">📋 Historique Complet des Trades</div>
       <table><thead><tr><th>#</th><th>Paire</th><th>Direction</th><th>Session</th><th>Durée</th><th>RR</th><th>CA $</th><th>Comm.</th><th>Net $</th><th>Résultat</th><th>Setup</th><th>★</th></tr></thead><tbody>${tradeRows}</tbody></table>
-    </div>`;
+    </div>
+    ${psychSection}
+    ${notesSection}
+    ${photosSection}`;
 
   const html=buildReportHTML(
     mn_pdf[m]+' '+yr+' — Rapport Mensuel',
