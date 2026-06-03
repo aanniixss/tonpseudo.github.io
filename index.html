@@ -864,6 +864,53 @@ let T = [];
 let CAP = 0, DRSK = 1, STAR = 0;
 let SELECTED_COLOR = '#0ea5e9';
 
+// ── AI IMPORT ──
+const PENDING_IMPORT_ID = '';   // unique batch ID set by AI — empty = nothing pending
+const PENDING_IMPORT = [];      // array of trade objects to auto-insert on next page load
+
+async function processPendingImport(){
+  if(!PENDING_IMPORT_ID || !PENDING_IMPORT.length) return;
+  const key = 'tr_ai_import_' + PENDING_IMPORT_ID;
+  if(localStorage.getItem(key)) return;
+  if(!ACTIVE_ACCOUNT) return;
+  const now = new Date();
+  let ok = 0;
+  for(const t of PENDING_IMPORT){
+    const dur = (t.entry_time && t.exit_time) ? calcDur(t.entry_time, t.exit_time) : null;
+    const rsk = t.risk_pct || DRSK;
+    const rskAmt = CAP > 0 ? parseFloat((CAP * rsk / 100).toFixed(2)) : 0;
+    const comm = t.commission || 0;
+    const caAmt = t.ca_amt || 0;
+    const netAmt = parseFloat((caAmt - comm).toFixed(2));
+    const pnlPct = CAP > 0 ? parseFloat((netAmt / CAP * 100).toFixed(4)) : 0;
+    const cat = t.cat || PC[t.pair] || 'major';
+    const cl = t.cl || (t.result==='WIN'?'TP':t.result==='LOSS'?'SL':'BE');
+    const tradeData = {
+      user_id: ACTIVE_ACCOUNT.id, pair: t.pair, cat, day: t.day||'Lundi',
+      sess: t.sess||'London', dir: t.dir||'LONG', cl,
+      entry_time: t.entry_time||null, exit_time: t.exit_time||null,
+      duration: dur?dur.str:'—', duration_mins: dur?dur.mins:0,
+      lot_size: t.lot_size||0, risk_pct: rsk, rr: t.rr||0, result: t.result||'WIN',
+      risk_amt: rskAmt, ca_amt: caAmt, commission: comm,
+      pnl_amt: netAmt, pnl_pct: pnlPct, notes: t.notes||'', fonda: t.fonda||'',
+      strats: JSON.stringify(t.strats||[]), confs: JSON.stringify(t.confs||[]),
+      pats: JSON.stringify(t.pats||[]), psych_errors: JSON.stringify(t.psych_errors||[]),
+      psych_good: JSON.stringify(t.psych_good||[]), star: t.star||0,
+      trade_month: t.trade_month!==undefined ? t.trade_month : now.getMonth(),
+      trade_year: t.trade_year || now.getFullYear(),
+      photo_av: null, photo_co: null, photo_ap: null
+    };
+    const {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
+    if(!error && saved && saved[0]){ T.push(saved[0]); ok++; }
+  }
+  if(ok > 0){
+    localStorage.setItem(key, '1');
+    renderTable(); updateDash(); buildHM();
+    setTimeout(()=>{ initCapChart(); initPairChart(); }, 100);
+    toast('✅ ' + ok + ' trade(s) importé(s) par l\'IA !');
+  }
+}
+
 async function saveAccounts(){
   // Save all accounts to Supabase
   for(const acc of ACCOUNTS){
@@ -904,6 +951,7 @@ async function initAccounts(){
   DRSK = ACTIVE_ACCOUNT.risk || 1;
   updateAccountUI();
   await loadTrades();
+  await processPendingImport();
 }
 
 function updateAccountUI(){
