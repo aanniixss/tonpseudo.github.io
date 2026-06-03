@@ -893,15 +893,15 @@ async function processPendingImport(){
   if(!PENDING_IMPORT_ID || !PENDING_IMPORT.length) return;
   const key = 'tr_ai_import_' + PENDING_IMPORT_ID;
   if(localStorage.getItem(key)) return;
-  if(!ACTIVE_ACCOUNT) return;
+  if(!ACTIVE_ACCOUNT){ toast('⚠ Import IA: compte non chargé'); return; }
   const now = new Date();
-  let ok = 0;
+  let ok = 0, lastErr = '';
   for(const t of PENDING_IMPORT){
     const dur = (t.entry_time && t.exit_time) ? calcDur(t.entry_time, t.exit_time) : null;
     const rsk = t.risk_pct || DRSK;
     const rskAmt = CAP > 0 ? parseFloat((CAP * rsk / 100).toFixed(2)) : 0;
     const comm = t.commission || 0;
-    const caAmt = t.ca_amt || 0;
+    const caAmt = (t.ca_amt !== undefined) ? t.ca_amt : 0;
     const netAmt = parseFloat((caAmt - comm).toFixed(2));
     const pnlPct = CAP > 0 ? parseFloat((netAmt / CAP * 100).toFixed(4)) : 0;
     const cat = t.cat || PC[t.pair] || 'major';
@@ -921,14 +921,23 @@ async function processPendingImport(){
       trade_year: t.trade_year || now.getFullYear(),
       photo_av: null, photo_co: null, photo_ap: null
     };
-    const {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
+    let {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
+    // Fallback: retry without optional columns if they don't exist in the table
+    if(error){
+      const {psych_errors, psych_good, photo_av, photo_co, photo_ap, ...slim} = tradeData;
+      const r2 = await sb.from('trades').insert([slim]).select();
+      saved = r2.data; error = r2.error;
+    }
     if(!error && saved && saved[0]){ T.push(saved[0]); ok++; }
+    else if(error){ lastErr = error.message; console.error('AI import error:', t.pair, error); }
   }
   if(ok > 0){
     localStorage.setItem(key, '1');
     renderTable(); updateDash(); buildHM();
     setTimeout(()=>{ initCapChart(); initPairChart(); }, 100);
-    toast('✅ ' + ok + ' trade(s) importé(s) par l\'IA !');
+    toast('✅ ' + ok + ' trade(s) importé(s) !');
+  } else {
+    toast('❌ Import IA échoué: ' + (lastErr||'erreur inconnue'));
   }
 }
 
