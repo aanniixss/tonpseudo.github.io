@@ -868,28 +868,28 @@ let CAP = 0, DRSK = 1, STAR = 0;
 let SELECTED_COLOR = '#0ea5e9';
 
 // ── AI IMPORT ──
-const PENDING_IMPORT_ID = '20260603_batch2';
+const PENDING_IMPORT_ID = '20260603_batch3';
 const PENDING_IMPORT = [
-  // T1 — EURUSD BUY 5 — 21/05/2026 Jeudi — London — SL hit
-  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'SL',day:'Jeudi',sess:'London',
-   entry_time:'07:32',exit_time:'08:15',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:-700,commission:25,trade_month:4,trade_year:2026},
-  // T2 — EURUSD SELL 10 — 25/05/2026 Lundi — Tokyo/Asia — LOSS manuel
-  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
-   entry_time:'01:14',exit_time:'01:49',lot_size:10,risk_pct:1,rr:0,
-   ca_amt:-660,commission:50,trade_month:4,trade_year:2026},
-  // T3 — EURUSD SELL 10 — 26/05/2026 Mardi — Tokyo/Asia — WIN manuel
-  {pair:'EURUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
-   entry_time:'00:53',exit_time:'04:09',lot_size:10,risk_pct:1,rr:0.1,
-   ca_amt:80,commission:50,trade_month:4,trade_year:2026},
-  // T4 — EURUSD SELL 5 — 26/05/2026 Mardi — New York — WIN manuel (net -15 après comm)
-  {pair:'EURUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'New York',
-   entry_time:'16:03',exit_time:'16:06',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:10,commission:25,trade_month:4,trade_year:2026},
-  // T5 — EURUSD SELL 5 — 27/05/2026 Mercredi — Tokyo/Asia — LOSS manuel
-  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
-   entry_time:'02:41',exit_time:'04:06',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:-450,commission:25,trade_month:4,trade_year:2026},
+  // T1 — GBPUSD SELL 5 — 27/05/2026 Mercredi — Tokyo/Asia — LOSS manuel
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'02:28',exit_time:'07:45',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-165,commission:25,trade_month:4,trade_year:2026},
+  // T2 — GBPJPY SELL 5 — 27/05/2026 Mercredi — Tokyo/Asia — LOSS manuel
+  {pair:'GBPJPY',cat:'minor',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'02:42',exit_time:'07:45',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-546.06,commission:25,trade_month:4,trade_year:2026},
+  // T3 — GBPUSD SELL 5 — 27/05/2026 Mercredi — Tokyo/Asia — LOSS manuel (pas de SL)
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'02:46',exit_time:'07:45',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-400,commission:25,trade_month:4,trade_year:2026},
+  // T4 — GBPUSD SELL 5 — 28/05/2026 Jeudi — London — LOSS manuel
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'London',
+   entry_time:'11:22',exit_time:'12:11',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-165,commission:25,trade_month:4,trade_year:2026},
+  // T5 — GBPUSD SELL 2.5 — 28/05/2026 Jeudi — Overlap Lon/NY — SL hit
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'SL',day:'Jeudi',sess:'Overlap Lon/NY',
+   entry_time:'13:46',exit_time:'15:13',lot_size:2.5,risk_pct:1,rr:0,
+   ca_amt:-522.50,commission:12.50,trade_month:4,trade_year:2026},
 ];
 
 async function forceAIImport(){
