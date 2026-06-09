@@ -868,28 +868,12 @@ let CAP = 0, DRSK = 1, STAR = 0;
 let SELECTED_COLOR = '#0ea5e9';
 
 // ── AI IMPORT ──
-const PENDING_IMPORT_ID = '20260603_batch4';
+const PENDING_IMPORT_ID = '20260609_batch5';
 const PENDING_IMPORT = [
-  // T1 — GBPUSD SELL 1 — 28/05/2026 Jeudi — Overlap Lon/NY — SL hit
-  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'SL',day:'Jeudi',sess:'Overlap Lon/NY',
-   entry_time:'15:01',exit_time:'15:13',lot_size:1,risk_pct:1,rr:0,
-   ca_amt:-294,commission:5,trade_month:4,trade_year:2026},
-  // T2 — EURUSD BUY 5 — 01/06/2026 Lundi — Tokyo/Asia — WIN (net 0)
-  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
-   entry_time:'03:37',exit_time:'11:56',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:25,commission:25,trade_month:5,trade_year:2026},
-  // T3 — EURUSD SELL 5 — 02/06/2026 Mardi — Tokyo/Asia — LOSS manuel
-  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
-   entry_time:'01:25',exit_time:'04:38',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:-110,commission:25,trade_month:5,trade_year:2026},
-  // T4 — USDJPY BUY 5 — 02/06/2026 Mardi — Tokyo/Asia — WIN manuel
-  {pair:'USDJPY',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
-   entry_time:'01:30',exit_time:'04:38',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:37.57,commission:25,trade_month:5,trade_year:2026},
-  // T5 — EURUSD SELL 5 — 02/06/2026 Mardi — Overlap Lon/NY — LOSS manuel
-  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
-   entry_time:'15:24',exit_time:'15:34',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:-330,commission:25,trade_month:5,trade_year:2026},
+  // T1 — USDCHF SELL 5 — 08/06/2026 Lundi — Tokyo/Asia — LOSS manuel
+  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'01:58',exit_time:'02:26',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-652.55,commission:25,trade_month:5,trade_year:2026},
 ];
 
 async function forceAIImport(){
