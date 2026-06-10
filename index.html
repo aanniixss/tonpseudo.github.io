@@ -903,8 +903,17 @@ async function processPendingImport(){
   if(localStorage.getItem(key)) return;
   if(!ACTIVE_ACCOUNT){ toast('⚠ Import IA: compte non chargé'); return; }
   const now = new Date();
-  let ok = 0, lastErr = '';
+  let ok = 0, skipped = 0, lastErr = '';
   for(const t of PENDING_IMPORT){
+    // Dedup: skip if trade already exists in memory (pair + entry_time + lot_size + month)
+    const alreadyIn = T.some(x =>
+      x.pair === t.pair &&
+      x.entry_time === (t.entry_time||null) &&
+      parseFloat(x.lot_size) === parseFloat(t.lot_size||0) &&
+      x.trade_month === (t.trade_month!==undefined ? t.trade_month : now.getMonth()) &&
+      x.trade_year === (t.trade_year || now.getFullYear())
+    );
+    if(alreadyIn){ skipped++; continue; }
     const dur = (t.entry_time && t.exit_time) ? calcDur(t.entry_time, t.exit_time) : null;
     const rsk = t.risk_pct || DRSK;
     const rskAmt = CAP > 0 ? parseFloat((CAP * rsk / 100).toFixed(2)) : 0;
@@ -944,8 +953,11 @@ async function processPendingImport(){
     renderTable(); updateDash(); buildHM();
     setTimeout(()=>{ initCapChart(); initPairChart(); }, 100);
     toast('✅ ' + ok + ' trade(s) importé(s) !');
-  } else {
-    toast('❌ Import IA échoué: ' + (lastErr||'erreur inconnue'));
+  } else if(skipped > 0 && !lastErr){
+    localStorage.setItem(key, '1');
+    toast('✓ Trades déjà dans le journal');
+  } else if(lastErr){
+    toast('❌ Import IA échoué: ' + lastErr);
   }
 }
 
