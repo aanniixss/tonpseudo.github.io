@@ -868,12 +868,24 @@ let CAP = 0, DRSK = 1, STAR = 0;
 let SELECTED_COLOR = '#0ea5e9';
 
 // ── AI IMPORT ──
-const PENDING_IMPORT_ID = '20260609_batch5';
+const PENDING_IMPORT_ID = '20260610_batch6';
 const PENDING_IMPORT = [
-  // T1 — USDCHF SELL 5 — 08/06/2026 Lundi — Tokyo/Asia — LOSS manuel
-  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
-   entry_time:'01:58',exit_time:'02:26',lot_size:5,risk_pct:1,rr:0,
-   ca_amt:-652.55,commission:25,trade_month:5,trade_year:2026},
+  // T1 — NZDUSD SELL 1.79 — 09/06/2026 Mardi — Overlap Lon/NY — WIN
+  {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'13:57',exit_time:'10:17',lot_size:1.79,risk_pct:1,rr:0,
+   ca_amt:456.45,commission:8.96,trade_month:5,trade_year:2026},
+  // T2 — NZDUSD SELL 5 — 09/06/2026 Mardi — Overlap Lon/NY — WIN
+  {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'15:17',exit_time:'10:17',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:1085,commission:25,trade_month:5,trade_year:2026},
+  // T3 — BTCUSD SELL 0.2 — 09/06/2026 Mardi — Overlap Lon/NY — WIN
+  {pair:'BTCUSD',cat:'crypto',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'15:40',exit_time:'10:17',lot_size:0.2,risk_pct:1,rr:0,
+   ca_amt:69.48,commission:7.96,trade_month:5,trade_year:2026},
+  // T4 — NZDUSD SELL 2 — 10/06/2026 Mercredi — Tokyo/Asia — WIN
+  {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'05:04',exit_time:'10:17',lot_size:2,risk_pct:1,rr:0,
+   ca_amt:186,commission:10,trade_month:5,trade_year:2026},
 ];
 
 async function forceAIImport(){
