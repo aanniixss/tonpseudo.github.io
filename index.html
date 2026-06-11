@@ -268,6 +268,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <button onclick="forceAIImport()" id="ai-import-btn" style="padding:5px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(14,165,233,0.25),rgba(0,245,255,0.1));border:1px solid var(--be);color:var(--cy);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px;display:none">⚡ IMPORT IA</button>
+        <button onclick="cleanDuplicates()" id="clean-dupes-btn" style="padding:5px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.4);color:#ef4444;font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">🧹 NETTOYER</button>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(14,165,233,0.2);border:1px solid var(--be);color:var(--be);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">TOUT</button>
@@ -895,6 +896,46 @@ async function forceAIImport(){
   if(btn){ btn.textContent='⏳ Import...'; btn.disabled=true; }
   await processPendingImport();
   if(btn){ btn.textContent='⚡ IMPORT IA'; btn.disabled=false; }
+}
+
+async function cleanDuplicates(){
+  if(!ACTIVE_ACCOUNT){ toast('⚠ Compte non chargé'); return; }
+  const btn = document.getElementById('clean-dupes-btn');
+  if(btn){ btn.textContent='⏳ Scan...'; btn.disabled=true; }
+  // Group trades by pair+entry_time+lot_size+month+year, keep oldest (lowest id)
+  const groups = {};
+  for(const t of T){
+    const k = [t.pair, t.entry_time, parseFloat(t.lot_size), t.trade_month, t.trade_year].join('|');
+    if(!groups[k]) groups[k] = [];
+    groups[k].push(t);
+  }
+  const toDelete = [];
+  for(const k in groups){
+    const g = groups[k];
+    if(g.length < 2) continue;
+    // Sort by id (string sort works for supabase UUIDs by insertion time)
+    g.sort((a,b)=> a.id < b.id ? -1 : 1);
+    // Keep first, delete the rest
+    for(let i=1;i<g.length;i++) toDelete.push(g[i]);
+  }
+  if(!toDelete.length){
+    toast('✅ Aucun doublon trouvé');
+    if(btn){ btn.textContent='🧹 Nettoyer doublons'; btn.disabled=false; }
+    return;
+  }
+  let deleted = 0;
+  for(const t of toDelete){
+    const {error} = await sb.from('trades').delete().eq('id', t.id);
+    if(!error){
+      const idx = T.findIndex(x=>x.id===t.id);
+      if(idx>-1) T.splice(idx,1);
+      deleted++;
+    }
+  }
+  renderTable(); updateDash(); buildHM();
+  setTimeout(()=>{ initCapChart(); initPairChart(); }, 100);
+  toast('🗑 ' + deleted + ' doublon(s) supprimé(s)');
+  if(btn){ btn.textContent='🧹 Nettoyer doublons'; btn.disabled=false; }
 }
 
 async function processPendingImport(){
