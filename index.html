@@ -268,7 +268,6 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <button onclick="forceAIImport()" id="ai-import-btn" style="padding:5px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(14,165,233,0.25),rgba(0,245,255,0.1));border:1px solid var(--be);color:var(--cy);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px;display:none">⚡ IMPORT IA</button>
-        <button onclick="cleanDuplicates()" id="clean-dupes-btn" style="padding:5px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.4);color:#ef4444;font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">🧹 NETTOYER</button>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(14,165,233,0.2);border:1px solid var(--be);color:var(--be);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">TOUT</button>
@@ -869,21 +868,70 @@ let CAP = 0, DRSK = 1, STAR = 0;
 let SELECTED_COLOR = '#0ea5e9';
 
 // ── AI IMPORT ──
-const PENDING_IMPORT_ID = '20260610_batch6';
+const PENDING_IMPORT_ID = '20260616_recovery';
 const PENDING_IMPORT = [
-  // T1 — NZDUSD SELL 1.79 — 09/06/2026 Mardi — Overlap Lon/NY — WIN
+  // ── BATCH 1/2 — EURUSD — 21-27 Mai 2026 ──
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'SL',day:'Jeudi',sess:'London',
+   entry_time:'07:32',exit_time:'08:15',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-700,commission:25,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'01:14',exit_time:'01:49',lot_size:10,risk_pct:1,rr:0,
+   ca_amt:-660,commission:50,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'00:53',exit_time:'04:09',lot_size:10,risk_pct:1,rr:0,
+   ca_amt:80,commission:50,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'New York',
+   entry_time:'16:03',exit_time:'16:06',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:10,commission:25,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'02:41',exit_time:'04:06',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-450,commission:25,trade_month:4,trade_year:2026},
+  // ── BATCH 3 — GBP — 27-28 Mai 2026 ──
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'02:28',exit_time:'07:45',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-165,commission:25,trade_month:4,trade_year:2026},
+  {pair:'GBPJPY',cat:'minor',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'02:42',exit_time:'07:45',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-546.06,commission:25,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'02:46',exit_time:'07:45',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-400,commission:25,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'London',
+   entry_time:'11:22',exit_time:'12:11',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-165,commission:25,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'SL',day:'Jeudi',sess:'Overlap Lon/NY',
+   entry_time:'13:46',exit_time:'15:13',lot_size:2.5,risk_pct:1,rr:0,
+   ca_amt:-522.50,commission:12.50,trade_month:4,trade_year:2026},
+  // ── BATCH 4 — 28 Mai - 02 Juin 2026 ──
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'SL',day:'Jeudi',sess:'Overlap Lon/NY',
+   entry_time:'15:01',exit_time:'15:13',lot_size:1,risk_pct:1,rr:0,
+   ca_amt:-294,commission:5,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'03:37',exit_time:'11:56',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:25,commission:25,trade_month:5,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'01:25',exit_time:'04:38',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-110,commission:25,trade_month:5,trade_year:2026},
+  {pair:'USDJPY',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'01:30',exit_time:'04:38',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:37.57,commission:25,trade_month:5,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'15:24',exit_time:'15:34',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-330,commission:25,trade_month:5,trade_year:2026},
+  // ── BATCH 5 — USDCHF — 08 Juin 2026 ──
+  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'01:58',exit_time:'02:26',lot_size:5,risk_pct:1,rr:0,
+   ca_amt:-652.55,commission:25,trade_month:5,trade_year:2026},
+  // ── BATCH 6 — NZDUSD/BTCUSD — 09-10 Juin 2026 ──
   {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
    entry_time:'13:57',exit_time:'10:17',lot_size:1.79,risk_pct:1,rr:0,
    ca_amt:456.45,commission:8.96,trade_month:5,trade_year:2026},
-  // T2 — NZDUSD SELL 5 — 09/06/2026 Mardi — Overlap Lon/NY — WIN
   {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
    entry_time:'15:17',exit_time:'10:17',lot_size:5,risk_pct:1,rr:0,
    ca_amt:1085,commission:25,trade_month:5,trade_year:2026},
-  // T3 — BTCUSD SELL 0.2 — 09/06/2026 Mardi — Overlap Lon/NY — WIN
   {pair:'BTCUSD',cat:'crypto',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
    entry_time:'15:40',exit_time:'10:17',lot_size:0.2,risk_pct:1,rr:0,
    ca_amt:69.48,commission:7.96,trade_month:5,trade_year:2026},
-  // T4 — NZDUSD SELL 2 — 10/06/2026 Mercredi — Tokyo/Asia — WIN
   {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
    entry_time:'05:04',exit_time:'10:17',lot_size:2,risk_pct:1,rr:0,
    ca_amt:186,commission:10,trade_month:5,trade_year:2026},
