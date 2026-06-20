@@ -198,6 +198,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     <div class="kpi"><div class="kl">Max Drawdown</div><div class="kv" id="k-dd" style="color:var(--reb)">—</div><div class="ks" id="k-dd-s">—</div></div>
     <div class="kpi"><div class="kl">Durée Moyenne</div><div class="kv" id="k-dur">—</div><div class="ks">Par trade</div></div>
     <div class="kpi"><div class="kl">Note Moy. ★</div><div class="kv" id="k-star" style="color:var(--gb)">—</div><div class="ks" id="k-star-s">Setup quality</div></div>
+    <div class="kpi"><div class="kl">Total R</div><div class="kv" id="k-totalr" style="color:var(--grb)">—</div><div class="ks">R-multiples cumulés</div></div>
   </div>
 
   <!-- RECOVERY BUTTON (shown only when no trades) -->
@@ -242,6 +243,29 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
     </div>
   </div>
 
+  <!-- ══ CORE PERFORMANCE ══ -->
+  <div class="card" style="margin-top:12px">
+    <div class="ct">Core Performance</div>
+    <div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:20px;padding:8px 0 4px">
+      <div style="text-align:center">
+        <div id="cp-avgRwin" style="width:88px;height:88px;border-radius:50%;border:3px solid #10b981;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#10b981;background:rgba(16,185,129,0.06)">—</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Win</div>
+      </div>
+      <div style="text-align:center">
+        <div id="cp-avgRloss" style="width:88px;height:88px;border-radius:50%;border:3px solid #ef4444;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#ef4444;background:rgba(239,68,68,0.06)">—</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Loss</div>
+      </div>
+      <div style="text-align:center">
+        <div id="cp-longshort" style="width:88px;height:88px;border-radius:50%;border:3px solid #60a5fa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#60a5fa;background:rgba(96,165,250,0.06)">— / —</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Long / Short</div>
+      </div>
+      <div style="text-align:center">
+        <div id="cp-avgrr" style="width:88px;height:88px;border-radius:50%;border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#a78bfa;background:rgba(167,139,250,0.06)">—</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg RR ciblé</div>
+      </div>
+    </div>
+  </div>
+
   <div class="g2">
     <div class="card">
       <div class="ct">Sessions</div>
@@ -253,6 +277,33 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       </div>
     </div>
     <div class="card"><div class="ct">Heatmap — Jour de la Semaine</div><div id="hmContainer"></div></div>
+  </div>
+
+  <!-- ══ OPTIMISATION ══ -->
+  <div class="card" style="margin-top:12px">
+    <div class="ct">Optimisation — Performance par catégorie <span style="font-size:9px;color:var(--td);font-family:'Rajdhani';">(en R-multiples)</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:4px 0">
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(14,165,233,0.2);padding-bottom:5px">Setup</div>
+        <div id="opt-strats"><div style="color:var(--td);font-size:10px">Ajoute des trades avec setup</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(14,165,233,0.2);padding-bottom:5px">Confluence</div>
+        <div id="opt-confs"><div style="color:var(--td);font-size:10px">Ajoute des confluences</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(14,165,233,0.2);padding-bottom:5px">Grade (★)</div>
+        <div id="opt-grade"><div style="color:var(--td);font-size:10px">Note tes trades</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(14,165,233,0.2);padding-bottom:5px">Fonda</div>
+        <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">Erreurs</div>
+        <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1525,6 +1576,89 @@ function stats(){
   return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd};
 }
 
+function computeActualR(t){
+  const riskAmt = parseFloat(t.risk_amt||0);
+  const pnlAmt  = parseFloat(t.pnl_amt||0);
+  if(riskAmt > 0) return parseFloat((pnlAmt / riskAmt).toFixed(2));
+  const sign = t.result==='WIN' ? 1 : t.result==='LOSS' ? -1 : 0;
+  return parseFloat(((t.rr||0) * sign).toFixed(2));
+}
+
+function buildCorePerfAndOptim(){
+  const TY = T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const withR = TY.map(t=>({...t, aR: computeActualR(t)}));
+  const wins   = withR.filter(t=>t.result==='WIN');
+  const losses = withR.filter(t=>t.result==='LOSS');
+  const longs  = TY.filter(t=>t.dir==='LONG').length;
+  const shorts = TY.filter(t=>t.dir==='SHORT').length;
+  const avgRRv = TY.length ? (TY.reduce((s,t)=>s+(parseFloat(t.rr)||0),0)/TY.length) : 0;
+  const avgRWin  = wins.length   ? wins.reduce((s,t)=>s+t.aR,0)/wins.length   : null;
+  const avgRLoss = losses.length ? losses.reduce((s,t)=>s+t.aR,0)/losses.length : null;
+  const totalR   = withR.reduce((s,t)=>s+t.aR,0);
+
+  // Total R KPI
+  const trEl = document.getElementById('k-totalr');
+  if(trEl){
+    trEl.textContent = TY.length ? (totalR>=0?'+':'')+totalR.toFixed(2)+'R' : '—';
+    trEl.style.color = totalR>0?'var(--grb)':totalR<0?'var(--reb)':'var(--td)';
+  }
+  // Core Performance circles
+  const cpW = document.getElementById('cp-avgRwin');
+  if(cpW) cpW.textContent = avgRWin!==null ? '+'+avgRWin.toFixed(2)+'R' : '—';
+  const cpL = document.getElementById('cp-avgRloss');
+  if(cpL) cpL.textContent = avgRLoss!==null ? avgRLoss.toFixed(2)+'R' : '—';
+  const cpLS = document.getElementById('cp-longshort');
+  if(cpLS) cpLS.textContent = longs+' / '+shorts;
+  const cpRR = document.getElementById('cp-avgrr');
+  if(cpRR) cpRR.textContent = avgRRv ? avgRRv.toFixed(2) : '—';
+
+  // Optimisation bars helper
+  function renderBars(id, groups){
+    const el = document.getElementById(id); if(!el) return;
+    if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px">—</div>'; return; }
+    const maxV = Math.max(...groups.map(g=>Math.abs(g.v)),0.01);
+    el.innerHTML = groups.sort((a,b)=>b.v-a.v).map(g=>{
+      const pct = Math.min(Math.abs(g.v)/maxV*100,100);
+      const col = g.v>=0?'#10b981':'#ef4444';
+      const sign = g.v>=0?'+':'';
+      return `<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:3px">
+          <span style="color:var(--ts);font-family:'Share Tech Mono',monospace;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${g.n}">${g.n}</span>
+          <span style="color:${col};font-family:'Share Tech Mono',monospace">${sign}${g.v.toFixed(2)}</span>
+        </div>
+        <div style="background:rgba(30,58,95,0.5);border-radius:3px;height:4px">
+          <div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Setup (strats)
+  const stratMap={};
+  withR.forEach(t=>{ (JSON.parse(t.strats||'[]')).forEach(s=>{ stratMap[s]=(stratMap[s]||0)+t.aR; }); });
+  renderBars('opt-strats', Object.entries(stratMap).map(([n,v])=>({n,v})));
+
+  // Confluence (confs)
+  const confMap={};
+  withR.forEach(t=>{ (JSON.parse(t.confs||'[]')).forEach(c=>{ confMap[c]=(confMap[c]||0)+t.aR; }); });
+  renderBars('opt-confs', Object.entries(confMap).map(([n,v])=>({n,v})));
+
+  // Grade (star 1–5)
+  const gradeMap={};
+  withR.forEach(t=>{ if(t.star>0){ const k=t.star+'★'; gradeMap[k]=(gradeMap[k]||0)+t.aR; } });
+  renderBars('opt-grade', Object.entries(gradeMap).map(([n,v])=>({n,v})));
+
+  // Fonda
+  const fondaMap={};
+  withR.forEach(t=>{ if(t.fonda){ fondaMap[t.fonda]=(fondaMap[t.fonda]||0)+t.aR; } });
+  renderBars('opt-fonda', Object.entries(fondaMap).map(([n,v])=>({n,v})));
+
+  // Erreurs
+  const errMap={};
+  withR.forEach(t=>{ (JSON.parse(t.psych_errors||'[]')).forEach(e=>{ errMap[e]=(errMap[e]||0)+t.aR; }); });
+  renderBars('opt-err', Object.entries(errMap).map(([n,v])=>({n,v})));
+}
+
 function updateDash(){
   const s=stats();
   const curCap=CAP+(s.tpnl||0);
@@ -1566,6 +1700,7 @@ function updateDash(){
     document.getElementById('s-'+key+'-b').style.cssText=`width:${st.length?Math.min(Math.abs(p2/Math.max(CAP,1))*500,100):0}%;background:${bg};height:100%;border-radius:20px;`;
     document.getElementById('s-'+key+'-d').textContent=st.length+' trade'+(st.length>1?'s':'')+' · WR '+wr2;
   });
+  buildCorePerfAndOptim();
 }
 
 // ── HEATMAP ──
