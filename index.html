@@ -919,9 +919,9 @@ let CAP = 0, DRSK = 1, STAR = 0;
 let SELECTED_COLOR = '#0ea5e9';
 
 // ── AI IMPORT ──
-const PENDING_IMPORT_ID = '20260616_recovery';
+const PENDING_IMPORT_ID = '20260621_fullhistory';
 const PENDING_IMPORT = [
-  // ── BATCH 1/2 — EURUSD — 21-27 Mai 2026 ──
+  // ── RECOVERY (batches 1-6 — skippés si déjà importés) ──
   {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'SL',day:'Jeudi',sess:'London',
    entry_time:'07:32',exit_time:'08:15',lot_size:5,risk_pct:1,rr:0,
    ca_amt:-700,commission:25,trade_month:4,trade_year:2026},
@@ -937,7 +937,6 @@ const PENDING_IMPORT = [
   {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
    entry_time:'02:41',exit_time:'04:06',lot_size:5,risk_pct:1,rr:0,
    ca_amt:-450,commission:25,trade_month:4,trade_year:2026},
-  // ── BATCH 3 — GBP — 27-28 Mai 2026 ──
   {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
    entry_time:'02:28',exit_time:'07:45',lot_size:5,risk_pct:1,rr:0,
    ca_amt:-165,commission:25,trade_month:4,trade_year:2026},
@@ -953,7 +952,6 @@ const PENDING_IMPORT = [
   {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'SL',day:'Jeudi',sess:'Overlap Lon/NY',
    entry_time:'13:46',exit_time:'15:13',lot_size:2.5,risk_pct:1,rr:0,
    ca_amt:-522.50,commission:12.50,trade_month:4,trade_year:2026},
-  // ── BATCH 4 — 28 Mai - 02 Juin 2026 ──
   {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'SL',day:'Jeudi',sess:'Overlap Lon/NY',
    entry_time:'15:01',exit_time:'15:13',lot_size:1,risk_pct:1,rr:0,
    ca_amt:-294,commission:5,trade_month:4,trade_year:2026},
@@ -969,11 +967,9 @@ const PENDING_IMPORT = [
   {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
    entry_time:'15:24',exit_time:'15:34',lot_size:5,risk_pct:1,rr:0,
    ca_amt:-330,commission:25,trade_month:5,trade_year:2026},
-  // ── BATCH 5 — USDCHF — 08 Juin 2026 ──
   {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
    entry_time:'01:58',exit_time:'02:26',lot_size:5,risk_pct:1,rr:0,
    ca_amt:-652.55,commission:25,trade_month:5,trade_year:2026},
-  // ── BATCH 6 — NZDUSD/BTCUSD — 09-10 Juin 2026 ──
   {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
    entry_time:'13:57',exit_time:'10:17',lot_size:1.79,risk_pct:1,rr:0,
    ca_amt:456.45,commission:8.96,trade_month:5,trade_year:2026},
@@ -986,6 +982,187 @@ const PENDING_IMPORT = [
   {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
    entry_time:'05:04',exit_time:'10:17',lot_size:2,risk_pct:1,rr:0,
    ca_amt:186,commission:10,trade_month:5,trade_year:2026},
+  // ── HISTORIQUE COMPLET FTMO — Avril-Juin 2026 ──
+  // Avril 3
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Vendredi',sess:'Tokyo / Asia',
+   entry_time:'02:40',lot_size:0,risk_pct:1,rr:0,ca_amt:-10,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDJPY',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Vendredi',sess:'Overlap Lon/NY',
+   entry_time:'13:45',lot_size:0,risk_pct:1,rr:0,ca_amt:69.04,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Vendredi',sess:'Overlap Lon/NY',
+   entry_time:'13:52',lot_size:0,risk_pct:1,rr:0,ca_amt:-90,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Vendredi',sess:'Overlap Lon/NY',
+   entry_time:'14:00',lot_size:0,risk_pct:1,rr:0,ca_amt:-220,commission:0,trade_month:3,trade_year:2026},
+  // Avril 6
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'00:21',lot_size:0,risk_pct:1,rr:0,ca_amt:2360,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'01:36',lot_size:0,risk_pct:1,rr:0,ca_amt:1236,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDJPY',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Overlap Lon/NY',
+   entry_time:'12:45',lot_size:0,risk_pct:1,rr:0,ca_amt:147.42,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Overlap Lon/NY',
+   entry_time:'12:48',lot_size:0,risk_pct:1,rr:0,ca_amt:240,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Overlap Lon/NY',
+   entry_time:'13:33',lot_size:0,risk_pct:1,rr:0,ca_amt:172.50,commission:0,trade_month:3,trade_year:2026},
+  // Avril 7
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'07:35',lot_size:0,risk_pct:1,rr:0,ca_amt:-119,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'07:45',lot_size:0,risk_pct:1,rr:0,ca_amt:-456.58,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'09:06',lot_size:0,risk_pct:1,rr:0,ca_amt:375,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDJPY',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'09:07',lot_size:0,risk_pct:1,rr:0,ca_amt:275.60,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDJPY',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'15:41',lot_size:0,risk_pct:1,rr:0,ca_amt:-415.72,commission:0,trade_month:3,trade_year:2026},
+  // Avril 9
+  {pair:'USDJPY',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'New York',
+   entry_time:'17:21',lot_size:0,risk_pct:1,rr:0,ca_amt:-71.73,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDJPY',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'New York',
+   entry_time:'19:46',lot_size:0,risk_pct:1,rr:0,ca_amt:-202.29,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDJPY',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'New York',
+   entry_time:'20:10',lot_size:0,risk_pct:1,rr:0,ca_amt:-458.29,commission:0,trade_month:3,trade_year:2026},
+  // Avril 10
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Vendredi',sess:'Tokyo / Asia',
+   entry_time:'02:09',lot_size:0,risk_pct:1,rr:0,ca_amt:-80,commission:0,trade_month:3,trade_year:2026},
+  // Avril 13
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'00:52',lot_size:0,risk_pct:1,rr:0,ca_amt:290,commission:0,trade_month:3,trade_year:2026},
+  // Avril 20
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'01:02',lot_size:0,risk_pct:1,rr:0,ca_amt:685,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'London',
+   entry_time:'08:23',lot_size:0,risk_pct:1,rr:0,ca_amt:-194.10,commission:0,trade_month:3,trade_year:2026},
+  // Avril 21
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'04:21',lot_size:0,risk_pct:1,rr:0,ca_amt:740,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDCHF',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'05:38',lot_size:0,risk_pct:1,rr:0,ca_amt:150.98,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'15:42',lot_size:0,risk_pct:1,rr:0,ca_amt:-287.50,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'15:43',lot_size:0,risk_pct:1,rr:0,ca_amt:-267.50,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'16:21',lot_size:0,risk_pct:1,rr:0,ca_amt:75,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'New York',
+   entry_time:'17:18',lot_size:0,risk_pct:1,rr:0,ca_amt:720,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'New York',
+   entry_time:'18:51',lot_size:0,risk_pct:1,rr:0,ca_amt:82,commission:0,trade_month:3,trade_year:2026},
+  // Avril 22
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'London',
+   entry_time:'10:12',lot_size:0,risk_pct:1,rr:0,ca_amt:-224,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Overlap Lon/NY',
+   entry_time:'14:09',lot_size:0,risk_pct:1,rr:0,ca_amt:-152,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'Overlap Lon/NY',
+   entry_time:'14:32',lot_size:0,risk_pct:1,rr:0,ca_amt:350,commission:0,trade_month:3,trade_year:2026},
+  // Avril 23
+  {pair:'USDCHF',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Jeudi',sess:'London',
+   entry_time:'10:12',lot_size:0,risk_pct:1,rr:0,ca_amt:70.53,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'Overlap Lon/NY',
+   entry_time:'16:54',lot_size:0,risk_pct:1,rr:0,ca_amt:-203.50,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'New York',
+   entry_time:'17:20',lot_size:0,risk_pct:1,rr:0,ca_amt:-56.85,commission:0,trade_month:3,trade_year:2026},
+  // Avril 27
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'23:26',lot_size:0,risk_pct:1,rr:0,ca_amt:1070,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'23:28',lot_size:0,risk_pct:1,rr:0,ca_amt:-370,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Overlap Lon/NY',
+   entry_time:'15:19',lot_size:0,risk_pct:1,rr:0,ca_amt:-655,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Overlap Lon/NY',
+   entry_time:'16:30',lot_size:0,risk_pct:1,rr:0,ca_amt:-1080,commission:0,trade_month:3,trade_year:2026},
+  // Avril 28
+  {pair:'USDCAD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'01:04',lot_size:0,risk_pct:1,rr:0,ca_amt:-637.38,commission:0,trade_month:3,trade_year:2026},
+  // Avril 29
+  {pair:'USDCHF',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'06:08',lot_size:0,risk_pct:1,rr:0,ca_amt:133.32,commission:0,trade_month:3,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'06:09',lot_size:0,risk_pct:1,rr:0,ca_amt:-25,commission:0,trade_month:3,trade_year:2026},
+  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'London',
+   entry_time:'10:29',lot_size:0,risk_pct:1,rr:0,ca_amt:-227.55,commission:0,trade_month:3,trade_year:2026},
+  // Mai 5
+  {pair:'AUDUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'00:52',lot_size:0,risk_pct:1,rr:0,ca_amt:-422.50,commission:0,trade_month:4,trade_year:2026},
+  {pair:'USDCHF',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'06:20',lot_size:0,risk_pct:1,rr:0,ca_amt:542.67,commission:0,trade_month:4,trade_year:2026},
+  {pair:'USDCHF',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'16:18',lot_size:0,risk_pct:1,rr:0,ca_amt:505.22,commission:0,trade_month:4,trade_year:2026},
+  // Mai 6
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Overlap Lon/NY',
+   entry_time:'13:32',lot_size:0,risk_pct:1,rr:0,ca_amt:-809,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Overlap Lon/NY',
+   entry_time:'15:34',lot_size:0,risk_pct:1,rr:0,ca_amt:-350,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Overlap Lon/NY',
+   entry_time:'16:29',lot_size:0,risk_pct:1,rr:0,ca_amt:-210,commission:0,trade_month:4,trade_year:2026},
+  // Mai 7
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Jeudi',sess:'Tokyo / Asia',
+   entry_time:'05:33',lot_size:0,risk_pct:1,rr:0,ca_amt:715,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Jeudi',sess:'New York',
+   entry_time:'17:53',lot_size:0,risk_pct:1,rr:0,ca_amt:1540,commission:0,trade_month:4,trade_year:2026},
+  // Mai 8
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Vendredi',sess:'London',
+   entry_time:'07:04',lot_size:0,risk_pct:1,rr:0,ca_amt:-99,commission:0,trade_month:4,trade_year:2026},
+  // Mai 11
+  {pair:'USDCAD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'Tokyo / Asia',
+   entry_time:'05:02',lot_size:0,risk_pct:1,rr:0,ca_amt:-540.49,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Lundi',sess:'London',
+   entry_time:'07:48',lot_size:0,risk_pct:1,rr:0,ca_amt:-240,commission:0,trade_month:4,trade_year:2026},
+  // Mai 12
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'00:35',lot_size:0,risk_pct:1,rr:0,ca_amt:900,commission:0,trade_month:4,trade_year:2026},
+  {pair:'USDCAD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'00:37',lot_size:0,risk_pct:1,rr:0,ca_amt:311.05,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'BE',cl:'MANUEL',day:'Mardi',sess:'New York',
+   entry_time:'19:55',lot_size:0,risk_pct:1,rr:0,ca_amt:0,commission:0,trade_month:4,trade_year:2026},
+  // Mai 13
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mercredi',sess:'Tokyo / Asia',
+   entry_time:'23:02',lot_size:0,risk_pct:1,rr:0,ca_amt:-115,commission:0,trade_month:4,trade_year:2026},
+  {pair:'USDCAD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'London',
+   entry_time:'07:12',lot_size:0,risk_pct:1,rr:0,ca_amt:0.55,commission:0,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'London',
+   entry_time:'07:13',lot_size:0,risk_pct:1,rr:0,ca_amt:1260,commission:0,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mercredi',sess:'London',
+   entry_time:'07:28',lot_size:0,risk_pct:1,rr:0,ca_amt:1050,commission:0,trade_month:4,trade_year:2026},
+  // Mai 14
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'Tokyo / Asia',
+   entry_time:'01:03',lot_size:0,risk_pct:1,rr:0,ca_amt:-175,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'Tokyo / Asia',
+   entry_time:'04:53',lot_size:0,risk_pct:1,rr:0,ca_amt:-65,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'London',
+   entry_time:'09:04',lot_size:0,risk_pct:1,rr:0,ca_amt:-270,commission:0,trade_month:4,trade_year:2026},
+  // Mai 16
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Samedi',sess:'Tokyo / Asia',
+   entry_time:'00:41',lot_size:0,risk_pct:1,rr:0,ca_amt:-130,commission:0,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Samedi',sess:'Tokyo / Asia',
+   entry_time:'01:10',lot_size:0,risk_pct:1,rr:0,ca_amt:-325,commission:0,trade_month:4,trade_year:2026},
+  {pair:'NZDUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Samedi',sess:'Overlap Lon/NY',
+   entry_time:'16:51',lot_size:0,risk_pct:1,rr:0,ca_amt:-483,commission:0,trade_month:4,trade_year:2026},
+  // Mai 19
+  {pair:'GBPUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'01:37',lot_size:0,risk_pct:1,rr:0,ca_amt:610,commission:0,trade_month:4,trade_year:2026},
+  {pair:'USDCHF',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'Tokyo / Asia',
+   entry_time:'01:38',lot_size:0,risk_pct:1,rr:0,ca_amt:286.91,commission:0,trade_month:4,trade_year:2026},
+  {pair:'USDCHF',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'07:07',lot_size:0,risk_pct:1,rr:0,ca_amt:-58.55,commission:0,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'07:46',lot_size:0,risk_pct:1,rr:0,ca_amt:-130,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'LONG',result:'WIN',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'07:48',lot_size:0,risk_pct:1,rr:0,ca_amt:6,commission:0,trade_month:4,trade_year:2026},
+  {pair:'EURUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'08:03',lot_size:0,risk_pct:1,rr:0,ca_amt:-115,commission:0,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'London',
+   entry_time:'08:07',lot_size:0,risk_pct:1,rr:0,ca_amt:-310,commission:0,trade_month:4,trade_year:2026},
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Mardi',sess:'Overlap Lon/NY',
+   entry_time:'14:36',lot_size:0,risk_pct:1,rr:0,ca_amt:-54,commission:0,trade_month:4,trade_year:2026},
+  // Mai 21
+  {pair:'GBPUSD',dir:'SHORT',result:'LOSS',cl:'MANUEL',day:'Jeudi',sess:'Overlap Lon/NY',
+   entry_time:'14:41',lot_size:0,risk_pct:1,rr:0,ca_amt:-40,commission:0,trade_month:4,trade_year:2026},
+  // Juin 11
+  {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Jeudi',sess:'Tokyo / Asia',
+   entry_time:'02:49',lot_size:0,risk_pct:1,rr:0,ca_amt:370,commission:0,trade_month:5,trade_year:2026},
+  // Juin 18
+  {pair:'NZDUSD',dir:'SHORT',result:'WIN',cl:'MANUEL',day:'Jeudi',sess:'London',
+   entry_time:'08:07',lot_size:0,risk_pct:1,rr:0,ca_amt:1020,commission:0,trade_month:5,trade_year:2026},
 ];
 
 async function forceAIImport(){
