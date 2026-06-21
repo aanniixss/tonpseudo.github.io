@@ -559,6 +559,9 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
 
 <!-- ══ ANALYTIQUE ══ -->
 <div id="analyse" class="sec">
+  <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn" onclick="exportAnnualPDF()" style="background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.4);color:var(--reb);padding:8px 16px;font-size:8px">📄 Rapport Annuel PDF</button>
+  </div>
   <div class="g2">
     <div class="card">
       <div class="ct">Performance par Paire</div>
@@ -701,6 +704,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
           <button onclick="filterWeekInMonth(3,this)" id="wk-btn-3" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S3</button>
           <button onclick="filterWeekInMonth(4,this)" id="wk-btn-4" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S4</button>
           <button onclick="filterWeekInMonth(5,this)" id="wk-btn-5" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S5</button>
+          <button onclick="exportScopePDF()" title="Exporter en PDF la semaine sélectionnée (ou le mois si TOUT)" style="margin-left:auto;padding:5px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.4);color:var(--reb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">📄 PDF</button>
         </div>
         <div id="md-week-stats" style="display:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:8px" id="md-week-stats">
           <div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;text-align:center">
@@ -812,6 +816,23 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
           <div id="md-track-conf"></div>
         </div>
       </div>
+    </div>
+
+    <!-- OPTIMISATION R-MULTIPLES (suit le filtre semaine) -->
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        <div class="ct" style="margin-bottom:0">📐 Optimisation — par catégorie <span style="font-size:9px;color:var(--td);font-family:'Rajdhani'">(en R-multiples)</span></div>
+        <div id="md-opt-scope" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:var(--be)">· Tout le mois</div>
+      </div>
+      <div class="g2" style="margin-bottom:10px">
+        <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">⬢ SETUP</div><div id="md-opt-strats"></div></div>
+        <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--gb);margin-bottom:8px">🔗 CONFLUENCE / PATTERN</div><div id="md-opt-confs"></div></div>
+      </div>
+      <div class="g2" style="margin-bottom:10px">
+        <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--gb);margin-bottom:8px">★ GRADE</div><div id="md-opt-grade"></div></div>
+        <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">🌐 FONDA</div><div id="md-opt-fonda"></div></div>
+      </div>
+      <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS</div><div id="md-opt-errs"></div></div>
     </div>
 
   </div>
@@ -1996,6 +2017,19 @@ function changeYear(dir){
 }
 
 let CURRENT_MONTH_TRADES = [];
+let CURRENT_WEEK = null;
+
+// Barres R-multiples (réutilisé dans Setups par mois/semaine)
+function renderRBars(elId, mapObj){
+  const el=document.getElementById(elId); if(!el) return;
+  const groups=Object.entries(mapObj).map(([n,v])=>({n,v:parseFloat(v.toFixed(2))}));
+  if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">—</div>'; return; }
+  const maxV=Math.max(...groups.map(g=>Math.abs(g.v)),0.01);
+  el.innerHTML=groups.sort((a,b)=>b.v-a.v).map(g=>{
+    const pct=Math.min(Math.abs(g.v)/maxV*100,100), col=g.v>=0?'#10b981':'#ef4444', sign=g.v>=0?'+':'';
+    return `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:3px"><span style="color:var(--ts);font-family:'Share Tech Mono',monospace;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${g.n}">${g.n}</span><span style="color:${col};font-family:'Share Tech Mono',monospace">${sign}${g.v.toFixed(2)}R</span></div><div style="background:rgba(30,58,95,0.5);border-radius:3px;height:4px"><div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div></div></div>`;
+  }).join('');
+}
 
 function getTradeWeek(t){
   // Use created_at to find day of month, then week number
@@ -2007,6 +2041,7 @@ function getTradeWeek(t){
 }
 
 function filterWeekInMonth(w, btn){
+  CURRENT_WEEK = w;
   // Highlight active button
   document.querySelectorAll('#md-week-filter button').forEach(b=>{
     b.style.background='var(--card2)';
@@ -2309,6 +2344,24 @@ function renderScope(mt, scope){
   renderTagTable('md-track-perr',  tagStats(mt,'psych_errors'), 'var(--reb)');
   renderTagTable('md-track-pgood', tagStats(mt,'psych_good'), 'var(--grb)');
   renderTagTable('md-track-conf',  tagStats(mt,'confs').concat(tagStats(mt,'pats')), 'var(--gb)');
+
+  // ── Optimisation R-multiples (suit le scope semaine/mois) ──
+  const _wR = mt.map(t=>({...t, aR: computeActualR(t)}));
+  const _sM={},_cM={},_gM={},_fM={},_eM={};
+  _wR.forEach(t=>{
+    let a; try{a=JSON.parse(t.strats||'[]')}catch(e){a=[]} a.forEach(s=>{if(s)_sM[s]=(_sM[s]||0)+t.aR;});
+    try{a=JSON.parse(t.confs||'[]')}catch(e){a=[]} a.forEach(c=>{if(c)_cM[c]=(_cM[c]||0)+t.aR;});
+    try{a=JSON.parse(t.pats||'[]')}catch(e){a=[]} a.forEach(p=>{if(p)_cM[p]=(_cM[p]||0)+t.aR;});
+    if(t.star>0){const k=t.star+'★'; _gM[k]=(_gM[k]||0)+t.aR;}
+    if(t.fonda){_fM[t.fonda]=(_fM[t.fonda]||0)+t.aR;}
+    try{a=JSON.parse(t.psych_errors||'[]')}catch(e){a=[]} a.forEach(er=>{if(er)_eM[er]=(_eM[er]||0)+t.aR;});
+  });
+  renderRBars('md-opt-strats', _sM);
+  renderRBars('md-opt-confs',  _cM);
+  renderRBars('md-opt-grade',  _gM);
+  renderRBars('md-opt-fonda',  _fM);
+  renderRBars('md-opt-errs',   _eM);
+  const _os=document.getElementById('md-opt-scope'); if(_os) _os.textContent=(scope==null?'· Tout le mois':'· Semaine '+scope);
 }
 
 function closeMonthDetail(){
@@ -2464,7 +2517,10 @@ function buildReportHTML(title, subtitle, kpis, sections){
 </style>
 </head>
 <body>
-<button class="no-print print-btn" onclick="window.print()">🖨️ Imprimer / Enregistrer PDF</button>
+<div class="no-print" style="position:fixed;top:16px;right:16px;display:flex;gap:8px;z-index:999">
+  <button onclick="(window.close()||history.length>1&&history.back())" style="background:#475569;color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3)">← Retour</button>
+  <button onclick="window.print()" style="background:#0ea5e9;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(14,165,233,0.4)">🖨️ Imprimer / PDF</button>
+</div>
 
 <div class="header">
   <div class="header-top">
@@ -2501,10 +2557,8 @@ function openReport(html, filename){
   toast('📄 Rapport ouvert ! Appuie sur "Imprimer" puis "Enregistrer en PDF"');
 }
 
-function exportMonthPDF(){
-  if(SELECTED_MONTH===null){toast('Ouvre un mois dans Setups dabord');return;}
-  const m=SELECTED_MONTH, yr=SELECTED_YEAR;
-  const mt=T.filter(t=>parseInt(t.trade_month)===m&&parseInt(t.trade_year)===yr);
+function genReport(mt, titleMain, titleSub){
+  if(!mt || !mt.length){ toast('Aucun trade à exporter'); return; }
   const mw=mt.filter(t=>t.result==='WIN').length;
   const ml=mt.filter(t=>t.result==='LOSS').length;
   const mb=mt.filter(t=>t.result==='BE').length;
@@ -2619,12 +2673,24 @@ function exportMonthPDF(){
     ${notesSection}
     ${photosSection}`;
 
-  const html=buildReportHTML(
-    mn_pdf[m]+' '+yr+' — Rapport Mensuel',
-    'Performance trading du mois de '+mn_pdf[m]+' '+yr,
-    kpis, sections
-  );
+  const html=buildReportHTML(titleMain, titleSub, kpis, sections);
   openReport(html);
+}
+
+function exportMonthPDF(){
+  if(SELECTED_MONTH===null){toast('Ouvre un mois dans Setups dabord');return;}
+  const m=SELECTED_MONTH, yr=SELECTED_YEAR;
+  const mt=T.filter(t=>parseInt(t.trade_month)===m&&parseInt(t.trade_year)===yr);
+  genReport(mt, mn_pdf[m]+' '+yr+' — Rapport Mensuel', 'Performance trading du mois de '+mn_pdf[m]+' '+yr);
+}
+
+function exportScopePDF(){
+  if(SELECTED_MONTH===null){toast('Ouvre un mois dabord');return;}
+  const m=SELECTED_MONTH, yr=SELECTED_YEAR;
+  const mt=T.filter(t=>parseInt(t.trade_month)===m&&parseInt(t.trade_year)===yr);
+  if(CURRENT_WEEK==null){ return exportMonthPDF(); }
+  const wt=mt.filter(t=>getTradeWeek(t)===CURRENT_WEEK);
+  genReport(wt, 'Semaine '+CURRENT_WEEK+' — '+mn_pdf[m]+' '+yr, 'Rapport hebdomadaire · Semaine '+CURRENT_WEEK+' de '+mn_pdf[m]+' '+yr);
 }
 
 function exportAnnualPDF(){
