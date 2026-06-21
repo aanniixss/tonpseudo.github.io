@@ -1226,7 +1226,7 @@ async function processPendingImport(){
     const alreadyIn = T.some(x =>
       x.pair === t.pair &&
       x.entry_time === (t.entry_time||null) &&
-      parseFloat(x.lot_size) === parseFloat(t.lot_size||0) &&
+      (parseFloat(x.lot_size)||0) === (parseFloat(t.lot_size)||0) &&
       x.trade_month === (t.trade_month!==undefined ? t.trade_month : now.getMonth()) &&
       x.trade_year === (t.trade_year || now.getFullYear())
     );
