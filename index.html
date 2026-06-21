@@ -818,6 +818,32 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
       </div>
     </div>
 
+    <!-- PILOT PERFORMANCE (cercles, suit le filtre semaine) -->
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <div class="ct" style="margin-bottom:0">🚀 Pilot Performance</div>
+        <div id="md-pp-scope" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:var(--be)">· Tout le mois</div>
+      </div>
+      <div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:16px;padding:8px 0 4px">
+        <div style="text-align:center">
+          <div id="md-pp-totalr" style="width:80px;height:80px;border-radius:50%;border:3px solid #10b981;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#10b981;background:rgba(16,185,129,0.06)">—</div>
+          <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Total R</div>
+        </div>
+        <div style="text-align:center">
+          <div id="md-pp-net" style="width:80px;height:80px;border-radius:50%;border:3px solid #00f5ff;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#00f5ff;background:rgba(0,245,255,0.06)">—</div>
+          <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Total $</div>
+        </div>
+        <div style="text-align:center">
+          <div id="md-pp-trades" style="width:80px;height:80px;border-radius:50%;border:3px solid #60a5fa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#60a5fa;background:rgba(96,165,250,0.06)">—</div>
+          <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Trades</div>
+        </div>
+        <div style="text-align:center">
+          <div id="md-pp-wr" style="width:80px;height:80px;border-radius:50%;border:3px solid #f59e0b;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:16px;color:#f59e0b;background:rgba(245,158,11,0.06)">—</div>
+          <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Win Rate</div>
+        </div>
+      </div>
+    </div>
+
     <!-- CORE PERFORMANCE (suit le filtre semaine) -->
     <div class="card" style="margin-top:14px">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">
@@ -2401,6 +2427,16 @@ function renderScope(mt, scope){
   _st('md-cp-ls', _longs+' / '+_shorts);
   _st('md-cp-rr', _avgRR?_avgRR.toFixed(2):'—');
   _st('md-cp-scope', scope==null?'· Tout le mois':'· Semaine '+scope);
+
+  // ── Pilot Performance (cercles, suit le scope) ──
+  const _totalR=_wR.reduce((s,t)=>s+t.aR,0);
+  const _net=mt.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
+  const _wrPct=mt.length?(mt.filter(t=>t.result==='WIN').length/mt.length*100):0;
+  _st('md-pp-totalr', mt.length?((_totalR>=0?'+':'')+_totalR.toFixed(2)+'R'):'—');
+  _st('md-pp-net', mt.length?((_net>=0?'+':'')+'$'+Math.round(_net).toLocaleString()):'—');
+  _st('md-pp-trades', mt.length);
+  _st('md-pp-wr', mt.length?_wrPct.toFixed(0)+'%':'—');
+  _st('md-pp-scope', scope==null?'· Tout le mois':'· Semaine '+scope);
 }
 
 function closeMonthDetail(){
@@ -2698,13 +2734,49 @@ function genReport(mt, titleMain, titleSub){
       <table><thead><tr><th>Mindset</th><th>Fréquence</th><th>Win Rate</th><th>Impact $</th></tr></thead><tbody>${goodKeys.map(k=>{const d=goodMap[k];const wr=(d.w/d.n*100).toFixed(0);const cls=d.pnl>=0?'win':'loss';return`<tr><td style="font-weight:600">${k}</td><td>${d.n}x</td><td class="${parseFloat(wr)>=50?'win':'loss'}">${wr}%</td><td class="${cls}">${d.pnl>=0?'+':''}$${d.pnl.toFixed(0)}</td></tr>`;}).join('')}</tbody></table></div>`:''}
   </div>`:'';
 
+  // ── Core Performance (cercles) + Optimisation par catégorie (R) ──
+  const _wR=mt.map(t=>({...t, aR: computeActualR(t)}));
+  const _wins=_wR.filter(t=>t.result==='WIN'), _losses=_wR.filter(t=>t.result==='LOSS');
+  const _arWin=_wins.length?(_wins.reduce((s,t)=>s+t.aR,0)/_wins.length):null;
+  const _arLoss=_losses.length?(_losses.reduce((s,t)=>s+t.aR,0)/_losses.length):null;
+  const _totalR=_wR.reduce((s,t)=>s+t.aR,0);
+  const _longs=mt.filter(t=>t.dir==='LONG').length,_shorts=mt.filter(t=>t.dir==='SHORT').length;
+  const _avgRR=mt.length?mt.reduce((s,t)=>s+(parseFloat(t.rr)||0),0)/mt.length:0;
+  const _wrPct=mt.length?(mw/mt.length*100):0;
+  const coreCircles=[
+    {l:'Total R', v:(_totalR>=0?'+':'')+_totalR.toFixed(2)+'R', c:_totalR>=0?'#10b981':'#ef4444'},
+    {l:'Win Rate', v:_wrPct.toFixed(0)+'%', c:_wrPct>=60?'#10b981':_wrPct>=50?'#f59e0b':'#ef4444'},
+    {l:'Avg R Win', v:_arWin!==null?'+'+_arWin.toFixed(2)+'R':'—', c:'#10b981'},
+    {l:'Avg R Loss', v:_arLoss!==null?_arLoss.toFixed(2)+'R':'—', c:'#ef4444'},
+    {l:'Long / Short', v:_longs+' / '+_shorts, c:'#60a5fa'},
+    {l:'Avg RR ciblé', v:_avgRR?_avgRR.toFixed(2):'—', c:'#a78bfa'},
+  ];
+  const coreSection=`<div class="section"><div class="section-title">🎯 Core Performance</div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-around;padding:10px 0">
+    ${coreCircles.map(k=>`<div style="text-align:center"><div style="width:92px;height:92px;border-radius:50%;border:3px solid ${k.c};display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:16px;font-weight:700;color:${k.c}">${k.v}</div><div style="font-size:11px;color:#64748b;margin-top:8px;letter-spacing:1px">${k.l}</div></div>`).join('')}
+    </div></div>`;
+  const mergeSum=(...ms)=>{const r={};ms.forEach(m=>Object.entries(m).forEach(([k,v])=>r[k]=(r[k]||0)+v));return r;};
+  const optMap=(field,starMode)=>{const m={};_wR.forEach(t=>{ if(starMode){if(t.star>0){const k=t.star+'★';m[k]=(m[k]||0)+t.aR;}} else if(field==='fonda'){if(t.fonda)m[t.fonda]=(m[t.fonda]||0)+t.aR;} else {let a;try{a=JSON.parse(t[field]||'[]')}catch(e){a=[]}a.forEach(x=>{if(x)m[x]=(m[x]||0)+t.aR;});} });return m;};
+  const optTable=(title,m)=>{const ks=Object.keys(m);if(!ks.length)return '';const max=Math.max(...ks.map(k=>Math.abs(m[k])),0.01);const rows=ks.sort((a,b)=>m[b]-m[a]).map(k=>{const v=m[k],pct=Math.min(Math.abs(v)/max*100,100),col=v>=0?'#10b981':'#ef4444';return `<div class="bar-row"><div class="bar-label">${k}</div><div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="bar-val" style="color:${col}">${v>=0?'+':''}${v.toFixed(2)}R</div></div>`;}).join('');return `<div style="margin-bottom:18px"><div style="font-size:11px;font-weight:700;color:#1e293b;margin-bottom:10px">${title}</div>${rows}</div>`;};
+  const _hasOpt=Object.keys(optMap('strats')).length||Object.keys(optMap('psych_errors')).length||Object.keys(optMap(null,true)).length;
+  const optSection=`<div class="section"><div class="section-title">📐 Optimisation par catégorie (R-multiples)</div>
+    ${optTable('⬢ Setup', optMap('strats'))}
+    ${optTable('🔗 Confluence / Pattern', mergeSum(optMap('confs'),optMap('pats')))}
+    ${optTable('★ Grade', optMap(null,true))}
+    ${optTable('🌐 Fonda', optMap('fonda'))}
+    ${optTable('⚠ Erreurs', optMap('psych_errors'))}
+    ${_hasOpt?'':'<div style="color:#94a3b8;font-size:11px">Pas de données de catégorie sur cette période.</div>'}
+  </div>`;
+
   const sections=`
+    ${coreSection}
     <div class="section"><div class="section-title">📊 Performance par Session</div>
       <table><thead><tr><th>Session</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>Net P&L</th></tr></thead><tbody>${sessRows}</tbody></table>
     </div>
     <div class="section"><div class="section-title">💱 Performance par Paire</div>
       <table><thead><tr><th>Paire</th><th>Trades</th><th>W/L</th><th>Win Rate</th><th>Net P&L</th></tr></thead><tbody>${pairRows}</tbody></table>
     </div>
+    ${optSection}
     <div class="section"><div class="section-title">📋 Historique Complet des Trades</div>
       <table><thead><tr><th>#</th><th>Paire</th><th>Direction</th><th>Session</th><th>Durée</th><th>RR</th><th>CA $</th><th>Comm.</th><th>Net $</th><th>Résultat</th><th>Setup</th><th>★</th></tr></thead><tbody>${tradeRows}</tbody></table>
     </div>
