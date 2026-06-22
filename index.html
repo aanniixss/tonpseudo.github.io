@@ -1534,8 +1534,8 @@ function stats(){
   let mx=0,cu=0;TY.forEach(t=>{if(t.result==='WIN'){cu++;mx=Math.max(mx,cu);}else cu=0;});
   const adm=tot>0?TY.reduce((s,t)=>s+(parseFloat(t.duration_mins||0)),0)/tot:0;
   const ads=adm>0?(()=>{const h=Math.floor(adm/60),m=Math.round(adm%60);return h>0?h+'h '+m+'m':m+'m';})():null;
-  const sa=T.filter(t=>t.star>0);const as=sa.length>0?(sa.reduce((s,t)=>s+(t.star||0),0)/sa.length).toFixed(1):null;
-  let pk=CAP,cp=CAP,dd=0;T.forEach(t=>{cp+=t.pnl_amt||0;if(cp>pk)pk=cp;const d=(cp-pk)/pk*100;if(d<dd)dd=d;});
+  const sa=TY.filter(t=>t.star>0);const as=sa.length>0?(sa.reduce((s,t)=>s+(t.star||0),0)/sa.length).toFixed(1):null;
+  let pk=CAP,cp=CAP,dd=0;TY.forEach(t=>{cp+=t.pnl_amt||0;if(cp>pk)pk=cp;const d=(cp-pk)/pk*100;if(d<dd)dd=d;});
   return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd};
 }
 
@@ -1718,14 +1718,15 @@ function initPairChart(){
 
 function initAnalyse(){
   DC('day');DC('sess');DC('close');
+  const TY=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
   // Pair table
   const tb=document.getElementById('pair-tbody');
-  const ap=[...new Set(T.map(t=>t.pair))];
+  const ap=[...new Set(TY.map(t=>t.pair))];
   if(tb){
     if(!ap.length){tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:16px;color:var(--td)">Aucun trade</td></tr>`;return;}
     tb.innerHTML='';
     ap.forEach(p=>{
-      const pt=T.filter(t=>t.pair===p),pw=pt.filter(t=>t.result==='WIN').length,pl=pt.filter(t=>t.result==='LOSS').length;
+      const pt=TY.filter(t=>t.pair===p),pw=pt.filter(t=>t.result==='WIN').length,pl=pt.filter(t=>t.result==='LOSS').length;
       const pwr=(pw/pt.length*100).toFixed(1);
       const wp2=pt.filter(t=>t.result==='WIN').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
       const lp2=Math.abs(pt.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0));
@@ -1743,7 +1744,7 @@ function initAnalyse(){
     if(!ap.length){ct.innerHTML='<tr><td style="text-align:center;padding:16px;color:var(--td)">Aucun trade</td></tr>';return;}
     let h=`<thead><tr><th>Session</th>${ap.map(p=>`<th>${p}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
     sess.forEach(s=>{
-      const st=T.filter(t=>t.sess===s);if(!st.length)return;
+      const st=TY.filter(t=>t.sess===s);if(!st.length)return;
       const tot=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);
       h+=`<tr><td style="color:var(--bb);font-weight:700;font-size:10px">${s}</td>`;
       ap.forEach(p=>{const v=st.filter(t=>t.pair===p).reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const c=st.filter(t=>t.pair===p).length;h+=`<td class="${c?v>=0?'win':'loss':''}" style="${!c?'color:var(--td)':''};font-size:10px">${c?(v>=0?'+':'')+'$'+v.toFixed(0):'—'}</td>`;});
@@ -1753,25 +1754,26 @@ function initAnalyse(){
   }
   // Day chart
   const days=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
-  const dwr=days.map(d=>{const dt=T.filter(t=>t.day===d);return dt.length?parseFloat((dt.filter(t=>t.result==='WIN').length/dt.length*100).toFixed(1)):0;});
+  const dwr=days.map(d=>{const dt=TY.filter(t=>t.day===d);return dt.length?parseFloat((dt.filter(t=>t.result==='WIN').length/dt.length*100).toFixed(1)):0;});
   const c1=document.getElementById('dayChart');
   if(c1)CI['day']=new Chart(c1,{type:'bar',data:{labels:days,datasets:[{label:'Win Rate %',data:dwr,backgroundColor:dwr.map(v=>v>=70?'rgba(16,185,129,0.7)':v>=60?'rgba(14,165,233,0.7)':v>0?'rgba(245,158,11,0.7)':'rgba(30,58,95,0.4)'),borderRadius:7}]},options:{...CD,scales:{x:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'}}},y:{grid:{color:'rgba(30,58,95,0.4)'},min:0,max:100,ticks:{color:'#94a3b8',font:{family:'Rajdhani'},callback:v=>v+'%'}}}}});
   // Session radar
   const sc=['London','New York','Tokyo / Asia','Overlap Lon/NY'];
   const cols=['#0ea5e9','#10b981','#94a3b8','#fbbf24'];
-  const sd=sc.map(s=>{const st=T.filter(t=>t.sess===s);const wr=st.length?st.filter(t=>t.result==='WIN').length/st.length*100:0;const vol=T.length?st.length/T.length*100:0;const p=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const rr=st.length?st.reduce((a,t)=>a+(t.rr||0),0)/st.length:0;const wp=st.filter(t=>t.result==='WIN').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const lp=Math.abs(st.filter(t=>t.result==='LOSS').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0));const pf=lp>0?Math.min(wp/lp*20,100):0;return[wr,vol,Math.min(Math.abs(p/Math.max(CAP,1))*500,100),rr*15,pf];});
+  const sd=sc.map(s=>{const st=TY.filter(t=>t.sess===s);const wr=st.length?st.filter(t=>t.result==='WIN').length/st.length*100:0;const vol=TY.length?st.length/TY.length*100:0;const p=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const rr=st.length?st.reduce((a,t)=>a+(t.rr||0),0)/st.length:0;const wp=st.filter(t=>t.result==='WIN').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const lp=Math.abs(st.filter(t=>t.result==='LOSS').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0));const pf=lp>0?Math.min(wp/lp*20,100):0;return[wr,vol,Math.min(Math.abs(p/Math.max(CAP,1))*500,100),rr*15,pf];});
   const c2=document.getElementById('sessChart');
   if(c2)CI['sess']=new Chart(c2,{type:'radar',data:{labels:['WR%','Volume','P&L','RRR','PF'],datasets:sc.map((s,i)=>({label:s,data:sd[i],borderColor:cols[i],backgroundColor:cols[i]+'1a',pointBackgroundColor:cols[i]}))},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Rajdhani',size:10}}}},scales:{r:{angleLines:{color:'rgba(30,58,95,0.5)'},grid:{color:'rgba(30,58,95,0.5)'},pointLabels:{color:'#94a3b8',font:{family:'Rajdhani',size:10}},ticks:{display:false}}}}});
   // Close polar
   const c3=document.getElementById('closeChart');
-  if(c3)CI['close']=new Chart(c3,{type:'polarArea',data:{labels:['TP','SL','BE','Manuel'],datasets:[{data:[T.filter(t=>t.cl==='TP').length,T.filter(t=>t.cl==='SL').length,T.filter(t=>t.cl==='BE').length,T.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(14,165,233,0.7)'],borderColor:['#10b981','#ef4444','#f59e0b','#0ea5e9'],borderWidth:2}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11}}}},scales:{r:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{display:false}}}}});
+  if(c3)CI['close']=new Chart(c3,{type:'polarArea',data:{labels:['TP','SL','BE','Manuel'],datasets:[{data:[TY.filter(t=>t.cl==='TP').length,TY.filter(t=>t.cl==='SL').length,TY.filter(t=>t.cl==='BE').length,TY.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(14,165,233,0.7)'],borderColor:['#10b981','#ef4444','#f59e0b','#0ea5e9'],borderWidth:2}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11}}}},scales:{r:{grid:{color:'rgba(30,58,95,0.4)'},ticks:{display:false}}}}});
 }
 
 function initBilan(){
   DC('annual');DC('res');
   const mn=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   const fm=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  const yr=new Date().getFullYear();
+  const yr=GLOBAL_YEAR;
+  const TY=T.filter(t=>parseInt(t.trade_year)===yr);
 
   // ── ANNUAL CHART ──
   const ctx=document.getElementById('annualChart');
@@ -1794,7 +1796,7 @@ function initBilan(){
       const mpa=mt.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
       const mpp=mt.reduce((s,t)=>s+(parseFloat(t.pnl_pct||0)),0);
       const mwr=mt.length?(mw/mt.length*100).toFixed(0):null;
-      const isCurrentMonth=m===new Date().getMonth();
+      const isCurrentMonth=m===new Date().getMonth()&&yr===new Date().getFullYear();
       const hasData=mt.length>0;
       totalCap+=mpa;
       const col=mpa>0?'var(--grb)':mpa<0?'var(--reb)':'var(--td)';
@@ -1846,7 +1848,7 @@ function initBilan(){
 
   // ── DURATION ANALYSIS ──
   const da=document.getElementById('dur-analysis');
-  if(da&&T.length){
+  if(da&&TY.length){
     const buckets=[
       {label:'⚡ Scalp < 15min',min:0,max:15},
       {label:'🔥 Court 15–60min',min:15,max:60},
@@ -1854,9 +1856,9 @@ function initBilan(){
       {label:'🎯 Long 3h–8h',min:180,max:480},
       {label:'🌙 Swing > 8h',min:480,max:9999}
     ];
-    const maxPnl=Math.max(...buckets.map(b=>{const bt=T.filter(t=>parseFloat(t.duration_mins||0)>=b.min&&parseFloat(t.duration_mins||0)<b.max);return Math.abs(bt.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0));}),1);
+    const maxPnl=Math.max(...buckets.map(b=>{const bt=TY.filter(t=>parseFloat(t.duration_mins||0)>=b.min&&parseFloat(t.duration_mins||0)<b.max);return Math.abs(bt.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0));}),1);
     da.innerHTML=buckets.map(b=>{
-      const bt=T.filter(t=>parseFloat(t.duration_mins||0)>=b.min&&parseFloat(t.duration_mins||0)<b.max);
+      const bt=TY.filter(t=>parseFloat(t.duration_mins||0)>=b.min&&parseFloat(t.duration_mins||0)<b.max);
       if(!bt.length)return`<div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:7px;background:var(--card2)"><span style="font-size:11px;min-width:140px;color:var(--td)">${b.label}</span><span style="font-size:9px;color:var(--td)">Aucun trade</span></div>`;
       const bw=bt.filter(t=>t.result==='WIN').length;
       const bwr=(bw/bt.length*100).toFixed(0);
@@ -1884,7 +1886,7 @@ function initBilan(){
   const stb=document.getElementById('setup-tbody');
   if(stb){
     const allStrats=new Map();
-    T.forEach(t=>{
+    TY.forEach(t=>{
       const strats=JSON.parse(t.strats||'[]');
       strats.forEach(s=>{
         if(!allStrats.has(s))allStrats.set(s,[]);
@@ -1916,7 +1918,7 @@ function initBilan(){
     const sessions=['London','New York','Tokyo / Asia','Overlap Lon/NY'];
     sestb.innerHTML='';
     sessions.forEach(s=>{
-      const st=T.filter(t=>t.sess===s);
+      const st=TY.filter(t=>t.sess===s);
       if(!st.length){sestb.innerHTML+=`<tr><td style="color:var(--bb)">${s}</td><td colspan="7" style="color:var(--td)">—</td></tr>`;return;}
       const sw=st.filter(t=>t.result==='WIN').length,sl=st.filter(t=>t.result==='LOSS').length;
       const swr=(sw/st.length*100).toFixed(1);
@@ -1938,7 +1940,7 @@ function initBilan(){
 
   // ── DONUT ──
   const ctx2=document.getElementById('resChart');
-  if(ctx2){DC('res');CI['res']=new Chart(ctx2,{type:'doughnut',data:{labels:['TP','SL','Break Even','Manuel'],datasets:[{data:[T.filter(t=>t.cl==='TP').length,T.filter(t=>t.cl==='SL').length,T.filter(t=>t.cl==='BE').length,T.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)','rgba(245,158,11,0.8)','rgba(14,165,233,0.8)'],borderColor:['#10b981','#ef4444','#f59e0b','#0ea5e9'],borderWidth:2,hoverOffset:8}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11},padding:10}},tooltip:{backgroundColor:'#0a1628',borderColor:'#2563eb',borderWidth:1}}}});}
+  if(ctx2){DC('res');CI['res']=new Chart(ctx2,{type:'doughnut',data:{labels:['TP','SL','Break Even','Manuel'],datasets:[{data:[TY.filter(t=>t.cl==='TP').length,TY.filter(t=>t.cl==='SL').length,TY.filter(t=>t.cl==='BE').length,TY.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)','rgba(245,158,11,0.8)','rgba(14,165,233,0.8)'],borderColor:['#10b981','#ef4444','#f59e0b','#0ea5e9'],borderWidth:2,hoverOffset:8}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11},padding:10}},tooltip:{backgroundColor:'#0a1628',borderColor:'#2563eb',borderWidth:1}}}});}
 
   // ── PSYCHO ──
   initPsychStats();
@@ -2042,6 +2044,7 @@ function changeGlobalYear(dir){
   updateDash();
   buildHM();
   if(document.getElementById('bilan').classList.contains('active'))initBilan();
+  if(document.getElementById('analyse').classList.contains('active'))initAnalyse();
   if(document.getElementById('setups').classList.contains('active'))initSetups();
   toast('📅 Année '+GLOBAL_YEAR);
 }
