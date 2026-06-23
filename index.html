@@ -256,6 +256,10 @@ body::before{background:
   .topbar{padding:10px 14px;}
   .topbar-title{font-size:13px;}
   .fab{right:14px;bottom:14px;padding:12px 16px;}
+  /* Empiler les grilles 2/3 colonnes sur mobile + laisser les enfants rétrécir,
+     sinon un tableau large (min-width) fait déborder toute la page vers la droite. */
+  .g2,.g3{grid-template-columns:1fr;}
+  .g2>*,.g3>*{min-width:0;}
 }
 
 /* ════════════════════════════════════════════════════════════════
