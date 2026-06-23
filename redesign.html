@@ -649,15 +649,8 @@ body::before{background:
       <span id="form-month-indicator" style="font-size:9px;color:var(--gb);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;letter-spacing:1px"></span>
     </div>
 
-    <!-- ✨ IMPORT PHOTO IA -->
-    <div style="margin-bottom:14px">
-      <button type="button" onclick="rdPhotoImport()" style="display:flex;align-items:center;gap:10px;width:100%;justify-content:center;padding:13px;border-radius:12px;cursor:pointer;border:1px dashed rgba(124,92,255,.5);background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(124,92,255,.03));color:#cbbcff;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.5px">
-        <span style="font-size:16px">📸</span> Remplir depuis une photo (IA) <span id="rd-photo-status" style="color:var(--td);font-size:10px"></span>
-      </button>
-      <input type="file" id="rd-photo-input" accept="image/*" style="display:none" onchange="rdPhotoFile(event)">
-    </div>
-
     <div class="fg" style="margin-bottom:12px">
+      <div class="fld"><label>Catégorie</label><select id="f-cat" onchange="updatePairs()"><option value="major">Paires Majeures (7)</option><option value="minor">Paires Mineures (21)</option><option value="crypto">Crypto (7)</option><option value="index">Indices (7)</option><option value="metal">Métaux (3)</option></select></div>
       <div class="fld"><label>Paire</label><select id="f-pair"></select></div>
       <div class="fld"><label>Jour</label><select id="f-day"><option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option></select></div>
       <div class="fld"><label>Session</label><select id="f-sess"><option>London</option><option>New York</option><option>Tokyo / Asia</option><option>Overlap Lon/NY</option></select></div>
@@ -1417,68 +1410,6 @@ function rdNewTrade(){
     var f=document.getElementById('f-cat');
     if(f)f.scrollIntoView({behavior:'smooth',block:'center'});
   },140);
-}
-
-// ── ✨ IMPORT PHOTO → TRADE (via Edge Function sécurisée) ──
-function rdFnUrl(){return (typeof SUPA_URL!=='undefined'?SUPA_URL:'https://nogfrvpvknaqlgfnrjol.supabase.co')+'/functions/v1/parse-trade';}
-function rdToast(msg){ if(typeof toast==='function'){toast(msg);return;} var t=document.getElementById('toast'); if(t){t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3200);} }
-function rdPhotoStatus(s){ var el=document.getElementById('rd-photo-status'); if(el)el.textContent=s||''; }
-function rdPhotoImport(){ document.getElementById('rd-photo-input').click(); }
-function rdPhotoFile(e){
-  var f=e.target.files&&e.target.files[0]; if(!f){return;}
-  var reader=new FileReader();
-  reader.onload=function(){
-    var b64=String(reader.result).split(',')[1];
-    var mt=f.type||'image/png';
-    rdPhotoStatus('· analyse…'); rdToast('🤖 Lecture de la photo par l’IA…');
-    var key=(typeof SUPA_KEY!=='undefined'?SUPA_KEY:'');
-    fetch(rdFnUrl(),{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+key,'apikey':key},body:JSON.stringify({image:b64,media_type:mt})})
-      .then(function(r){return r.json();})
-      .then(function(d){
-        rdPhotoStatus('');
-        if(d.error){ rdToast('❌ '+d.error); return; }
-        rdFillTrade(d.trade);
-        rdToast('✅ Pré-rempli — vérifie puis sauvegarde');
-      })
-      .catch(function(err){ rdPhotoStatus(''); rdToast('❌ Fonction IA injoignable (déployée ?)'); console.error(err); });
-  };
-  reader.readAsDataURL(f);
-  e.target.value='';
-}
-function rdSet(id,val){ var el=document.getElementById(id); if(el&&val!==undefined&&val!==null&&val!==''&&val!==0) el.value=val; }
-function rdSetPair(sym){
-  if(!sym) return;
-  sym=(''+sym).toUpperCase().replace(/[^A-Z0-9]/g,'');
-  var cats=['major','minor','crypto','index','metal'];
-  var catSel=document.getElementById('f-cat'), pairSel=document.getElementById('f-pair');
-  if(!catSel||!pairSel) return;
-  for(var i=0;i<cats.length;i++){
-    catSel.value=cats[i];
-    if(typeof updatePairs==='function') updatePairs();
-    var opts=pairSel.options;
-    for(var j=0;j<opts.length;j++){
-      if(opts[j].value.toUpperCase().replace(/[^A-Z0-9]/g,'')===sym){ pairSel.value=opts[j].value; return; }
-    }
-  }
-  catSel.value='major'; if(typeof updatePairs==='function') updatePairs();
-}
-function rdFillTrade(t){
-  if(!t) return;
-  rdSetPair(t.pair);
-  rdSet('f-dir', t.direction);
-  rdSet('f-sess', t.session);
-  rdSet('f-day', t.day);
-  rdSet('f-en', t.entry_time);
-  rdSet('f-ex', t.exit_time);
-  rdSet('f-lot', t.lot_size);
-  rdSet('f-rsk', t.risk_pct);
-  rdSet('f-rr', t.rr);
-  rdSet('f-result', t.result);
-  rdSet('f-ca', t.gross_pnl);
-  rdSet('f-comm', t.commission);
-  rdSet('f-notes', t.notes);
-  if(typeof calcAll==='function') calcAll();
-  if(typeof syncResult==='function'){ try{syncResult();}catch(_e){} }
 }
 </script>
 
