@@ -888,6 +888,7 @@ body::before{background:
     <div class="card"><div class="ct">Répartition Clôtures</div><canvas id="closeChart" height="200"></canvas></div>
   </div>
   <div class="card"><div class="ct">Tableau Session × Paire</div><div style="overflow-x:auto"><table class="tbl" id="cross-tbl"></table></div></div>
+  <div class="card"><div class="ct">Résultat par Mois × Session</div><div class="tbl-scroll"><table class="tbl" style="min-width:600px" id="month-sess-tbl"></table></div></div>
 </div>
 
 <!-- ══ BILAN ══ -->
@@ -2172,6 +2173,31 @@ function initAnalyse(){
       h+=`<td class="${tot>=0?'win':'loss'}" style="font-size:10px">${tot>=0?'+':''}$${tot.toFixed(0)}</td></tr>`;
     });
     ct.innerHTML=h+'</tbody>';
+  }
+  // ── Tableau Mois × Session (montant + %) ──
+  const mst=document.getElementById('month-sess-tbl');
+  if(mst){
+    const SESS=['London','New York','Tokyo / Asia','Overlap Lon/NY'];
+    const SLBL={'London':'Londres','New York':'New York','Tokyo / Asia':'Asia','Overlap Lon/NY':'Overlap'};
+    const FM=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+    const sum=(arr,k)=>arr.reduce((a,t)=>a+parseFloat(t[k]||0),0);
+    const cell=(amt,pct,bold)=>`<td class="${amt>=0?'win':'loss'}" style="font-size:10px;white-space:nowrap${bold?';font-weight:700':''}">${amt>=0?'+':''}$${amt.toFixed(0)}<div style="font-size:8px;color:var(--ts);font-weight:500">${pct>=0?'+':''}${pct.toFixed(1)}%</div></td>`;
+    const mwd=[...Array(12).keys()].filter(m=>T.some(t=>parseInt(t.trade_month)===m));
+    if(!mwd.length){
+      mst.innerHTML='<tbody><tr><td style="text-align:center;padding:16px;color:var(--td)">Aucun trade cette année</td></tr></tbody>';
+    }else{
+      let h=`<thead><tr><th>Mois</th>${SESS.map(s=>`<th>${SLBL[s]}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
+      mwd.forEach(m=>{
+        const mt=T.filter(t=>parseInt(t.trade_month)===m);
+        h+=`<tr><td style="color:var(--bb);font-weight:700;font-size:10px;white-space:nowrap">${FM[m]}</td>`;
+        SESS.forEach(s=>{const st=mt.filter(t=>t.sess===s);h+=st.length?cell(sum(st,'pnl_amt'),sum(st,'pnl_pct')):'<td style="color:var(--td)">—</td>';});
+        h+=cell(sum(mt,'pnl_amt'),sum(mt,'pnl_pct'),true)+'</tr>';
+      });
+      h+='<tr style="border-top:2px solid var(--bo)"><td style="color:var(--gb);font-weight:700;font-size:10px">TOTAL</td>';
+      SESS.forEach(s=>{const st=T.filter(t=>t.sess===s);h+=st.length?cell(sum(st,'pnl_amt'),sum(st,'pnl_pct'),true):'<td style="color:var(--td)">—</td>';});
+      h+=cell(sum(T,'pnl_amt'),sum(T,'pnl_pct'),true)+'</tr>';
+      mst.innerHTML=h+'</tbody>';
+    }
   }
   // Day chart
   const days=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
