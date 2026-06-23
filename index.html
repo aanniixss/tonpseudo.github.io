@@ -58,8 +58,9 @@ canvas{display:block;width:100%!important;}
 .wr-v.g{color:var(--grb);}.wr-v.r{color:var(--reb);}.wr-v.b{color:var(--bb);}
 /* TABLE */
 .tbl{width:100%;border-collapse:collapse;font-size:11px;}
-.tbl th{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:1.5px;color:var(--td);text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--bo);background:rgba(14,165,233,0.03);}
-.tbl td{padding:9px 10px;border-bottom:1px solid rgba(30,58,95,0.4);vertical-align:middle;}
+.tbl th{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:1.5px;color:var(--td);text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--bo);background:rgba(14,165,233,0.03);white-space:nowrap;}
+.tbl td{padding:9px 10px;border-bottom:1px solid rgba(30,58,95,0.4);vertical-align:middle;white-space:nowrap;}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .tbl tr:hover td{background:rgba(14,165,233,0.03);}
 .win{color:var(--grb);font-weight:700;}.loss{color:var(--reb);font-weight:700;}.be-r{color:var(--gb);font-weight:700;}
 /* PAIR BADGES */
@@ -565,8 +566,8 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
   <div class="g2">
     <div class="card">
       <div class="ct">Performance par Paire</div>
-      <div style="overflow-x:auto">
-        <table class="tbl"><thead><tr><th>Paire</th><th>Cat</th><th>N</th><th>Win</th><th>Loss</th><th>WR%</th><th>PF</th><th>RRR</th><th>P&L$</th></tr></thead><tbody id="pair-tbody"></tbody></table>
+      <div class="tbl-scroll">
+        <table class="tbl" style="min-width:560px"><thead><tr><th>Paire</th><th>Cat</th><th>N</th><th>Win</th><th>Loss</th><th>WR%</th><th>PF</th><th>RRR</th><th>P&L$</th></tr></thead><tbody id="pair-tbody"></tbody></table>
       </div>
     </div>
     <div class="card"><div class="ct">Win Rate par Jour</div><canvas id="dayChart" height="200"></canvas></div>
