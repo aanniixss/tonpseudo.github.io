@@ -612,8 +612,12 @@ body::before{background:
         <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
       </div>
       <div>
-        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">Erreurs</div>
+        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">Erreurs (nb de fois)</div>
         <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--grb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(16,185,129,0.2);padding-bottom:5px">Bonne psycho (nb · % · $)</div>
+        <div id="opt-good"><div style="color:var(--td);font-size:10px">Aucun bon comportement tagué</div></div>
       </div>
     </div>
   </div>
@@ -1197,7 +1201,8 @@ body::before{background:
         <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--gb);margin-bottom:8px">★ GRADE</div><div id="md-opt-grade"></div></div>
         <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">🌐 FONDA</div><div id="md-opt-fonda"></div></div>
       </div>
-      <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS</div><div id="md-opt-errs"></div></div>
+      <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS (NB DE FOIS)</div><div id="md-opt-errs"></div></div>
+      <div style="margin-top:10px"><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ BONNE PSYCHO (NB · % · $)</div><div id="md-opt-good"></div></div>
     </div>
 
   </div>
@@ -2037,10 +2042,9 @@ function buildCorePerfAndOptim(){
   withR.forEach(t=>{ if(t.fonda){ fondaMap[t.fonda]=(fondaMap[t.fonda]||0)+parseFloat(t.pnl_pct||0); } });
   renderBars('opt-fonda', Object.entries(fondaMap).map(([n,v])=>({n,v})));
 
-  // Erreurs
-  const errMap={};
-  withR.forEach(t=>{ (JSON.parse(t.psych_errors||'[]')).forEach(e=>{ errMap[e]=(errMap[e]||0)+parseFloat(t.pnl_pct||0); }); });
-  renderBars('opt-err', Object.entries(errMap).map(([n,v])=>({n,v})));
+  // Erreurs (nombre de fois) + Bonne psycho (nombre · % · $)
+  renderErrCount('opt-err', withR);
+  renderGoodFull('opt-good', withR);
 }
 
 function updateDash(){
@@ -2532,6 +2536,32 @@ function renderRBars(elId, mapObj){
   }).join('');
 }
 
+// Erreurs : NOMBRE de fois (une erreur reste une erreur, peu importe le P&L)
+function renderErrCount(elId, trades){
+  const el=document.getElementById(elId); if(!el) return;
+  const m={};
+  trades.forEach(t=>{ let a; try{a=JSON.parse(t.psych_errors||'[]')}catch(e){a=[]} a.forEach(x=>{if(x)m[x]=(m[x]||0)+1;}); });
+  const groups=Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">Aucune erreur taguée</div>'; return; }
+  const max=Math.max(...groups.map(g=>g[1]),1);
+  el.innerHTML=groups.map(([n,c])=>{
+    const w=Math.min(c/max*100,100);
+    return `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:3px;gap:8px"><span style="color:var(--ts);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${n}">${n}</span><span style="color:var(--reb);font-family:'Share Tech Mono',monospace;font-weight:700;white-space:nowrap">${c}× fois</span></div><div style="background:rgba(43,43,61,0.5);border-radius:3px;height:4px"><div style="width:${w}%;height:100%;background:#ef4444;border-radius:3px"></div></div></div>`;
+  }).join('');
+}
+// Bonne psycho : nombre de fois + % + $
+function renderGoodFull(elId, trades){
+  const el=document.getElementById(elId); if(!el) return;
+  const m={};
+  trades.forEach(t=>{ let a; try{a=JSON.parse(t.psych_good||'[]')}catch(e){a=[]} a.forEach(x=>{if(x){if(!m[x])m[x]={n:0,pct:0,amt:0}; m[x].n++; m[x].pct+=parseFloat(t.pnl_pct||0); m[x].amt+=parseFloat(t.pnl_amt||0);}}); });
+  const groups=Object.entries(m).sort((a,b)=>b[1].n-a[1].n);
+  if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">Aucun bon comportement tagué</div>'; return; }
+  const max=Math.max(...groups.map(g=>g[1].n),1);
+  el.innerHTML=groups.map(([n,v])=>{
+    const w=Math.min(v.n/max*100,100), col=v.amt>=0?'#10b981':'#ef4444';
+    return `<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:3px;gap:8px"><span style="color:var(--ts);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${n}">${n}</span><span style="font-family:'Share Tech Mono',monospace;white-space:nowrap"><span style="color:var(--bb);font-weight:700">${v.n}×</span> <span style="color:${col}">${v.pct>=0?'+':''}${v.pct.toFixed(1)}% · ${v.amt>=0?'+':''}$${Math.abs(v.amt).toFixed(0)}</span></span></div><div style="background:rgba(43,43,61,0.5);border-radius:3px;height:4px"><div style="width:${w}%;height:100%;background:${col};border-radius:3px"></div></div></div>`;
+  }).join('');
+}
 function getTradeWeek(t){
   // Use created_at to find day of month, then week number
   if(t.created_at){
@@ -2862,7 +2892,8 @@ function renderScope(mt, scope){
   renderRBars('md-opt-confs',  _cM);
   renderRBars('md-opt-grade',  _gM);
   renderRBars('md-opt-fonda',  _fM);
-  renderRBars('md-opt-errs',   _eM);
+  renderErrCount('md-opt-errs', mt);
+  renderGoodFull('md-opt-good', mt);
   const _os=document.getElementById('md-opt-scope'); if(_os) _os.textContent=(scope==null?'· Tout le mois':'· Semaine '+scope);
 
   // ── Core Performance (suit le scope) ──
@@ -3214,7 +3245,6 @@ function genReport(mt, titleMain, titleSub){
     ${optTable('🔗 Confluence / Pattern', mergeSum(optMap('confs'),optMap('pats')))}
     ${optTable('★ Grade', optMap(null,true))}
     ${optTable('🌐 Fonda', optMap('fonda'))}
-    ${optTable('⚠ Erreurs', optMap('psych_errors'))}
     ${_hasOpt?'':'<div style="color:#94a3b8;font-size:11px">Pas de données de catégorie sur cette période.</div>'}
   </div>`;
 
