@@ -425,9 +425,8 @@ body::before{background:
     <div class="side-nav">
       <button class="tab active" data-title="Dashboard" data-sub="Vue d'ensemble" onclick="showTab('dashboard',this);rdToggleSidebar(false)"><span class="ti">⬡</span> Dashboard</button>
       <button class="tab" data-title="Journal" data-sub="Saisie &amp; historique des trades" onclick="showTab('journal',this);rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
-      <button class="tab" data-title="Analytique" data-sub="Statistiques avancées" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analytique</button>
-      <button class="tab" data-title="Bilan" data-sub="Performance mensuelle &amp; annuelle" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
-      <button class="tab" data-title="Setups" data-sub="Journal mensuel détaillé" onclick="showTab('setups',this);rdToggleSidebar(false)"><span class="ti">⬢</span> Setups</button>
+      <button class="tab" data-title="Analyse" data-sub="Toutes tes statistiques" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analyse</button>
+      <button class="tab" data-title="Bilan" data-sub="Mois, année &amp; rapports" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
     </div>
     <div class="side-cap">Intelligence ✨</div>
     <div class="side-nav">
@@ -549,36 +548,6 @@ body::before{background:
     <div class="chip" style="--c:#fbbf24"><div class="chip-l">Note Moy. ★</div><div class="chip-v kv" id="k-star" style="color:var(--gb)">—</div><div class="chip-s" id="k-star-s">Setup quality</div></div>
   </div>
 
-  <!-- ░░ PAIR CHART ░░ -->
-  <div class="b-card b-pair" style="margin-bottom:16px">
-    <div class="b-eyebrow">◈ Trades par paire</div>
-    <canvas id="pairChart" height="150"></canvas>
-  </div>
-
-  <div class="grouphead"><span class="gh-i">🎯</span><span class="gh-t">Analyse de performance</span><span class="gh-d">Qualité d'exécution &amp; R-multiples</span></div>
-  <!-- ══ CORE PERFORMANCE ══ -->
-  <div class="card" style="margin-top:12px">
-    <div class="ct">Core Performance</div>
-    <div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:20px;padding:8px 0 4px">
-      <div style="text-align:center">
-        <div id="cp-avgRwin" style="width:88px;height:88px;border-radius:50%;border:3px solid #10b981;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#10b981;background:rgba(16,185,129,0.06)">—</div>
-        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Win</div>
-      </div>
-      <div style="text-align:center">
-        <div id="cp-avgRloss" style="width:88px;height:88px;border-radius:50%;border:3px solid #ef4444;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#ef4444;background:rgba(239,68,68,0.06)">—</div>
-        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Loss</div>
-      </div>
-      <div style="text-align:center">
-        <div id="cp-longshort" style="width:88px;height:88px;border-radius:50%;border:3px solid #818cf8;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#818cf8;background:rgba(129,140,248,0.06)">— / —</div>
-        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Long / Short</div>
-      </div>
-      <div style="text-align:center">
-        <div id="cp-avgrr" style="width:88px;height:88px;border-radius:50%;border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#a78bfa;background:rgba(167,139,250,0.06)">—</div>
-        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg RR ciblé</div>
-      </div>
-    </div>
-  </div>
-
   <div class="g2">
     <div class="card">
       <div class="ct">Sessions</div>
@@ -590,38 +559,6 @@ body::before{background:
       </div>
     </div>
     <div class="card"><div class="ct">Heatmap — Jour de la Semaine</div><div id="hmContainer"></div></div>
-  </div>
-
-  <div class="grouphead"><span class="gh-i">🧠</span><span class="gh-t">Comportement &amp; optimisation</span><span class="gh-d">Ce qui marche, ce qu'il faut corriger</span></div>
-  <!-- ══ OPTIMISATION ══ -->
-  <div class="card" style="margin-top:12px">
-    <div class="ct">Optimisation — Performance par catégorie <span style="font-size:9px;color:var(--td);font-family:'Rajdhani';">(en %)</span></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:4px 0">
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Setup</div>
-        <div id="opt-strats"><div style="color:var(--td);font-size:10px">Ajoute des trades avec setup</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Confluence</div>
-        <div id="opt-confs"><div style="color:var(--td);font-size:10px">Ajoute des confluences</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Grade (★)</div>
-        <div id="opt-grade"><div style="color:var(--td);font-size:10px">Note tes trades</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Fonda</div>
-        <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">Erreurs (nb de fois)</div>
-        <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--grb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(16,185,129,0.2);padding-bottom:5px">Bonne psycho (nb · % · $)</div>
-        <div id="opt-good"><div style="color:var(--td);font-size:10px">Aucun bon comportement tagué</div></div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -884,6 +821,8 @@ body::before{background:
   <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap">
     <button class="btn" onclick="exportAnnualPDF()" style="background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.4);color:var(--reb);padding:8px 16px;font-size:8px">📄 Rapport Annuel PDF</button>
   </div>
+  <!-- ░░ PERFORMANCE ░░ -->
+  <div class="grouphead"><span class="gh-i">🎯</span><span class="gh-t">Performance</span><span class="gh-d">Tes paires &amp; ta qualité d'exécution</span></div>
   <div class="g2">
     <div class="card">
       <div class="ct">Performance par Paire</div>
@@ -891,11 +830,35 @@ body::before{background:
         <table class="tbl" style="min-width:560px"><thead><tr><th>Paire</th><th>Cat</th><th>N</th><th>Win</th><th>Loss</th><th>WR%</th><th>PF</th><th>RRR</th><th>P&L$</th></tr></thead><tbody id="pair-tbody"></tbody></table>
       </div>
     </div>
-    <div class="card"><div class="ct">Win Rate par Jour</div><canvas id="dayChart" height="200"></canvas></div>
+    <div class="b-card b-pair"><div class="b-eyebrow">◈ Trades par paire</div><canvas id="pairChart" height="150"></canvas></div>
   </div>
+  <div class="card" style="margin-top:12px">
+    <div class="ct">Core Performance</div>
+    <div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:20px;padding:8px 0 4px">
+      <div style="text-align:center">
+        <div id="cp-avgRwin" style="width:88px;height:88px;border-radius:50%;border:3px solid #10b981;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#10b981;background:rgba(16,185,129,0.06)">—</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Win</div>
+      </div>
+      <div style="text-align:center">
+        <div id="cp-avgRloss" style="width:88px;height:88px;border-radius:50%;border:3px solid #ef4444;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#ef4444;background:rgba(239,68,68,0.06)">—</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Loss</div>
+      </div>
+      <div style="text-align:center">
+        <div id="cp-longshort" style="width:88px;height:88px;border-radius:50%;border:3px solid #818cf8;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#818cf8;background:rgba(129,140,248,0.06)">— / —</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Long / Short</div>
+      </div>
+      <div style="text-align:center">
+        <div id="cp-avgrr" style="width:88px;height:88px;border-radius:50%;border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#a78bfa;background:rgba(167,139,250,0.06)">—</div>
+        <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg RR ciblé</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ SESSIONS & HEURES ░░ -->
+  <div class="grouphead"><span class="gh-i">🕐</span><span class="gh-t">Sessions &amp; Heures</span><span class="gh-d">Quand &amp; où tu performes</span></div>
   <div class="g2">
+    <div class="card"><div class="ct">Win Rate par Jour</div><canvas id="dayChart" height="200"></canvas></div>
     <div class="card"><div class="ct">Radar par Session</div><canvas id="sessChart" height="200"></canvas></div>
-    <div class="card"><div class="ct">Répartition Clôtures</div><canvas id="closeChart" height="200"></canvas></div>
   </div>
   <div class="card"><div class="ct">Tableau Session × Paire</div><div style="overflow-x:auto"><table class="tbl" id="cross-tbl"></table></div></div>
   <div class="card"><div class="ct">Résultat par Mois × Session</div><div class="tbl-scroll"><table class="tbl" style="min-width:600px" id="month-sess-tbl"></table></div></div>
@@ -903,6 +866,55 @@ body::before{background:
     <div class="card"><div class="ct">🕐 Performance par Heure</div><canvas id="hourChart" height="200"></canvas></div>
     <div class="card"><div class="ct">✂️ Coupes-tu tes pertes ?</div><div id="dur-winloss" style="padding:6px 2px"></div></div>
   </div>
+
+  <!-- ░░ SETUPS & OPTIMISATION ░░ -->
+  <div class="grouphead"><span class="gh-i">🧠</span><span class="gh-t">Comportement &amp; Optimisation</span><span class="gh-d">Ce qui marche, ce qu'il faut corriger</span></div>
+  <div class="card" style="margin-top:12px">
+    <div class="ct">Optimisation — Performance par catégorie <span style="font-size:9px;color:var(--td);font-family:'Rajdhani';">(en %)</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:4px 0">
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Setup</div>
+        <div id="opt-strats"><div style="color:var(--td);font-size:10px">Ajoute des trades avec setup</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Confluence</div>
+        <div id="opt-confs"><div style="color:var(--td);font-size:10px">Ajoute des confluences</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Grade (★)</div>
+        <div id="opt-grade"><div style="color:var(--td);font-size:10px">Note tes trades</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(124,92,255,0.2);padding-bottom:5px">Fonda</div>
+        <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">Erreurs (nb de fois)</div>
+        <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--grb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(16,185,129,0.2);padding-bottom:5px">Bonne psycho (nb · % · $)</div>
+        <div id="opt-good"><div style="color:var(--td);font-size:10px">Aucun bon comportement tagué</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ PSYCHOLOGIE ░░ -->
+  <div class="grouphead"><span class="gh-i">💚</span><span class="gh-t">Psychologie</span><span class="gh-d">Tes émotions &amp; ta discipline</span></div>
+  <div class="card" style="margin-top:12px">
+    <div class="ct">🧠 Analyse Psychologique</div>
+    <div class="g2">
+      <div>
+        <div style="font-size:8px;letter-spacing:2px;color:var(--reb);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:3px;height:10px;background:var(--reb);border-radius:2px;flex-shrink:0;display:inline-block"></span>Erreurs — Fréquence & Impact</div>
+        <div id="psych-err-content"><div style="text-align:center;padding:20px;color:var(--td)">Aucune erreur trackée</div></div>
+      </div>
+      <div>
+        <div style="font-size:8px;letter-spacing:2px;color:var(--grb);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:3px;height:10px;background:var(--grb);border-radius:2px;flex-shrink:0;display:inline-block"></span>Bon Mindset — Corrélation Performance</div>
+        <div id="psych-good-content"><div style="text-align:center;padding:20px;color:var(--td)">Aucun mindset tracké</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Répartition Clôtures</div><canvas id="closeChart" height="200"></canvas></div>
 </div>
 
 <!-- ══ BILAN ══ -->
@@ -967,21 +979,6 @@ body::before{background:
     </div>
   </div>
 
-  <!-- ANALYSE PSYCHOLOGIQUE -->
-  <div class="card" style="margin-top:14px">
-    <div class="ct">🧠 Analyse Psychologique</div>
-    <div class="g2">
-      <div>
-        <div style="font-size:8px;letter-spacing:2px;color:var(--reb);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:3px;height:10px;background:var(--reb);border-radius:2px;flex-shrink:0;display:inline-block"></span>Erreurs — Fréquence & Impact</div>
-        <div id="psych-err-content"><div style="text-align:center;padding:20px;color:var(--td)">Aucune erreur trackée</div></div>
-      </div>
-      <div>
-        <div style="font-size:8px;letter-spacing:2px;color:var(--grb);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:3px;height:10px;background:var(--grb);border-radius:2px;flex-shrink:0;display:inline-block"></span>Bon Mindset — Corrélation Performance</div>
-        <div id="psych-good-content"><div style="text-align:center;padding:20px;color:var(--td)">Aucun mindset tracké</div></div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <!-- ══ SETUPS ══ -->
@@ -1033,7 +1030,7 @@ body::before{background:
           <button onclick="filterWeekInMonth(5,this)" id="wk-btn-5" style="padding:5px 12px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);font-size:9px;cursor:pointer;display:none">S5</button>
           <button onclick="exportScopePDF()" title="Exporter en PDF la semaine sélectionnée (ou le mois si TOUT)" style="margin-left:auto;padding:5px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.4);color:var(--reb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">📄 PDF</button>
         </div>
-        <div id="md-week-stats" style="display:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:8px" id="md-week-stats">
+        <div id="md-week-stats" style="display:none;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:8px">
           <div style="background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;text-align:center">
             <div style="font-size:8px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">Trades</div>
             <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--be)" id="wks-tot">0</div>
@@ -1737,10 +1734,9 @@ function showTab(id,el){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');el.classList.add('active');
-  if(id==='bilan')setTimeout(initBilan,100);
-  if(id==='analyse')setTimeout(initAnalyse,100);
-  if(id==='setups')setTimeout(initSetups,100);
-  if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
+  if(id==='bilan'){document.getElementById('setups').classList.add('active');setTimeout(()=>{initBilan();initSetups();},100);}
+  if(id==='analyse')setTimeout(()=>{initAnalyse();buildCorePerfAndOptim();initPairChart();initPsychStats();},100);
+  if(id==='dashboard')setTimeout(()=>{initCapChart();updateDash();buildHM();buildCorePerfAndOptim();},100);
 }
 
 // ── TOAST ──
