@@ -2628,6 +2628,8 @@ function changeGlobalYear(dir){
   renderTable();
   updateDash();
   buildHM();
+  initCapChart();
+  initPairChart();
   if(document.getElementById('analyse').classList.contains('active'))initAnalyse();
   if(document.getElementById('bilan').classList.contains('active'))initBilan();
   if(document.getElementById('setups').classList.contains('active'))initSetups();
