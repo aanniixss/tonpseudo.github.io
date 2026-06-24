@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TrackRecord PRO</title>
+<title>TrackRecord PRO — Essai 🧪</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -62,6 +62,7 @@ canvas{display:block;width:100%!important;}
 .tbl th{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:1.5px;color:var(--td);text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--bo);background:rgba(124,92,255,0.03);white-space:nowrap;}
 .tbl td{padding:9px 10px;border-bottom:1px solid rgba(43,43,61,0.4);vertical-align:middle;white-space:nowrap;}
 .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.trade-cards{display:none;}
 .tbl tr:hover td{background:rgba(124,92,255,0.03);}
 .win{color:var(--grb);font-weight:700;}.loss{color:var(--reb);font-weight:700;}.be-r{color:var(--gb);font-weight:700;}
 /* PAIR BADGES */
@@ -139,7 +140,7 @@ canvas{display:block;width:100%!important;}
 .toast.show{transform:translateY(0);opacity:1;}
 hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
 ::-webkit-scrollbar{width:3px;height:3px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--bri);border-radius:2px;}
-@media(max-width:850px){html,body{overflow-x:hidden;width:100%;}.hdr{padding:8px 12px;width:100%;box-sizing:border-box;flex-direction:column;align-items:flex-start;gap:6px;}.main{padding:10px 12px;width:100%;box-sizing:border-box;min-height:calc(100vh - 120px);}.g2,.g3{grid-template-columns:1fr;gap:10px;}.pg{grid-template-columns:1fr;}.kpis{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}.nav{padding:0;width:100%;box-sizing:border-box;-webkit-overflow-scrolling:touch;overflow-x:auto;}.tab{flex:1;padding:12px 6px;font-size:9px;letter-spacing:1px;text-align:center;min-width:0;}.logo-s{display:none;}.logo-t{font-size:15px;letter-spacing:2px;}.logo-i{width:34px;height:34px;font-size:12px;}.hdr-r{gap:5px;padding-bottom:0;flex-wrap:wrap;width:100%;}.badge{padding:4px 8px;font-size:8px;letter-spacing:1px;}.card{padding:14px;width:100%;box-sizing:border-box;}.kpi{padding:14px 12px;}.ct{font-size:10px;margin-bottom:12px;}.kv{font-size:20px;}.wr-wrap{gap:14px;}.wrc{width:100px;height:100px;}.wrc svg{width:100%;height:100%;}.wr-pct{font-size:18px;}.wr-k{font-size:10px;}.mb{padding:18px;width:95vw;}.toast{right:12px;left:12px;text-align:center;}}
+@media(max-width:850px){html,body{overflow-x:hidden;width:100%;}.hdr{padding:8px 12px;width:100%;box-sizing:border-box;flex-direction:column;align-items:flex-start;gap:6px;}.main{padding:10px 12px;width:100%;box-sizing:border-box;min-height:calc(100vh - 120px);}.g2,.g3{grid-template-columns:1fr;gap:10px;}.pg{grid-template-columns:1fr;}.kpis{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}.nav{padding:0;width:100%;box-sizing:border-box;-webkit-overflow-scrolling:touch;overflow-x:auto;}.tab{flex:1;padding:12px 6px;font-size:9px;letter-spacing:1px;text-align:center;min-width:0;}.logo-s{display:none;}.logo-t{font-size:15px;letter-spacing:2px;}.logo-i{width:34px;height:34px;font-size:12px;}.hdr-r{gap:5px;padding-bottom:0;flex-wrap:wrap;width:100%;}.badge{padding:4px 8px;font-size:8px;letter-spacing:1px;}.card{padding:14px;width:100%;box-sizing:border-box;}.kpi{padding:14px 12px;}.ct{font-size:10px;margin-bottom:12px;}.kv{font-size:20px;}.wr-wrap{gap:14px;}.wrc{width:100px;height:100px;}.wrc svg{width:100%;height:100%;}.wr-pct{font-size:18px;}.wr-k{font-size:10px;}.mb{padding:18px;width:95vw;}.toast{right:12px;left:12px;text-align:center;}.trade-table-wrap{display:none!important;}.trade-cards{display:block!important;}}
 
 /* ════════════════════════════════════════════════════════════════
    ░░  TRACKRECORD — REDESIGN · HYBRIDE PREMIUM (override skin)  ░░
@@ -448,7 +449,7 @@ body::before{background:
         </div>
       </div>
       <div class="topbar-r">
-        <div class="badge">◈ LIVE</div>
+        <div class="badge" style="background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4);color:var(--gb)">🧪 PAGE D'ESSAI</div>
         <div class="badge" id="clockB" style="color:var(--cy);min-width:88px;text-align:center">--:--:--</div>
         <!-- GLOBAL YEAR SELECTOR -->
         <div style="display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bo);border-radius:20px;padding:4px 10px;">
@@ -543,6 +544,7 @@ body::before{background:
     <div class="chip" style="--c:#34d399"><div class="chip-l">Profit Factor</div><div class="chip-v kv" id="k-pf">—</div><div class="chip-s" id="k-pf-s">RRR —</div></div>
     <div class="chip" style="--c:#ef4444"><div class="chip-l">Max Drawdown</div><div class="chip-v kv" id="k-dd" style="color:var(--reb)">—</div><div class="chip-s" id="k-dd-s">—</div></div>
     <div class="chip" style="--c:#34d399"><div class="chip-l">Total R</div><div class="chip-v kv" id="k-totalr" style="color:var(--grb)">—</div><div class="chip-s">R cumulés</div></div>
+    <div class="chip" style="--c:#22d3ee"><div class="chip-l">Espérance / trade</div><div class="chip-v kv" id="k-exp">—</div><div class="chip-s" id="k-exp-s">R moyen —</div></div>
     <div class="chip" style="--c:#818cf8"><div class="chip-l">Durée Moy.</div><div class="chip-v kv" id="k-dur">—</div><div class="chip-s">Par trade</div></div>
     <div class="chip" style="--c:#fbbf24"><div class="chip-l">Note Moy. ★</div><div class="chip-v kv" id="k-star" style="color:var(--gb)">—</div><div class="chip-s" id="k-star-s">Setup quality</div></div>
   </div>
@@ -632,6 +634,9 @@ body::before{background:
       <div style="display:flex;align-items:center;gap:10px">
         <div class="ct" style="margin-bottom:0">📅 Journal</div>
         <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:var(--be)" id="journal-year-label">2026</div>
+        <button onclick="exportCSV()" title="Exporter tous les trades de l'année en CSV (Excel)" style="padding:5px 10px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);color:var(--grb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">⤓ CSV</button>
+        <button onclick="document.getElementById('csv-import-input').click()" title="Importer des trades depuis un fichier CSV" style="padding:5px 10px;border-radius:7px;background:rgba(124,92,255,0.12);border:1px solid rgba(124,92,255,0.35);color:var(--bb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">⤒ CSV</button>
+        <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(124,92,255,0.2);border:1px solid var(--be);color:var(--be);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">TOUT</button>
@@ -859,7 +864,7 @@ body::before{background:
   <!-- HISTORIQUE -->
   <div class="card">
     <div class="ct">📋 Historique des Trades</div>
-    <div style="overflow-x:auto">
+    <div class="trade-table-wrap" style="overflow-x:auto">
       <table class="tbl">
         <thead><tr>
           <th>#</th><th>Paire</th><th>Cat.</th><th>Jour</th><th>Session</th><th>Dir.</th>
@@ -870,6 +875,7 @@ body::before{background:
         <tbody id="t-tbody"></tbody>
       </table>
     </div>
+    <div id="t-cards" class="trade-cards"></div>
   </div>
 </div>
 
@@ -893,6 +899,10 @@ body::before{background:
   </div>
   <div class="card"><div class="ct">Tableau Session × Paire</div><div style="overflow-x:auto"><table class="tbl" id="cross-tbl"></table></div></div>
   <div class="card"><div class="ct">Résultat par Mois × Session</div><div class="tbl-scroll"><table class="tbl" style="min-width:600px" id="month-sess-tbl"></table></div></div>
+  <div class="g2">
+    <div class="card"><div class="ct">🕐 Performance par Heure</div><canvas id="hourChart" height="200"></canvas></div>
+    <div class="card"><div class="ct">✂️ Coupes-tu tes pertes ?</div><div id="dur-winloss" style="padding:6px 2px"></div></div>
+  </div>
 </div>
 
 <!-- ══ BILAN ══ -->
@@ -1906,10 +1916,12 @@ async function delTrade(id){
 // ── TABLE ──
 function renderTable(){
   const tb=document.getElementById('t-tbody');if(!tb)return;
+  const cardsEl=document.getElementById('t-cards');
   tb.innerHTML='';
   let filtered = T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
   if(JOURNAL_MONTH_FILTER!==null) filtered=filtered.filter(t=>parseInt(t.trade_month)===JOURNAL_MONTH_FILTER);
-  if(!filtered.length){tb.innerHTML=`<tr><td colspan="25" style="text-align:center;padding:24px;color:var(--td)"><div style="font-size:22px">📋</div><div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;margin-top:6px">Aucun trade ${JOURNAL_MONTH_FILTER!==null?'ce mois':'cette année'} — commence !</div></td></tr>`;return;}
+  if(!filtered.length){const _em=`Aucun trade ${JOURNAL_MONTH_FILTER!==null?'ce mois':'cette année'} — commence !`;tb.innerHTML=`<tr><td colspan="25" style="text-align:center;padding:24px;color:var(--td)"><div style="font-size:22px">📋</div><div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;margin-top:6px">${_em}</div></td></tr>`;if(cardsEl)cardsEl.innerHTML=`<div style="text-align:center;padding:24px;color:var(--td)"><div style="font-size:22px">📋</div><div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;margin-top:6px">${_em}</div></div>`;return;}
+  let cardsHTML='';
   [...filtered].reverse().forEach((t,i)=>{
     const cls=t.result==='WIN'?'win':t.result==='LOSS'?'loss':'be-r';
     const bc=pbc(t.pair);
@@ -1943,7 +1955,90 @@ function renderTable(){
       <td style="display:flex;gap:4px"><button onclick="openTradeDetail('${t.id}')" style="background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button><button onclick="openEditTrade('${t.id}')" style="background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
     `;
     tb.appendChild(row);
+    // ── Fiche mobile (même donnée que la ligne) ──
+    const _col=t.result==='WIN'?'var(--grb)':t.result==='LOSS'?'var(--reb)':'var(--gb)';
+    const _pct=t.pnl_pct!=null?(parseFloat(t.pnl_pct)>=0?'+':'')+parseFloat(t.pnl_pct||0).toFixed(2)+'%':'—';
+    cardsHTML+=`<div style="background:var(--card2);border:1px solid var(--bo);border-left:3px solid ${_col};border-radius:10px;padding:11px 12px;margin-bottom:9px">`
+      +`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">`
+        +`<span class="pb ${bc}">${t.pair}</span>`
+        +`<span style="color:${t.dir==='LONG'?'var(--grb)':'var(--reb)'};font-weight:700;font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span>`
+        +`<span class="${cls}" style="font-size:9px;padding:2px 7px;border-radius:20px;background:rgba(124,92,255,0.08);font-weight:700">${t.result}</span>`
+        +`<span class="${cls}" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-weight:700;font-size:13px">${pnlStr}</span>`
+      +`</div>`
+      +`<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:11px;color:var(--ts);margin-bottom:9px">`
+        +`<div>📅 ${t.day} · <span style="color:var(--bb)">${t.sess}</span></div>`
+        +`<div style="text-align:right">P&L %: <span class="${cls}">${_pct}</span></div>`
+        +`<div>⏱ ${t.entry_time||'—'} → ${t.exit_time||'—'}</div>`
+        +`<div style="text-align:right">RR ${t.rr||'—'} · Risque ${t.risk_pct}%</div>`
+      +`</div>`
+      +`<div style="display:flex;gap:6px">`
+        +`<button onclick="openTradeDetail('${t.id}')" style="flex:1;background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:7px;border-radius:6px;cursor:pointer;font-size:11px">👁 Voir</button>`
+        +`<button onclick="openEditTrade('${t.id}')" style="flex:1;background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.2);color:var(--bb);padding:7px;border-radius:6px;cursor:pointer;font-size:11px">✎ Éditer</button>`
+        +`<button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:7px 11px;border-radius:6px;cursor:pointer;font-size:11px">✕</button>`
+      +`</div>`
+    +`</div>`;
   });
+  if(cardsEl)cardsEl.innerHTML=cardsHTML;
+}
+
+// ── EXPORT / IMPORT CSV ──
+const CSV_COLS=['pair','cat','day','sess','dir','entry_time','exit_time','duration','duration_mins','cl','result','lot_size','risk_pct','risk_amt','rr','ca_amt','commission','pnl_amt','pnl_pct','fonda','star','strats','confs','pats','psych_errors','psych_good','notes','trade_month','trade_year','created_at'];
+function csvEsc(v){ if(v==null) v=''; v=String(v); return /[",\n\r]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+function exportCSV(){
+  const rows=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  if(!rows.length){ toast('❌ Aucun trade à exporter pour '+GLOBAL_YEAR); return; }
+  const csv=CSV_COLS.join(',')+'\n'+rows.map(t=>CSV_COLS.map(c=>csvEsc(t[c])).join(',')).join('\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob), a=document.createElement('a');
+  const nm=(ACTIVE_ACCOUNT&&ACTIVE_ACCOUNT.name?ACTIVE_ACCOUNT.name.replace(/[^a-z0-9]/gi,'_'):'compte');
+  a.href=url; a.download='trackrecord_'+nm+'_'+GLOBAL_YEAR+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('✅ '+rows.length+' trades exportés en CSV');
+}
+function parseCSV(text){
+  const rows=[]; let row=[], field='', inQ=false;
+  text=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  for(let i=0;i<text.length;i++){ const c=text[i];
+    if(inQ){ if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inQ=false; } else field+=c; }
+    else { if(c==='"') inQ=true; else if(c===','){ row.push(field); field=''; } else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=''; } else field+=c; }
+  }
+  if(field!==''||row.length){ row.push(field); rows.push(row); }
+  return rows;
+}
+async function importCSV(ev){
+  const file=ev.target.files&&ev.target.files[0]; if(!file) return; ev.target.value='';
+  if(!ACTIVE_ACCOUNT){ toast('❌ Aucun compte actif'); return; }
+  let text; try{ text=await file.text(); }catch(e){ toast('❌ Lecture du fichier impossible'); return; }
+  const rows=parseCSV(text).filter(r=>r.length>1 || (r.length===1 && r[0].trim()!==''));
+  if(rows.length<2){ toast('❌ Fichier vide ou invalide'); return; }
+  const header=rows[0].map(h=>h.trim());
+  const numCols=['duration_mins','lot_size','risk_pct','risk_amt','rr','ca_amt','commission','pnl_amt','pnl_pct','star','trade_month','trade_year'];
+  const dataRows=rows.slice(1);
+  if(!confirm('Importer '+dataRows.length+' trades dans le compte « '+ACTIVE_ACCOUNT.name+' » ?\n\n(Conseil : utilise un compte de test pour ne pas mélanger avec tes vrais trades.)')) return;
+  const now=new Date();
+  const batch=dataRows.map(cells=>{
+    const o={};
+    header.forEach((h,idx)=>{ if(CSV_COLS.includes(h)) o[h]=cells[idx]!==undefined?cells[idx]:''; });
+    numCols.forEach(k=>{ if(o[k]===''||o[k]==null) delete o[k]; else o[k]=parseFloat(o[k])||0; });
+    if(o.trade_year==null) o.trade_year=now.getFullYear();
+    if(o.trade_month==null) o.trade_month=now.getMonth();
+    if(o.risk_amt==null && o.risk_pct!=null && CAP>0) o.risk_amt=parseFloat((CAP*o.risk_pct/100).toFixed(2));
+    if(o.pnl_pct==null && o.pnl_amt!=null && CAP>0) o.pnl_pct=parseFloat((o.pnl_amt/CAP*100).toFixed(2));
+    ['entry_time','exit_time'].forEach(k=>{ if(o[k]==='') o[k]=null; });
+    if(!o.created_at) delete o.created_at;
+    o.user_id=ACTIVE_ACCOUNT.id;
+    return o;
+  });
+  try{
+    let { error } = await sb.from('trades').insert(batch);
+    if(error){
+      const slim=batch.map(({psych_errors,psych_good,photo_av,photo_co,photo_ap,...r})=>r);
+      const r2=await sb.from('trades').insert(slim); error=r2.error;
+    }
+    if(error){ console.error('importCSV',error); toast('❌ Import échoué : '+(error.message||'')); return; }
+    await loadTrades(); renderTable(); updateDash();
+    toast('✅ '+batch.length+' trades importés !');
+  }catch(e){ console.error('importCSV exception',e); toast('❌ Erreur import'); }
 }
 
 // ── STATS ──
@@ -2049,6 +2144,15 @@ function buildCorePerfAndOptim(){
 
 function updateDash(){
   const s=stats();
+  // Espérance / trade ($ moyen et R moyen)
+  (function(){
+    const TY=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+    const expA=s.tot>0?s.tpnl/s.tot:0;
+    const expR=TY.length?TY.reduce((a,t)=>a+computeActualR(t),0)/TY.length:0;
+    const ee=document.getElementById('k-exp'), es=document.getElementById('k-exp-s');
+    if(ee){ ee.textContent=s.tot>0?(expA>=0?'+':'')+'$'+Math.abs(expA).toFixed(0):'—'; ee.style.color=expA>0?'var(--grb)':expA<0?'var(--reb)':'var(--be)'; }
+    if(es){ es.textContent=s.tot>0?(expR>=0?'+':'')+expR.toFixed(2)+'R / trade':'R moyen —'; }
+  })();
   const curCap=CAP+(s.tpnl||0);
   document.getElementById('k-init').textContent=CAP>0?'$'+CAP.toLocaleString():'—';
   const ke=document.getElementById('k-cap');
@@ -2143,7 +2247,7 @@ function initPairChart(){
 
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
-  DC('day');DC('sess');DC('close');
+  DC('day');DC('sess');DC('close');DC('hour');
   const T=__yt();
   // Pair table
   const tb=document.getElementById('pair-tbody');
@@ -2217,6 +2321,37 @@ function initAnalyse(){
   // Close polar
   const c3=document.getElementById('closeChart');
   if(c3)CI['close']=new Chart(c3,{type:'polarArea',data:{labels:['TP','SL','BE','Manuel'],datasets:[{data:[T.filter(t=>t.cl==='TP').length,T.filter(t=>t.cl==='SL').length,T.filter(t=>t.cl==='BE').length,T.filter(t=>t.cl==='MANUEL').length],backgroundColor:['rgba(16,185,129,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(124,92,255,0.7)'],borderColor:['#10b981','#ef4444','#f59e0b','#7c5cff'],borderWidth:2}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8',font:{family:'Rajdhani',size:11}}}},scales:{r:{grid:{color:'rgba(43,43,61,0.4)'},ticks:{display:false}}}}});
+
+  // ── Performance par heure (depuis entry_time) ──
+  const hourMap={};
+  T.forEach(t=>{ if(t.entry_time){ const h=parseInt(String(t.entry_time).split(':')[0]); if(!isNaN(h)){ if(!hourMap[h])hourMap[h]={pnl:0,n:0,w:0}; hourMap[h].pnl+=parseFloat(t.pnl_amt||0); hourMap[h].n++; if(t.result==='WIN')hourMap[h].w++; } } });
+  const hourKeys=Object.keys(hourMap).map(Number).sort((a,b)=>a-b);
+  const ch=document.getElementById('hourChart');
+  if(ch && hourKeys.length){
+    const hLabels=hourKeys.map(h=>String(h).padStart(2,'0')+'h');
+    const hData=hourKeys.map(h=>parseFloat(hourMap[h].pnl.toFixed(0)));
+    const hMeta=hourKeys.map(h=>hourMap[h]);
+    CI['hour']=new Chart(ch,{type:'bar',data:{labels:hLabels,datasets:[{label:'P&L $',data:hData,backgroundColor:hData.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{afterLabel:(c)=>{const m=hMeta[c.dataIndex];const wr=m.n?Math.round(m.w/m.n*100):0;return m.n+' trade'+(m.n>1?'s':'')+' · WR '+wr+'%';}}}},scales:{x:{grid:{color:'rgba(43,43,61,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'}}},y:{grid:{color:'rgba(43,43,61,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'},callback:v=>(v>=0?'+':'')+'$'+v}}}}});
+  }
+
+  // ── Durée gagnants vs perdants (coupes-tu tes pertes ?) ──
+  const dw=document.getElementById('dur-winloss');
+  if(dw){
+    const _wins=T.filter(t=>t.result==='WIN'&&parseFloat(t.duration_mins||0)>0);
+    const _losses=T.filter(t=>t.result==='LOSS'&&parseFloat(t.duration_mins||0)>0);
+    const fmtD=m=>{m=Math.round(m); if(m<60)return m+'min'; const h=Math.floor(m/60),mm=m%60; return h+'h'+(mm?' '+mm+'min':'');};
+    if(!_wins.length && !_losses.length){ dw.innerHTML='<div style="color:var(--td);font-size:11px">Pas assez de données de durée (renseigne tes heures d\'entrée/sortie).</div>'; }
+    else {
+      const aw=_wins.length?_wins.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/_wins.length:0;
+      const al=_losses.length?_losses.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/_losses.length:0;
+      const bad=(_wins.length&&_losses.length&&al>aw);
+      dw.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">`
+        +`<div style="background:var(--card2);border:1px solid var(--bo);border-left:3px solid var(--grb);border-radius:9px;padding:11px"><div style="font-size:9px;color:var(--td);letter-spacing:1px;text-transform:uppercase">✅ Gagnants</div><div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:var(--grb);margin-top:4px">${_wins.length?fmtD(aw):'—'}</div><div style="font-size:9px;color:var(--ts);margin-top:2px">${_wins.length} trade${_wins.length>1?'s':''}</div></div>`
+        +`<div style="background:var(--card2);border:1px solid var(--bo);border-left:3px solid var(--reb);border-radius:9px;padding:11px"><div style="font-size:9px;color:var(--td);letter-spacing:1px;text-transform:uppercase">❌ Perdants</div><div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:var(--reb);margin-top:4px">${_losses.length?fmtD(al):'—'}</div><div style="font-size:9px;color:var(--ts);margin-top:2px">${_losses.length} trade${_losses.length>1?'s':''}</div></div>`
+        +`</div>`
+        +`<div style="font-size:11px;padding:9px 11px;border-radius:8px;background:${bad?'rgba(239,68,68,0.1)':'rgba(16,185,129,0.1)'};border:1px solid ${bad?'rgba(239,68,68,0.3)':'rgba(16,185,129,0.3)'};color:${bad?'var(--reb)':'var(--grb)'};line-height:1.5">${bad?'⚠ Tu gardes tes perdants plus longtemps que tes gagnants — pense à couper tes pertes plus vite.':'✅ Bien : tu ne laisses pas traîner tes perdants plus que tes gagnants.'}</div>`;
+    }
+  }
 }
 
 function initBilan(){
