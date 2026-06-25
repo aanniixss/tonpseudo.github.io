@@ -1064,83 +1064,6 @@ body::before{background:
       <div class="card"><div class="ct">📊 Évolution % par Trade</div><canvas id="md-pct-chart" height="160"></canvas></div>
     </div>
 
-    <div class="g2" style="margin-bottom:14px">
-      <div class="card"><div class="ct">🎯 Résultats</div><canvas id="md-res-chart" height="160"></canvas></div>
-      <div class="card"><div class="ct">⬢ Top Setups</div><canvas id="md-strat-chart" height="160"></canvas></div>
-    </div>
-
-    <!-- SESSIONS + PAIRS -->
-    <div class="g2" style="margin-bottom:14px">
-      <div class="card">
-        <div class="ct">🕐 Sessions</div>
-        <table class="tbl"><thead><tr><th>Session</th><th>Trades</th><th>WR%</th><th>Net$</th><th>PF</th></tr></thead>
-        <tbody id="md-sess-tbody"></tbody></table>
-      </div>
-      <div class="card">
-        <div class="ct">💱 Paires</div>
-        <table class="tbl"><thead><tr><th>Paire</th><th>Trades</th><th>WR%</th><th>Net$</th></tr></thead>
-        <tbody id="md-pair-tbody"></tbody></table>
-      </div>
-    </div>
-
-    <!-- TRADE LIST -->
-    <div class="card" style="margin-bottom:14px">
-      <div class="ct">📋 Tous les Trades</div>
-      <div style="overflow-x:auto">
-        <table class="tbl">
-          <thead><tr><th>#</th><th>Paire</th><th>Dir</th><th>Session</th><th>Durée</th><th>RR</th><th>CA$</th><th>Comm$</th><th>Net$</th><th>Résultat</th><th>Setup</th><th>★</th></tr></thead>
-          <tbody id="md-trades-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ERREURS DU MOIS -->
-    <div class="g2" style="margin-bottom:14px">
-      <div class="card">
-        <div class="ct">⏱ Performance / Durée</div>
-        <div id="md-dur" style="display:flex;flex-direction:column;gap:7px;padding-top:4px"></div>
-      </div>
-      <div class="card">
-        <div class="ct">📋 Résumé du Mois</div>
-        <div id="md-resume" style="font-size:11px;color:var(--ts);line-height:2"></div>
-      </div>
-    </div>
-
-    <div class="g2">
-      <div class="card">
-        <div class="ct">⚠ Erreurs Détectées</div>
-        <div id="md-errors" style="display:flex;flex-direction:column;gap:8px"></div>
-      </div>
-      <div class="card">
-        <div class="ct">✅ Points Positifs</div>
-        <div id="md-positifs" style="display:flex;flex-direction:column;gap:8px"></div>
-      </div>
-    </div>
-
-    <!-- ANALYSE PSY & SETUPS (suit le filtre semaine) -->
-    <div class="card" style="margin-top:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
-        <div class="ct" style="margin-bottom:0">🧠 Analyse Psychologique &amp; Setups</div>
-        <div id="md-track-scope" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:var(--be)">· Tout le mois</div>
-      </div>
-      <div class="g2" style="margin-bottom:10px">
-        <div>
-          <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">⬢ SETUPS / STRATÉGIES</div>
-          <div id="md-track-strats"></div>
-        </div>
-      </div>
-      <div class="g2">
-        <div>
-          <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ BONNE PSYCHOLOGIE</div>
-          <div id="md-track-pgood"></div>
-        </div>
-        <div>
-          <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--gb);margin-bottom:8px">🔗 CONFLUENCES &amp; PATTERNS</div>
-          <div id="md-track-conf"></div>
-        </div>
-      </div>
-    </div>
-
     <!-- PILOT PERFORMANCE (cercles, suit le filtre semaine) -->
     <div class="card" style="margin-top:14px">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">
@@ -1193,6 +1116,24 @@ body::before{background:
       </div>
     </div>
 
+    <!-- RÉSULTATS + TOP SETUPS -->
+    <div class="g2" style="margin-bottom:14px">
+      <div class="card"><div class="ct">🎯 Résultats</div><canvas id="md-res-chart" height="160"></canvas></div>
+      <div class="card"><div class="ct">⬢ Top Setups</div><canvas id="md-strat-chart" height="160"></canvas></div>
+    </div>
+
+    <!-- RÉSUMÉ + DURÉE -->
+    <div class="g2" style="margin-bottom:14px">
+      <div class="card">
+        <div class="ct">📋 Résumé du Mois</div>
+        <div id="md-resume" style="font-size:11px;color:var(--ts);line-height:2"></div>
+      </div>
+      <div class="card">
+        <div class="ct">⏱ Performance / Durée</div>
+        <div id="md-dur" style="display:flex;flex-direction:column;gap:7px;padding-top:4px"></div>
+      </div>
+    </div>
+
     <!-- OPTIMISATION R-MULTIPLES (suit le filtre semaine) -->
     <div class="card" style="margin-top:14px">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
@@ -1211,6 +1152,66 @@ body::before{background:
       <div style="margin-top:10px"><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ BONNE PSYCHO (NB · % · $)</div><div id="md-opt-good"></div></div>
     </div>
 
+    <!-- ANALYSE PSY & SETUPS (suit le filtre semaine) -->
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        <div class="ct" style="margin-bottom:0">🧠 Analyse Psychologique &amp; Setups</div>
+        <div id="md-track-scope" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:var(--be)">· Tout le mois</div>
+      </div>
+      <div class="g2" style="margin-bottom:10px">
+        <div>
+          <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">⬢ SETUPS / STRATÉGIES</div>
+          <div id="md-track-strats"></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div>
+          <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ BONNE PSYCHOLOGIE</div>
+          <div id="md-track-pgood"></div>
+        </div>
+        <div>
+          <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--gb);margin-bottom:8px">🔗 CONFLUENCES &amp; PATTERNS</div>
+          <div id="md-track-conf"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LE RESTE -->
+    <div class="g2">
+      <div class="card">
+        <div class="ct">⚠ Erreurs Détectées</div>
+        <div id="md-errors" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div class="card">
+        <div class="ct">✅ Points Positifs</div>
+        <div id="md-positifs" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+    </div>
+
+    <!-- SESSIONS + PAIRS -->
+    <div class="g2" style="margin-bottom:14px">
+      <div class="card">
+        <div class="ct">🕐 Sessions</div>
+        <table class="tbl"><thead><tr><th>Session</th><th>Trades</th><th>WR%</th><th>Net$</th><th>PF</th></tr></thead>
+        <tbody id="md-sess-tbody"></tbody></table>
+      </div>
+      <div class="card">
+        <div class="ct">💱 Paires</div>
+        <table class="tbl"><thead><tr><th>Paire</th><th>Trades</th><th>WR%</th><th>Net$</th></tr></thead>
+        <tbody id="md-pair-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- TRADE LIST -->
+    <div class="card" style="margin-bottom:14px">
+      <div class="ct">📋 Tous les Trades</div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>#</th><th>Paire</th><th>Dir</th><th>Session</th><th>Durée</th><th>RR</th><th>CA$</th><th>Comm$</th><th>Net$</th><th>Résultat</th><th>Setup</th><th>★</th></tr></thead>
+          <tbody id="md-trades-tbody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
