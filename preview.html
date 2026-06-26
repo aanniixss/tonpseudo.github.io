@@ -3143,94 +3143,94 @@ const mn_pdf=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août'
 
 function buildReportHTML(title, subtitle, kpis, sections){
   const acc = ACTIVE_ACCOUNT || {name:'TrackRecord PRO', color:'#7c5cff'};
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const timeStr=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
 <style>
+  :root{--v:#7c5cff;--v2:#4f46e5;--ink:#13131c;--muted:#6b7280;--line:#e7e8f0;--bg:#eef0f7;}
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:Arial,sans-serif;background:#fff;color:#1a1a2e;padding:0;}
-  @media print{
-    .no-print{display:none!important;}
-    body{padding:0;}
-    .page{page-break-after:always;}
-  }
-  .print-btn{position:fixed;top:16px;right:16px;background:#7c5cff;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;z-index:999;box-shadow:0 4px 12px rgba(124,92,255,0.4);}
-  .header{background:linear-gradient(135deg,#09090f,#15151f);color:#fff;padding:32px;border-bottom:3px solid #7c5cff;}
-  .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-  .logo{display:flex;align-items:center;gap:12px;}
-  .logo-box{width:44px;height:44px;background:#7c5cff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;}
-  .logo-text{font-size:18px;font-weight:700;letter-spacing:3px;color:#fff;}
-  .logo-sub{font-size:9px;color:#475569;letter-spacing:3px;}
-  .confidential{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#f87171;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:2px;}
-  .report-title{font-size:22px;font-weight:700;color:#7c5cff;margin-bottom:4px;}
-  .report-sub{font-size:11px;color:#94a3b8;letter-spacing:1px;}
-  .account-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.3);border-radius:20px;padding:4px 12px;margin-top:8px;}
-  .account-dot{width:8px;height:8px;border-radius:50%;background:${acc.color||'#7c5cff'};}
-  .account-name{font-size:11px;color:#7c5cff;font-weight:700;}
-  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;padding:24px 32px;background:#f8fafc;}
-  .kpi{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px;border-top:3px solid #7c5cff;}
-  .kpi-label{font-size:9px;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;}
-  .kpi-value{font-size:22px;font-weight:700;}
-  .kpi.green .kpi-value{color:#10b981;}
-  .kpi.red .kpi-value{color:#ef4444;}
-  .kpi.blue .kpi-value{color:#7c5cff;}
-  .kpi.gold .kpi-value{color:#f59e0b;}
-  .section{padding:24px 32px;border-bottom:1px solid #e2e8f0;}
-  .section-title{font-size:12px;font-weight:700;color:#20202d;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #7c5cff;display:inline-block;}
-  table{width:100%;border-collapse:collapse;font-size:12px;}
-  th{background:#15151f;color:#94a3b8;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:8px 10px;text-align:left;}
-  td{padding:8px 10px;border-bottom:1px solid #f1f5f9;}
-  tr:nth-child(even) td{background:#f8fafc;}
-  .win{color:#10b981;font-weight:700;}
-  .loss{color:#ef4444;font-weight:700;}
-  .be{color:#f59e0b;font-weight:700;}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
-  .badge.win{background:rgba(16,185,129,0.1);color:#10b981;}
-  .badge.loss{background:rgba(239,68,68,0.1);color:#ef4444;}
-  .badge.be{background:rgba(245,158,11,0.1);color:#f59e0b;}
-  .footer{background:#09090f;color:#475569;padding:16px 32px;font-size:10px;display:flex;justify-content:space-between;margin-top:auto;}
-  .generated{font-size:9px;color:#94a3b8;margin-top:4px;}
-  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-  .bar-label{width:100px;font-size:11px;color:#475569;flex-shrink:0;}
-  .bar-wrap{flex:1;background:#f1f5f9;border-radius:20px;height:8px;overflow:hidden;}
-  .bar-fill{height:100%;border-radius:20px;}
-  .bar-val{width:80px;font-size:11px;font-weight:700;text-align:right;}
+  body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .wrap{max-width:900px;margin:0 auto;background:#fff;box-shadow:0 10px 40px rgba(20,20,40,.12);}
+  .hero{position:relative;background:linear-gradient(135deg,#0b0b16 0%,#241a5e 48%,#7c5cff 130%);color:#fff;padding:36px 40px 30px;overflow:hidden;}
+  .hero::after{content:'';position:absolute;inset:0;background:radial-gradient(700px 320px at 88% -25%,rgba(124,92,255,.5),transparent 70%);}
+  .hero-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;margin-bottom:22px;}
+  .brand{display:flex;align-items:center;gap:13px;}
+  .brand-logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#7c5cff,#a78bfa);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:17px;color:#0b0b16;box-shadow:0 6px 18px rgba(124,92,255,.5);}
+  .brand-name{font-family:'Space Grotesk';font-weight:700;font-size:17px;letter-spacing:3px;}
+  .brand-sub{font-size:8px;letter-spacing:3px;color:#a9a4d8;margin-top:2px;}
+  .conf{background:rgba(239,68,68,.16);border:1px solid rgba(239,68,68,.45);color:#fca5a5;padding:5px 13px;border-radius:30px;font-size:9px;font-weight:700;letter-spacing:2px;}
+  .hero-title{font-family:'Space Grotesk';font-size:30px;font-weight:700;line-height:1.1;position:relative;z-index:1;}
+  .hero-sub{font-size:12px;color:#c9c5ee;letter-spacing:.5px;margin-top:6px;position:relative;z-index:1;}
+  .hero-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;position:relative;z-index:1;}
+  .acc-chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:30px;padding:6px 14px;}
+  .acc-dot{width:9px;height:9px;border-radius:50%;background:${acc.color||'#7c5cff'};box-shadow:0 0 0 3px rgba(255,255,255,.1);}
+  .acc-name{font-size:11px;font-weight:600;}
+  .gen{font-size:10px;color:#9b97c9;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;padding:26px 40px;background:linear-gradient(180deg,#f6f7fc,#eef0f7);}
+  .kpi{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(20,20,40,.05);overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--v);}
+  .kpi.green::before{background:#10b981;}.kpi.red::before{background:#ef4444;}.kpi.gold::before{background:#f59e0b;}.kpi.blue::before{background:var(--v);}
+  .kpi-label{font-size:8.5px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:9px;font-weight:600;}
+  .kpi-value{font-family:'Space Grotesk';font-size:25px;font-weight:700;line-height:1;}
+  .kpi.green .kpi-value{color:#059669;}.kpi.red .kpi-value{color:#dc2626;}.kpi.blue .kpi-value{color:var(--v2);}.kpi.gold .kpi-value{color:#d97706;}
+  .section{padding:24px 40px;border-top:1px solid var(--line);}
+  .section-title{font-family:'Space Grotesk';font-size:13px;font-weight:700;color:var(--ink);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;padding-left:12px;border-left:4px solid var(--v);line-height:1.3;}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;border:1px solid var(--line);border-radius:11px;overflow:hidden;}
+  th{background:#1b1530;color:#cfc8f5;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;padding:9px 11px;text-align:left;font-weight:600;}
+  td{padding:9px 11px;border-bottom:1px solid #f1f2f8;}
+  tr:last-child td{border-bottom:none;}
+  tr:nth-child(even) td{background:#fafaff;}
+  .win,.positive{color:#059669;font-weight:700;}.loss,.negative{color:#dc2626;font-weight:700;}.be{color:#d97706;font-weight:700;}.neutral{color:var(--muted);}
+  .badge{display:inline-block;padding:2px 9px;border-radius:30px;font-size:9.5px;font-weight:700;}
+  .badge.win{background:rgba(16,185,129,.12);color:#059669;}.badge.loss{background:rgba(239,68,68,.12);color:#dc2626;}.badge.be{background:rgba(245,158,11,.12);color:#d97706;}
+  .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:9px;}
+  .bar-label{width:120px;font-size:11px;color:#374151;flex-shrink:0;font-weight:500;}
+  .bar-wrap{flex:1;background:#eef0f7;border-radius:30px;height:9px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:30px;background:linear-gradient(90deg,var(--v),#a78bfa);}
+  .bar-val{width:84px;font-family:'JetBrains Mono';font-size:11px;font-weight:700;text-align:right;}
   .month-table td:first-child{font-weight:700;}
-  .positive{color:#10b981;font-weight:700;}
-  .negative{color:#ef4444;font-weight:700;}
-  .neutral{color:#94a3b8;}
+  .footer{background:#0b0b16;color:#7b7796;padding:18px 40px;font-size:9.5px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .footer b{color:#a78bfa;}
+  .generated{font-size:9px;color:#c9c5ee;}
+  @page{size:A4;margin:12mm;}
+  @media print{body{background:#fff;}.wrap{box-shadow:none;max-width:none;}.no-print{display:none!important;}.section,.kpi{break-inside:avoid;page-break-inside:avoid;}tr,.bar-row{break-inside:avoid;}}
 </style>
 </head>
 <body>
 <div class="no-print" style="position:fixed;top:16px;right:16px;display:flex;gap:8px;z-index:999">
-  <button onclick="(window.close()||history.length>1&&history.back())" style="background:#475569;color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3)">← Retour</button>
-  <button onclick="window.print()" style="background:#7c5cff;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(124,92,255,0.4)">🖨️ Imprimer / PDF</button>
+  <button onclick="(window.close()||history.length>1&&history.back())" style="background:#475569;color:#fff;border:none;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)">← Retour</button>
+  <button onclick="window.print()" style="background:linear-gradient(135deg,#7c5cff,#4f46e5);color:#fff;border:none;padding:11px 22px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(124,92,255,.45)">🖨️ Imprimer / PDF</button>
 </div>
-
-<div class="header">
-  <div class="header-top">
-    <div class="logo">
-      <div class="logo-box">TR</div>
-      <div><div class="logo-text">TRACKRECORD <span style="color:#7c5cff">PRO</span></div><div class="logo-sub">PROFESSIONAL TRADING JOURNAL</div></div>
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-top">
+      <div class="brand">
+        <div class="brand-logo">TR</div>
+        <div><div class="brand-name">TRACKRECORD <span style="color:#c4b5fd">PRO</span></div><div class="brand-sub">PROFESSIONAL TRADING JOURNAL</div></div>
+      </div>
+      <div class="conf">🔒 CONFIDENTIEL</div>
     </div>
-    <div class="confidential">🔒 CONFIDENTIEL</div>
+    <div class="hero-title">${title}</div>
+    <div class="hero-sub">${subtitle}</div>
+    <div class="hero-meta">
+      <div class="acc-chip"><span class="acc-dot"></span><span class="acc-name">${acc.name}</span></div>
+      <div class="gen">Généré le ${dateStr} à ${timeStr}</div>
+    </div>
   </div>
-  <div class="report-title">${title}</div>
-  <div class="report-sub">${subtitle}</div>
-  <div class="account-chip"><div class="account-dot"></div><span class="account-name">${acc.name}</span></div>
-  <div class="generated">Généré le ${new Date().toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})} à ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
-</div>
-
-<div class="kpi-grid">${kpis.map(k=>`<div class="kpi ${k.cls||'blue'}"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div>${k.sub?`<div style="font-size:10px;color:#94a3b8;margin-top:3px">${k.sub}</div>`:''}</div>`).join('')}</div>
-
-${sections}
-
-<div class="footer">
-  <div>TrackRecord PRO · Rapport de performance · Données confidentielles</div>
-  <div>${acc.name} · ${title}</div>
+  <div class="kpi-grid">${kpis.map(k=>`<div class="kpi ${k.cls||'blue'}"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div>${k.sub?`<div style="font-size:10px;color:#6b7280;margin-top:5px;font-weight:500">${k.sub}</div>`:''}</div>`).join('')}</div>
+  ${sections}
+  <div class="footer">
+    <div>TrackRecord <b>PRO</b> · Rapport de performance · Données confidentielles</div>
+    <div>${acc.name} · ${title}</div>
+  </div>
 </div>
 </body></html>`;
 }
