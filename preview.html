@@ -431,7 +431,7 @@ body::before{background:
     </div>
     <div class="side-cap">Intelligence ✨</div>
     <div class="side-nav">
-      <button class="side-action accent" onclick="openCoach();rdToggleSidebar(false)"><span class="ti">✨</span> Coach IA — Résumé</button>
+      <button class="side-action accent" onclick="openCoach();rdToggleSidebar(false)"><span class="ti">✨</span> Assistant IA</button>
       <button class="side-action" onclick="rdNewTrade();rdToggleSidebar(false)"><span class="ti">＋</span> Nouveau trade</button>
       <button class="side-action" onclick="if(typeof exportAnnualPDF==='function')exportAnnualPDF();rdToggleSidebar(false)"><span class="ti">📄</span> Export PDF annuel</button>
     </div>
@@ -1328,8 +1328,8 @@ body::before{background:
 <!-- COACH IA MODAL -->
 <div class="mo" id="coachModal">
   <div class="mb coach-mb">
-    <div class="mt" style="text-align:center">✨ Coach IA — Résumé de performance</div>
-    <div id="coach-body"></div>
+    <div class="mt" style="text-align:center">✨ Assistant IA — ton coach perso</div>
+    <div id="coach-body" style="max-height:68vh;overflow-y:auto;padding-right:4px"></div>
     <div style="text-align:center;margin-top:18px">
       <button class="btn btn-g" onclick="document.getElementById('coachModal').classList.remove('show')">Fermer</button>
     </div>
@@ -1341,13 +1341,13 @@ function openCoach(){
   document.getElementById('coach-body').innerHTML = buildCoachReport();
   document.getElementById('coachModal').classList.add('show');
 }
-function buildCoachReport(){
+function coachFmt(v){return (v>=0?'+':'-')+'$'+Math.abs(Math.round(v)).toLocaleString();}
+function coachDur(m){m=Math.round(m); if(m<60)return m+'min'; var h=Math.floor(m/60),mm=m%60; return h+'h'+(mm?' '+mm+'min':'');}
+function coachData(){
   var year=(typeof GLOBAL_YEAR!=='undefined')?GLOBAL_YEAR:new Date().getFullYear();
   var all=(typeof T!=='undefined'&&Array.isArray(T))?T:[];
   var ty=all.filter(function(t){return parseInt(t.trade_year)===year;});
-  if(!ty.length){return '<div style="text-align:center;padding:34px;color:var(--td)">Aucun trade pour <b style="color:#cbbcff">'+year+'</b>.<br>Ajoute des trades pour obtenir ton analyse.</div>';}
   var pnl=function(t){return parseFloat(t.pnl_amt||0);};
-  var fmt=function(v){return (v>=0?'+':'-')+'$'+Math.abs(Math.round(v)).toLocaleString();};
   var w=ty.filter(function(t){return t.result==='WIN';}).length;
   var l=ty.filter(function(t){return t.result==='LOSS';}).length;
   var be=ty.filter(function(t){return t.result==='BE';}).length;
@@ -1356,46 +1356,110 @@ function buildCoachReport(){
   var wp=ty.filter(function(t){return t.result==='WIN';}).reduce(function(s,t){return s+pnl(t);},0);
   var lp=Math.abs(ty.filter(function(t){return t.result==='LOSS';}).reduce(function(s,t){return s+pnl(t);},0));
   var pf=lp>0?(wp/lp):null;
-  function groupBy(key){var m={};ty.forEach(function(t){var k=t[key]||'—';if(!m[k])m[k]={n:0,net:0,w:0};m[k].n++;m[k].net+=pnl(t);if(t.result==='WIN')m[k].w++;});var a=Object.entries(m);a.sort(function(x,y){return y[1].net-x[1].net;});return a;}
-  function groupTag(field){var m={};ty.forEach(function(t){try{JSON.parse(t[field]||'[]').forEach(function(x){if(!m[x])m[x]={n:0,net:0,w:0};m[x].n++;m[x].net+=pnl(t);if(t.result==='WIN')m[x].w++;});}catch(e){}});return Object.entries(m);}
-  var byDay=groupBy('day'), bySess=groupBy('sess'), byPair=groupBy('pair');
+  var avgWin=w?wp/w:0, avgLoss=l?lp/l:0;
+  function groupBy(key){var m={};ty.forEach(function(t){var k=t[key]||'-';if(!m[k])m[k]={n:0,net:0,w:0};m[k].n++;m[k].net+=pnl(t);if(t.result==='WIN')m[k].w++;});var a=Object.entries(m);a.sort(function(x,y){return y[1].net-x[1].net;});return a;}
+  function groupTag(field){var m={};ty.forEach(function(t){try{JSON.parse(t[field]||'[]').forEach(function(x){if(!x)return;if(!m[x])m[x]={n:0,net:0,w:0};m[x].n++;m[x].net+=pnl(t);if(t.result==='WIN')m[x].w++;});}catch(e){}});return Object.entries(m);}
+  var byDay=groupBy('day'),bySess=groupBy('sess'),byPair=groupBy('pair');
   var setArr=groupTag('strats').sort(function(x,y){return y[1].net-x[1].net;});
-  var errFreq=groupTag('psych_errors').sort(function(x,y){return y[1].n-x[1].n;});
   var errCost=groupTag('psych_errors').sort(function(x,y){return x[1].net-y[1].net;});
+  var errFreq=groupTag('psych_errors').sort(function(x,y){return y[1].n-x[1].n;});
   var goodArr=groupTag('psych_good').sort(function(x,y){return y[1].n-x[1].n;});
   var starT=ty.filter(function(t){return t.star>0;});
-  var avgStar=starT.length?(starT.reduce(function(s,t){return s+t.star;},0)/starT.length).toFixed(1):null;
-  // verdict
+  var avgStar=starT.length?(starT.reduce(function(s,t){return s+t.star;},0)/starT.length):null;
+  var winsD=ty.filter(function(t){return t.result==='WIN'&&parseFloat(t.duration_mins||0)>0;});
+  var lossD=ty.filter(function(t){return t.result==='LOSS'&&parseFloat(t.duration_mins||0)>0;});
+  var awD=winsD.length?winsD.reduce(function(s,t){return s+parseFloat(t.duration_mins||0);},0)/winsD.length:0;
+  var alD=lossD.length?lossD.reduce(function(s,t){return s+parseFloat(t.duration_mins||0);},0)/lossD.length:0;
+  var nbErr=0;errFreq.forEach(function(e){nbErr+=e[1].n;});
+  return {year:year,ty:ty,net:net,w:w,l:l,be:be,wr:wr,pf:pf,avgWin:avgWin,avgLoss:avgLoss,byDay:byDay,bySess:bySess,byPair:byPair,setArr:setArr,errCost:errCost,errFreq:errFreq,goodArr:goodArr,avgStar:avgStar,awD:awD,alD:alD,nbErr:nbErr};
+}
+function buildCoachReport(){
+  var d=coachData(); var fmt=coachFmt;
+  if(!d.ty.length){return '<div style="text-align:center;padding:34px;color:var(--td)">Aucun trade pour <b style="color:#cbbcff">'+d.year+'</b>.<br>Ajoute des trades pour obtenir ton analyse.</div>';}
   var verdict;
-  if(net>0&&wr>=55) verdict='Solide 💪 Tu es rentable avec une bonne régularité. Continue d\'appliquer ton process, ne change rien à ce qui marche.';
-  else if(net>0) verdict='Rentable ✅ mais ton win rate est moyen : tu gagnes surtout grâce à ton ratio R. Protège tes gros gagnants et reste sélectif.';
-  else if(wr>=55) verdict='Attention ⚠ Bon win rate mais résultat négatif : tes pertes sont trop grosses face à tes gains. Le problème est la gestion du risque, pas tes entrées.';
-  else verdict='Période difficile 🔧 Réduis la taille, reviens à tes meilleurs setups/sessions ci-dessous et coupe les erreurs récurrentes avant de réattaquer fort.';
-  // recommandations
-  var R=[];
-  if(byDay.length){var bd=byDay[0],wd=byDay[byDay.length-1];
-    if(bd[1].net>0) R.push('✅ Ton meilleur jour : <b>'+bd[0]+'</b> ('+fmt(bd[1].net)+'). Concentre ton énergie dessus.');
-    if(wd[1].net<0&&wd[0]!==bd[0]) R.push('📅 Tu perds le plus le <b>'+wd[0]+'</b> ('+fmt(wd[1].net)+'). Évite-le ou réduis ta taille.');}
-  if(bySess.length){var ws=bySess[bySess.length-1];if(ws[1].net<0) R.push('🕐 La session <b>'+ws[0]+'</b> te coûte ('+fmt(ws[1].net)+'). Sois beaucoup plus sélectif dessus.');}
-  if(byPair.length){var wpr=byPair[byPair.length-1];if(wpr[1].net<0&&wpr[1].n>=2) R.push('💱 <b>'+wpr[0]+'</b> est négatif ('+fmt(wpr[1].net)+' sur '+wpr[1].n+' trades). À surveiller de près.');}
-  if(errCost.length&&errCost[0][1].net<0) R.push('⚠ Erreur la plus coûteuse : <b>'+errCost[0][0]+'</b> ('+fmt(errCost[0][1].net)+' sur '+errCost[0][1].n+' trades). <b>Priorité n°1</b>.');
-  if(setArr.length&&setArr[0][1].net>0) R.push('⬢ Ton setup le plus rentable : <b>'+setArr[0][0]+'</b> ('+fmt(setArr[0][1].net)+'). Fais-en ta spécialité.');
-  if(pf!==null&&pf<1) R.push('📐 Profit factor < 1 ('+pf.toFixed(2)+') : vise des RR plus grands ou coupe tes pertes plus tôt.');
-  if(!R.length) R.push('Tes indicateurs sont sains. Garde le cap 💪');
-  // html
+  if(d.net>0&&d.wr>=55) verdict='Solide. Tu es rentable avec une bonne regularite. Continue ton process.';
+  else if(d.net>0) verdict='Rentable mais win rate moyen : tu gagnes grace a ton ratio R. Protege tes gros gagnants.';
+  else if(d.wr>=55) verdict='Attention : bon win rate mais resultat negatif, tes pertes sont trop grosses. Le souci est la gestion du risque.';
+  else verdict='Periode difficile : reduis la taille, reviens a tes meilleurs setups/sessions et coupe les erreurs recurrentes.';
+  var score=Math.min(d.wr,70)*0.6 + (d.pf!==null?Math.min(d.pf,3)/3*30:0) + (d.net>0?18:0);
+  var errRate=d.ty.length?d.nbErr/d.ty.length:0; score+=Math.max(0,10-errRate*10);
+  score=Math.max(0,Math.min(100,Math.round(score)));
+  var sc=score>=70?'#34d399':score>=45?'#fbbf24':'#f87171';
+  var F=[];
+  if(d.net>0) F.push('Tu es <b>rentable</b> cette annee ('+fmt(d.net)+').');
+  if(d.byPair[0]&&d.byPair[0][1].net>0) F.push('Ta meilleure paire : <b>'+d.byPair[0][0]+'</b> ('+fmt(d.byPair[0][1].net)+').');
+  if(d.bySess[0]&&d.bySess[0][1].net>0) F.push('Ta meilleure session : <b>'+d.bySess[0][0]+'</b> ('+fmt(d.bySess[0][1].net)+').');
+  if(d.setArr[0]&&d.setArr[0][1].net>0) F.push('Ton setup le plus rentable : <b>'+d.setArr[0][0]+'</b> ('+fmt(d.setArr[0][1].net)+').');
+  if(d.pf!==null&&d.pf>=1.5) F.push('Excellent ratio gains/pertes (PF <b>'+d.pf.toFixed(2)+'</b>).');
+  if(d.wr>=55) F.push('Bon win rate (<b>'+d.wr+'%</b>).');
+  if(d.alD>0&&d.awD>0&&d.alD<=d.awD) F.push('Tu <b>coupes bien tes pertes</b> (perdants plus courts que gagnants).');
+  if(d.goodArr[0]) F.push('Ton mindset recurrent : <b>'+d.goodArr[0][0]+'</b>.');
+  if(!F.length) F.push('Continue d ajouter et taguer tes trades pour reveler tes forces.');
+  var Wk=[];
+  if(d.pf!==null&&d.pf<1) Wk.push('Profit factor &lt; 1 (<b>'+d.pf.toFixed(2)+'</b>) : tes pertes depassent tes gains.');
+  if(d.errCost[0]&&d.errCost[0][1].net<0) Wk.push('Erreur la plus couteuse : <b>'+d.errCost[0][0]+'</b> ('+fmt(d.errCost[0][1].net)+').');
+  var ws=d.bySess[d.bySess.length-1]; if(ws&&ws[1].net<0) Wk.push('Session qui te coute : <b>'+ws[0]+'</b> ('+fmt(ws[1].net)+').');
+  var wpr=d.byPair[d.byPair.length-1]; if(wpr&&wpr[1].net<0&&wpr[1].n>=2) Wk.push('Paire negative : <b>'+wpr[0]+'</b> ('+fmt(wpr[1].net)+' sur '+wpr[1].n+').');
+  if(d.alD>d.awD&&d.awD>0) Wk.push('Tu <b>gardes tes perdants plus longtemps</b> que tes gagnants ('+coachDur(d.alD)+' vs '+coachDur(d.awD)+').');
+  if(d.wr<45) Wk.push('Win rate faible (<b>'+d.wr+'%</b>) : sois plus selectif sur tes entrees.');
+  if(!Wk.length) Wk.push('Aucune fuite majeure detectee. Garde le cap.');
+  var P=[];
+  if(d.errCost[0]&&d.errCost[0][1].net<0) P.push('Elimine l erreur "<b>'+d.errCost[0][0]+'</b>" : elle te coute '+fmt(d.errCost[0][1].net)+'.');
+  if(ws&&ws[1].net<0) P.push('Reduis ou evite la session <b>'+ws[0]+'</b>.');
+  if(d.alD>d.awD&&d.awD>0) P.push('Coupe tes pertes plus vite (SL plus stricts) : tu laisses trainer tes perdants.');
+  if(d.pf!==null&&d.pf<1) P.push('Vise des RR plus grands : laisse courir tes gagnants.');
+  if(d.setArr[0]&&d.setArr[0][1].net>0) P.push('Concentre-toi sur ton setup gagnant : <b>'+d.setArr[0][0]+'</b>.');
+  if(d.wr<45) P.push('Attends des setups A+ : moins de trades, plus de qualite.');
+  P=P.slice(0,3); if(!P.length) P.push('Continue ton process, il fonctionne.');
   function item(lab,val,sub){return '<div class="coach-item"><div class="ci-l">'+lab+'</div><div class="ci-v">'+val+'</div><div class="ci-s">'+(sub||'')+'</div></div>';}
   var h='';
-  h+='<div class="coach-verdict"><h4>🧭 Verdict '+year+'</h4><p>'+verdict+'</p></div>';
-  h+='<div class="coach-h">Chiffres clés</div><div class="coach-grid">';
-  h+=item('Résultat net', fmt(net), wr+'% WR · '+ty.length+' trades');
-  h+=item('Bilan W / L / BE', w+' / '+l+' / '+be, 'Profit factor '+(pf!==null?pf.toFixed(2):'—'));
-  if(byPair[0]) h+=item('Meilleure paire', byPair[0][0], fmt(byPair[0][1].net)+' · '+byPair[0][1].n+' trades');
-  if(bySess[0]) h+=item('Meilleure session', bySess[0][0], fmt(bySess[0][1].net));
-  h+=item('Meilleur setup', setArr.length?setArr[0][0]:'—', setArr.length?fmt(setArr[0][1].net):'Tague tes setups');
-  h+=item('Qualité moyenne', avgStar?avgStar+' ★':'—', goodArr.length?('Top mindset : '+goodArr.sort(function(x,y){return y[1].n-x[1].n;})[0][0]):'Note tes trades');
+  h+='<div class="coach-verdict"><h4>Verdict '+d.year+'</h4><p>'+verdict+'</p></div>';
+  h+='<div style="display:flex;align-items:center;gap:12px;margin:14px 0 4px"><div style="font-size:9px;letter-spacing:1px;color:var(--td);text-transform:uppercase;width:80px">Score perf</div><div style="flex:1;background:rgba(255,255,255,.06);border-radius:20px;height:10px;overflow:hidden"><div style="width:'+score+'%;height:100%;background:'+sc+';border-radius:20px"></div></div><div style="font-weight:700;font-size:16px;color:'+sc+'">'+score+'<span style="font-size:10px;color:var(--td)">/100</span></div></div>';
+  h+='<div class="coach-h">Chiffres cles</div><div class="coach-grid">';
+  h+=item('Resultat net', fmt(d.net), d.wr+'% WR · '+d.ty.length+' trades');
+  h+=item('W / L / BE', d.w+' / '+d.l+' / '+d.be, 'Profit factor '+(d.pf!==null?d.pf.toFixed(2):'-'));
+  h+=item('Gain moy / Perte moy', fmt(d.avgWin)+' / '+fmt(-d.avgLoss), d.avgLoss>0?('Ratio '+(d.avgWin/d.avgLoss).toFixed(2)):'-');
+  h+=item('Qualite moyenne', d.avgStar?d.avgStar.toFixed(1)+' *':'-', d.goodArr[0]?('Top : '+d.goodArr[0][0]):'Note tes trades');
   h+='</div>';
-  h+='<div class="coach-h">Recommandations</div><ul class="coach-recos">'+R.map(function(r){return '<li>'+r+'</li>';}).join('')+'</ul>';
+  h+='<div class="coach-h">Tes points forts</div><ul class="coach-recos">'+F.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
+  h+='<div class="coach-h">Tes fuites a corriger</div><ul class="coach-recos">'+Wk.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
+  h+='<div class="coach-h">Ton plan de progression</div><ol class="coach-recos" style="padding-left:18px">'+P.map(function(x){return '<li style="margin-bottom:6px">'+x+'</li>';}).join('')+'</ol>';
+  var qs=[['fuite','Ma plus grosse fuite ?'],['session','Ma meilleure/pire session ?'],['paire','Quelle paire eviter ?'],['pertes','Je coupe mes pertes ?'],['rentable','Comment passer rentable ?'],['psy','Mon point faible psy ?']];
+  h+='<div class="coach-h">Pose-moi une question</div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:7px">'+qs.map(function(q){return '<button onclick="coachAsk(\''+q[0]+'\',this)" style="background:rgba(124,92,255,.12);border:1px solid rgba(124,92,255,.35);color:#cbbcff;padding:7px 12px;border-radius:20px;font-size:11px;cursor:pointer">'+q[1]+'</button>';}).join('')+'</div>';
+  h+='<div id="coach-answer" style="margin-top:12px"></div>';
   return h;
+}
+function coachAsk(key,btn){
+  var d=coachData(); var fmt=coachFmt; var html='';
+  function box(txt){return '<div style="background:rgba(124,92,255,.08);border:1px solid rgba(124,92,255,.25);border-radius:12px;padding:13px 15px;font-size:12px;line-height:1.6;color:var(--tp)">'+txt+'</div>';}
+  if(key==='fuite'){
+    if(d.errCost[0]&&d.errCost[0][1].net<0){var e=d.errCost[0];html=box('Ta plus grosse fuite : l erreur "<b>'+e[0]+'</b>" t a coute <b style="color:#f87171">'+fmt(e[1].net)+'</b> sur '+e[1].n+' trade(s). Si tu l elimines, tu changes ton bilan. Priorite n1.');}
+    else html=box('Bonne nouvelle : aucune erreur ne te coute gros pour l instant. Continue a taguer tes erreurs.');
+  } else if(key==='session'){
+    var b=d.bySess[0], wsx=d.bySess[d.bySess.length-1];
+    html=box((b?'Ta meilleure session : <b>'+b[0]+'</b> ('+fmt(b[1].net)+', '+b[1].n+' trades).':'')+(wsx&&b&&wsx[0]!==b[0]?'<br>Ta pire : <b>'+wsx[0]+'</b> ('+fmt(wsx[1].net)+'). Trade surtout ta meilleure.':''));
+  } else if(key==='paire'){
+    var wp2=d.byPair[d.byPair.length-1], bp=d.byPair[0];
+    if(wp2&&wp2[1].net<0&&wp2[1].n>=2) html=box('A eviter : <b>'+wp2[0]+'</b> ('+fmt(wp2[1].net)+' sur '+wp2[1].n+' trades). Arrete-la ou reduis fort ta taille.'+(bp?'<br>Ta meilleure reste <b>'+bp[0]+'</b> ('+fmt(bp[1].net)+').':''));
+    else html=box('Aucune paire clairement negative a eviter.'+(bp?' Ta meilleure : <b>'+bp[0]+'</b> ('+fmt(bp[1].net)+').':''));
+  } else if(key==='pertes'){
+    if(d.awD>0&&d.alD>0){var bad=d.alD>d.awD;html=box('Duree moyenne - gagnants : <b>'+coachDur(d.awD)+'</b> · perdants : <b>'+coachDur(d.alD)+'</b>.<br>'+(bad?'Tu gardes tes perdants <b>plus longtemps</b> que tes gagnants, l erreur classique. Mets des SL plus stricts.':'Tu coupes bien : tu ne laisses pas trainer tes perdants. Continue.'));}
+    else html=box('Pas assez de donnees de duree. Renseigne tes heures d entree/sortie.');
+  } else if(key==='rentable'){
+    var tips=[];
+    if(d.pf!==null&&d.pf<1) tips.push('PF &lt; 1 ('+d.pf.toFixed(2)+') : vise des <b>RR plus grands</b> ou coupe tes pertes plus tot.');
+    if(d.wr<45) tips.push('Win rate faible ('+d.wr+'%) : sois <b>plus selectif</b>, attends des setups A+.');
+    if(d.errCost[0]&&d.errCost[0][1].net<0) tips.push('Supprime l erreur "'+d.errCost[0][0]+'" ('+fmt(d.errCost[0][1].net)+').');
+    if(d.avgWin>0&&d.avgLoss>0&&d.avgWin<d.avgLoss) tips.push('Tes gains moyens sont &lt; tes pertes moyennes : laisse plus de place a tes TP.');
+    if(!tips.length) tips.push('Tu es deja sur la bonne voie : garde ton process et ta discipline.');
+    html=box('Pour passer (ou rester) rentable :<br>- '+tips.join('<br>- '));
+  } else if(key==='psy'){
+    var ef=d.errFreq[0], ec=d.errCost[0], g=d.goodArr[0];
+    html=box((ef?'Ton erreur la plus <b>frequente</b> : "'+ef[0]+'" ('+ef[1].n+'x).':'Aucune erreur taguee.')+(ec&&ec[1].net<0?'<br>La plus <b>couteuse</b> : "'+ec[0]+'" ('+fmt(ec[1].net)+').':'')+(g?'<br>Ton point fort mental : "'+g[0]+'" - appuie-toi dessus.':''));
+  }
+  var area=document.getElementById('coach-answer'); if(area) area.innerHTML=html;
+  try{ if(btn&&btn.parentNode){ Array.prototype.forEach.call(btn.parentNode.children,function(b){b.style.background='rgba(124,92,255,.12)';b.style.color='#cbbcff';}); btn.style.background='rgba(124,92,255,.35)'; btn.style.color='#fff'; } }catch(e){}
 }
 </script>
 
