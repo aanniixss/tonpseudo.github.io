@@ -1229,6 +1229,17 @@ body::before{background:
       <div class="fld"><label>Capital Initial ($)</label><input type="number" id="m-cap" placeholder="ex: 10000" step="1" min="0"></div>
       <div class="fld"><label>Risque par défaut (%)</label><input type="number" id="m-rsk" placeholder="ex: 1" step="0.1" min="0" max="100"></div>
     </div>
+    <div style="margin-bottom:16px">
+      <div class="tsec">📷 Screenshots du Trade</div>
+      <div class="pg">
+        <div class="pc"><div class="pt av">Avant — Analyse</div><div class="pdrop" onclick="trigUp('eav')"><div id="eav-prev"><div style="font-size:20px">📊</div><div style="font-size:9px;color:var(--td)">Cliquer / glisser</div></div></div></div>
+        <div class="pc"><div class="pt co">En Cours — Gestion</div><div class="pdrop" onclick="trigUp('eco')"><div id="eco-prev"><div style="font-size:20px">⚡</div><div style="font-size:9px;color:var(--td)">Cliquer / glisser</div></div></div></div>
+        <div class="pc"><div class="pt ap">Après — Résultat</div><div class="pdrop" onclick="trigUp('eap')"><div id="eap-prev"><div style="font-size:20px">✅</div><div style="font-size:9px;color:var(--td)">Cliquer / glisser</div></div></div></div>
+      </div>
+      <input type="file" id="f-eav" accept="image/*" style="display:none" onchange="prevUp(event,'eav')">
+      <input type="file" id="f-eco" accept="image/*" style="display:none" onchange="prevUp(event,'eco')">
+      <input type="file" id="f-eap" accept="image/*" style="display:none" onchange="prevUp(event,'eap')">
+    </div>
     <div style="display:flex;gap:10px;justify-content:center">
       <button class="btn btn-p" onclick="saveCapital()">✅ Confirmer</button>
       <button class="btn btn-g" onclick="closeModal()">Annuler</button>
@@ -3095,6 +3106,12 @@ function openEditTrade(id){
   const savedGood=JSON.parse(t.psych_good||'[]');
   document.querySelectorAll('#edit-perr-tags .tag').forEach(el=>{if(savedErr.includes(el.textContent))el.classList.add('sel');});
   document.querySelectorAll('#edit-pgood-tags .tag').forEach(el=>{if(savedGood.includes(el.textContent))el.classList.add('sel');});
+  ['eav','eco','eap'].forEach(function(p,i){
+    var key=['photo_av','photo_co','photo_ap'][i];
+    var el=document.getElementById(p+'-prev');
+    if(el){ if(t[key]){ el.innerHTML='<img src="'+t[key]+'" style="max-width:100%;max-height:80px;border-radius:5px;object-fit:cover">'; } else { el.innerHTML='<div style="font-size:20px">'+(['📊','⚡','✅'][i])+'</div><div style="font-size:9px;color:var(--td)">Cliquer / glisser</div>'; } }
+    var fi=document.getElementById('f-'+p); if(fi) fi.value='';
+  });
   editCalcNet();
   document.getElementById('editModal').classList.add('show');
 }
@@ -3141,8 +3158,11 @@ async function saveEditTrade(){
   const day=document.getElementById('edit-day').value;
   const psychErrors=[...document.querySelectorAll('#edit-perr-tags .tag.sel')].map(el=>el.textContent);
   const psychGood=[...document.querySelectorAll('#edit-pgood-tags .tag.sel')].map(el=>el.textContent);
-  const updates={pair,cat,cl,result,dir,day,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood)};
-  const {error}=await sb.from('trades').update(updates).eq('id',id);
+  const getEPhoto=id=>{const img=document.querySelector('#'+id+'-prev img');return img?img.src:null;};
+  const photo_av=getEPhoto('eav'),photo_co=getEPhoto('eco'),photo_ap=getEPhoto('eap');
+  const updates={pair,cat,cl,result,dir,day,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),photo_av,photo_co,photo_ap};
+  let {error}=await sb.from('trades').update(updates).eq('id',id);
+  if(error && error.message && (error.message.indexOf('photo_')>=0||error.message.indexOf('psych_')>=0)){ const {photo_av,photo_co,photo_ap,psych_errors,psych_good,...slim}=updates; const r2=await sb.from('trades').update(slim).eq('id',id); error=r2.error; }
   if(error){toast('❌ Erreur: '+error.message);return;}
   Object.assign(t,updates);
   closeEditModal();renderTable();updateDash();
