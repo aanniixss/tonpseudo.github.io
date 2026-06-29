@@ -2112,7 +2112,8 @@ async function importCSV(ev){
 
 // ── IMPORT MT5 / FTMO ──
 function _mt5Cat(p){ p=(''+p).toUpperCase(); return PC[p]||'major'; }
-function _mt5Date(v){ if(v instanceof Date) return v; var m=(''+v).trim().match(/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})[ T](\d{1,2}):(\d{2})(?::(\d{2}))?/); return m? new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+(m[6]||0)) : null; }
+var MT5_OFFSET_H = 2; // ⏰ Decalage serveur MT5 -> heure reelle (MT5 en avance de 2h)
+function _mt5Date(v){ var d=null; if(v instanceof Date){ d=new Date(v.getTime()); } else { var m=(''+v).trim().match(/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})[ T](\d{1,2}):(\d{2})(?::(\d{2}))?/); if(m) d=new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+(m[6]||0)); } if(!d) return null; d.setHours(d.getHours()-MT5_OFFSET_H); return d; }
 function _mt5Sess(h){ if(h<8) return 'Tokyo / Asia'; if(h<13) return 'London'; if(h<16) return 'Overlap Lon/NY'; if(h<22) return 'New York'; return 'Tokyo / Asia'; }
 function _mt5Dur(a,b){ if(!a||!b) return {str:'—',mins:0}; var mins=Math.round((b-a)/60000); if(mins<0)mins=0; var str; if(mins<60)str=mins+'m'; else if(mins<1440){var h=Math.floor(mins/60);str=h+'h '+(mins%60)+'m';}else{var d=Math.floor(mins/1440),hh=Math.floor((mins%1440)/60);str=d+'j '+hh+'h';} return {str:str,mins:mins}; }
 function _mt5Num(x){ var n=parseFloat((''+x).replace(/\s/g,'').replace(',','.')); return isNaN(n)?0:n; }
