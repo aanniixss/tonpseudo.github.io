@@ -1612,6 +1612,8 @@ async function initAccounts(){
   ACTIVE_ACCOUNT = ACCOUNTS.find(a=>a.id===savedId) || ACCOUNTS[0];
   CAP = ACTIVE_ACCOUNT.capital || 0;
   DRSK = ACTIVE_ACCOUNT.risk || 1;
+  if(!CAP){ var _lc=parseFloat(localStorage.getItem('tr_capital')); if(_lc>0){ CAP=_lc; ACTIVE_ACCOUNT.capital=_lc; } }
+  if(DRSK===1){ var _lr=parseFloat(localStorage.getItem('tr_risk')); if(_lr>0){ DRSK=_lr; ACTIVE_ACCOUNT.risk=_lr; } }
   updateAccountUI();
   await loadTrades();
   await seedReset();
@@ -1834,7 +1836,8 @@ async function saveCapital(){
   if(!isNaN(v)&&v>0)CAP=v;
   if(!isNaN(r)&&r>0){DRSK=r;document.getElementById('f-rsk').value=r;}
   ACTIVE_ACCOUNT.capital=CAP; ACTIVE_ACCOUNT.risk=DRSK;
-  await sb.from('accounts').update({capital:CAP, risk:DRSK}).eq('id',ACTIVE_ACCOUNT.id);
+  try{ localStorage.setItem('tr_capital', CAP); localStorage.setItem('tr_risk', DRSK); localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS)); }catch(e){}
+  try{ await sb.from('accounts').upsert({id:ACTIVE_ACCOUNT.id, owner_id:OWNER_ID, name:ACTIVE_ACCOUNT.name, capital:CAP, risk:DRSK, color:ACTIVE_ACCOUNT.color||'#7c5cff'}); }catch(e){}
   updateAccountUI();closeModal();updateDash();initCapChart();
   toast('✅ '+ACTIVE_ACCOUNT.name+' · $'+CAP.toLocaleString()+' · Risque '+DRSK+'%');
 }
