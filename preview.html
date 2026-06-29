@@ -1242,6 +1242,8 @@ body::before{background:
     <div class="mt">✎ Modifier le Trade</div>
     <input type="hidden" id="edit-id">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="fld"><label>Catégorie</label><select id="edit-cat" onchange="updateEditPairs()"><option value="major">Paires Majeures (7)</option><option value="minor">Paires Mineures (21)</option><option value="crypto">Crypto (7)</option><option value="index">Indices (7)</option><option value="metal">Métaux (3)</option></select></div>
+      <div class="fld"><label>Paire</label><select id="edit-pair"></select></div>
       <div class="fld"><label>Clôture</label><select id="edit-close" onchange="editSyncResult()"><option value="TP">✅ TP Atteint</option><option value="SL">❌ SL Touché</option><option value="BE">◈ Break Even</option><option value="MANUEL">⚡ Manuel</option></select></div>
       <div class="fld"><label>Résultat</label><select id="edit-result"><option value="WIN">✅ WIN — Gagnant</option><option value="LOSS">❌ LOSS — Perdant</option><option value="BE">◈ BE — Break Even</option></select></div>
       <div class="fld"><label>Direction</label><select id="edit-dir"><option value="LONG">↑ LONG</option><option value="SHORT">↓ SHORT</option></select></div>
@@ -1787,6 +1789,11 @@ function pbc(p){const c=PC[p]||'major';return c==='metal'?'metal':c==='crypto'?'
 function updatePairs(){
   const c=document.getElementById('f-cat').value;
   document.getElementById('f-pair').innerHTML=PAIRS[c].map(p=>`<option>${p}</option>`).join('');
+}
+
+function updateEditPairs(){
+  const c=document.getElementById('edit-cat').value;
+  document.getElementById('edit-pair').innerHTML=PAIRS[c].map(p=>`<option>${p}</option>`).join('');
 }
 
 // ── CLOCK ──
@@ -3127,6 +3134,9 @@ function openEditTrade(id){
   const t=T.find(x=>String(x.id)===String(id));
   if(!t) return;
   document.getElementById('edit-id').value=id;
+  var _cat=t.cat;
+  if(!_cat||!PAIRS[_cat]||PAIRS[_cat].indexOf(t.pair)<0){_cat='major';for(var _k in PAIRS){if(PAIRS[_k].indexOf(t.pair)>=0){_cat=_k;break;}}}
+  document.getElementById('edit-cat').value=_cat; updateEditPairs(); document.getElementById('edit-pair').value=t.pair||'';
   document.getElementById('edit-close').value=t.cl||'TP';
   document.getElementById('edit-result').value=t.result||'WIN';
   document.getElementById('edit-dir').value=t.dir||'LONG';
@@ -3176,6 +3186,8 @@ async function saveEditTrade(){
   if(!t){toast('❌ Trade introuvable');return;}
   const cl=document.getElementById('edit-close').value;
   const result=document.getElementById('edit-result').value;
+  const pair=document.getElementById('edit-pair').value;
+  const cat=document.getElementById('edit-cat').value;
   const dir=document.getElementById('edit-dir').value;
   const sess=document.getElementById('edit-sess').value;
   const en=document.getElementById('edit-en').value;
@@ -3193,7 +3205,7 @@ async function saveEditTrade(){
   const day=document.getElementById('edit-day').value;
   const psychErrors=[...document.querySelectorAll('#edit-perr-tags .tag.sel')].map(el=>el.textContent);
   const psychGood=[...document.querySelectorAll('#edit-pgood-tags .tag.sel')].map(el=>el.textContent);
-  const updates={cl,result,dir,day,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood)};
+  const updates={pair,cat,cl,result,dir,day,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood)};
   const {error}=await sb.from('trades').update(updates).eq('id',id);
   if(error){toast('❌ Erreur: '+error.message);return;}
   Object.assign(t,updates);
