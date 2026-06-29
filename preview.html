@@ -637,6 +637,8 @@ body::before{background:
         <button onclick="exportCSV()" title="Exporter tous les trades de l'année en CSV (Excel)" style="padding:5px 10px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);color:var(--grb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">⤓ CSV</button>
         <button onclick="document.getElementById('csv-import-input').click()" title="Importer des trades depuis un fichier CSV" style="padding:5px 10px;border-radius:7px;background:rgba(124,92,255,0.12);border:1px solid rgba(124,92,255,0.35);color:var(--bb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">⤒ CSV</button>
         <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
+        <button onclick="document.getElementById('mt5-import-input').click()" title="Importer ton historique MT5 / FTMO (rapport Excel .xlsx)" style="padding:5px 10px;border-radius:7px;background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.4);color:#67e8f9;font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">📥 MT5</button>
+        <input type="file" id="mt5-import-input" accept=".xlsx,.xls" style="display:none" onchange="importMT5(event)">
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(124,92,255,0.2);border:1px solid var(--be);color:var(--be);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">TOUT</button>
@@ -1511,6 +1513,7 @@ function rdNewTrade(){
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ── SUPABASE ──
 const SUPA_URL = 'https://nogfrvpvknaqlgfnrjol.supabase.co';
@@ -2122,6 +2125,73 @@ async function importCSV(ev){
     toast('✅ '+batch.length+' trades importés !');
   }catch(e){ console.error('importCSV exception',e); toast('❌ Erreur import'); }
 }
+
+// ── IMPORT MT5 / FTMO ──
+function _mt5Cat(p){ p=(''+p).toUpperCase(); return PC[p]||'major'; }
+function _mt5Date(v){ if(v instanceof Date) return v; var m=(''+v).trim().match(/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})[ T](\d{1,2}):(\d{2})(?::(\d{2}))?/); return m? new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5],+(m[6]||0)) : null; }
+function _mt5Sess(h){ if(h<8) return 'Tokyo / Asia'; if(h<13) return 'London'; if(h<16) return 'Overlap Lon/NY'; if(h<22) return 'New York'; return 'Tokyo / Asia'; }
+function _mt5Dur(a,b){ if(!a||!b) return {str:'—',mins:0}; var mins=Math.round((b-a)/60000); if(mins<0)mins=0; var str; if(mins<60)str=mins+'m'; else if(mins<1440){var h=Math.floor(mins/60);str=h+'h '+(mins%60)+'m';}else{var d=Math.floor(mins/1440),hh=Math.floor((mins%1440)/60);str=d+'j '+hh+'h';} return {str:str,mins:mins}; }
+function _mt5Num(x){ var n=parseFloat((''+x).replace(/\s/g,'').replace(',','.')); return isNaN(n)?0:n; }
+function importMT5(ev){
+  var file=ev.target.files&&ev.target.files[0]; if(!file) return; ev.target.value='';
+  if(typeof XLSX==='undefined'){ toast('❌ Lecteur Excel pas encore charge, recharge la page'); return; }
+  if(!ACTIVE_ACCOUNT){ toast('❌ Aucun compte actif'); return; }
+  toast('⏳ Lecture du fichier MT5...');
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var rows;
+    try{ var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'}); var ws=wb.Sheets[wb.SheetNames[0]]; rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}); }
+    catch(err){ console.error(err); toast('❌ Fichier illisible (envoie le rapport MT5 .xlsx)'); return; }
+    var hi=-1;
+    for(var i=0;i<rows.length;i++){ var r=rows[i]; if(r && (''+r[2]).trim()==='Symbole' && (''+r[3]).trim()==='Type'){ hi=i; break; } }
+    if(hi<0){ toast('❌ Tableau "Positions" introuvable dans le fichier'); return; }
+    var trades=[], totNet=0;
+    var days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    for(var j=hi+1;j<rows.length;j++){
+      var r=rows[j]; if(!r) continue;
+      var op=_mt5Date(r[0]); var sym=(''+r[2]).trim().toUpperCase(); var typ=(''+r[3]).trim().toLowerCase();
+      if(!op || (typ!=='buy'&&typ!=='sell')){ if(trades.length) break; else continue; }
+      var vol=_mt5Num(r[4]), opp=_mt5Num(r[5]), sl=_mt5Num(r[6]), tp=_mt5Num(r[7]);
+      var clD=_mt5Date(r[8]), clp=_mt5Num(r[9]);
+      var commMt=_mt5Num(r[10]), swap=_mt5Num(r[11]), profit=_mt5Num(r[12]);
+      var net=profit+commMt+swap, dir=typ==='buy'?'LONG':'SHORT';
+      var risk=dir==='LONG'?(opp-sl):(sl-opp), reward=dir==='LONG'?(clp-opp):(opp-clp);
+      var rr=(sl&&risk>0)?parseFloat((reward/risk).toFixed(2)):0;
+      var riskAmt=rr?Math.abs(profit/rr):0;
+      var beThresh=riskAmt>0?riskAmt*0.1:Math.max(2,CAP*0.0002);
+      var result=Math.abs(net)<=beThresh?'BE':(net>0?'WIN':'LOSS');
+      var pad=function(n){return (n<10?'0':'')+n;};
+      var en=pad(op.getHours())+':'+pad(op.getMinutes());
+      var ex=clD?pad(clD.getHours())+':'+pad(clD.getMinutes()):'';
+      var dur=_mt5Dur(op,clD);
+      var cl='MANUEL';
+      if(result==='BE') cl='BE';
+      else if(tp && Math.abs(clp-tp)<=Math.abs(opp-tp)*0.15) cl='TP';
+      else if(sl && Math.abs(clp-sl)<=Math.abs(opp-sl)*0.15) cl='SL';
+      totNet+=net;
+      trades.push({user_id:ACTIVE_ACCOUNT.id,pair:sym,cat:_mt5Cat(sym),day:days[op.getDay()],sess:_mt5Sess(op.getHours()),dir:dir,cl:cl,entry_time:en||null,exit_time:ex||null,duration:dur.str,duration_mins:dur.mins,lot_size:vol,risk_pct:(CAP>0&&riskAmt)?parseFloat((riskAmt/CAP*100).toFixed(2)):0,risk_amt:parseFloat(riskAmt.toFixed(2)),rr:rr,result:result,ca_amt:parseFloat(profit.toFixed(2)),commission:parseFloat((-(commMt+swap)).toFixed(2)),pnl_amt:parseFloat(net.toFixed(2)),pnl_pct:CAP>0?parseFloat((net/CAP*100).toFixed(4)):0,fonda:'',star:0,strats:'[]',confs:'[]',pats:'[]',psych_errors:'[]',psych_good:'[]',notes:'',trade_month:op.getMonth(),trade_year:op.getFullYear()});
+    }
+    if(!trades.length){ toast('❌ Aucun trade trouve dans le fichier'); return; }
+    var msg='J\'ai trouve '+trades.length+' trades dans ton rapport MT5.\nP&L net total : '+(totNet>=0?'+':'')+Math.round(totNet).toLocaleString()+' $\n\nCela va SUPPRIMER tous les trades actuels du compte « '+ACTIVE_ACCOUNT.name+' » puis importer les '+trades.length+' nouveaux.\n\nContinuer ?';
+    if(!confirm(msg)) return;
+    _mt5DoImport(trades, true);
+  };
+  reader.readAsArrayBuffer(file);
+}
+async function _mt5DoImport(trades, replace){
+  try{
+    if(replace){ var del=await sb.from('trades').delete().eq('user_id',ACTIVE_ACCOUNT.id); if(del.error){ toast('❌ Suppression impossible : '+(del.error.message||'')); return; } }
+    for(var i=0;i<trades.length;i+=200){
+      var batch=trades.slice(i,i+200);
+      var res=await sb.from('trades').insert(batch);
+      if(res.error){ var slim=batch.map(function(t){var c=Object.assign({},t);delete c.psych_errors;delete c.psych_good;return c;}); res=await sb.from('trades').insert(slim); }
+      if(res.error){ console.error('importMT5',res.error); toast('❌ Import echoue : '+(res.error.message||'')); return; }
+    }
+    await loadTrades(); renderTable(); updateDash();
+    toast('✅ '+trades.length+' trades importes depuis MT5 !');
+  }catch(e){ console.error('importMT5 exception',e); toast('❌ Erreur import'); }
+}
+
 
 // ── STATS ──
 function stats(){
