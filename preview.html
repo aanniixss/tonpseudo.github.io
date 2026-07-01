@@ -380,6 +380,13 @@ body::before{background:
   box-shadow:0 0 70px rgba(0,0,0,.7);z-index:9500 !important;padding:18px 14px !important;overflow-y:auto;}
 .sidebar.open{transform:translateX(0) !important;}
 .shell{margin-left:0 !important;width:100% !important;}
+/* Desktop: barre laterale fixe ouverte (pas de tiroir) */
+@media(min-width:981px){
+  .sidebar{transform:translateX(0) !important;}
+  .sb-overlay{display:none !important;}
+  .menu-btn{display:none !important;}
+  .shell{margin-left:270px !important;width:calc(100% - 270px) !important;}
+}
 .side-nav{flex-direction:column !important;overflow:visible !important;gap:4px !important;}
 .sidebar .tab{width:100% !important;font-size:12px !important;}
 .side-cap{display:block !important;}
