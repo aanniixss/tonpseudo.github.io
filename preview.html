@@ -380,12 +380,11 @@ body::before{background:
   box-shadow:0 0 70px rgba(0,0,0,.7);z-index:9500 !important;padding:18px 14px !important;overflow-y:auto;}
 .sidebar.open{transform:translateX(0) !important;}
 .shell{margin-left:0 !important;width:100% !important;}
-/* Desktop: barre laterale fixe ouverte (pas de tiroir) */
+/* Desktop: barre laterale ouverte par defaut, repliable via le bouton menu (☰) */
 @media(min-width:981px){
-  .sidebar{transform:translateX(0) !important;}
   .sb-overlay{display:none !important;}
-  .menu-btn{display:none !important;}
-  .shell{margin-left:270px !important;width:calc(100% - 270px) !important;}
+  .shell{transition:margin .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1);}
+  .sidebar.open ~ .shell{margin-left:270px !important;width:calc(100% - 270px) !important;}
 }
 .side-nav{flex-direction:column !important;overflow:visible !important;gap:4px !important;}
 .sidebar .tab{width:100% !important;font-size:12px !important;}
@@ -1494,10 +1493,15 @@ function coachAsk(key,btn){
 function rdToggleSidebar(force){
   var sb=document.getElementById('rd-sidebar'),ov=document.getElementById('sb-overlay');
   if(!sb)return;
+  var desktop = window.innerWidth>=981;
+  // Sur PC, on n'auto-ferme pas la barre au clic d'un onglet (force===false) : elle reste ouverte
+  if(desktop && force===false) return;
   var open=(typeof force==='boolean')?force:!sb.classList.contains('open');
   sb.classList.toggle('open',open);
-  if(ov)ov.classList.toggle('show',open);
+  if(ov)ov.classList.toggle('show', open && !desktop);
 }
+// Desktop : barre laterale ouverte par defaut (repliable via ☰)
+(function(){ try{ var _s=document.getElementById('rd-sidebar'); if(_s && window.innerWidth>=981) _s.classList.add('open'); }catch(e){} })();
 // Synchronise le titre du topbar avec l'onglet actif
 document.querySelectorAll('.side-nav .tab').forEach(function(t){
   t.addEventListener('click',function(){
