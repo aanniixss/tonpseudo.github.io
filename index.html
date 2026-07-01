@@ -416,6 +416,14 @@ body::before{background:
 .coach-recos li{background:#14141d;border:1px solid var(--bo);border-left:3px solid #7c5cff;border-radius:10px;padding:11px 14px;font-size:12.5px;color:var(--ts);line-height:1.5;}
 .coach-recos li b{color:#ece6ff;}
 @media(max-width:700px){.coach-grid{grid-template-columns:1fr;}}
+
+/* Setups : sections psycho/optimisation plus grandes sur PC uniquement */
+@media(min-width:981px){
+  .psybig .tsec{font-size:12px !important;}
+  .psybig [id^="md-opt-"] *, .psybig [id^="md-track-"] *{font-size:12.5px !important;}
+  .psybig [id^="md-track-"]>div{padding:10px 13px !important;margin-bottom:7px !important;}
+  .psybig [id^="md-opt-"]>div{margin-bottom:11px !important;}
+}
 </style>
 </head>
 <body>
@@ -623,7 +631,7 @@ body::before{background:
         <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
       </div>
       <div>
-        <div style="font-size:11px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">⚠ Erreurs (nb · % · $)</div>
+        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">⚠ Erreurs (nb · % · $)</div>
         <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
       </div>
       <div>
@@ -1144,7 +1152,7 @@ body::before{background:
     </div>
 
     <!-- OPTIMISATION R-MULTIPLES (suit le filtre semaine) -->
-    <div class="card" style="margin-top:14px">
+    <div class="card psybig" style="margin-top:14px">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
         <div class="ct" style="margin-bottom:0">📐 Optimisation — par catégorie <span style="font-size:9px;color:var(--td);font-family:'Rajdhani'">(en %)</span></div>
         <div id="md-opt-scope" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:var(--be)">· Tout le mois</div>
@@ -1157,12 +1165,12 @@ body::before{background:
         <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--gb);margin-bottom:8px">★ GRADE</div><div id="md-opt-grade"></div></div>
         <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">🌐 FONDA</div><div id="md-opt-fonda"></div></div>
       </div>
-      <div><div class="tsec" style="font-size:11px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS (NB · % · $)</div><div id="md-opt-errs"></div></div>
+      <div><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS (NB · % · $)</div><div id="md-opt-errs"></div></div>
       <div style="margin-top:10px"><div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ BONNE PSYCHO (NB · % · $)</div><div id="md-opt-good"></div></div>
     </div>
 
     <!-- ANALYSE PSY & SETUPS (suit le filtre semaine) -->
-    <div class="card" style="margin-top:14px">
+    <div class="card psybig" style="margin-top:14px">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
         <div class="ct" style="margin-bottom:0">🧠 Analyse Psychologique &amp; Setups</div>
         <div id="md-track-scope" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:var(--be)">· Tout le mois</div>
@@ -1171,6 +1179,12 @@ body::before{background:
         <div>
           <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">⬢ SETUPS / STRATÉGIES</div>
           <div id="md-track-strats"></div>
+        </div>
+      </div>
+      <div class="g2" style="margin-bottom:10px">
+        <div>
+          <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS PSYCHOLOGIQUES</div>
+          <div id="md-track-perr"></div>
         </div>
       </div>
       <div class="g2">
@@ -2809,13 +2823,13 @@ function renderErrCount(elId, trades){
   const m={};
   trades.forEach(t=>{ let a; try{a=JSON.parse(t.psych_errors||'[]')}catch(e){a=[]} a.forEach(x=>{if(x){if(!m[x])m[x]={n:0,pct:0,amt:0}; m[x].n++; m[x].pct+=parseFloat(t.pnl_pct||0); m[x].amt+=parseFloat(t.pnl_amt||0);}}); });
   const groups=Object.entries(m).sort((a,b)=>b[1].n-a[1].n);
-  if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:12px;padding:6px 2px">Aucune erreur taguée</div>'; return; }
+  if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">Aucune erreur taguée</div>'; return; }
   const max=Math.max(...groups.map(g=>g[1].n),1);
   el.innerHTML=groups.map(([n,v])=>{
     const w=Math.min(v.n/max*100,100);
     const pctTxt=(v.pct>=0?'+':'')+v.pct.toFixed(1)+'%';
     const amtTxt=(v.amt>=0?'+':'-')+'$'+Math.abs(v.amt).toFixed(0);
-    return `<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;font-size:13.5px;margin-bottom:6px;gap:10px"><span style="color:#fca5a5;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700" title="${n}">${n}</span><span style="font-family:'Share Tech Mono',monospace;white-space:nowrap;font-size:12.5px"><span style="color:var(--reb);font-weight:800">${v.n}× fois</span> <span style="color:#f87171;font-weight:700">· ${pctTxt} · ${amtTxt}</span></span></div><div style="background:rgba(43,43,61,0.5);border-radius:4px;height:8px"><div style="width:${w}%;height:100%;background:#ef4444;border-radius:4px"></div></div></div>`;
+    return `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;font-size:9px;margin-bottom:3px;gap:8px"><span style="color:var(--reb);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600" title="${n}">${n}</span><span style="font-family:'Share Tech Mono',monospace;white-space:nowrap;font-size:9px"><span style="color:var(--reb);font-weight:700">${v.n}× fois</span> <span style="color:#f87171">· ${pctTxt} · ${amtTxt}</span></span></div><div style="background:rgba(43,43,61,0.5);border-radius:3px;height:4px"><div style="width:${w}%;height:100%;background:#ef4444;border-radius:3px"></div></div></div>`;
   }).join('');
 }
 // Bonne psycho : nombre de fois + % + $
@@ -2960,12 +2974,12 @@ function tagStats(trades, field){
       v.pnl+=parseFloat(t.pnl_amt||0); }); });
   return [...m.entries()].sort((a,b)=> b[1].n-a[1].n || b[1].pnl-a[1].pnl);
 }
-function renderTagTable(elId, stats, color){
+function renderTagTable(elId, stats, color, forceRed){
   const el=document.getElementById(elId); if(!el) return;
   if(!stats.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:8px 4px">Aucune donnée</div>'; return; }
   el.innerHTML=stats.map(([tag,v])=>{
     const wr=v.n?Math.round(v.w/v.n*100):0;
-    const col=v.pnl>=0?'var(--grb)':'var(--reb)';
+    const col=forceRed?'var(--reb)':(v.pnl>=0?'var(--grb)':'var(--reb)');
     return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--card2);border-left:3px solid ${color};margin-bottom:5px">`
       +`<div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--tp);font-weight:600">${tag}</div>`
       +`<div style="font-size:8px;color:var(--td);margin-top:1px">${v.n}× · ${v.w}W/${v.l}L · WR ${wr}%</div></div>`
@@ -3141,7 +3155,7 @@ function renderScope(mt, scope){
   // ── Analyse Psy & Setups (suit le scope semaine/mois) ──
   document.getElementById('md-track-scope').textContent = (scope==null?'· Tout le mois':'· Semaine '+scope);
   renderTagTable('md-track-strats', tagStats(mt,'strats'), 'var(--bb)');
-  renderTagTable('md-track-perr',  tagStats(mt,'psych_errors'), 'var(--reb)');
+  renderTagTable('md-track-perr',  tagStats(mt,'psych_errors'), 'var(--reb)', true);
   renderTagTable('md-track-pgood', tagStats(mt,'psych_good'), 'var(--grb)');
   renderTagTable('md-track-conf',  tagStats(mt,'confs').concat(tagStats(mt,'pats')), 'var(--gb)');
 
