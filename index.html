@@ -1269,6 +1269,30 @@ body::before{background:
       <div class="fld"><label>✅ Net ($)</label><div class="calc-box" id="edit-net">—</div></div>
     </div>
     <div class="fld" style="margin-bottom:14px"><label>Notes</label><textarea id="edit-notes" style="min-height:60px"></textarea></div>
+    <div style="margin-bottom:14px">
+      <div class="tsec">Note du Trade (qualité setup)</div>
+      <div class="star-row" id="edit-stars">
+        <span class="star" data-v="1" onclick="setEditStar(1)">★</span>
+        <span class="star" data-v="2" onclick="setEditStar(2)">★</span>
+        <span class="star" data-v="3" onclick="setEditStar(3)">★</span>
+        <span class="star" data-v="4" onclick="setEditStar(4)">★</span>
+        <span class="star" data-v="5" onclick="setEditStar(5)">★</span>
+        <span style="font-size:11px;color:var(--td);margin-left:10px;align-self:center" id="edit-star-lbl">Non noté</span>
+      </div>
+    </div>
+    <div class="fld" style="margin-bottom:14px"><label>Analyse Fondamentale</label><select id="edit-fon"><option value="">— Non considérée —</option><option value="1">⭐ 1/5 — Contre la fonda</option><option value="2">⭐⭐ 2/5 — Neutre négatif</option><option value="3">⭐⭐⭐ 3/5 — Neutre</option><option value="4">⭐⭐⭐⭐ 4/5 — Favorable</option><option value="5">⭐⭐⭐⭐⭐ 5/5 — Très favorable</option></select></div>
+    <div style="margin-bottom:12px">
+      <div class="tsec">⬢ Stratégie d'Entrée</div>
+      <div class="tags" id="edit-strat-tags"><span class="tag strat" onclick="toggleTag(this)">Anticipation</span><span class="tag strat" onclick="toggleTag(this)">Cassure</span><span class="tag strat" onclick="toggleTag(this)">Retest</span><span class="tag strat" onclick="toggleTag(this)">Pullback</span><span class="tag strat" onclick="toggleTag(this)">Range Breakout</span><span class="tag strat" onclick="toggleTag(this)">Trend Following</span><span class="tag strat" onclick="toggleTag(this)">Counter Trend</span><span class="tag strat" onclick="toggleTag(this)">News Setup</span><span class="tag strat" onclick="toggleTag(this)">Killzone</span><span class="tag strat" onclick="toggleTag(this)">ICT Concept</span><span class="tag strat" onclick="toggleTag(this)">Smart Money</span></div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div class="tsec">✦ Confirmations Techniques</div>
+      <div class="tags" id="edit-conf-tags"><span class="tag conf" onclick="toggleTag(this)">BOS</span><span class="tag conf" onclick="toggleTag(this)">ChoCh</span><span class="tag conf" onclick="toggleTag(this)">FVG</span><span class="tag conf" onclick="toggleTag(this)">OB (Order Block)</span><span class="tag conf" onclick="toggleTag(this)">BB (Breaker Block)</span><span class="tag conf" onclick="toggleTag(this)">Liquidity Grab</span><span class="tag conf" onclick="toggleTag(this)">Equal Highs/Lows</span><span class="tag conf" onclick="toggleTag(this)">Inducement</span><span class="tag conf" onclick="toggleTag(this)">Mitigation</span><span class="tag conf" onclick="toggleTag(this)">Imbalance</span><span class="tag conf" onclick="toggleTag(this)">Structure HTF</span><span class="tag conf" onclick="toggleTag(this)">Structure LTF</span><span class="tag conf" onclick="toggleTag(this)">Support / Résistance</span><span class="tag conf" onclick="toggleTag(this)">Fibonacci</span><span class="tag conf" onclick="toggleTag(this)">Divergence RSI</span><span class="tag conf" onclick="toggleTag(this)">Volume Spike</span><span class="tag conf" onclick="toggleTag(this)">EMA Cross</span><span class="tag conf" onclick="toggleTag(this)">VWAP</span><span class="tag conf" onclick="toggleTag(this)">PDH / PDL</span><span class="tag conf" onclick="toggleTag(this)">Open Range</span><span class="tag conf" onclick="toggleTag(this)">Sweep + Reversal</span></div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div class="tsec">◎ Patterns Price Action</div>
+      <div class="tags" id="edit-pat-tags"><span class="tag pat" onclick="toggleTag(this)">Pin Bar</span><span class="tag pat" onclick="toggleTag(this)">Engulfing Bull</span><span class="tag pat" onclick="toggleTag(this)">Engulfing Bear</span><span class="tag pat" onclick="toggleTag(this)">Doji</span><span class="tag pat" onclick="toggleTag(this)">Morning Star</span><span class="tag pat" onclick="toggleTag(this)">Evening Star</span><span class="tag pat" onclick="toggleTag(this)">Inside Bar</span><span class="tag pat" onclick="toggleTag(this)">Outside Bar</span><span class="tag pat" onclick="toggleTag(this)">Double Top</span><span class="tag pat" onclick="toggleTag(this)">Double Bottom</span><span class="tag pat" onclick="toggleTag(this)">H&S</span><span class="tag pat" onclick="toggleTag(this)">H&S Inversé</span><span class="tag pat" onclick="toggleTag(this)">Triangle Asc.</span><span class="tag pat" onclick="toggleTag(this)">Triangle Desc.</span><span class="tag pat" onclick="toggleTag(this)">Wedge</span><span class="tag pat" onclick="toggleTag(this)">Flag Bull</span><span class="tag pat" onclick="toggleTag(this)">Flag Bear</span><span class="tag pat" onclick="toggleTag(this)">3 Drives</span><span class="tag pat" onclick="toggleTag(this)">Shark</span><span class="tag pat" onclick="toggleTag(this)">Gartley</span></div>
+    </div>
     <div style="margin-bottom:12px">
       <div class="tsec" style="font-size:9px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ Erreurs Psychologiques</div>
       <div class="tags" id="edit-perr-tags">
@@ -1779,6 +1803,8 @@ document.addEventListener('click',e=>{if(e.target.id==='capModal')closeModal();}
 
 // ── STARS ──
 function setStar(v){STAR=v;document.querySelectorAll('#t-stars .star').forEach(s=>s.classList.toggle('on',parseInt(s.dataset.v)<=v));document.getElementById('star-lbl').textContent='★'.repeat(v)+' ('+v+'/5)';}
+let EDIT_STAR=0;
+function setEditStar(v){EDIT_STAR=v;document.querySelectorAll('#edit-stars .star').forEach(s=>s.classList.toggle('on',parseInt(s.dataset.v)<=v));var _l=document.getElementById('edit-star-lbl');if(_l)_l.textContent=v?('★'.repeat(v)+' ('+v+'/5)'):'Non noté';}
 
 // ── CALC ──
 function calcDur(e,x){if(!e||!x)return null;const[eh,em]=e.split(':').map(Number),[xh,xm]=x.split(':').map(Number);let m=(xh*60+xm)-(eh*60+em);if(m<0)m+=1440;const h=Math.floor(m/60),mn=m%60;return{str:h>0?h+'h '+mn+'m':mn+'m',mins:m};}
@@ -3197,6 +3223,15 @@ function openEditTrade(id){
   const savedGood=JSON.parse(t.psych_good||'[]');
   document.querySelectorAll('#edit-perr-tags .tag').forEach(el=>{if(savedErr.includes(el.textContent))el.classList.add('sel');});
   document.querySelectorAll('#edit-pgood-tags .tag').forEach(el=>{if(savedGood.includes(el.textContent))el.classList.add('sel');});
+  // Stratégie / Confirmations / Patterns
+  ['#edit-strat-tags','#edit-conf-tags','#edit-pat-tags'].forEach(function(sel){document.querySelectorAll(sel+' .tag').forEach(el=>el.classList.remove('sel'));});
+  var _sv=function(f){try{return JSON.parse(f||'[]');}catch(e){return [];}};
+  var _st=_sv(t.strats),_cf=_sv(t.confs),_pt=_sv(t.pats);
+  document.querySelectorAll('#edit-strat-tags .tag').forEach(el=>{if(_st.includes(el.textContent))el.classList.add('sel');});
+  document.querySelectorAll('#edit-conf-tags .tag').forEach(el=>{if(_cf.includes(el.textContent))el.classList.add('sel');});
+  document.querySelectorAll('#edit-pat-tags .tag').forEach(el=>{if(_pt.includes(el.textContent))el.classList.add('sel');});
+  setEditStar(parseInt(t.star)||0);
+  var _ef=document.getElementById('edit-fon'); if(_ef) _ef.value=t.fonda||'';
   ['eav','eco','eap'].forEach(function(p,i){
     var key=['photo_av','photo_co','photo_ap'][i];
     var el=document.getElementById(p+'-prev');
@@ -3249,9 +3284,13 @@ async function saveEditTrade(){
   const day=document.getElementById('edit-day').value;
   const psychErrors=[...document.querySelectorAll('#edit-perr-tags .tag.sel')].map(el=>el.textContent);
   const psychGood=[...document.querySelectorAll('#edit-pgood-tags .tag.sel')].map(el=>el.textContent);
+  const strats=[...document.querySelectorAll('#edit-strat-tags .tag.sel')].map(el=>el.textContent);
+  const confs=[...document.querySelectorAll('#edit-conf-tags .tag.sel')].map(el=>el.textContent);
+  const pats=[...document.querySelectorAll('#edit-pat-tags .tag.sel')].map(el=>el.textContent);
+  const fonda=document.getElementById('edit-fon')?document.getElementById('edit-fon').value:'';
   const getEPhoto=id=>{const img=document.querySelector('#'+id+'-prev img');return img?img.src:null;};
   const photo_av=getEPhoto('eav'),photo_co=getEPhoto('eco'),photo_ap=getEPhoto('eap');
-  const updates={pair,cat,cl,result,dir,day,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),photo_av,photo_co,photo_ap};
+  const updates={pair,cat,cl,result,dir,day,sess,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,ca_amt:ca,commission:comm,pnl_amt:net,pnl_pct:pnlPct,notes,risk_amt:CAP>0?parseFloat((CAP*rsk/100).toFixed(2)):0,trade_month,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),star:EDIT_STAR,fonda,psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),photo_av,photo_co,photo_ap};
   let {error}=await sb.from('trades').update(updates).eq('id',id);
   if(error && error.message && (error.message.indexOf('photo_')>=0||error.message.indexOf('psych_')>=0)){ const {photo_av,photo_co,photo_ap,psych_errors,psych_good,...slim}=updates; const r2=await sb.from('trades').update(slim).eq('id',id); error=r2.error; }
   if(error){toast('❌ Erreur: '+error.message);return;}
