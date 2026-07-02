@@ -7,8 +7,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TrackRecord PRO — 🧪 TEST</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#09090f;--bg2:#0d0d15;--card:#15151f;--card2:#1a1a27;--be:#7c5cff;--bb:#9d83ff;--ba:#5b21b6;--cy:#c4b5fd;--go:#f59e0b;--gb:#fbbf24;--gr:#10b981;--grb:#34d399;--re:#ef4444;--reb:#f87171;--tp:#e2e8f0;--ts:#94a3b8;--td:#475569;--bo:#2b2b3d;--bri:#6d28d9;--glow:0 0 20px rgba(124,92,255,0.3);}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -305,7 +304,7 @@ body::before{background:
 :root{
   --bg:#0a0a0f; --bg2:#0e0e15; --card:#14141d; --card2:#1a1a25;
   --bo:#262633; --bri:#7c5cff;
-  --tp:#f3f4fb; --ts:#a6abbd; --td:#6a6f82;
+  --tp:#f3f4fb; --ts:#a6abbd; --td:#7d8398;
   --be:#7c5cff; --bb:#9d83ff; --ba:#6d28d9; --cy:#c4b5fd;
   --glow:0 0 0 1px rgba(124,92,255,.12),0 10px 30px -12px rgba(124,92,255,.35);
   --radius:18px;
@@ -316,6 +315,9 @@ body,body *{font-family:'Inter',system-ui,-apple-system,sans-serif !important;}
   font-family:'Space Grotesk','Inter',sans-serif !important;letter-spacing:.3px;}
 .kv,.calc-box,.wr-v,.hm-c{font-variant-numeric:tabular-nums;}
 body{font-weight:500;letter-spacing:.1px;}
+/* Accessibilité : focus clavier visible + animations réduites si demandé */
+:focus-visible{outline:2px solid var(--be) !important;outline-offset:2px;border-radius:4px;}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}}
 
 /* fond épuré : plus de grille néon, juste une aura violette douce */
 body::before{background:
@@ -476,15 +478,15 @@ body::before{background:
       <div><div class="logo-t">TRACK<span>RECORD</span></div><div class="logo-s">Trading Journal</div></div>
     </div>
     <div class="side-cap">Navigation</div>
-    <div class="side-nav">
-      <button class="tab active" data-title="Dashboard" data-sub="Vue d'ensemble" onclick="showTab('dashboard',this);rdToggleSidebar(false)"><span class="ti">⬡</span> Dashboard</button>
-      <button class="tab" data-title="Journal" data-sub="Saisie &amp; historique des trades" onclick="showTab('journal',this);rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
-      <button class="tab" data-title="Analytique" data-sub="Statistiques avancées" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analytique</button>
-      <button class="tab" data-title="Bilan" data-sub="Performance mensuelle &amp; annuelle" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
-      <button class="tab" data-title="Setups" data-sub="Journal mensuel détaillé" onclick="showTab('setups',this);rdToggleSidebar(false)"><span class="ti">⬢</span> Setups</button>
+    <div class="side-nav" role="tablist" aria-label="Navigation principale">
+      <button class="tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-title="Dashboard" data-sub="Vue d'ensemble" onclick="showTab('dashboard',this);rdToggleSidebar(false)"><span class="ti">⬡</span> Dashboard</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="journal" data-title="Journal" data-sub="Saisie &amp; historique des trades" onclick="showTab('journal',this);rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="analyse" data-title="Analytique" data-sub="Statistiques avancées" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analytique</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="bilan" data-title="Bilan" data-sub="Performance mensuelle &amp; annuelle" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="setups" data-title="Setups" data-sub="Journal mensuel détaillé" onclick="showTab('setups',this);rdToggleSidebar(false)"><span class="ti">⬢</span> Setups</button>
     </div>
     <div class="side-cap">Intelligence ✨</div>
-    <div class="side-nav">
+    <div class="side-nav" role="tablist" aria-label="Navigation principale">
       <button class="side-action accent" onclick="openCoach();rdToggleSidebar(false)"><span class="ti">✨</span> Coach IA — Résumé</button>
       <button class="side-action" onclick="rdNewTrade();rdToggleSidebar(false)"><span class="ti">＋</span> Nouveau trade</button>
       <button class="side-action" onclick="if(typeof exportAnnualPDF==='function')exportAnnualPDF();rdToggleSidebar(false)"><span class="ti">📄</span> Export PDF annuel</button>
@@ -535,7 +537,7 @@ body::before{background:
 <div class="main">
 
 <!-- ══ DASHBOARD ══ -->
-<div id="dashboard" class="sec active">
+<div id="dashboard" class="sec active" role="tabpanel" aria-label="Dashboard">
 
   <!-- RECOVERY BUTTON (shown only when no trades) -->
   <div id="recovery-bar" style="display:none;margin-bottom:14px">
@@ -680,7 +682,7 @@ body::before{background:
 </div>
 
 <!-- ══ JOURNAL ══ -->
-<div id="journal" class="sec">
+<div id="journal" class="sec" role="tabpanel" aria-label="Journal">
 
   <!-- MONTH FILTER BAR -->
   <div class="card" style="margin-bottom:12px">
@@ -935,7 +937,7 @@ body::before{background:
 </div>
 
 <!-- ══ ANALYTIQUE ══ -->
-<div id="analyse" class="sec">
+<div id="analyse" class="sec" role="tabpanel" aria-label="Analyse">
   <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap">
     <button class="btn" onclick="exportAnnualPDF()" style="background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.4);color:var(--reb);padding:8px 16px;font-size:8px">📄 Rapport Annuel PDF</button>
   </div>
@@ -1052,7 +1054,7 @@ body::before{background:
 </div>
 
 <!-- ══ BILAN ══ -->
-<div id="bilan" class="sec">
+<div id="bilan" class="sec" role="tabpanel" aria-label="Bilan">
 
   <!-- EXPORT BUTTONS -->
   <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap">
@@ -1131,7 +1133,7 @@ body::before{background:
 </div>
 
 <!-- ══ SETUPS ══ -->
-<div id="setups" class="sec">
+<div id="setups" class="sec" role="tabpanel" aria-label="Setups">
 
   <!-- YEAR SELECTOR -->
   <div class="card" style="margin-bottom:14px">
@@ -1373,7 +1375,7 @@ body::before{background:
 </div><!-- /app -->
 
 <!-- CAPITAL MODAL -->
-<div class="mo" id="capModal">
+<div class="mo" id="capModal" role="dialog" aria-modal="true" aria-label="Définir le capital">
   <div class="mb">
     <div class="mt">⚙ Définir le Capital</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:var(--ts);text-align:center;margin-bottom:16px;letter-spacing:1px" id="cap-modal-account-name">—</div>
@@ -1389,7 +1391,7 @@ body::before{background:
 </div>
 
 <!-- EDIT TRADE MODAL -->
-<div class="mo" id="editModal">
+<div class="mo" id="editModal" role="dialog" aria-modal="true" aria-label="Modifier un trade">
   <div class="mb" style="width:560px;max-width:95vw;max-height:85vh;overflow-y:auto">
     <div class="mt">✎ Modifier le Trade</div>
     <input type="hidden" id="edit-id">
@@ -1467,7 +1469,7 @@ body::before{background:
 </div>
 
 <!-- NEW ACCOUNT MODAL -->
-<div class="mo" id="newAccountModal">
+<div class="mo" id="newAccountModal" role="dialog" aria-modal="true" aria-label="Nouveau compte">
   <div class="mb">
     <div class="mt">➕ Nouveau Compte</div>
     <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:22px">
@@ -1493,7 +1495,7 @@ body::before{background:
 </div>
 
 <!-- TRADE DETAIL MODAL -->
-<div class="mo" id="tradeDetailModal">
+<div class="mo" id="tradeDetailModal" role="dialog" aria-modal="true" aria-label="Détail du trade">
   <div class="mb" style="width:580px;max-width:96vw;max-height:88vh;overflow-y:auto">
     <div class="mt" id="tdm-title">📋 Détail du Trade</div>
     <!-- STATS -->
@@ -1515,7 +1517,7 @@ body::before{background:
 </div>
 
 <!-- COACH IA MODAL -->
-<div class="mo" id="coachModal">
+<div class="mo" id="coachModal" role="dialog" aria-modal="true" aria-label="Rapport coach IA">
   <div class="mb coach-mb">
     <div class="mt" style="text-align:center">✨ Coach IA — Résumé de performance</div>
     <div id="coach-body"></div>
@@ -1624,7 +1626,7 @@ function rdNewTrade(){
 }
 </script>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -1883,8 +1885,8 @@ setInterval(clk,1000);clk();
 // ── TABS ──
 function showTab(id,el){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');el.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false');});
+  document.getElementById(id).classList.add('active');el.classList.add('active');el.setAttribute('aria-selected','true');
   if(id==='bilan')setTimeout(initBilan,100);
   if(id==='analyse')setTimeout(initAnalyse,100);
   if(id==='setups')setTimeout(initSetups,100);
@@ -2189,7 +2191,7 @@ function renderTable(){
       <td style="font-size:10px;color:var(--ts)">${t.fonda?t.fonda+'/5':'—'}</td>
       <td style="font-size:9px">${(()=>{const e=JSON.parse(t.psych_errors||'[]');return e.length?`<span style="color:var(--reb)" title="${e.join(', ')}">⚠ ${e.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
       <td style="font-size:9px">${(()=>{const g=JSON.parse(t.psych_good||'[]');return g.length?`<span style="color:var(--grb)" title="${g.join(', ')}">✅ ${g.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
-      <td style="display:flex;gap:4px"><button onclick="openTradeDetail('${t.id}')" style="background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button><button onclick="openEditTrade('${t.id}')" style="background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
+      <td style="display:flex;gap:4px"><button onclick="openTradeDetail('${t.id}')" aria-label="Voir le trade" style="background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button><button onclick="openEditTrade('${t.id}')" aria-label="Modifier le trade" style="background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" aria-label="Supprimer le trade" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
     `;
     tb.appendChild(row);
     // ── Fiche mobile (même donnée que la ligne) ──
@@ -3272,7 +3274,7 @@ function renderScope(mt, scope){
         <td><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'var(--grb)':t.result==='LOSS'?'var(--reb)':'var(--gb)'}">${t.result}</span></td>
         <td style="font-size:9px;color:var(--bb)">${strs[0]||'—'}</td>
         <td style="color:var(--gb);font-size:9px">${t.star?'★'.repeat(t.star):'—'}</td>
-        <td><button onclick="openTradeDetail('${t.id}')" style="background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button></td>
+        <td><button onclick="openTradeDetail('${t.id}')" aria-label="Voir le trade" style="background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button></td>
       </tr>`;
     }).join('');
   }
