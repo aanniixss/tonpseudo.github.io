@@ -465,7 +465,32 @@ body::before{background:
 
 <!-- ░░░░ BANDEAU VERSION TEST ░░░░ -->
 <div id="test-banner" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,rgba(245,158,11,.92),rgba(217,119,6,.92));color:#0b0b12;font:700 11px 'Rajdhani',sans-serif;letter-spacing:2px;text-align:center;padding:3px 8px;text-transform:uppercase">🧪 Version test — les données sont réelles (base partagée avec le site principal)</div>
-<style>body{padding-top:20px}@media print{#test-banner{display:none}body{padding-top:0}}</style>
+<style>body{padding-top:20px}@media print{#test-banner{display:none}body{padding-top:0}}
+#login-gate{display:none;position:fixed;inset:0;z-index:99999;background:radial-gradient(900px 520px at 50% -8%,rgba(124,92,255,.14),transparent 60%),#0a0a0f;align-items:center;justify-content:center;}
+.lg-box{width:340px;max-width:92vw;background:var(--card);border:1px solid var(--bo);border-radius:18px;padding:34px 30px;text-align:center;box-shadow:0 30px 80px -20px rgba(0,0,0,.9),0 0 0 1px rgba(124,92,255,.12);}
+.lg-logo{width:52px;height:52px;margin:0 auto 14px;background:linear-gradient(135deg,var(--be),var(--cy));border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#000;}
+.lg-title{font-weight:800;font-size:17px;letter-spacing:2px;color:var(--tp);}
+.lg-title span{color:var(--be);}
+.lg-sub{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--td);margin:6px 0 22px;}
+.lg-box input{width:100%;box-sizing:border-box;background:var(--card2);border:1px solid var(--bo);border-radius:9px;padding:11px 13px;color:var(--tp);font-size:14px;margin-bottom:10px;outline:none;}
+.lg-box input:focus{border-color:var(--be);}
+.lg-err{min-height:16px;font-size:11px;color:#f87171;margin-bottom:8px;}
+.lg-btn{width:100%;padding:12px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--be),var(--ba));color:#fff;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;}
+.lg-btn:disabled{opacity:.6;cursor:wait;}
+.lg-forgot{background:none;border:none;color:var(--td);font-size:11px;margin-top:12px;cursor:pointer;text-decoration:underline;}
+</style>
+<div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
+  <div class="lg-box">
+    <div class="lg-logo">TR</div>
+    <div class="lg-title">TRACK<span>RECORD</span></div>
+    <div class="lg-sub">Connexion requise</div>
+    <input type="email" id="lg-email" placeholder="Email" autocomplete="username" aria-label="Email">
+    <input type="password" id="lg-pass" placeholder="Mot de passe" autocomplete="current-password" aria-label="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()">
+    <div id="lg-err" class="lg-err" aria-live="polite"></div>
+    <button class="lg-btn" id="lg-btn" onclick="doLogin()">Se connecter</button>
+    <br><button class="lg-forgot" onclick="forgotPwd()">Mot de passe oublié ?</button>
+  </div>
+</div>
 
 <!-- ░░░░ REDESIGN SHELL ░░░░ -->
 <div class="sb-overlay" id="sb-overlay" onclick="rdToggleSidebar(false)"></div>
@@ -506,6 +531,7 @@ body::before{background:
       </div>
       <div class="topbar-r">
         <div class="badge">◈ LIVE</div>
+        <button class="badge" id="logout-btn" onclick="doLogout()" style="display:none;cursor:pointer;background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:#f87171" title="Se déconnecter" aria-label="Se déconnecter">⎋ Déconnexion</button>
         <div class="badge" id="clockB" style="color:var(--cy);min-width:88px;text-align:center">--:--:--</div>
         <!-- GLOBAL YEAR SELECTOR -->
         <div style="display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bo);border-radius:20px;padding:4px 10px;">
@@ -1637,6 +1663,11 @@ const SUPA_URL = 'https://nogfrvpvknaqlgfnrjol.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vZ2ZydnB2a25hcWxnZm5yam9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODczMzUsImV4cCI6MjA5MDY2MzMzNX0.t9RzZ2g8YqOR2dCZOyfl2AveA4BssQYzmW7LXxfn1i4';
 const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 const OWNER_ID = 'user_cmqlipot4';
+// ── AUTH ── passe AUTH_REQUIRED à true une fois le compte créé (dashboard Supabase)
+// et la migration owner_uuid appliquée. Tant que false : comportement historique.
+const AUTH_REQUIRED = false;
+let OWNER_UUID = null;
+function ownExtra(){ return OWNER_UUID ? {owner_uuid: OWNER_UUID} : {}; }
 
 // ── ACCOUNTS ──
 let ACCOUNTS = [];
@@ -1664,17 +1695,17 @@ function sortedByDate(S){ return [...S].sort((a,b)=>tDate(a)-tDate(b)); }
 async function saveAccounts(){
   // Save all accounts to Supabase
   for(const acc of ACCOUNTS){
-    await sb.from('accounts').upsert({
+    await sb.from('accounts').upsert(Object.assign({
       id: acc.id, owner_id: OWNER_ID, name: acc.name,
       capital: acc.capital, risk: acc.risk, color: acc.color
-    });
+    }, ownExtra()));
   }
 }
 
 async function initAccounts(){
   // Try loading from Supabase first
   try {
-    const {data,error} = await sb.from('accounts').select('*').eq('owner_id', OWNER_ID).order('created_at',{ascending:true});
+    const {data,error} = await ((AUTH_REQUIRED&&OWNER_UUID)?sb.from('accounts').select('*').eq('owner_uuid',OWNER_UUID):sb.from('accounts').select('*').eq('owner_id',OWNER_ID)).order('created_at',{ascending:true});
     if(!error && data && data.length){
       ACCOUNTS = data.map(a=>({id:a.id, name:a.name, capital:a.capital||0, risk:a.risk||1, color:a.color||'#7c5cff'}));
       localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
@@ -1692,7 +1723,7 @@ async function initAccounts(){
     const def = {id: OWNER_ID+'_acc1', name:'Compte 1', capital:0, risk:1, color:'#7c5cff'};
     ACCOUNTS.push(def);
     localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
-    try { await sb.from('accounts').upsert({id:def.id, owner_id:OWNER_ID, name:def.name, capital:def.capital, risk:def.risk, color:def.color}); } catch(e){}
+    try { await sb.from('accounts').upsert(Object.assign({id:def.id, owner_id:OWNER_ID, name:def.name, capital:def.capital, risk:def.risk, color:def.color}, ownExtra())); } catch(e){}
   }
   // Load active account
   const savedId = localStorage.getItem('tr_active_account');
@@ -1772,7 +1803,7 @@ async function createAccount(){
   if(!name){ toast('❌ Donne un nom au compte'); return; }
   const acc = { id: OWNER_ID+'_acc'+Date.now(), name, capital:cap, risk:rsk, color:SELECTED_COLOR };
   // Save to Supabase
-  const {data:accData, error} = await sb.from('accounts').insert({id:acc.id, owner_id:OWNER_ID, name:acc.name, capital:acc.capital, risk:acc.risk, color:acc.color}).select();
+  const {data:accData, error} = await sb.from('accounts').insert(Object.assign({id:acc.id, owner_id:OWNER_ID, name:acc.name, capital:acc.capital, risk:acc.risk, color:acc.color}, ownExtra())).select();
   if(error){
     console.error('Erreur compte:', error);
     // Fallback: save locally anyway
@@ -1805,8 +1836,9 @@ document.addEventListener('click',e=>{ if(!e.target.closest('#account-selector-w
 async function forceRecover(){
   toast('🔄 Recherche en cours...');
   try {
-    // Try fetching all trades regardless of user_id
-    const {data,error} = await sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
+    let q=sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
+    if(AUTH_REQUIRED&&OWNER_UUID)q=q.eq('owner_uuid',OWNER_UUID);
+    const {data,error} = await q;
     if(error){ toast('❌ Erreur Supabase: '+error.message); return; }
     if(!data || !data.length){ toast('❌ Aucun trade dans Supabase'); return; }
     T = data;
@@ -1906,7 +1938,7 @@ async function saveCapital(){
   if(!isNaN(r)&&r>0){DRSK=r;document.getElementById('f-rsk').value=r;}
   ACTIVE_ACCOUNT.capital=CAP; ACTIVE_ACCOUNT.risk=DRSK;
   try{ localStorage.setItem('tr_capital', CAP); localStorage.setItem('tr_risk', DRSK); localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS)); }catch(e){}
-  try{ await sb.from('accounts').upsert({id:ACTIVE_ACCOUNT.id, owner_id:OWNER_ID, name:ACTIVE_ACCOUNT.name, capital:CAP, risk:DRSK, color:ACTIVE_ACCOUNT.color||'#7c5cff'}); }catch(e){}
+  try{ await sb.from('accounts').upsert(Object.assign({id:ACTIVE_ACCOUNT.id, owner_id:OWNER_ID, name:ACTIVE_ACCOUNT.name, capital:CAP, risk:DRSK, color:ACTIVE_ACCOUNT.color||'#7c5cff'}, ownExtra())); }catch(e){}
   updateAccountUI();closeModal();updateDash();initCapChart();
   toast('✅ '+ACTIVE_ACCOUNT.name+' · $'+CAP.toLocaleString()+' · Risque '+DRSK+'%');
 }
@@ -2075,11 +2107,11 @@ async function addTrade(){
   const tradeYear = GLOBAL_YEAR || now.getFullYear();
   const getPhoto=id=>{const img=document.querySelector('#'+id+'-prev img');return img?img.src:null;};
   const photoAv=getPhoto('av'),photoCo=getPhoto('co'),photoAp=getPhoto('ap');
-  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear,photo_av:photoAv,photo_co:photoCo,photo_ap:photoAp};
+  const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear,photo_av:photoAv,photo_co:photoCo,photo_ap:photoAp,...ownExtra()};
   let {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
   // Fallback : si les colonnes psych n'existent pas encore dans Supabase, on réessaie sans elles
-  if(error && error.message && (error.message.includes('psych_errors')||error.message.includes('psych_good')||error.message.includes('photo_av'))){
-    const {psych_errors, psych_good, photo_av, photo_co, photo_ap, ...tradeDataFallback} = tradeData;
+  if(error && error.message && (error.message.includes('psych_errors')||error.message.includes('psych_good')||error.message.includes('photo_av')||error.message.includes('owner_uuid'))){
+    const {psych_errors, psych_good, photo_av, photo_co, photo_ap, owner_uuid, ...tradeDataFallback} = tradeData;
     const res2 = await sb.from('trades').insert([tradeDataFallback]).select();
     saved = res2.data; error = res2.error;
     if(!error) toast('✅ Trade sauvegardé ! (Ajouter colonnes psych_errors/psych_good dans Supabase pour activer le tracking psychologie)');
@@ -2269,9 +2301,11 @@ async function importCSV(ev){
     return o;
   });
   try{
+    batch=batch.map(function(r){return Object.assign({},r,ownExtra());});
     let { error } = await sb.from('trades').insert(batch);
     if(error){
       const slim=batch.map(({psych_errors,psych_good,photo_av,photo_co,photo_ap,...r})=>r);
+      slim.forEach(function(c){delete c.owner_uuid;});
       const r2=await sb.from('trades').insert(slim); error=r2.error;
     }
     if(error){ console.error('importCSV',error); toast('❌ Import échoué : '+(error.message||'')); return; }
@@ -2338,8 +2372,9 @@ async function _mt5DoImport(trades, replace){
     if(replace){ var del=await sb.from('trades').delete().eq('user_id',ACTIVE_ACCOUNT.id); if(del.error){ toast('❌ Suppression impossible : '+(del.error.message||'')); return; } }
     for(var i=0;i<trades.length;i+=200){
       var batch=trades.slice(i,i+200);
+      batch=batch.map(function(r){return Object.assign({},r,ownExtra());});
       var res=await sb.from('trades').insert(batch);
-      if(res.error){ var slim=batch.map(function(t){var c=Object.assign({},t);delete c.psych_errors;delete c.psych_good;return c;}); res=await sb.from('trades').insert(slim); }
+      if(res.error){ var slim=batch.map(function(t){var c=Object.assign({},t);delete c.psych_errors;delete c.psych_good;delete c.owner_uuid;return c;}); res=await sb.from('trades').insert(slim); }
       if(res.error){ console.error('importMT5',res.error); toast('❌ Import échoué : '+(res.error.message||'')); return; }
     }
     await loadTrades(); renderTable(); updateDash();
@@ -4236,13 +4271,44 @@ function renderCompare(){
     }).join('')+'</tbody></table>';
 }
 
-// ── INIT ──// ── INIT ──
-document.addEventListener('DOMContentLoaded',()=>{
+// ── INIT & AUTH GATE ──
+function showLogin(){const g=document.getElementById('login-gate');if(g)g.style.display='flex';document.querySelector('.app').style.display='none';}
+function hideLogin(){const g=document.getElementById('login-gate');if(g)g.style.display='none';document.querySelector('.app').style.display='';}
+async function doLogin(){
+  const email=document.getElementById('lg-email').value.trim(),pass=document.getElementById('lg-pass').value;
+  const err=document.getElementById('lg-err'),btn=document.getElementById('lg-btn');
+  if(!email||!pass){err.textContent='Email et mot de passe requis';return;}
+  btn.disabled=true;btn.textContent='Connexion…';err.textContent='';
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){err.textContent=error.message==='Invalid login credentials'?'Identifiants incorrects':error.message;return;}
+    OWNER_UUID=data.user.id;hideLogin();await startApp();
+    const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';
+  }finally{btn.disabled=false;btn.textContent='Se connecter';}
+}
+async function forgotPwd(){
+  const email=document.getElementById('lg-email').value.trim();
+  const err=document.getElementById('lg-err');
+  if(!email){err.textContent='Renseigne ton email d\'abord';return;}
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  err.textContent=error?error.message:'📩 Email de réinitialisation envoyé';
+}
+async function doLogout(){await sb.auth.signOut();location.reload();}
+async function startApp(){
   updatePairs();
-  initAccounts().then(()=>{
-    if(DRSK)document.getElementById('f-rsk').value=DRSK;
-  });
-});
+  await initAccounts();
+  if(DRSK)document.getElementById('f-rsk').value=DRSK;
+}
+async function boot(){
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session){OWNER_UUID=session.user.id;const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';}
+  }catch(e){console.warn('auth getSession',e);}
+  if(AUTH_REQUIRED&&!OWNER_UUID){showLogin();return;}
+  await startApp();
+}
+try{sb.auth.onAuthStateChange((ev,s)=>{if(ev==='SIGNED_OUT'&&AUTH_REQUIRED)location.reload();});}catch(e){}
+document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
 </html>
