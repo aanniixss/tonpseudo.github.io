@@ -162,6 +162,11 @@ canvas{display:block;width:100%!important;}
 .alert-line{border:1px solid var(--bo);border-left:3px solid var(--go);background:rgba(245,158,11,.06);border-radius:9px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--tp);}
 .eqt{background:transparent;border:1px solid var(--bo);color:var(--ts);padding:3px 12px;border-radius:7px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;}
 .eqt.active{border-color:var(--be);color:var(--cy);background:rgba(124,92,255,.15);}
+.btn-ai{margin-top:10px;width:100%;padding:10px;border-radius:9px;border:1px dashed var(--be);background:rgba(124,92,255,.08);color:var(--cy);cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.btn-ai:hover:not(:disabled){background:rgba(124,92,255,.18);box-shadow:0 0 14px rgba(124,92,255,.25);}
+.btn-ai:disabled{opacity:.55;cursor:wait;}
+.ai-filled{animation:aiGlow 2.4s ease;}
+@keyframes aiGlow{0%{box-shadow:0 0 0 2px rgba(124,92,255,.9);background:rgba(124,92,255,.25);}100%{box-shadow:none;}}
 @media(max-width:850px){.ana-kpis{grid-template-columns:repeat(2,1fr);}.ana-pills .ana-scope{margin-left:0;width:100%;}}
 .mo.show{display:flex;}
 .mb{background:var(--card);border:1px solid var(--be);border-radius:15px;padding:28px;width:420px;max-width:90vw;box-shadow:var(--glow);}
@@ -902,6 +907,7 @@ body::before{background:
       <input type="file" id="f-av" accept="image/*" style="display:none" onchange="prevUp(event,'av')">
       <input type="file" id="f-co" accept="image/*" style="display:none" onchange="prevUp(event,'co')">
       <input type="file" id="f-ap" accept="image/*" style="display:none" onchange="prevUp(event,'ap')">
+      <button type="button" class="btn-ai" id="ai-parse-btn" onclick="aiParseTrade()" title="L'IA lit ta capture (MT5, FTMO, TradingView…) et pré-remplit le formulaire — rien n'est enregistré automatiquement">✨ Pré-remplir depuis la capture (IA)</button>
     </div>
 
     <div style="display:flex;gap:10px">
@@ -1941,6 +1947,92 @@ function syncResult(){
 // ── UPLOAD ──
 function trigUp(p){document.getElementById('f-'+p).click();}
 function prevUp(e,p){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{document.getElementById(p+'-prev').innerHTML=`<img src="${ev.target.result}" style="max-width:100%;max-height:80px;border-radius:5px;object-fit:cover">`;};r.readAsDataURL(f);}
+
+// ── IA : LECTURE DE CAPTURE (edge function parse-trade) ──
+function shrinkDataUrl(dataUrl,maxDim=1600,q=0.85){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(Math.max(w,h)<=maxDim){res(dataUrl);return;}
+      const k=maxDim/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);
+      const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      res(cv.toDataURL('image/jpeg',q));
+    };
+    img.onerror=rej;img.src=dataUrl;
+  });
+}
+function prefillTradeForm(tr){
+  let n=0;const missing=[];
+  const mark=el=>{el.classList.remove('ai-filled');void el.offsetWidth;el.classList.add('ai-filled');setTimeout(()=>el.classList.remove('ai-filled'),2500);n++;};
+  const setSel=(id,val)=>{
+    if(val===''||val==null)return;
+    const el=document.getElementById(id);if(!el)return;
+    const opt=[...el.options].find(o=>o.value.toUpperCase()===String(val).toUpperCase());
+    if(opt){el.value=opt.value;mark(el);}
+  };
+  const setNum=(id,val,cond)=>{
+    if(typeof val!=='number'||!isFinite(val)||!cond(val))return;
+    const el=document.getElementById(id);if(!el||el.value!=='')return;
+    el.value=val;mark(el);
+  };
+  const setTime=(id,val)=>{
+    if(!/^\d{1,2}:\d{2}$/.test(val||''))return;
+    const el=document.getElementById(id);if(!el||el.value)return;
+    el.value=val.padStart(5,'0');mark(el);
+  };
+  if(tr.pair){
+    const p=String(tr.pair).toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(PC[p]){
+      const cat=document.getElementById('f-cat');
+      if(cat&&cat.value!==PC[p]){cat.value=PC[p];updatePairs();}
+      const sel=document.getElementById('f-pair');
+      const opt=[...sel.options].find(o=>o.value.toUpperCase()===p);
+      if(opt){sel.value=opt.value;mark(sel);}
+    }else missing.push(tr.pair);
+  }
+  setSel('f-dir',tr.direction);
+  setSel('f-sess',tr.session);
+  setSel('f-day',tr.day);
+  setSel('f-result',tr.result);
+  setTime('f-en',tr.entry_time);
+  setTime('f-ex',tr.exit_time);
+  setNum('f-lot',tr.lot_size,v=>v>0);
+  setNum('f-rsk',tr.risk_pct,v=>v>0);
+  setNum('f-rr',tr.rr,v=>v>0);
+  setNum('f-ca',tr.gross_pnl,v=>v!==0);
+  setNum('f-comm',tr.commission,v=>v>0);
+  if(tr.notes&&String(tr.notes).trim()){
+    const el=document.getElementById('f-notes');
+    if(el){el.value=(el.value?el.value+'\n':'')+'[IA] '+String(tr.notes).trim();mark(el);}
+  }
+  calcAll();
+  return{n,missing};
+}
+async function aiParseTrade(){
+  const img=document.querySelector('#ap-prev img')||document.querySelector('#co-prev img')||document.querySelector('#av-prev img');
+  if(!img){toast('📷 Ajoute d\'abord une capture (idéalement « Après — Résultat »)');return;}
+  const btn=document.getElementById('ai-parse-btn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Lecture de la capture par l\'IA…';}
+  try{
+    const small=await shrinkDataUrl(img.src);
+    const parts=small.split(','),meta=parts[0],b64=parts.slice(1).join(',');
+    const media_type=(meta.match(/data:(.*?);/)||[])[1]||'image/jpeg';
+    const {data,error}=await sb.functions.invoke('parse-trade',{body:{image:b64,media_type}});
+    if(error){
+      let msg=error.message||'erreur inconnue';
+      try{const body=await error.context.json();if(body&&body.error)msg=body.error;}catch(_e){}
+      toast('❌ IA : '+msg);return;
+    }
+    if(!data||!data.trade){toast('❌ Lecture impossible — réessaie avec une capture plus nette');return;}
+    const r=prefillTradeForm(data.trade);
+    let msg=r.n?('✨ '+r.n+' champ'+(r.n>1?'s':'')+' pré-rempli'+(r.n>1?'s':'')+' — vérifie avant d\'enregistrer'):'🤷 Rien d\'exploitable sur cette capture';
+    if(r.missing.length)msg+=' · paire inconnue : '+r.missing.join(', ');
+    toast(msg);
+  }catch(e){console.error('aiParseTrade',e);toast('❌ IA indisponible : '+(e.message||e));}
+  finally{if(btn){btn.disabled=false;btn.textContent='✨ Pré-remplir depuis la capture (IA)';}}
+}
 function bulkUp(e){const files=[...e.target.files];const g=document.getElementById('gallery');if(files.length&&g.querySelector('[style*="Aucun"]'))g.innerHTML='';files.forEach(f=>{const r=new FileReader();r.onload=ev=>{const c=document.createElement('div');c.className='ic';c.innerHTML=`<div class="il">📊 ${f.name.slice(0,18)}</div><img src="${ev.target.result}"><button class="id-b" onclick="this.parentElement.remove()">✕</button>`;g.appendChild(c);};r.readAsDataURL(f);});toast('📁 '+files.length+' chart(s) uploadé(s)');}
 
 // ── TAG ──
