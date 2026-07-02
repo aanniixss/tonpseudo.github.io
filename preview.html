@@ -140,7 +140,7 @@ canvas{display:block;width:100%!important;}
 .ana-pill:hover{border-color:var(--be);color:var(--tp);}
 .ana-pill.active{background:linear-gradient(135deg,rgba(124,92,255,.25),rgba(124,92,255,.1));border-color:var(--be);color:var(--cy);box-shadow:0 0 12px rgba(124,92,255,.25);}
 .ana-scope{background:var(--card);border:1px solid var(--bo);color:var(--tp);padding:7px 10px;border-radius:9px;font-family:'Rajdhani',sans-serif;font-size:12px;}
-.ana-pills .ana-scope{margin-left:auto;}
+.ana-pills .ana-scope{margin-left:0;}
 .ana-panel{display:none;}
 .ana-panel.active{display:block;}
 .ana-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
@@ -166,7 +166,7 @@ canvas{display:block;width:100%!important;}
 .btn-ai:disabled{opacity:.55;cursor:wait;}
 .ai-filled{animation:aiGlow 2.4s ease;}
 @keyframes aiGlow{0%{box-shadow:0 0 0 2px rgba(124,92,255,.9);background:rgba(124,92,255,.25);}100%{box-shadow:none;}}
-@media(max-width:850px){.ana-kpis{grid-template-columns:repeat(2,1fr);}.ana-pills .ana-scope{margin-left:0;width:100%;}}
+@media(max-width:850px){.ana-kpis{grid-template-columns:repeat(2,1fr);}.ana-pills .ana-scope{width:100%;}}
 .mo.show{display:flex;}
 .mb{background:var(--card);border:1px solid var(--be);border-radius:15px;padding:28px;width:420px;max-width:90vw;box-shadow:var(--glow);}
 .mt{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:var(--be);margin-bottom:22px;text-align:center;}
@@ -975,6 +975,11 @@ body::before{background:
     <button class="ana-pill" role="tab" aria-selected="false" onclick="showAnaPanel('ana-edge',this)">Edge</button>
     <button class="ana-pill" role="tab" aria-selected="false" onclick="showAnaPanel('ana-psych',this)">Psychologie</button>
     <button class="ana-pill" role="tab" aria-selected="false" onclick="showAnaPanel('ana-goals',this)">Objectifs</button>
+    <span style="display:flex;gap:6px;margin-left:auto" role="group" aria-label="Unité d'affichage" title="Unité des analytiques : R (multiples de risque), % du capital, ou $">
+      <button class="eqt" id="unit-R" onclick="setAnaUnit('R')" aria-label="Afficher en R">R</button>
+      <button class="eqt" id="unit-pct" onclick="setAnaUnit('%')" aria-label="Afficher en pourcentage du capital">%</button>
+      <button class="eqt" id="unit-usd" onclick="setAnaUnit('$')" aria-label="Afficher en dollars">$</button>
+    </span>
     <select id="ana-month" class="ana-scope" onchange="anaMonthChanged(this.value)" aria-label="Période analysée">
       <option value="">Toute l'année</option>
       <option value="0">Janvier</option><option value="1">Février</option><option value="2">Mars</option>
@@ -1010,24 +1015,22 @@ body::before{background:
   <div id="ana-pro" class="ana-panel" role="tabpanel" aria-label="Métriques professionnelles">
     <div class="ana-kpis" id="pro-kpis"></div>
     <div class="card">
-      <div class="ct" style="justify-content:space-between"><span>📈 Courbe d'equity</span>
-        <span style="display:flex;gap:6px"><button class="eqt active" id="eqt-usd" onclick="setEqMode('$')" aria-label="Afficher en dollars">$</button><button class="eqt" id="eqt-r" onclick="setEqMode('R')" aria-label="Afficher en R">R</button></span>
-      </div>
+      <div class="ct">📈 Courbe d'equity <span class="unit-word" style="color:var(--td)"></span></div>
       <canvas id="chart-equity" height="110"></canvas>
       <div id="eq-dd-note" style="margin-top:8px;font-size:10px;color:var(--ts)"></div>
     </div>
-    <div class="card"><div class="ct">📊 Distribution des R (par trade)</div><canvas id="chart-rdist" height="90"></canvas></div>
+    <div class="card"><div class="ct">📊 Distribution par trade <span class="unit-word" style="color:var(--td)"></span></div><canvas id="chart-rdist" height="90"></canvas></div>
   </div>
 
   <!-- ══ EDGE ══ -->
   <div id="ana-edge" class="ana-panel" role="tabpanel" aria-label="Analyse d'edge">
     <div class="g2" id="edge-callouts"></div>
-    <div class="card"><div class="ct">🗺️ Paire × Session — R moyen</div><div class="tbl-scroll" id="edge-hm-ps"></div></div>
+    <div class="card"><div class="ct">🗺️ Paire × Session — <span class="unit-word">R moyen</span></div><div class="tbl-scroll" id="edge-hm-ps"></div></div>
     <div class="g2">
-      <div class="card"><div class="ct">📅 Jour × Heure d'entrée — R moyen</div><div class="tbl-scroll" id="edge-hm-dh"></div></div>
-      <div class="card"><div class="ct">🕐 Session × Jour — R moyen</div><div class="tbl-scroll" id="edge-hm-sd"></div></div>
+      <div class="card"><div class="ct">📅 Jour × Heure d'entrée — <span class="unit-word">R moyen</span></div><div class="tbl-scroll" id="edge-hm-dh"></div></div>
+      <div class="card"><div class="ct">🕐 Session × Jour — <span class="unit-word">R moyen</span></div><div class="tbl-scroll" id="edge-hm-sd"></div></div>
     </div>
-    <div style="font-size:9px;color:var(--td);margin-bottom:16px">Couleur = R moyen (rouge ↔ gris ↔ vert, plafonné à ±1R). Cellules estompées : échantillon faible (n&lt;3), à interpréter avec prudence.</div>
+    <div style="font-size:9px;color:var(--td);margin-bottom:16px">Couleur = moyenne par condition dans l'unité choisie (rouge ↔ gris ↔ vert). Cellules estompées : échantillon faible (n&lt;3), à interpréter avec prudence.</div>
   </div>
 
   <!-- ══ PSYCHOLOGIE ══ -->
@@ -3867,7 +3870,8 @@ function exportAnnualPDF(){
 }
 
 // ── ANALYTICS PRO ──
-let ANA_MONTH=null, ANA_EQ_MODE='$';
+let ANA_MONTH=null;
+let ANA_UNIT=(function(){try{const u=localStorage.getItem('tr_ana_unit');return ['R','%','$'].indexOf(u)>=0?u:'R';}catch(e){return 'R';}})();
 const ANA_MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const ANA_SESS=['London','New York','Tokyo / Asia','Overlap Lon/NY'];
 const ANA_JOURS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
@@ -3879,6 +3883,32 @@ function showAnaPanel(id,el){
   document.querySelectorAll('#analyse .ana-pill').forEach(p=>{p.classList.remove('active');p.setAttribute('aria-selected','false');});
   const pn=document.getElementById(id); if(pn)pn.classList.add('active');
   el.classList.add('active'); el.setAttribute('aria-selected','true');
+}
+function tradeVal(t){
+  if(ANA_UNIT==='R')return tradeR(t);
+  if(ANA_UNIT==='%'){
+    const p=parseFloat(t.pnl_pct);
+    if(isFinite(p)&&p!==0)return p;
+    const pnl=parseFloat(t.pnl_amt)||0;
+    return CAP>0?pnl/CAP*100:0;
+  }
+  return parseFloat(t.pnl_amt)||0;
+}
+function aFmtPct(v,signed){v=parseFloat(v)||0;return(v<0?'-':(signed&&v>0?'+':''))+Math.abs(v).toFixed(2)+'%';}
+function aFmtVal(v,signed){return ANA_UNIT==='R'?aFmtR(v,signed):(ANA_UNIT==='%'?aFmtPct(v,signed):aFmtUsd(v,signed));}
+function unitLabel(){return ANA_UNIT==='R'?'R':(ANA_UNIT==='%'?'% du capital':'$');}
+function unitWord(){return ANA_UNIT==='R'?'R moyen':(ANA_UNIT==='%'?'% moyen':'$ moyen');}
+function unitClamp(){
+  if(ANA_UNIT!=='$')return 1;
+  if(CAP>0)return CAP*0.01;
+  const m=T.map(t=>Math.abs(parseFloat(t.pnl_amt)||0)).filter(x=>x>0).sort((a,b)=>a-b);
+  return m.length?m[Math.floor(m.length/2)]:100;
+}
+function setAnaUnit(u){ANA_UNIT=u;try{localStorage.setItem('tr_ana_unit',u);}catch(e){}renderAnalyticsPro();}
+function syncUnitUI(){
+  const map={'R':'unit-R','%':'unit-pct','$':'unit-usd'};
+  Object.keys(map).forEach(u=>{const b=document.getElementById(map[u]);if(b)b.classList.toggle('active',ANA_UNIT===u);});
+  document.querySelectorAll('#analyse .unit-word').forEach(e=>{e.textContent=unitWord();});
 }
 function aFmtUsd(v,signed){v=parseFloat(v)||0;const a=Math.abs(v);const s=a>=1000?Math.round(a).toLocaleString('fr-FR'):a.toFixed(2);return(v<0?'-$':(signed&&v>0?'+$':'$'))+s;}
 function aFmtR(v,signed){v=parseFloat(v)||0;return(v<0?'-':(signed&&v>0?'+':''))+Math.abs(v).toFixed(2)+'R';}
@@ -3900,6 +3930,7 @@ function aCore(S){
 function aMaxDD(arr){let peak=-Infinity,peakI=0,dd=0,s=0,e=0;arr.forEach((v,i)=>{if(v>peak){peak=v;peakI=i;}const d=peak-v;if(d>dd){dd=d;s=peakI;e=i;}});return{dd,start:s,end:e};}
 function aMaxDDPct(arr){let peak=-Infinity,dd=0;arr.forEach(v=>{if(v>peak)peak=v;if(peak>0){const d=(peak-v)/peak;if(d>dd)dd=d;}});return dd*100;}
 function renderAnalyticsPro(){
+  try{syncUnitUI();}catch(e){console.error('syncUnitUI',e);}
   try{renderProMetrics();}catch(e){console.error('renderProMetrics',e);}
   try{renderEdge();}catch(e){console.error('renderEdge',e);}
   try{renderPsych();}catch(e){console.error('renderPsych',e);}
@@ -3907,13 +3938,6 @@ function renderAnalyticsPro(){
 }
 
 // ── 2a. MÉTRIQUES PRO ──
-function setEqMode(m){
-  ANA_EQ_MODE=m;
-  const u=document.getElementById('eqt-usd'),r=document.getElementById('eqt-r');
-  if(u)u.classList.toggle('active',m==='$');
-  if(r)r.classList.toggle('active',m==='R');
-  renderProMetrics();
-}
 function renderProMetrics(){
   const kp=document.getElementById('pro-kpis'); if(!kp)return;
   DC('equity');DC('rdist');
@@ -3927,10 +3951,12 @@ function renderProMetrics(){
   }
   if(eqC)eqC.style.display='block'; if(rdC)rdC.style.display='block';
   const c=aCore(S);
-  const avgWinR=mean(c.W.map(tradeR)),avgLossR=Math.abs(mean(c.L.map(tradeR)));
+  const Vs=S.map(tradeVal),expV=mean(Vs);
+  const avgWinV=mean(c.W.map(tradeVal)),avgLossV=Math.abs(mean(c.L.map(tradeVal)));
   const nWL=c.W.length+c.L.length,pw=nWL?c.W.length/nWL:0,pl=nWL?c.L.length/nWL:0;
-  let eq=[],cum=CAP||0,cumR=[],cr=0;
-  S.forEach(t=>{cum+=(parseFloat(t.pnl_amt)||0);eq.push(parseFloat(cum.toFixed(2)));cr+=tradeR(t);cumR.push(parseFloat(cr.toFixed(3)));});
+  const expPct=CAP>0?mean(S.map(t=>{const pp=parseFloat(t.pnl_pct);return isFinite(pp)&&pp!==0?pp:(parseFloat(t.pnl_amt)||0)/CAP*100;})):null;
+  let eq=[],cum=CAP||0,cumR=[],cr=0,cumV=[],cv=0;
+  S.forEach(t=>{cum+=(parseFloat(t.pnl_amt)||0);eq.push(parseFloat(cum.toFixed(2)));cr+=tradeR(t);cumR.push(parseFloat(cr.toFixed(3)));cv+=tradeVal(t);cumV.push(parseFloat(cv.toFixed(3)));});
   const ddU=aMaxDD(eq),ddR=aMaxDD(cumR),ddPct=(CAP>0)?aMaxDDPct(eq):null;
   const sd=stdev(c.Rs);
   const sqn=(c.Rs.length>=2&&sd>0)?Math.sqrt(c.Rs.length)*c.expR/sd:null;
@@ -3943,49 +3969,64 @@ function renderProMetrics(){
   }
   const pfTxt=c.pf===null?'—':(c.pf===Infinity?'∞':c.pf.toFixed(2));
   const sqnLbl=sqn===null?'':(sqn<1.6?'système faible':sqn<2?'correct':sqn<2.5?'bon':sqn<3?'excellent':'exceptionnel');
+  const others=[];
+  if(ANA_UNIT!=='R')others.push(aFmtR(c.expR,true));
+  if(ANA_UNIT!=='%'&&expPct!==null)others.push(aFmtPct(expPct,true));
+  if(ANA_UNIT!=='$')others.push(aFmtUsd(c.expUsd,true));
   kp.innerHTML=
-    aTile('Expectancy / trade',aFmtR(c.expR,true),aCls(c.expR),nWL?((pw*100).toFixed(0)+'% × '+aFmtR(avgWinR,true)+' &nbsp;−&nbsp; '+(pl*100).toFixed(0)+'% × '+aFmtR(avgLossR)):'')+
-    aTile('Expectancy ($)',aFmtUsd(c.expUsd,true),aCls(c.expUsd),'moyenne sur '+c.n+' trades')+
+    aTile('Expectancy / trade ('+unitLabel()+')',(ANA_UNIT==='%'&&expPct===null)?'—':aFmtVal(expV,true),aCls(expV),nWL?((pw*100).toFixed(0)+'% × '+aFmtVal(avgWinV,true)+' &nbsp;−&nbsp; '+(pl*100).toFixed(0)+'% × '+aFmtVal(avgLossV)):'')+
+    aTile('Expectancy — équivalents',others[0]||'—',aCls(c.expUsd),(others[1]?'et '+others[1]+' · ':'')+'moyenne sur '+c.n+' trades')+
     aTile('Profit Factor',pfTxt,c.pf!==null&&c.pf<1?'loss':(c.pf!==null&&c.pf>=1.5?'win':''),'gains bruts ÷ pertes brutes')+
     aTile('Max Drawdown',aFmtUsd(-ddU.dd),ddU.dd>0?'loss':'win',(ddPct!==null?ddPct.toFixed(1)+'% du pic · ':'')+'en R : '+aFmtR(-ddR.dd))+
-    aTile('SQN',sqn===null?'—':sqn.toFixed(2),sqn===null?'':(sqn>=2?'win':sqn>=1.6?'be-r':'loss'),sqn===null?'min. 2 trades':'√N × E(R) ÷ σ(R) — '+sqnLbl)+
+    aTile('SQN',sqn===null?'—':sqn.toFixed(2),sqn===null?'':(sqn>=2?'win':sqn>=1.6?'be-r':'loss'),(sqn===null?'min. 2 trades':'√N × E(R) ÷ σ(R) — '+sqnLbl)+' · toujours en R')+
     aTile('Sharpe journalier',sharpe===null?'—':sharpe.toFixed(2),sharpe===null?'':aCls(sharpe),sharpe===null?(CAP>0?'min. 5 jours de trading (n='+nDays+')':'capital non défini'):'annualisé √252');
   // Courbe d'equity ($/R, pire drawdown en rouge)
   if(eqC){
-    const mode=ANA_EQ_MODE,data=mode==='$'?eq:cumR,span=mode==='$'?ddU:ddR;
+    const mode=ANA_UNIT,data=mode==='$'?eq:(mode==='%'?cumV:cumR),span=mode==='$'?ddU:aMaxDD(mode==='%'?cumV:cumR);
     CI['equity']=new Chart(eqC,{type:'line',data:{labels:S.map((t,i)=>i+1),datasets:[{
-      label:mode==='$'?'Equity ($)':'R cumulé',data,
+      label:mode==='$'?'Equity ($)':(mode==='%'?'% cumulé':'R cumulé'),data,
       borderWidth:2,pointRadius:0,pointHoverRadius:5,pointHitRadius:14,tension:.12,
       borderColor:'#7c5cff',backgroundColor:'rgba(124,92,255,0.06)',fill:true,
       segment:{borderColor:ctx=>(span.dd>0&&ctx.p0DataIndex>=span.start&&ctx.p1DataIndex<=span.end)?'#f87171':'#7c5cff'}
     }]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},
       tooltip:{backgroundColor:'#15151f',borderColor:'#6d28d9',borderWidth:1,callbacks:{
         title:items=>{const t=S[items[0].dataIndex];const d=tDate(t);return 'Trade #'+(items[0].dataIndex+1)+(isNaN(d)?'':' — '+d.toLocaleDateString('fr-FR'))+(t.pair?' · '+t.pair:'');},
-        label:it=>mode==='$'?('Equity : '+aFmtUsd(it.raw)):('R cumulé : '+aFmtR(it.raw,true))}}},
+        label:it=>mode==='$'?('Equity : '+aFmtUsd(it.raw)):(mode==='%'?('Cumul : '+aFmtPct(it.raw,true)):('R cumulé : '+aFmtR(it.raw,true)))}}},
       scales:{x:{grid:{color:'rgba(43,43,61,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani',size:10},maxTicksLimit:12}},
-        y:{grid:{color:'rgba(43,43,61,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'},callback:v=>mode==='$'?'$'+Number(v).toLocaleString('fr-FR'):v+'R'}}}}});
+        y:{grid:{color:'rgba(43,43,61,0.4)'},ticks:{color:'#94a3b8',font:{family:'Rajdhani'},callback:v=>mode==='$'?'$'+Number(v).toLocaleString('fr-FR'):(mode==='%'?v+'%':v+'R')}}}}});
     if(note){
       if(span.dd>0){const a=tDate(S[span.start]),b=tDate(S[span.end]);
-        note.innerHTML='Pire drawdown (segment rouge) : <b class="loss">'+(mode==='$'?aFmtUsd(-span.dd):aFmtR(-span.dd))+'</b>'+(mode==='$'&&ddPct!==null?' ('+ddPct.toFixed(1)+'% du pic)':'')+(isNaN(a)||isNaN(b)?'':' — du '+a.toLocaleDateString('fr-FR')+' au '+b.toLocaleDateString('fr-FR'));
+        note.innerHTML='Pire drawdown (segment rouge) : <b class="loss">'+(mode==='$'?aFmtUsd(-span.dd):(mode==='%'?aFmtPct(-span.dd):aFmtR(-span.dd)))+'</b>'+(mode==='$'&&ddPct!==null?' ('+ddPct.toFixed(1)+'% du pic)':'')+(isNaN(a)||isNaN(b)?'':' — du '+a.toLocaleDateString('fr-FR')+' au '+b.toLocaleDateString('fr-FR'));
       }else note.textContent='Aucun drawdown sur la période 🎉';
     }
   }
   // Histogramme des R
   if(rdC){
-    const f=x=>(x<0?'-':'')+Math.abs(x);
-    const labels=['≤ -3'],bins=[0];
-    for(let b=-3;b<5;b+=0.5){labels.push(f(b)+' à '+f(b+0.5));bins.push(0);}
-    labels.push('≥ 5');bins.push(0);
-    c.Rs.forEach(r=>{
-      if(r<=-3)bins[0]++;
-      else if(r>=5)bins[bins.length-1]++;
-      else bins[Math.min(Math.max(1+Math.floor((r+3)/0.5),1),bins.length-2)]++;
-    });
-    const cols=labels.map((_,i)=>{
-      if(i===0)return 'rgba(239,68,68,0.7)';
-      if(i===labels.length-1)return 'rgba(16,185,129,0.7)';
-      const start=-3+(i-1)*0.5;
-      return start<0?'rgba(239,68,68,0.7)':(start===0?'rgba(100,116,139,0.7)':'rgba(16,185,129,0.7)');
+    const f=x=>{const a=Math.abs(x),str=a>=1000?Math.round(a).toLocaleString('fr-FR'):(Math.round(a*100)/100).toString();return(x<0?'-':'')+str;};
+    let labels=[],bins=[],starts=[];
+    if(ANA_UNIT==='$'){
+      const mn=Math.min(...Vs),mx=Math.max(...Vs),range=Math.max(mx-mn,1e-9),raw=range/14;
+      const pow=Math.pow(10,Math.floor(Math.log10(raw)));
+      const step=[1,2,2.5,5,10].map(k=>k*pow).filter(st=>st>=raw)[0]||10*pow;
+      const start=Math.floor(mn/step)*step,end=Math.ceil(mx/step)*step;
+      for(let e=start;e<end-1e-9;e+=step){labels.push(f(e)+' à '+f(e+step));bins.push(0);starts.push(e);}
+      if(!bins.length){labels.push(f(start)+' à '+f(start+step));bins.push(0);starts.push(start);}
+      Vs.forEach(v=>{let idx=Math.floor((v-start)/step);idx=Math.min(Math.max(idx,0),bins.length-1);bins[idx]++;});
+    }else{
+      labels=['≤ -3'];bins=[0];starts=[-Infinity];
+      for(let b=-3;b<5;b+=0.5){labels.push(f(b)+' à '+f(b+0.5));bins.push(0);starts.push(b);}
+      labels.push('≥ 5');bins.push(0);starts.push(5);
+      Vs.forEach(r=>{
+        if(r<=-3)bins[0]++;
+        else if(r>=5)bins[bins.length-1]++;
+        else bins[Math.min(Math.max(1+Math.floor((r+3)/0.5),1),bins.length-2)]++;
+      });
+    }
+    const cols=starts.map((st,i)=>{
+      const en=(i+1<starts.length)?starts[i+1]:Infinity;
+      if(en<=0)return 'rgba(239,68,68,0.7)';
+      if(st<0||st===0&&ANA_UNIT!=='$')return st<0?'rgba(100,116,139,0.7)':'rgba(100,116,139,0.7)';
+      return st>=0?'rgba(16,185,129,0.7)':'rgba(100,116,139,0.7)';
     });
     CI['rdist']=new Chart(rdC,{type:'bar',data:{labels,datasets:[{data:bins,backgroundColor:cols,borderRadius:4,maxBarThickness:26}]},
       options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#15151f',borderColor:'#6d28d9',borderWidth:1,callbacks:{label:it=>it.raw+' trade'+(it.raw>1?'s':'')}}},
@@ -3997,16 +4038,17 @@ function renderProMetrics(){
 // ── 2b. EDGE ──
 function aCellStats(list){
   const w=list.filter(t=>t.result==='WIN').length,l=list.filter(t=>t.result==='LOSS').length;
-  return{n:list.length,w,l,wr:(w+l)>0?w/(w+l)*100:null,avgR:mean(list.map(tradeR)),pnl:list.reduce((s,t)=>s+(parseFloat(t.pnl_amt)||0),0)};
+  return{n:list.length,w,l,wr:(w+l)>0?w/(w+l)*100:null,avgR:mean(list.map(tradeR)),avgVal:mean(list.map(tradeVal)),pnl:list.reduce((s,t)=>s+(parseFloat(t.pnl_amt)||0),0)};
 }
 function aEdgeCell(st){
   if(!st||!st.n)return '<td class="ec ec-empty">—</td>';
-  const v=Math.max(-1,Math.min(1,st.avgR));
+  const cl=unitClamp(),vv=st.avgVal/cl;
+  const v=Math.max(-1,Math.min(1,vv));
   const bg=v>0.02?'rgba(16,185,129,'+(0.12+v*0.45).toFixed(3)+')':(v<-0.02?'rgba(239,68,68,'+(0.12-v*0.45).toFixed(3)+')':'rgba(71,85,105,.25)');
-  const col=st.avgR>0.02?'var(--grb)':(st.avgR<-0.02?'var(--reb)':'var(--ts)');
+  const col=st.avgVal>0?'var(--grb)':(st.avgVal<0?'var(--reb)':'var(--ts)');
   const low=st.n<3?' ec-low':'';
-  const tip='n='+st.n+' · WR '+(st.wr===null?'—':st.wr.toFixed(0)+'%')+' · R moyen '+aFmtR(st.avgR,true)+' · P&L '+aFmtUsd(st.pnl,true)+(st.n<3?' · échantillon faible':'');
-  return '<td class="ec'+low+'" style="background:'+bg+'" title="'+tip+'"><span class="ec-v" style="color:'+col+'">'+aFmtR(st.avgR,true)+'</span><span class="ec-n">n='+st.n+'</span></td>';
+  const tip='n='+st.n+' · WR '+(st.wr===null?'—':st.wr.toFixed(0)+'%')+' · '+unitWord()+' '+aFmtVal(st.avgVal,true)+' · P&L '+aFmtUsd(st.pnl,true)+(st.n<3?' · échantillon faible':'');
+  return '<td class="ec'+low+'" style="background:'+bg+'" title="'+tip+'"><span class="ec-v" style="color:'+col+'">'+aFmtVal(st.avgVal,true)+'</span><span class="ec-n">n='+st.n+'</span></td>';
 }
 function aEdgeGrid(S,rows,cols,rowOf,colOf,rowLbl,colLbl,cells){
   let h='<table class="edge-tbl"><thead><tr><th class="rowh"></th>'+cols.map(cl=>'<th>'+colLbl(cl)+'</th>').join('')+'</tr></thead><tbody>';
@@ -4036,10 +4078,10 @@ function renderEdge(){
   if(dh)dh.innerHTML=hrs.length?aEdgeGrid(S,ANA_JOURS,hrs,t=>t.day,hourOf,r=>r.slice(0,3),h=>h+'h',cells):'<div style="padding:14px;color:var(--td);text-align:center">Pas d\'heure d\'entrée renseignée</div>';
   if(sd)sd.innerHTML=aEdgeGrid(S,ANA_SESS,ANA_JOURS,t=>t.sess,t=>t.day,r=>r,cl=>cl.slice(0,3),cells);
   if(co){
-    const qual=cells.filter(cx=>cx.st.n>=5).sort((a,b)=>b.st.avgR-a.st.avgR);
-    const top=qual.slice(0,3).filter(cx=>cx.st.avgR>0);
-    const bot=qual.slice(-3).reverse().filter(cx=>!top.includes(cx)&&cx.st.avgR<0);
-    const li=cx=>'<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--bo);font-size:12px"><span>'+cx.label+'</span><span style="white-space:nowrap"><b class="'+aCls(cx.st.avgR)+'">'+aFmtR(cx.st.avgR,true)+'</b> · WR '+(cx.st.wr===null?'—':cx.st.wr.toFixed(0)+'%')+' · n='+cx.st.n+'</span></div>';
+    const qual=cells.filter(cx=>cx.st.n>=5).sort((a,b)=>b.st.avgVal-a.st.avgVal);
+    const top=qual.slice(0,3).filter(cx=>cx.st.avgVal>0);
+    const bot=qual.slice(-3).reverse().filter(cx=>!top.includes(cx)&&cx.st.avgVal<0);
+    const li=cx=>'<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--bo);font-size:12px"><span>'+cx.label+'</span><span style="white-space:nowrap"><b class="'+aCls(cx.st.avgVal)+'">'+aFmtVal(cx.st.avgVal,true)+'</b> · WR '+(cx.st.wr===null?'—':cx.st.wr.toFixed(0)+'%')+' · n='+cx.st.n+'</span></div>';
     co.innerHTML=
       '<div class="card" style="margin-bottom:0"><div class="ct" style="color:var(--grb)">💎 Ton edge (n ≥ 5)</div>'+(top.length?top.map(li).join(''):'<div style="color:var(--td);font-size:11px">Pas encore de condition gagnante avec n ≥ 5</div>')+'</div>'+
       '<div class="card" style="margin-bottom:0"><div class="ct" style="color:var(--reb)">⚠️ À éviter (n ≥ 5)</div>'+(bot.length?bot.map(li).join(''):'<div style="color:var(--td);font-size:11px">Pas de condition perdante récurrente avec n ≥ 5</div>')+'</div>';
@@ -4141,7 +4183,7 @@ function renderPsych(){
       '<div style="text-align:center"><div style="font-size:26px;font-weight:800" class="win">'+mw+'</div><div style="font-size:9px;color:var(--td);letter-spacing:1px">MAX GAINS D\'AFFILÉE</div></div>'+
       '<div style="text-align:center"><div style="font-size:26px;font-weight:800" class="loss">'+ml+'</div><div style="font-size:9px;color:var(--td);letter-spacing:1px">MAX PERTES D\'AFFILÉE</div></div>'+
       '<div style="text-align:center"><div style="font-size:26px;font-weight:800" class="'+(cur?cur.cls:'be-r')+'">'+(cur?cur.n:'—')+'</div><div style="font-size:9px;color:var(--td);letter-spacing:1px">SÉRIE EN COURS'+(cur?' ('+cur.lbl.toUpperCase()+')':'')+'</div></div></div>'+
-      '<div style="font-size:11px;color:var(--ts)" title="BE remet les deux compteurs à zéro">🧪 Tilt check — R moyen du trade qui suit ≥ 3 pertes d\'affilée : '+(postTilt.length?('<b class="'+aCls(mean(postTilt))+'">'+aFmtR(mean(postTilt),true)+'</b> (n='+postTilt.length+') vs <b class="'+aCls(avgAll)+'">'+aFmtR(avgAll,true)+'</b> en global'):'<span style="color:var(--td)">jamais arrivé sur la période 👌</span>')+'</div>';
+      '<div style="font-size:11px;color:var(--ts)" title="BE remet les deux compteurs à zéro">🧪 Tilt check — '+unitWord()+' du trade qui suit ≥ 3 pertes d\'affilée : '+(postTilt.length?('<b class="'+aCls(mean(postTilt))+'">'+aFmtVal(mean(postTilt),true)+'</b> (n='+postTilt.length+') vs <b class="'+aCls(avgAll)+'">'+aFmtVal(avgAll,true)+'</b> en global'):'<span style="color:var(--td)">jamais arrivé sur la période 👌</span>')+'</div>';
   }
 }
 
@@ -4170,7 +4212,8 @@ function aMonthStats(m){
   const c=aCore(S);let eq=[],cum=CAP||0;
   S.forEach(t=>{cum+=(parseFloat(t.pnl_amt)||0);eq.push(cum);});
   const d=aDiscipline(S);
-  return{m,n:c.n,W:c.W,L:c.L,wr:c.wr,sumR:c.sumR,netPnl:c.netPnl,pf:c.pf,expR:c.expR,dd:aMaxDD(eq).dd,disc:d?d.score:null,S};
+  const Vs=S.map(tradeVal);
+  return{m,n:c.n,W:c.W,L:c.L,wr:c.wr,sumR:c.sumR,sumV:Vs.reduce((a,b)=>a+b,0),expV:mean(Vs),netPnl:c.netPnl,pf:c.pf,expR:c.expR,dd:aMaxDD(eq).dd,disc:d?d.score:null,S};
 }
 function aGoalAlerts(m){
   const out=[],g=aGetGoals(m);
@@ -4216,14 +4259,14 @@ function renderGoals(){
     else{
       const arrow=(v,prev)=>prev===null||v===null||prev===undefined||v===undefined?'':(v>prev?' <span class="win" style="font-size:9px">▲</span>':v<prev?' <span class="loss" style="font-size:9px">▼</span>':'');
       let prev=null;
-      gm.innerHTML='<table class="tbl" style="min-width:680px"><thead><tr><th>Mois</th><th>N</th><th>WR%</th><th>Total R</th><th>P&L net</th><th>PF</th><th>Expectancy</th><th>Discipline</th><th>Max DD</th></tr></thead><tbody>'+
+      gm.innerHTML='<table class="tbl" style="min-width:680px"><thead><tr><th>Mois</th><th>N</th><th>WR%</th><th>Total ('+ANA_UNIT+')</th><th>P&L net</th><th>PF</th><th>Expectancy ('+ANA_UNIT+')</th><th>Discipline</th><th>Max DD</th></tr></thead><tbody>'+
         all.map(st=>{
           const row='<tr><td><b>'+ANA_MOIS[st.m]+'</b></td><td>'+st.n+'</td>'+
             '<td class="'+(st.wr!==null&&st.wr>=50?'win':'loss')+'">'+(st.wr===null?'—':st.wr.toFixed(0)+'%')+(prev?arrow(st.wr,prev.wr):'')+'</td>'+
-            '<td class="'+aCls(st.sumR)+'">'+aFmtR(st.sumR,true)+'</td>'+
+            '<td class="'+aCls(st.sumV)+'">'+aFmtVal(st.sumV,true)+'</td>'+
             '<td class="'+aCls(st.netPnl)+'"><b>'+aFmtUsd(st.netPnl,true)+'</b>'+(prev?arrow(st.netPnl,prev.netPnl):'')+'</td>'+
             '<td>'+(st.pf===null?'—':st.pf===Infinity?'∞':st.pf.toFixed(2))+'</td>'+
-            '<td class="'+aCls(st.expR)+'">'+aFmtR(st.expR,true)+'</td>'+
+            '<td class="'+aCls(st.expV)+'">'+aFmtVal(st.expV,true)+'</td>'+
             '<td>'+(st.disc===null?'—':st.disc)+'</td>'+
             '<td class="loss">'+aFmtUsd(-st.dd)+'</td></tr>';
           prev=st;return row;
@@ -4249,7 +4292,8 @@ function aPeriodStats(val){
   const c=aCore(S);let eq=[],cum=CAP||0;
   S.forEach(t=>{cum+=(parseFloat(t.pnl_amt)||0);eq.push(cum);});
   const d=aDiscipline(S);
-  return{label,n:c.n,wr:c.wr,sumR:c.sumR,netPnl:c.netPnl,pf:c.pf,expR:c.expR,dd:aMaxDD(eq).dd,disc:d?d.score:null};
+  const Vs=S.map(tradeVal);
+  return{label,n:c.n,wr:c.wr,sumV:Vs.reduce((a,b)=>a+b,0),expV:mean(Vs),netPnl:c.netPnl,pf:c.pf,dd:aMaxDD(eq).dd,disc:d?d.score:null};
 }
 function renderCompare(){
   const out=document.getElementById('goal-compare'); if(!out)return;
@@ -4257,9 +4301,9 @@ function renderCompare(){
   if(!selA||!selB||!selA.value)return;
   const A=aPeriodStats(selA.value),B=aPeriodStats(selB.value);
   if(A.empty&&B.empty){out.innerHTML='<div style="padding:14px;color:var(--td);text-align:center">Aucun trade sur ces périodes</div>';return;}
-  const fmt={n:v=>v,wr:v=>v===null?'—':v.toFixed(0)+'%',sumR:v=>aFmtR(v,true),netPnl:v=>aFmtUsd(v,true),pf:v=>v===null?'—':v===Infinity?'∞':v.toFixed(2),expR:v=>aFmtR(v,true),disc:v=>v===null?'—':v,dd:v=>aFmtUsd(-v)};
-  const higher={n:null,wr:1,sumR:1,netPnl:1,pf:1,expR:1,disc:1,dd:-1};
-  const rows=[['Trades','n'],['Win rate','wr'],['Total R','sumR'],['P&L net','netPnl'],['Profit Factor','pf'],['Expectancy','expR'],['Discipline','disc'],['Max DD','dd']];
+  const fmt={n:v=>v,wr:v=>v===null?'—':v.toFixed(0)+'%',sumV:v=>aFmtVal(v,true),netPnl:v=>aFmtUsd(v,true),pf:v=>v===null?'—':v===Infinity?'∞':v.toFixed(2),expV:v=>aFmtVal(v,true),disc:v=>v===null?'—':v,dd:v=>aFmtUsd(-v)};
+  const higher={n:null,wr:1,sumV:1,netPnl:1,pf:1,expV:1,disc:1,dd:-1};
+  const rows=[['Trades','n'],['Win rate','wr'],['Total ('+ANA_UNIT+')','sumV'],['P&L net','netPnl'],['Profit Factor','pf'],['Expectancy ('+ANA_UNIT+')','expV'],['Discipline','disc'],['Max DD','dd']];
   out.innerHTML='<table class="tbl"><thead><tr><th></th><th>'+A.label+'</th><th>'+B.label+'</th></tr></thead><tbody>'+
     rows.map(([lb,k])=>{
       const va=A.empty?null:A[k],vb=B.empty?null:B[k];
