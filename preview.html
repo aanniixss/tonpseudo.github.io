@@ -478,17 +478,25 @@ body::before{background:
 .lg-btn{width:100%;padding:12px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--be),var(--ba));color:#fff;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;}
 .lg-btn:disabled{opacity:.6;cursor:wait;}
 .lg-forgot{background:none;border:none;color:var(--td);font-size:11px;margin-top:12px;cursor:pointer;text-decoration:underline;}
+.lg-tab{flex:1;padding:9px;border-radius:8px;border:1px solid var(--bo);background:transparent;color:var(--ts);font-size:12px;font-weight:600;cursor:pointer;}
+.lg-tab.active{border-color:var(--be);background:rgba(124,92,255,.12);color:var(--tp);}
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
   <div class="lg-box">
     <div class="lg-logo">TR</div>
     <div class="lg-title">TRACK<span>RECORD</span></div>
-    <div class="lg-sub">Connexion requise</div>
+    <div class="lg-sub" id="lg-sub">Ton journal de trading professionnel</div>
+    <div style="display:flex;gap:6px;margin-bottom:16px" role="tablist" aria-label="Connexion ou inscription">
+      <button class="lg-tab active" id="lg-tab-in" role="tab" aria-selected="true" onclick="lgMode('in')">Se connecter</button>
+      <button class="lg-tab" id="lg-tab-up" role="tab" aria-selected="false" onclick="lgMode('up')">Créer un compte</button>
+    </div>
     <input type="email" id="lg-email" placeholder="Email" autocomplete="username" aria-label="Email">
-    <input type="password" id="lg-pass" placeholder="Mot de passe" autocomplete="current-password" aria-label="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="password" id="lg-pass" placeholder="Mot de passe" autocomplete="current-password" aria-label="Mot de passe" onkeydown="if(event.key==='Enter'){LG_MODE==='in'?doLogin():doSignup();}">
+    <input type="password" id="lg-pass2" placeholder="Confirme le mot de passe" aria-label="Confirmation du mot de passe" style="display:none" onkeydown="if(event.key==='Enter')doSignup()">
+    <div id="lg-beta" style="display:none;font-size:11px;color:var(--grb);background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:8px;margin-bottom:10px">🎁 Accès bêta gratuit — toutes les fonctionnalités débloquées</div>
     <div id="lg-err" class="lg-err" aria-live="polite"></div>
-    <button class="lg-btn" id="lg-btn" onclick="doLogin()">Se connecter</button>
-    <br><button class="lg-forgot" onclick="forgotPwd()">Mot de passe oublié ?</button>
+    <button class="lg-btn" id="lg-btn" onclick="LG_MODE==='in'?doLogin():doSignup()">Se connecter</button>
+    <br><button class="lg-forgot" id="lg-forgot" onclick="forgotPwd()">Mot de passe oublié ?</button>
   </div>
 </div>
 
@@ -1664,12 +1672,14 @@ function rdNewTrade(){
 const SUPA_URL = 'https://nogfrvpvknaqlgfnrjol.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vZ2ZydnB2a25hcWxnZm5yam9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODczMzUsImV4cCI6MjA5MDY2MzMzNX0.t9RzZ2g8YqOR2dCZOyfl2AveA4BssQYzmW7LXxfn1i4';
 const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
-const OWNER_ID = 'user_cmqlipot4';
+let OWNER_ID = 'user_cmqlipot4'; // légacy — remplacé par un id dérivé de l'UUID pour les nouveaux clients (voir initAccounts)
 // ── AUTH ── passe AUTH_REQUIRED à true une fois le compte créé (dashboard Supabase)
 // et la migration owner_uuid appliquée. Tant que false : comportement historique.
 const AUTH_REQUIRED = true;
 let OWNER_UUID = null;
 function ownExtra(){ return OWNER_UUID ? {owner_uuid: OWNER_UUID} : {}; }
+function derivedOwnerId(){ return OWNER_UUID ? ('user_'+OWNER_UUID.replace(/-/g,'').slice(0,12)) : OWNER_ID; }
+function lsKey(k){ return (AUTH_REQUIRED&&OWNER_UUID) ? k+'__'+OWNER_UUID.slice(0,8) : k; }
 
 // ── ACCOUNTS ──
 let ACCOUNTS = [];
@@ -1709,26 +1719,31 @@ async function initAccounts(){
   try {
     const {data,error} = await ((AUTH_REQUIRED&&OWNER_UUID)?sb.from('accounts').select('*').eq('owner_uuid',OWNER_UUID):sb.from('accounts').select('*').eq('owner_id',OWNER_ID)).order('created_at',{ascending:true});
     if(!error && data && data.length){
+      // Préserve l'owner_id historique des comptes existants (le site principal legacy s'en sert)
+      if(data[0].owner_id) OWNER_ID = data[0].owner_id;
+      else if(AUTH_REQUIRED&&OWNER_UUID) OWNER_ID = derivedOwnerId();
       ACCOUNTS = data.map(a=>({id:a.id, name:a.name, capital:a.capital||0, risk:a.risk||1, color:a.color||'#7c5cff'}));
-      localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+      localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS));
     } else {
+      if(AUTH_REQUIRED&&OWNER_UUID) OWNER_ID = derivedOwnerId();
       // Fallback to localStorage
-      const stored = JSON.parse(localStorage.getItem('tr_accounts_list') || '[]');
+      const stored = JSON.parse(localStorage.getItem(lsKey('tr_accounts_list')) || '[]');
       if(stored.length) ACCOUNTS = stored;
     }
   } catch(e) {
-    const stored = JSON.parse(localStorage.getItem('tr_accounts_list') || '[]');
+    const stored = JSON.parse(localStorage.getItem(lsKey('tr_accounts_list')) || '[]');
     if(stored.length) ACCOUNTS = stored;
   }
-  // Create default account if none
+  // Create default account if none (nouveau client : id unique dérivé de son UUID)
   if(!ACCOUNTS.length){
     const def = {id: OWNER_ID+'_acc1', name:'Compte 1', capital:0, risk:1, color:'#7c5cff'};
     ACCOUNTS.push(def);
-    localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+    localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS));
     try { await sb.from('accounts').upsert(Object.assign({id:def.id, owner_id:OWNER_ID, name:def.name, capital:def.capital, risk:def.risk, color:def.color}, ownExtra())); } catch(e){}
+    if(AUTH_REQUIRED&&OWNER_UUID) setTimeout(()=>{ toast('👋 Bienvenue ! Commence par définir ton capital (bouton ⚙ CAPITAL)'); }, 800);
   }
   // Load active account
-  const savedId = localStorage.getItem('tr_active_account');
+  const savedId = localStorage.getItem(lsKey('tr_active_account'));
   ACTIVE_ACCOUNT = ACCOUNTS.find(a=>a.id===savedId) || ACCOUNTS[0];
   CAP = ACTIVE_ACCOUNT.capital || 0;
   DRSK = ACTIVE_ACCOUNT.risk || 1;
@@ -1772,7 +1787,7 @@ function toggleAccountMenu(){
 
 function switchAccount(id){
   ACTIVE_ACCOUNT = ACCOUNTS.find(a=>a.id===id);
-  localStorage.setItem('tr_active_account', id);
+  localStorage.setItem(lsKey('tr_active_account'), id);
   CAP = ACTIVE_ACCOUNT.capital || 0;
   DRSK = ACTIVE_ACCOUNT.risk || 1;
   document.getElementById('account-menu').style.display='none';
@@ -1810,7 +1825,7 @@ async function createAccount(){
     console.error('Erreur compte:', error);
     // Fallback: save locally anyway
     ACCOUNTS.push(acc);
-    localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
+    localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS));
     closeNewAccountModal();
     switchAccount(acc.id);
     toast('✅ Compte créé (local) — vérifie Supabase');
@@ -1848,8 +1863,8 @@ async function forceRecover(){
     if(realId){
       ACTIVE_ACCOUNT.id = realId;
       if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
-      localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS));
-      localStorage.setItem('tr_active_account', realId);
+      localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS));
+      localStorage.setItem(lsKey('tr_active_account'), realId);
     }
     toast('✅ '+T.length+' trades récupérés !');
     document.getElementById('recovery-bar').style.display='none';
@@ -1889,7 +1904,7 @@ function getFilteredTrades(){
 
 function save(){
   // Capital saved via saveCapital() to Supabase
-  localStorage.setItem('tr_active_account', ACTIVE_ACCOUNT?.id||'');
+  localStorage.setItem(lsKey('tr_active_account'), ACTIVE_ACCOUNT?.id||'');
 }
 
 // ── PAIRS ──
@@ -1939,7 +1954,7 @@ async function saveCapital(){
   if(!isNaN(v)&&v>0)CAP=v;
   if(!isNaN(r)&&r>0){DRSK=r;document.getElementById('f-rsk').value=r;}
   ACTIVE_ACCOUNT.capital=CAP; ACTIVE_ACCOUNT.risk=DRSK;
-  try{ localStorage.setItem('tr_capital', CAP); localStorage.setItem('tr_risk', DRSK); localStorage.setItem('tr_accounts_list', JSON.stringify(ACCOUNTS)); }catch(e){}
+  try{ localStorage.setItem('tr_capital', CAP); localStorage.setItem('tr_risk', DRSK); localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS)); }catch(e){}
   try{ await sb.from('accounts').upsert(Object.assign({id:ACTIVE_ACCOUNT.id, owner_id:OWNER_ID, name:ACTIVE_ACCOUNT.name, capital:CAP, risk:DRSK, color:ACTIVE_ACCOUNT.color||'#7c5cff'}, ownExtra())); }catch(e){}
   updateAccountUI();closeModal();updateDash();initCapChart();
   toast('✅ '+ACTIVE_ACCOUNT.name+' · $'+CAP.toLocaleString()+' · Risque '+DRSK+'%');
@@ -4317,6 +4332,41 @@ function renderCompare(){
 // ── INIT & AUTH GATE ──
 function showLogin(){const g=document.getElementById('login-gate');if(g)g.style.display='flex';document.querySelector('.app').style.display='none';}
 function hideLogin(){const g=document.getElementById('login-gate');if(g)g.style.display='none';document.querySelector('.app').style.display='';}
+let LG_MODE='in';
+function lgMode(m){
+  LG_MODE=m;
+  const isUp=m==='up';
+  document.getElementById('lg-tab-in').classList.toggle('active',!isUp);
+  document.getElementById('lg-tab-in').setAttribute('aria-selected',String(!isUp));
+  document.getElementById('lg-tab-up').classList.toggle('active',isUp);
+  document.getElementById('lg-tab-up').setAttribute('aria-selected',String(isUp));
+  document.getElementById('lg-pass2').style.display=isUp?'':'none';
+  document.getElementById('lg-beta').style.display=isUp?'':'none';
+  document.getElementById('lg-forgot').style.display=isUp?'none':'';
+  document.getElementById('lg-btn').textContent=isUp?'Créer mon compte gratuit':'Se connecter';
+  document.getElementById('lg-err').textContent='';
+}
+async function doSignup(){
+  const email=document.getElementById('lg-email').value.trim(),pass=document.getElementById('lg-pass').value,pass2=document.getElementById('lg-pass2').value;
+  const err=document.getElementById('lg-err'),btn=document.getElementById('lg-btn');
+  if(!email||!pass){err.textContent='Email et mot de passe requis';return;}
+  if(pass.length<8){err.textContent='Mot de passe : 8 caractères minimum';return;}
+  if(pass!==pass2){err.textContent='Les deux mots de passe ne correspondent pas';return;}
+  btn.disabled=true;btn.textContent='Création du compte…';err.textContent='';
+  try{
+    const plan=(new URLSearchParams(location.search).get('plan'))||'beta';
+    const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{plan}}});
+    if(error){err.textContent=error.message.includes('already registered')?'Un compte existe déjà avec cet email — connecte-toi':error.message;return;}
+    if(data.session){
+      OWNER_UUID=data.user.id;hideLogin();await startApp();
+      const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';
+    }else{
+      err.style.color='var(--grb)';
+      err.textContent='📩 Compte créé ! Vérifie tes emails pour confirmer, puis connecte-toi.';
+      lgMode('in');
+    }
+  }finally{btn.disabled=false;btn.textContent=LG_MODE==='in'?'Se connecter':'Créer mon compte gratuit';}
+}
 async function doLogin(){
   const email=document.getElementById('lg-email').value.trim(),pass=document.getElementById('lg-pass').value;
   const err=document.getElementById('lg-err'),btn=document.getElementById('lg-btn');
@@ -4343,6 +4393,7 @@ async function startApp(){
   if(DRSK)document.getElementById('f-rsk').value=DRSK;
 }
 async function boot(){
+  try{ if(new URLSearchParams(location.search).get('signup')==='1') lgMode('up'); }catch(e){}
   try{
     const {data:{session}}=await sb.auth.getSession();
     if(session){OWNER_UUID=session.user.id;const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';}
