@@ -1667,7 +1667,7 @@ const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 const OWNER_ID = 'user_cmqlipot4';
 // ── AUTH ── passe AUTH_REQUIRED à true une fois le compte créé (dashboard Supabase)
 // et la migration owner_uuid appliquée. Tant que false : comportement historique.
-const AUTH_REQUIRED = false;
+const AUTH_REQUIRED = true;
 let OWNER_UUID = null;
 function ownExtra(){ return OWNER_UUID ? {owner_uuid: OWNER_UUID} : {}; }
 
