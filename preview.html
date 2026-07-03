@@ -61,7 +61,7 @@ canvas{display:block;width:100%!important;}
 .wr-v.g{color:var(--grb);}.wr-v.r{color:var(--reb);}.wr-v.b{color:var(--bb);}
 /* TABLE */
 .tbl{width:100%;border-collapse:collapse;font-size:11px;}
-.tbl th{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:1.5px;color:var(--td);text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--bo);background:rgba(124,92,255,0.03);white-space:nowrap;}
+.tbl th{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--td);text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--bo);background:rgba(124,92,255,0.03);white-space:nowrap;}
 .tbl td{padding:9px 10px;border-bottom:1px solid rgba(43,43,61,0.4);vertical-align:middle;white-space:nowrap;}
 .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .trade-cards{display:none;}
@@ -118,7 +118,7 @@ canvas{display:block;width:100%!important;}
 .sb{height:100%;border-radius:20px;}
 /* HEATMAP */
 .hm{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-.hm-h{font-size:7px;letter-spacing:1px;color:var(--td);text-align:center;padding:2px;}
+.hm-h{font-size:9px;letter-spacing:1px;color:var(--td);text-align:center;padding:2px;}
 .hm-c{aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;font-family:'Share Tech Mono',monospace;}
 /* BTN */
 .btn{padding:10px 22px;border:none;border-radius:7px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;transition:all .2s;}
@@ -935,7 +935,6 @@ body::before{background:
       <input type="file" id="f-av" accept="image/*" style="display:none" onchange="prevUp(event,'av')">
       <input type="file" id="f-co" accept="image/*" style="display:none" onchange="prevUp(event,'co')">
       <input type="file" id="f-ap" accept="image/*" style="display:none" onchange="prevUp(event,'ap')">
-      <button type="button" class="btn-ai" id="ai-parse-btn" onclick="aiParseTrade()" title="L'IA lit ta capture (MT5, FTMO, TradingView…) et pré-remplit le formulaire — rien n'est enregistré automatiquement">✨ Pré-remplir depuis la capture (IA)</button>
     </div>
 
     <div style="display:flex;gap:10px">
@@ -2161,7 +2160,7 @@ function openTradeDetail(id){
     {l:'Net $',v:(t.pnl_amt>=0?'+':'')+'$'+parseFloat(t.pnl_amt||0).toFixed(2),c:cls},
     {l:'Note',v:t.star?'★'.repeat(t.star):'—',c:'var(--gb)'},
   ];
-  document.getElementById('tdm-stats').innerHTML=stats.map(s=>`<div style="background:var(--card2);border:1px solid var(--bo);border-radius:8px;padding:10px;text-align:center"><div style="font-size:7px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">${s.l}</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:${s.c}">${s.v}</div></div>`).join('');
+  document.getElementById('tdm-stats').innerHTML=stats.map(s=>`<div style="background:var(--card2);border:1px solid var(--bo);border-radius:8px;padding:10px;text-align:center"><div style="font-size:9px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin-bottom:4px">${s.l}</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:${s.c}">${s.v}</div></div>`).join('');
   // Notes
   const notesWrap=document.getElementById('tdm-notes-wrap');
   if(t.notes&&t.notes.trim()){document.getElementById('tdm-notes').textContent=t.notes;notesWrap.style.display='block';}
@@ -3210,7 +3209,7 @@ function renderScope(mt, scope){
     {l:'Capital',v:CAP>0?'$'+Math.round(CAP+mpnl).toLocaleString():'—',s:'Fin de mois',c:mpnl>=0?'var(--grb)':'var(--reb)'},
   ];
   const kc=document.getElementById('md-kpis');
-  kc.innerHTML=kdata.map(k=>`<div style="background:var(--card);border:1px solid var(--bo);border-radius:10px;padding:12px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--be),transparent)"></div><div style="font-size:7px;letter-spacing:2px;color:var(--td);text-transform:uppercase;margin-bottom:5px">${k.l}</div><div style="font-family:Orbitron,sans-serif;font-size:15px;font-weight:700;color:${k.c}">${k.v}</div><div style="font-size:8px;color:var(--ts);margin-top:2px">${k.s}</div></div>`).join('');
+  kc.innerHTML=kdata.map(k=>`<div style="background:var(--card);border:1px solid var(--bo);border-radius:10px;padding:12px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--be),transparent)"></div><div style="font-size:9px;letter-spacing:2px;color:var(--td);text-transform:uppercase;margin-bottom:5px">${k.l}</div><div style="font-family:Orbitron,sans-serif;font-size:15px;font-weight:700;color:${k.c}">${k.v}</div><div style="font-size:8px;color:var(--ts);margin-top:2px">${k.s}</div></div>`).join('');
 
   // Capital chart
   DC('md-cap');
