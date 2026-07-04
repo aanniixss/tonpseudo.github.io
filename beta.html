@@ -615,6 +615,22 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .tl-scale .tl-mid{position:absolute;left:50%;top:1px;bottom:1px;width:1px;background:var(--bo);}
 .tl-scale i{position:absolute;top:4px;height:8px;border-radius:3px;min-width:2px;}
 .tl-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:11.5px;color:var(--ts);}
+/* ════════ REPORTS ════════ */
+.rep-tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--bo);margin-bottom:16px;}
+.rep-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--ts);font-size:12px;font-weight:600;padding:10px 14px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;}
+.rep-tab:hover{color:var(--tp);}
+.rep-tab.active{color:#2563eb;border-bottom-color:#2563eb;}
+.rep-panel{display:none;}
+.rep-panel.active{display:block;}
+.rep-months{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:6px 0 20px;padding-bottom:18px;border-bottom:1px solid var(--bo);}
+.rep-m-l{font-size:11px;color:var(--td);font-weight:600;letter-spacing:.3px;}
+.rep-m-v{font-family:'Space Grotesk',sans-serif !important;font-size:22px;font-weight:700;margin:5px 0 2px;letter-spacing:-.3px;}
+.rep-m-s{font-size:10px;color:var(--ts);}
+.rep-stats{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
+.rep-row{display:flex;justify-content:space-between;gap:12px;padding:9px 2px;border-bottom:1px solid var(--bo);font-size:12.5px;}
+.rep-row .rep-k{color:var(--ts);}
+.rep-row .rep-v{font-weight:700;color:var(--tp);font-variant-numeric:tabular-nums;white-space:nowrap;}
+@media(max-width:760px){.rep-stats{grid-template-columns:1fr;}.rep-months{grid-template-columns:1fr;gap:12px;}}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
@@ -651,6 +667,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <button class="tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-title="Dashboard" data-sub="Vue d'ensemble" onclick="showTab('dashboard',this);rdToggleSidebar(false)"><span class="ti">⬡</span> Dashboard</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="journal" data-title="Journal" data-sub="Saisie &amp; historique des trades" onclick="showTab('journal',this);rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="tradelog" data-title="Trade Log" data-sub="Journal détaillé de tes trades" onclick="showTab('tradelog',this);rdToggleSidebar(false)"><span class="ti">▤</span> Trade Log</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="report" data-title="Reports" data-sub="Rapports détaillés de performance" onclick="showTab('report',this);rdToggleSidebar(false)"><span class="ti">📑</span> Reports</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="analyse" data-title="Analytique" data-sub="Statistiques avancées" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analytique</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="bilan" data-title="Bilan" data-sub="Performance mensuelle &amp; annuelle" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="setups" data-title="Setups" data-sub="Journal mensuel détaillé" onclick="showTab('setups',this);rdToggleSidebar(false)"><span class="ti">⬢</span> Setups</button>
@@ -1180,6 +1197,43 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     </div>
     <div class="tl-foot"><span id="tl-foot">0 trade</span><span style="color:var(--td)">🟢 gain &nbsp;·&nbsp; 🔴 perte — barre proportionnelle au R du trade</span></div>
   </div>
+</div>
+
+<!-- ══ REPORTS ══ -->
+<div id="report" class="sec" role="tabpanel" aria-label="Reports">
+  <div class="rep-tabs" role="tablist" aria-label="Sections du rapport">
+    <button class="rep-tab active" role="tab" onclick="showRepTab('rep-overview',this)">Overview</button>
+    <button class="rep-tab" role="tab" onclick="showRepTab('rep-detailed',this)">Detailed</button>
+    <button class="rep-tab" role="tab" onclick="showRepTab('rep-risk',this)">Risk</button>
+    <button class="rep-tab" role="tab" onclick="showRepTab('rep-winsloss',this)">Wins vs Losses</button>
+    <button class="rep-tab" role="tab" onclick="showRepTab('rep-compare',this)">Compare</button>
+    <button class="rep-tab" role="tab" onclick="showRepTab('rep-market',this)">Market Behavior</button>
+    <button class="rep-tab" role="tab" onclick="showRepTab('rep-calendar',this)">Calendar</button>
+  </div>
+
+  <!-- ─ OVERVIEW ─ -->
+  <div id="rep-overview" class="rep-panel active" role="tabpanel">
+    <div class="card">
+      <div class="ct" style="justify-content:space-between"><span>📊 Tes statistiques</span><span style="font-size:10px;color:var(--td);font-weight:600">Année <span id="rep-year">—</span></span></div>
+      <div class="rep-months">
+        <div><div class="rep-m-l">Meilleur mois</div><div class="rep-m-v" id="rep-best" style="color:var(--grb)">—</div><div class="rep-m-s" id="rep-best-s">—</div></div>
+        <div><div class="rep-m-l">Pire mois</div><div class="rep-m-v" id="rep-worst" style="color:var(--reb)">—</div><div class="rep-m-s" id="rep-worst-s">—</div></div>
+        <div><div class="rep-m-l">Moyenne</div><div class="rep-m-v" id="rep-avg">—</div><div class="rep-m-s">par mois actif</div></div>
+      </div>
+      <div class="rep-stats" id="rep-stats"></div>
+    </div>
+    <div class="g2" style="margin-top:16px">
+      <div class="card"><div class="ct">📈 P&amp;L net cumulé</div><canvas id="repCumChart" height="160"></canvas></div>
+      <div class="card"><div class="ct">📊 P&amp;L net journalier</div><canvas id="repDailyChart" height="160"></canvas></div>
+    </div>
+  </div>
+
+  <div id="rep-detailed" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Detailed</b> — on le construit ensuite 🛠️</div></div>
+  <div id="rep-risk" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Risk</b> — on le construit ensuite 🛠️</div></div>
+  <div id="rep-winsloss" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Wins vs Losses</b> — on le construit ensuite 🛠️</div></div>
+  <div id="rep-compare" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Compare</b> — on le construit ensuite 🛠️</div></div>
+  <div id="rep-market" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Market Behavior</b> — on le construit ensuite 🛠️</div></div>
+  <div id="rep-calendar" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Calendar</b> — on le construit ensuite 🛠️</div></div>
 </div>
 
 <!-- ══ ANALYTIQUE ══ -->
@@ -2193,6 +2247,7 @@ function showTab(id,el){
   if(id==='setups')setTimeout(initSetups,100);
   if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
   if(id==='tradelog')setTimeout(buildTradeLog,100);
+  if(id==='report')setTimeout(buildReport,100);
 }
 
 // ── TOAST ──
@@ -2805,6 +2860,7 @@ function updateDash(){
   buildBakouScore();
   buildCalendar();
   buildTradeLog();
+  buildReport();
 }
 
 // ── HEATMAP ──
@@ -2972,6 +3028,106 @@ function buildTradeLog(){
   });
   rowsEl.innerHTML=html;
   set('tl-foot',n+' trade'+(n>1?'s':''));
+}
+// ══ REPORTS ══
+function showRepTab(id,btn){
+  document.querySelectorAll('#report .rep-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#report .rep-tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById(id); if(el)el.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='rep-overview')setTimeout(buildReport,60);
+}
+function repMins(m){ m=Math.round(m||0); if(!m)return '—'; if(m<60)return m+' min'; const h=Math.floor(m/60),mm=m%60; return h+'h'+(mm?' '+mm+'m':''); }
+function repMoney(v){ v=parseFloat(v)||0; return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function buildReport(){
+  const host=document.getElementById('rep-stats'); if(!host||!host.offsetParent) return;
+  const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const MN=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const setT=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  setT('rep-year',GLOBAL_YEAR);
+  const monthPnl={};
+  TS.forEach(t=>{const m=parseInt(t.trade_month);monthPnl[m]=(monthPnl[m]||0)+parseFloat(t.pnl_amt||0);});
+  const monthsWith=Object.keys(monthPnl);
+  let best=null,worst=null;
+  monthsWith.forEach(m=>{const v=monthPnl[m];if(best===null||v>monthPnl[best])best=m;if(worst===null||v<monthPnl[worst])worst=m;});
+  const total=TS.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);
+  setT('rep-best', best!==null?(monthPnl[best]>=0?'+':'')+repMoney(monthPnl[best]):'—');
+  setT('rep-best-s', best!==null?'en '+MN[best]+' '+GLOBAL_YEAR:'—');
+  setT('rep-worst', worst!==null?(monthPnl[worst]>=0?'+':'')+repMoney(monthPnl[worst]):'—');
+  setT('rep-worst-s', worst!==null?'en '+MN[worst]+' '+GLOBAL_YEAR:'—');
+  setT('rep-avg', monthsWith.length?repMoney(total/monthsWith.length):'—');
+  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),bes=TS.filter(t=>t.result==='BE'),n=TS.length;
+  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const pf=gl>0?(gp/gl).toFixed(2):(gp>0?'∞':'—');
+  const avgWin=wins.length?gp/wins.length:0, avgLoss=losses.length?gl/losses.length:0;
+  const comm=TS.reduce((a,t)=>a+parseFloat(t.commission||0),0);
+  const lots=TS.reduce((a,t)=>a+parseFloat(t.lot_size||0),0);
+  const largestP=TS.length?TS.reduce((m,t)=>Math.max(m,parseFloat(t.pnl_amt||0)),-Infinity):0;
+  const largestL=TS.length?TS.reduce((m,t)=>Math.min(m,parseFloat(t.pnl_amt||0)),Infinity):0;
+  const ordered=[...TS].sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+  let mcw=0,mcl=0,cw=0,cl=0;
+  ordered.forEach(t=>{ if(t.result==='WIN'){cw++;cl=0;} else if(t.result==='LOSS'){cl++;cw=0;} else {cw=0;cl=0;} mcw=Math.max(mcw,cw);mcl=Math.max(mcl,cl); });
+  const avgHold=arr=>arr.length?arr.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/arr.length:0;
+  const dayMap={};
+  TS.forEach(t=>{ if(!t.created_at)return; const k=new Date(t.created_at).toISOString().slice(0,10); dayMap[k]=(dayMap[k]||0)+parseFloat(t.pnl_amt||0); });
+  const dayKeys=Object.keys(dayMap).sort();
+  const dayVals=dayKeys.map(k=>dayMap[k]);
+  const winDays=dayVals.filter(v=>v>0).length, lossDays=dayVals.filter(v=>v<0).length, beDays=dayVals.filter(v=>v===0).length;
+  const tradingDays=dayKeys.length;
+  const avgDaily=tradingDays?total/tradingDays:0;
+  const largestLossDay=dayVals.length?Math.min(...dayVals):0;
+  let mcwd=0,mcld=0,cwd=0,cld=0;
+  dayVals.forEach(v=>{ if(v>0){cwd++;cld=0;} else if(v<0){cld++;cwd=0;} else {cwd=0;cld=0;} mcwd=Math.max(mcwd,cwd);mcld=Math.max(mcld,cld); });
+  const plannedR=n?TS.reduce((a,t)=>a+(parseFloat(t.rr)||0),0)/n:0;
+  const realizedR=n?TS.reduce((a,t)=>a+computeActualR(t),0)/n:0;
+  const wr=n?wins.length/n:0, lr=n?losses.length/n:0;
+  const expectancy=(wr*avgWin)-(lr*avgLoss);
+  const L=[
+    ['Total P&L', n?(total>=0?'+':'')+repMoney(total):'—'],
+    ['Volume total (lots)', n?lots.toFixed(2):'—'],
+    ['Trade gagnant moyen', wins.length?'+'+repMoney(avgWin):'—'],
+    ['Trade perdant moyen', losses.length?'-'+repMoney(avgLoss):'—'],
+    ['Nombre total de trades', n],
+    ['Trades gagnants', wins.length],
+    ['Trades perdants', losses.length],
+    ['Trades break even', bes.length],
+    ['Max gains consécutifs', mcw],
+    ['Max pertes consécutives', mcl],
+    ['Commissions totales', repMoney(comm)],
+    ['Plus gros gain', n&&largestP>-Infinity?'+'+repMoney(largestP):'—'],
+    ['Plus grosse perte', n&&largestL<Infinity?repMoney(largestL):'—'],
+    ['Durée moy. (tous)', repMins(avgHold(TS))],
+    ['Durée moy. (gagnants)', repMins(avgHold(wins))],
+    ['Durée moy. (perdants)', repMins(avgHold(losses))],
+  ];
+  const R=[
+    ['P&L moyen / trade', n?((total/n>=0?'+':'')+repMoney(total/n)):'—'],
+    ['Profit Factor', pf],
+    ['Positions ouvertes', 0],
+    ['Jours de trading', tradingDays],
+    ['Jours gagnants', winDays],
+    ['Jours perdants', lossDays],
+    ['Jours break even', beDays],
+    ['Max jours gagnants conséc.', mcwd],
+    ['Max jours perdants conséc.', mcld],
+    ['P&L journalier moyen', tradingDays?((avgDaily>=0?'+':'')+repMoney(avgDaily)):'—'],
+    ['Pire journée', dayVals.length?repMoney(largestLossDay):'—'],
+    ['R planifié moyen', plannedR?plannedR.toFixed(2)+'R':'—'],
+    ['R réalisé moyen', n?((realizedR>=0?'+':'')+realizedR.toFixed(2)+'R'):'—'],
+    ['Espérance / trade', n?((expectancy>=0?'+':'')+repMoney(expectancy)):'—'],
+  ];
+  const rowHtml=(k,v)=>`<div class="rep-row"><span class="rep-k">${k}</span><span class="rep-v">${v}</span></div>`;
+  host.innerHTML=L.map(r=>rowHtml(r[0],r[1])).join('')+R.map(r=>rowHtml(r[0],r[1])).join('');
+  buildReportCharts(dayKeys,dayVals);
+}
+function buildReportCharts(dayKeys,dayVals){
+  const labels=dayKeys.map(k=>{const d=new Date(k);return d.getDate()+'/'+(d.getMonth()+1);});
+  let run=0; const cum=dayVals.map(v=>{run+=v;return parseFloat(run.toFixed(2));});
+  const c1=document.getElementById('repCumChart');
+  if(c1){ DC('repcum'); if(labels.length) CI['repcum']=new Chart(c1,{type:'line',data:{labels,datasets:[{data:cum,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.08)',borderWidth:2,fill:true,tension:0.3,pointRadius:0,pointHoverRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#8a93a8',font:{size:9},maxTicksLimit:8}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
+  const c2=document.getElementById('repDailyChart');
+  if(c2){ DC('repdaily'); if(labels.length) CI['repdaily']=new Chart(c2,{type:'bar',data:{labels,datasets:[{data:dayVals,backgroundColor:dayVals.map(v=>v>=0?'rgba(15,157,110,0.75)':'rgba(224,64,90,0.75)'),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#8a93a8',font:{size:9},maxTicksLimit:8}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
