@@ -641,6 +641,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .rep-tbl th{text-align:left;font-size:10px;font-weight:600;color:var(--td);letter-spacing:.4px;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--bo);white-space:nowrap;}
 .rep-tbl td{padding:10px 12px;border-bottom:1px solid var(--bo);font-size:12px;vertical-align:middle;}
 .rep-tbl tbody tr:hover{background:rgba(37,99,235,.04);}
+.rep-cmp-sel{background:#fff !important;border:1px solid var(--bo) !important;border-radius:8px;padding:6px 10px;font-size:12px;color:var(--tp) !important;cursor:pointer;}
 /* Calendrier annuel (Reports) */
 .rep-cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:14px;}
 .rep-mini{border:1px solid var(--bo);border-radius:12px;padding:12px;background:var(--card2);}
@@ -1318,7 +1319,25 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     </div>
     <div class="card" style="margin-top:16px"><div class="ct">📊 Gagnants vs Perdants</div><div class="rep-chart"><canvas id="wlChart"></canvas></div></div>
   </div>
-  <div id="rep-compare" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Compare</b> — on le construit ensuite 🛠️</div></div>
+  <!-- ─ COMPARE ─ -->
+  <div id="rep-compare" class="rep-panel">
+    <div class="card">
+      <div class="ct" style="justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <span>⚖️ Comparer deux périodes</span>
+        <span style="display:flex;gap:8px;align-items:center">
+          <select id="rep-cmp-a" class="rep-cmp-sel" onchange="buildRepCompare()" aria-label="Période A"></select>
+          <span style="color:var(--td);font-size:11px">vs</span>
+          <select id="rep-cmp-b" class="rep-cmp-sel" onchange="buildRepCompare()" aria-label="Période B"></select>
+        </span>
+      </div>
+      <div class="tl-tbl-wrap">
+        <table class="rep-tbl">
+          <thead><tr><th>Métrique</th><th style="text-align:right" id="rep-cmp-ha">Période A</th><th style="text-align:right" id="rep-cmp-hb">Période B</th><th style="text-align:right">Écart</th></tr></thead>
+          <tbody id="rep-cmp-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   <!-- ─ MARKET BEHAVIOR ─ -->
   <div id="rep-market" class="rep-panel">
     <div class="card" style="text-align:center;padding:40px 30px">
@@ -2973,6 +2992,7 @@ function updateDash(){
   if(typeof buildRepWinsLoss==='function'){const _wl=document.getElementById('wl-wins');if(_wl&&_wl.offsetParent)buildRepWinsLoss();}
   if(typeof buildRepRisk==='function'){const _rk=document.getElementById('rep-risk-tbody');if(_rk&&_rk.offsetParent)buildRepRisk(REP_RISK_CUR);}
   if(typeof buildRepCalendar==='function'){const _cl=document.getElementById('rep-cal-grid');if(_cl&&_cl.offsetParent)buildRepCalendar();}
+  if(typeof buildRepCompare==='function'){const _cp=document.getElementById('rep-cmp-tbody');if(_cp&&_cp.offsetParent)buildRepCompare();}
 }
 
 // ── HEATMAP ──
@@ -3152,6 +3172,7 @@ function showRepTab(id,btn){
   if(id==='rep-winsloss')setTimeout(buildRepWinsLoss,60);
   if(id==='rep-risk')setTimeout(()=>showRepRisk(REP_RISK_CUR, document.querySelector('#rep-risk-tabs .rep-subtab[data-dim="'+REP_RISK_CUR+'"]')),60);
   if(id==='rep-calendar')setTimeout(buildRepCalendar,60);
+  if(id==='rep-compare')setTimeout(buildRepCompare,60);
 }
 function repMins(m){ m=Math.round(m||0); if(!m)return '—'; if(m<60)return m+' min'; const h=Math.floor(m/60),mm=m%60; return h+'h'+(mm?' '+mm+'m':''); }
 function repMoney(v){ v=parseFloat(v)||0; return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -3359,6 +3380,49 @@ function buildRepCalendar(){
     html+=`<div class="rep-mini"><div class="rep-mini-h">${MN[m]}</div><div class="rep-mini-dow">${DOW.map(x=>`<span>${x}</span>`).join('')}</div><div class="rep-mini-days">${cells}</div></div>`;
   }
   grid.innerHTML=html;
+}
+// ── Reports › Compare ──
+function repPeriodStats(mf){
+  let TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  if(mf!=='') TS=TS.filter(t=>parseInt(t.trade_month)===parseInt(mf));
+  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),n=TS.length;
+  const pnl=TS.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);
+  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const dec=wins.length+losses.length, wr=dec?wins.length/dec*100:0;
+  const pf=gl>0?gp/gl:(gp>0?Infinity:0);
+  const avgW=wins.length?gp/wins.length:0, avgL=losses.length?gl/losses.length:0, wl=avgL>0?avgW/avgL:0;
+  const totalR=TS.reduce((a,t)=>a+computeActualR(t),0), exp=n?pnl/n:0;
+  return {n,pnl,wr,pf,wl,totalR,exp};
+}
+function buildRepCompare(){
+  const tb=document.getElementById('rep-cmp-tbody'); if(!tb||!tb.offsetParent)return;
+  const selA=document.getElementById('rep-cmp-a'), selB=document.getElementById('rep-cmp-b');
+  const MNs=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  if(!selA.options.length){ let h='<option value="">Toute l\'année</option>'+MNs.map((m,i)=>`<option value="${i}">${m}</option>`).join(''); selA.innerHTML=h; selB.innerHTML=h; selA.value=''; selB.value=String(new Date().getMonth()); }
+  const MNf=['Toute l\'année','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const lab=v=>v===''?MNf[0]:MNf[parseInt(v)+1];
+  document.getElementById('rep-cmp-ha').textContent=lab(selA.value);
+  document.getElementById('rep-cmp-hb').textContent=lab(selB.value);
+  const a=repPeriodStats(selA.value), b=repPeriodStats(selB.value);
+  const money=v=>(v>=0?'+':'-')+'$'+Math.abs(Math.round(v)).toLocaleString();
+  const rows=[
+    {k:'Net P&L', a:money(a.pnl), b:money(b.pnl), d:a.pnl-b.pnl, unit:'$', good:true},
+    {k:'Trades', a:a.n, b:b.n, d:a.n-b.n, unit:'n', good:false},
+    {k:'Win Rate', a:a.wr.toFixed(1)+'%', b:b.wr.toFixed(1)+'%', d:a.wr-b.wr, unit:'%', good:true},
+    {k:'Profit Factor', a:isFinite(a.pf)?a.pf.toFixed(2):'∞', b:isFinite(b.pf)?b.pf.toFixed(2):'∞', d:(isFinite(a.pf)?a.pf:99)-(isFinite(b.pf)?b.pf:99), unit:'2', good:true},
+    {k:'Ratio gain/perte', a:a.wl?a.wl.toFixed(2):'—', b:b.wl?b.wl.toFixed(2):'—', d:a.wl-b.wl, unit:'2', good:true},
+    {k:'Total R', a:(a.totalR>=0?'+':'')+a.totalR.toFixed(2)+'R', b:(b.totalR>=0?'+':'')+b.totalR.toFixed(2)+'R', d:a.totalR-b.totalR, unit:'R', good:true},
+    {k:'Espérance / trade', a:money(a.exp), b:money(b.exp), d:a.exp-b.exp, unit:'$', good:true}
+  ];
+  const diffCell=r=>{
+    if(Math.abs(r.d)<0.005) return '<span style="color:var(--td)">=</span>';
+    let val; if(r.unit==='$')val='$'+Math.abs(Math.round(r.d)).toLocaleString(); else if(r.unit==='%')val=Math.abs(r.d).toFixed(1)+'%'; else if(r.unit==='n')val=Math.abs(r.d); else if(r.unit==='R')val=Math.abs(r.d).toFixed(2)+'R'; else val=Math.abs(r.d).toFixed(2);
+    if(!r.good) return `<span style="color:var(--ts)">${r.d>0?'+':'-'}${val}</span>`;
+    const up=r.d>0, col=up?'var(--grb)':'var(--reb)', arrow=up?'▲':'▼';
+    return `<span style="color:${col}">${arrow} ${val}</span>`;
+  };
+  tb.innerHTML=rows.map(r=>`<tr><td style="font-weight:600">${r.k}</td><td style="text-align:right">${r.a}</td><td style="text-align:right">${r.b}</td><td style="text-align:right;font-weight:700">${diffCell(r)}</td></tr>`).join('');
 }
 // ── Reports › Wins vs Losses ──
 function buildRepWinsLoss(){
