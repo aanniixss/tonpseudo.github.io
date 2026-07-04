@@ -568,6 +568,35 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .tz-chips{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0;}
 @media(max-width:1150px){.tz-kpis{grid-template-columns:repeat(3,1fr);}.tz-chips{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:760px){.tz-kpis{grid-template-columns:repeat(2,1fr);}.tz-chips{grid-template-columns:repeat(2,1fr);}.tz-big{font-size:23px;}}
+/* ════════ BAKOU SCORE (radar) ════════ */
+.bk-score-wrap{display:flex;gap:26px;align-items:center;flex-wrap:wrap;padding-top:6px;}
+.bk-radar{flex:1 1 300px;min-width:250px;max-width:400px;height:300px;position:relative;margin:0 auto;}
+.bk-score-side{flex:1 1 220px;min-width:210px;}
+.bk-score-lbl{font-size:11px;color:var(--td);letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.bk-score-num{font-family:'Space Grotesk',sans-serif !important;font-size:52px;font-weight:700;color:var(--tp);line-height:1;margin:4px 0 16px;letter-spacing:-1px;}
+.bk-score-bar{position:relative;height:10px;border-radius:6px;background:linear-gradient(90deg,#e0405a,#f59e0b,#fbbf24,#34d399,#0f9d6e);}
+.bk-score-dot{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--tp);transform:translate(-50%,-50%);transition:left .7s cubic-bezier(.4,0,.2,1);left:0;box-shadow:0 2px 6px rgba(30,35,51,.3);}
+.bk-score-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-top:6px;}
+.bk-score-legend{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:7px 16px;}
+.bk-lg{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;border-bottom:1px dashed var(--bo);padding-bottom:5px;}
+.bk-lg .bk-lg-k{color:var(--ts);}
+.bk-lg .bk-lg-v{font-weight:700;color:var(--tp);font-variant-numeric:tabular-nums;}
+/* ════════ CALENDRIER P&L ════════ */
+.cal-nav{width:27px;height:27px;border-radius:8px;border:1px solid var(--bo);background:var(--card2);color:var(--be);cursor:pointer;font-size:15px;line-height:1;transition:border-color .2s,background .2s;}
+.cal-nav:hover{border-color:var(--be);background:rgba(37,99,235,.08);}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:16px 0 6px;}
+.cal-dow span{font-size:10px;color:var(--td);text-align:center;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.cal-cell{aspect-ratio:1.1;border:1px solid var(--bo);border-radius:10px;padding:6px 7px;background:var(--card2);min-height:54px;display:flex;flex-direction:column;overflow:hidden;}
+.cal-cell.empty{background:transparent;border-color:transparent;}
+.cal-cell .cal-d{font-size:10px;color:var(--td);text-align:right;line-height:1;}
+.cal-cell.win{background:rgba(15,157,110,.13);border-color:rgba(15,157,110,.32);}
+.cal-cell.loss{background:rgba(224,64,90,.11);border-color:rgba(224,64,90,.32);}
+.cal-cell .cal-pnl{font-family:'Space Grotesk',sans-serif !important;font-size:12.5px;font-weight:700;margin-top:auto;line-height:1.1;}
+.cal-cell .cal-n{font-size:8.5px;color:var(--ts);margin-top:1px;}
+.cal-foot{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:18px;margin-top:14px;font-size:11.5px;color:var(--ts);}
+.cal-foot b{color:var(--tp);}
+@media(max-width:600px){.cal-cell{min-height:42px;padding:4px 5px;}.cal-cell .cal-pnl{font-size:10px;}.cal-cell .cal-n{display:none;}.bk-score-num{font-size:42px;}}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
@@ -826,6 +855,38 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <div id="opt-good"><div style="color:var(--td);font-size:10px">Aucun bon comportement tagué</div></div>
       </div>
     </div>
+  </div>
+
+  <div class="grouphead"><span class="gh-i">◈</span><span class="gh-t">BAKOU Score &amp; Calendrier</span><span class="gh-d">Note globale de ton trading &amp; performance jour par jour</span></div>
+
+  <!-- ░░ BAKOU SCORE ░░ -->
+  <div class="card" style="margin-top:12px">
+    <div class="ct">◈ BAKOU Score</div>
+    <div class="bk-score-wrap">
+      <div class="bk-radar"><canvas id="bkScoreChart"></canvas></div>
+      <div class="bk-score-side">
+        <div class="bk-score-lbl">Ton BAKOU Score</div>
+        <div class="bk-score-num" id="bk-score-num">—</div>
+        <div class="bk-score-bar"><div class="bk-score-dot" id="bk-score-dot"></div></div>
+        <div class="bk-score-scale"><span>0</span><span>50</span><span>100</span></div>
+        <div class="bk-score-legend" id="bk-score-legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ CALENDRIER P&L ░░ -->
+  <div class="card" style="margin-top:16px">
+    <div class="ct" style="justify-content:space-between">
+      <span>📅 Calendrier P&amp;L</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <button class="cal-nav" onclick="calMove(-1)" aria-label="Mois précédent">‹</button>
+        <span id="cal-title" style="font-size:12px;font-weight:700;min-width:130px;text-align:center;color:var(--tp)">—</span>
+        <button class="cal-nav" onclick="calMove(1)" aria-label="Mois suivant">›</button>
+      </span>
+    </div>
+    <div id="cal-dow" class="cal-dow"></div>
+    <div id="cal-grid" class="cal-grid"></div>
+    <div id="cal-foot" class="cal-foot"></div>
   </div>
 </div>
 
@@ -2664,6 +2725,8 @@ function updateDash(){
     document.getElementById('s-'+key+'-d').textContent=st.length+' trade'+(st.length>1?'s':'')+' · WR '+wr2;
   });
   buildCorePerfAndOptim();
+  buildBakouScore();
+  buildCalendar();
 }
 
 // ── HEATMAP ──
@@ -2716,6 +2779,63 @@ function initPairChart(){
   ]},options:{...CD,scales:{x:{grid:{color:'rgba(30,35,51,0.08)'},ticks:{color:'#5b6478',font:{family:'Rajdhani',size:9}}},y:{grid:{color:'rgba(30,35,51,0.08)'},ticks:{color:'#5b6478',font:{family:'Rajdhani'},stepSize:1}}}}});
 }
 
+// ══ BAKOU SCORE (radar) ══
+function bkC(v){return Math.max(0,Math.min(100,v));}
+function buildBakouScore(){
+  const canvas=document.getElementById('bkScoreChart'); if(!canvas||!canvas.offsetParent) return;
+  const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const numEl=document.getElementById('bk-score-num'),dot=document.getElementById('bk-score-dot'),leg=document.getElementById('bk-score-legend');
+  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),n=TS.length;
+  const winPct=n?wins.length/n*100:0;
+  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const pf=gl>0?gp/gl:(gp>0?3:0);
+  const avgWin=wins.length?gp/wins.length:0, avgLoss=losses.length?gl/losses.length:0;
+  const awl=avgLoss>0?avgWin/avgLoss:(avgWin>0?2:0);
+  const ordered=[...TS].sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+  let eq=0,peak=0,maxDD=0,net=0;
+  ordered.forEach(t=>{const p=parseFloat(t.pnl_amt||0);eq+=p;net+=p;if(eq>peak)peak=eq;const dd=peak-eq;if(dd>maxDD)maxDD=dd;});
+  const recovery=maxDD>0?net/maxDD:(net>0?3:0);
+  const ddPct=CAP>0?maxDD/CAP*100:(peak>0?maxDD/peak*100:0);
+  const maxWin=wins.reduce((m,t)=>Math.max(m,Math.abs(parseFloat(t.pnl_amt||0))),0);
+  const consistency=gp>0?100-(maxWin/gp*100):0;
+  const sc={'Win %':bkC(winPct),'Profit factor':bkC(pf*40),'Avg win/loss':bkC(awl*50),'Recovery factor':bkC(recovery*33),'Max drawdown':bkC(100-ddPct*3),'Consistency':bkC(consistency)};
+  const labels=Object.keys(sc), vals=labels.map(k=>Math.round(sc[k]));
+  const overall=n?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  if(numEl)numEl.textContent=n?overall.toFixed(2):'—';
+  if(dot)dot.style.left=(n?overall:0)+'%';
+  if(leg)leg.innerHTML=labels.map((k,i)=>`<div class="bk-lg"><span class="bk-lg-k">${k}</span><span class="bk-lg-v">${n?vals[i]:'—'}</span></div>`).join('');
+  DC('bkscore');
+  CI['bkscore']=new Chart(canvas,{type:'radar',data:{labels,datasets:[{data:vals,backgroundColor:'rgba(37,99,235,0.16)',borderColor:'#2563eb',borderWidth:2,pointBackgroundColor:'#2563eb',pointBorderColor:'#fff',pointBorderWidth:1,pointRadius:3,pointHoverRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+' : '+c.raw+'/100'}}},scales:{r:{min:0,max:100,ticks:{display:false,stepSize:20},grid:{color:'rgba(30,35,51,0.10)'},angleLines:{color:'rgba(30,35,51,0.10)'},pointLabels:{color:'#5b6478',font:{size:11,family:'Inter'}}}}}});
+}
+// ══ CALENDRIER P&L ══
+let CAL_Y=null,CAL_M=null;
+function calInit(){ if(CAL_Y===null){ const now=new Date(); CAL_Y=parseInt(GLOBAL_YEAR)||now.getFullYear(); CAL_M=now.getMonth(); } }
+function calMove(d){ calInit(); CAL_M+=d; if(CAL_M<0){CAL_M=11;CAL_Y--;} if(CAL_M>11){CAL_M=0;CAL_Y++;} buildCalendar(); }
+function buildCalendar(){
+  calInit();
+  const grid=document.getElementById('cal-grid'); if(!grid) return;
+  const MN=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const tt=document.getElementById('cal-title'); if(tt)tt.textContent=MN[CAL_M]+' '+CAL_Y;
+  const dow=document.getElementById('cal-dow'); if(dow)dow.innerHTML=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(d=>`<span>${d}</span>`).join('');
+  const map={};
+  T.forEach(t=>{ if(!t.created_at) return; const d=new Date(t.created_at); if(d.getFullYear()!==CAL_Y||d.getMonth()!==CAL_M) return; const day=d.getDate(); if(!map[day])map[day]={pnl:0,n:0}; map[day].pnl+=parseFloat(t.pnl_amt||0); map[day].n++; });
+  let startDow=new Date(CAL_Y,CAL_M,1).getDay(); startDow=(startDow+6)%7;
+  const days=new Date(CAL_Y,CAL_M+1,0).getDate();
+  const fmt=v=>Math.abs(v)>=1000?(Math.abs(v)/1000).toFixed(1)+'K':Math.abs(v).toFixed(0);
+  let html='',monthPnl=0,tradeDays=0,monthTrades=0;
+  for(let i=0;i<startDow;i++) html+='<div class="cal-cell empty"></div>';
+  for(let day=1;day<=days;day++){
+    const e=map[day];
+    if(e){ monthPnl+=e.pnl; tradeDays++; monthTrades+=e.n;
+      const cls=e.pnl>=0?'win':'loss', col=e.pnl>=0?'var(--grb)':'var(--reb)';
+      html+=`<div class="cal-cell ${cls}"><div class="cal-d">${day}</div><div class="cal-pnl" style="color:${col}">${e.pnl>=0?'+':'-'}$${fmt(e.pnl)}</div><div class="cal-n">${e.n} trade${e.n>1?'s':''}</div></div>`;
+    } else html+=`<div class="cal-cell"><div class="cal-d">${day}</div></div>`;
+  }
+  grid.innerHTML=html;
+  const foot=document.getElementById('cal-foot');
+  if(foot)foot.innerHTML=`<span>Jours actifs : <b>${tradeDays}</b></span><span>Trades : <b>${monthTrades}</b></span><span>P&amp;L du mois : <b style="color:${monthPnl>=0?'var(--grb)':'var(--reb)'}">${monthPnl>=0?'+':'-'}$${fmt(monthPnl)}</b></span>`;
+}
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
   DC('day');DC('sess');DC('close');DC('hour');
