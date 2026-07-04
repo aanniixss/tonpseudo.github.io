@@ -504,6 +504,10 @@ body::before{background:none !important;}
 .tbl th{background:var(--card2) !important;color:var(--td) !important;border-bottom:1px solid var(--bo) !important;}
 .tbl td{border-bottom:1px solid var(--bo) !important;color:var(--tp);}
 input,select,textarea{background:#fff !important;border:1px solid var(--bo) !important;color:var(--tp) !important;}
+/* Fix couleur formulaire journal : les champs .fld héritaient d'un fond sombre du thème V3 */
+.fld input,.fld select,.fld textarea{background:#fff !important;color:var(--tp) !important;}
+.fld input::placeholder,.fld textarea::placeholder{color:var(--td) !important;}
+.fld select option{background:#fff !important;color:var(--tp) !important;}
 .calc-box{background:var(--card2) !important;border:1px solid var(--bo) !important;color:var(--tp) !important;}
 .win{color:var(--gr) !important;} .loss{color:var(--re) !important;} .be-r{color:var(--go) !important;}
 /* Sidebar sombre bleu nuit */
@@ -565,7 +569,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .tz-pill.r{background:rgba(224,64,90,.12);color:var(--reb);}
 .tz-wlbar{display:flex;height:7px;border-radius:5px;overflow:hidden;margin:9px 0 5px;background:var(--card2);}
 .tz-wlbar i{display:block;height:100%;}
-.tz-chips{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0;}
+.tz-chips{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0;}
 @media(max-width:1150px){.tz-kpis{grid-template-columns:repeat(3,1fr);}.tz-chips{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:760px){.tz-kpis{grid-template-columns:repeat(2,1fr);}.tz-chips{grid-template-columns:repeat(2,1fr);}.tz-big{font-size:23px;}}
 /* ════════ BAKOU SCORE (radar) ════════ */
@@ -774,7 +778,6 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 
   <!-- ░░ STATS SECONDAIRES ░░ -->
   <div class="tz-chips">
-    <div class="chip" style="--c:#2563eb"><div class="chip-l">Win Rate</div><div class="chip-v kv" id="k-wr">—</div><div class="chip-s" id="k-wr-s">0 trades</div></div>
     <div class="chip" style="--c:#3b82f6"><div class="chip-l">Total Trades</div><div class="chip-v kv" id="k-tot">0</div><div class="chip-s" id="k-tot-s">0 W · 0 L · 0 BE</div></div>
     <div class="chip" style="--c:#34d399"><div class="chip-l">Total R</div><div class="chip-v kv" id="k-totalr" style="color:var(--grb)">—</div><div class="chip-s">R cumulés</div></div>
     <div class="chip" style="--c:#818cf8"><div class="chip-l">Durée Moy.</div><div class="chip-v kv" id="k-dur">—</div><div class="chip-s">Par trade</div></div>
@@ -812,50 +815,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     </div>
   </div>
 
-  <div class="g2">
-    <div class="card">
-      <div class="ct">Sessions</div>
-      <div id="sess-container">
-        <div class="sc"><div class="sn">☀️ LONDON</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-lon-p">—</div><div class="sb-w"><div class="sb" id="s-lon-b" style="width:0%;background:linear-gradient(90deg,var(--ba),var(--be))"></div></div><div style="font-size:10px;color:var(--td)" id="s-lon-d">0 trades</div></div>
-        <div class="sc"><div class="sn">🌍 NEW YORK</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-ny-p">—</div><div class="sb-w"><div class="sb" id="s-ny-b" style="width:0%;background:linear-gradient(90deg,var(--gr),var(--grb))"></div></div><div style="font-size:10px;color:var(--td)" id="s-ny-d">0 trades</div></div>
-        <div class="sc"><div class="sn">🌸 TOKYO / ASIA</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-tok-p">—</div><div class="sb-w"><div class="sb" id="s-tok-b" style="width:0%;background:linear-gradient(90deg,var(--td),var(--ts))"></div></div><div style="font-size:10px;color:var(--td)" id="s-tok-d">0 trades</div></div>
-        <div class="sc"><div class="sn">🔁 OVERLAP LON/NY</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-ov-p">—</div><div class="sb-w"><div class="sb" id="s-ov-b" style="width:0%;background:linear-gradient(90deg,var(--go),var(--gb))"></div></div><div style="font-size:10px;color:var(--td)" id="s-ov-d">0 trades</div></div>
-      </div>
-    </div>
-    <div class="card"><div class="ct">Heatmap — Jour de la Semaine</div><div id="hmContainer"></div></div>
-  </div>
-
-  <div class="grouphead"><span class="gh-i">🧠</span><span class="gh-t">Comportement &amp; optimisation</span><span class="gh-d">Ce qui marche, ce qu'il faut corriger</span></div>
-  <!-- ══ OPTIMISATION ══ -->
-  <div class="card" style="margin-top:12px">
-    <div class="ct">Optimisation — Performance par catégorie <span style="font-size:9px;color:var(--td);font-family:'Rajdhani';">(en %)</span></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:4px 0">
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Setup</div>
-        <div id="opt-strats"><div style="color:var(--td);font-size:10px">Ajoute des trades avec setup</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Confluence</div>
-        <div id="opt-confs"><div style="color:var(--td);font-size:10px">Ajoute des confluences</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Grade (★)</div>
-        <div id="opt-grade"><div style="color:var(--td);font-size:10px">Note tes trades</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Fonda</div>
-        <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">⚠ Erreurs (nb · % · $)</div>
-        <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--grb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(16,185,129,0.2);padding-bottom:5px">Bonne psycho (nb · % · $)</div>
-        <div id="opt-good"><div style="color:var(--td);font-size:10px">Aucun bon comportement tagué</div></div>
-      </div>
-    </div>
-  </div>
+  <div class="card"><div class="ct">Heatmap — Jour de la Semaine</div><div id="hmContainer"></div></div>
 
   <div class="grouphead"><span class="gh-i">◈</span><span class="gh-t">BAKOU Score &amp; Calendrier</span><span class="gh-d">Note globale de ton trading &amp; performance jour par jour</span></div>
 
@@ -1190,6 +1150,45 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   <div class="g2">
     <div class="card"><div class="ct">🕐 Performance par Heure</div><canvas id="hourChart" height="200"></canvas></div>
     <div class="card"><div class="ct">✂️ Coupes-tu tes pertes ?</div><div id="dur-winloss" style="padding:6px 2px"></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">☀️ Sessions</div>
+    <div id="sess-container">
+      <div class="sc"><div class="sn">☀️ LONDON</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-lon-p">—</div><div class="sb-w"><div class="sb" id="s-lon-b" style="width:0%;background:linear-gradient(90deg,var(--ba),var(--be))"></div></div><div style="font-size:10px;color:var(--td)" id="s-lon-d">0 trades</div></div>
+      <div class="sc"><div class="sn">🌍 NEW YORK</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-ny-p">—</div><div class="sb-w"><div class="sb" id="s-ny-b" style="width:0%;background:linear-gradient(90deg,var(--gr),var(--grb))"></div></div><div style="font-size:10px;color:var(--td)" id="s-ny-d">0 trades</div></div>
+      <div class="sc"><div class="sn">🌸 TOKYO / ASIA</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-tok-p">—</div><div class="sb-w"><div class="sb" id="s-tok-b" style="width:0%;background:linear-gradient(90deg,var(--td),var(--ts))"></div></div><div style="font-size:10px;color:var(--td)" id="s-tok-d">0 trades</div></div>
+      <div class="sc"><div class="sn">🔁 OVERLAP LON/NY</div><div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--td)" id="s-ov-p">—</div><div class="sb-w"><div class="sb" id="s-ov-b" style="width:0%;background:linear-gradient(90deg,var(--go),var(--gb))"></div></div><div style="font-size:10px;color:var(--td)" id="s-ov-d">0 trades</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🧠 Comportement &amp; optimisation — Performance par catégorie <span style="font-size:9px;color:var(--td);font-family:'Rajdhani';">(en %)</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:4px 0">
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Setup</div>
+        <div id="opt-strats"><div style="color:var(--td);font-size:10px">Ajoute des trades avec setup</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Confluence</div>
+        <div id="opt-confs"><div style="color:var(--td);font-size:10px">Ajoute des confluences</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Grade (★)</div>
+        <div id="opt-grade"><div style="color:var(--td);font-size:10px">Note tes trades</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--be);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(37,99,235,0.2);padding-bottom:5px">Fonda</div>
+        <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--reb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">⚠ Erreurs (nb · % · $)</div>
+        <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--grb);font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(16,185,129,0.2);padding-bottom:5px">Bonne psycho (nb · % · $)</div>
+        <div id="opt-good"><div style="color:var(--td);font-size:10px">Aucun bon comportement tagué</div></div>
+      </div>
+    </div>
   </div>
   </div><!-- /ana-overview -->
 
@@ -2692,9 +2691,8 @@ function updateDash(){
   ke.style.color=s.tpnl>0?'var(--grb)':s.tpnl<0?'var(--reb)':'var(--be)';
   document.getElementById('k-cap-s').innerHTML=CAP>0&&s.tpnl?`<span style="color:${s.tpnl>=0?'var(--grb)':'var(--reb)'}">${s.tpnl>=0?'+':''}${s.tpnlPct.toFixed(2)}% · ${s.tpnl>=0?'+':''}$${Math.abs(s.tpnl).toFixed(0)}</span>`:'—';
   const we=document.getElementById('k-wr');
-  we.textContent=s.wr?s.wr+'%':'—';
-  we.style.color=s.wr>=60?'var(--grb)':s.wr>=50?'var(--gb)':'var(--reb)';
-  document.getElementById('k-wr-s').textContent=s.tot+' trade'+(s.tot>1?'s':'');
+  if(we){ we.textContent=s.wr?s.wr+'%':'—'; we.style.color=s.wr>=60?'var(--grb)':s.wr>=50?'var(--gb)':'var(--reb)'; }
+  const wes=document.getElementById('k-wr-s'); if(wes) wes.textContent=s.tot+' trade'+(s.tot>1?'s':'');
   document.getElementById('k-tot').textContent=s.tot;
   document.getElementById('k-tot-s').textContent=s.w+' W · '+s.l+' L · '+s.b+' BE';
   const pe=document.getElementById('k-pf');
