@@ -3217,7 +3217,6 @@ function buildReportDetailed(dimKey){
   TS.forEach(t=>{ (dim.fn(t)||[]).forEach(lb=>{ if(lb==null||lb==='')return; if(!g[lb])g[lb]={n:0,pnl:0,w:0,l:0,be:0,gain:0,loss:0}; const o=g[lb],p=parseFloat(t.pnl_amt||0); o.n++;o.pnl+=p; if(t.result==='WIN'){o.w++;o.gain+=Math.abs(p);} else if(t.result==='LOSS'){o.l++;o.loss+=Math.abs(p);} else o.be++; }); });
   let keys=Object.keys(g);
   if(dim.order){ keys=dim.order.filter(k=>g[k]); } else { keys.sort((a,b)=>g[b].n-g[a].n); }
-  buildRepDetCharts(keys, keys.map(k=>g[k].n), keys.map(k=>parseFloat(g[k].pnl.toFixed(2))));
   const t1=document.getElementById('rep-det-t1'),t2=document.getElementById('rep-det-t2');
   if(t1)t1.textContent='Distribution des trades par '+dim.label;
   if(t2)t2.textContent='Performance (P&L net) par '+dim.label;
@@ -3228,13 +3227,22 @@ function buildReportDetailed(dimKey){
     <td style="color:var(--grb);text-align:right">+$${Math.round(o.gain).toLocaleString()}</td>
     <td style="color:var(--reb);text-align:right">-$${Math.round(o.loss).toLocaleString()}</td>
     <td style="text-align:right;font-weight:700;color:${o.pnl>=0?'var(--grb)':'var(--reb)'}">${o.pnl>=0?'+':'-'}$${Math.abs(Math.round(o.pnl)).toLocaleString()}</td></tr>`;};
-  tb.innerHTML = keys.length ? keys.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;padding:26px;color:var(--td)">Aucune donnée pour cette dimension</td></tr>';
+  // Tableau d'abord (toujours affiché, même si les graphiques échouent)
+  tb.innerHTML = keys.length ? keys.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;padding:26px;color:var(--td)">Aucun trade sur cette période — ajoute des trades dans le Journal</td></tr>';
+  try{ buildRepDetCharts(keys, keys.map(k=>g[k].n), keys.map(k=>parseFloat(g[k].pnl.toFixed(2)))); }catch(e){ console.warn('Reports/Detailed charts:', e); }
 }
 function buildRepDetCharts(labels,dist,perf){
-  const c1=document.getElementById('repDetDist');
-  if(c1){ DC('repdetdist'); if(labels.length) CI['repdetdist']=new Chart(c1,{type:'bar',data:{labels,datasets:[{data:dist,backgroundColor:'rgba(124,92,255,0.78)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},precision:0}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}}); }
-  const c2=document.getElementById('repDetPerf');
-  if(c2){ DC('repdetperf'); if(labels.length) CI['repdetperf']=new Chart(c2,{type:'bar',data:{labels,datasets:[{data:perf,backgroundColor:perf.map(v=>v>=0?'rgba(15,157,110,0.80)':'rgba(224,64,90,0.80)'),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}}); }
+  const empty=!labels.length;
+  const mk=(canvasId,key,cfg)=>{
+    const c=document.getElementById(canvasId); if(!c)return;
+    const wrap=c.parentNode; const old=wrap&&wrap.querySelector('.rep-empty'); if(old)old.remove();
+    DC(key);
+    if(empty){ c.style.display='none'; if(wrap){const m=document.createElement('div');m.className='rep-empty';m.textContent='Aucun trade sur cette période';m.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:12px';wrap.appendChild(m);} return; }
+    c.style.display='block';
+    CI[key]=new Chart(c,cfg);
+  };
+  mk('repDetDist','repdetdist',{type:'bar',data:{labels,datasets:[{data:dist,backgroundColor:'rgba(124,92,255,0.78)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},precision:0}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}});
+  mk('repDetPerf','repdetperf',{type:'bar',data:{labels,datasets:[{data:perf,backgroundColor:perf.map(v=>v>=0?'rgba(15,157,110,0.80)':'rgba(224,64,90,0.80)'),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}});
 }
 // ── Reports › Wins vs Losses ──
 function buildRepWinsLoss(){
