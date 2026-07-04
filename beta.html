@@ -541,11 +541,38 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .lg-tab.active{border-color:#2563eb !important;background:#eaf1ff !important;color:#1d4ed8 !important;}
 .hm-c{color:#fff;}
 .toast{background:#1e2333 !important;color:#1e2333 !important;}
+/* Logo image (remplace le monogramme BK par le logo bleu) */
+.side-brand .logo-i,.logo-i{background:#0b1020 !important;padding:0 !important;overflow:hidden;box-shadow:0 6px 18px -8px rgba(37,99,235,.55) !important;}
+.logo-i img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
+.side-brand .logo-i{width:46px !important;height:46px !important;border-radius:13px !important;}
+.lg-logo{background:#0b1020 !important;padding:0;overflow:hidden;}
+.lg-logo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
+/* ════════ DASHBOARD — RANGÉE KPI STYLE TRADEZELLA ════════ */
+.tz-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:16px;}
+.tz-card{background:var(--card);border:1px solid var(--bo);border-radius:16px;padding:15px 17px;box-shadow:var(--glow);display:flex;flex-direction:column;min-height:116px;transition:border-color .2s,box-shadow .2s;}
+.tz-card:hover{border-color:rgba(37,99,235,.28);box-shadow:0 10px 24px -16px rgba(37,99,235,.5);}
+.tz-lbl{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--td);letter-spacing:.1px;margin-bottom:2px;}
+.tz-i{width:14px;height:14px;border-radius:50%;border:1px solid var(--bo);color:var(--td);font-size:9px;font-style:italic;display:inline-flex;align-items:center;justify-content:center;line-height:1;}
+.tz-body{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;}
+.tz-big{font-family:'Space Grotesk','Inter',sans-serif !important;font-size:28px;font-weight:700;color:var(--tp);line-height:1.05;letter-spacing:-.5px;}
+.tz-sub{font-size:11px;color:var(--ts);margin-top:4px;}
+.tz-badge{font-size:10px;font-weight:700;color:#1d4ed8;background:#eaf1ff;border:1px solid rgba(37,99,235,.25);border-radius:20px;padding:1px 8px;margin-left:auto;}
+.tz-donut{position:relative;width:62px;height:62px;flex-shrink:0;}
+.tz-wl{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;}
+.tz-pill{font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;line-height:1.4;}
+.tz-pill.g{background:rgba(15,157,110,.12);color:var(--grb);}
+.tz-pill.b{background:rgba(217,119,6,.14);color:var(--gb);}
+.tz-pill.r{background:rgba(224,64,90,.12);color:var(--reb);}
+.tz-wlbar{display:flex;height:7px;border-radius:5px;overflow:hidden;margin:9px 0 5px;background:var(--card2);}
+.tz-wlbar i{display:block;height:100%;}
+.tz-chips{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0;}
+@media(max-width:1150px){.tz-kpis{grid-template-columns:repeat(3,1fr);}.tz-chips{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:760px){.tz-kpis{grid-template-columns:repeat(2,1fr);}.tz-chips{grid-template-columns:repeat(2,1fr);}.tz-big{font-size:23px;}}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
   <div class="lg-box">
-    <div class="lg-logo">BK</div>
+    <div class="lg-logo"><img src="./assets/logo-bakou.png" alt="BAKOU" loading="eager"></div>
     <div class="lg-title">BAK<span>OU</span></div>
     <div class="lg-sub" id="lg-sub">Ton journal de trading professionnel</div>
     <div style="display:flex;gap:6px;margin-bottom:16px" role="tablist" aria-label="Connexion ou inscription">
@@ -569,7 +596,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   <!-- SIDEBAR -->
   <aside class="sidebar" id="rd-sidebar">
     <div class="side-brand">
-      <div class="logo-i">BK</div>
+      <div class="logo-i"><img src="./assets/logo-bakou.png" alt="BAKOU" loading="eager"></div>
       <div><div class="logo-t">BAK<span>OU</span></div><div class="logo-s">Trading Journal</div></div>
     </div>
     <div class="side-cap">Navigation</div>
@@ -644,61 +671,86 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div id="recovery-diag" style="font-size:9px;color:var(--td);margin-top:6px;font-family:monospace"></div>
   </div>
 
-  <!-- ░░ BENTO HERO ░░ -->
-  <div class="bento">
-    <!-- CAPITAL HERO -->
-    <div class="b-card b-hero">
-      <div class="b-hero-top">
+  <!-- ░░ RANGÉE KPI — style TradeZella ░░ -->
+  <div class="tz-kpis">
+    <!-- Net P&L -->
+    <div class="tz-card">
+      <div class="tz-lbl">Net P&amp;L <span class="tz-badge" id="st">0</span></div>
+      <div class="tz-body"><div><div class="tz-big" id="spnl">—</div><div class="tz-sub">Résultat net cumulé</div></div></div>
+    </div>
+    <!-- Trade Win % -->
+    <div class="tz-card">
+      <div class="tz-lbl">Trade Win % <span class="tz-i">i</span></div>
+      <div class="tz-body">
         <div>
-          <div class="b-eyebrow">◈ Capital actuel</div>
-          <div class="b-bignum kv" id="k-cap">—</div>
-          <div class="b-sub" id="k-cap-s">—</div>
+          <div class="tz-big" id="wr-d">—</div>
+          <div class="tz-wl"><span class="tz-pill g" id="sw">0</span><span class="tz-pill b" id="sbe">0</span><span class="tz-pill r" id="sl">0</span></div>
         </div>
-        <div class="b-hero-side">
-          <div class="b-mini">Capital initial<b class="kv" id="k-init">—</b></div>
-          <button class="b-set" onclick="openModal()">⚙ Définir le capital</button>
+        <div class="tz-donut">
+          <svg width="62" height="62" viewBox="0 0 125 125">
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="var(--card2)" stroke-width="12"/>
+            <circle id="wr-arc" cx="62.5" cy="62.5" r="50" fill="none" stroke="url(#wg)" stroke-width="12" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round" transform="rotate(-90 62.5 62.5)"/>
+            <defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0f9d6e"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
+          </svg>
         </div>
-      </div>
-      <div class="b-chartwrap">
-        <div id="no-cap-msg" style="text-align:center;padding:24px;color:var(--td);margin:auto"><div style="font-size:30px">📈</div><div style="font-size:11px;letter-spacing:1px;margin-top:8px">Définis ton capital et ajoute des trades</div></div>
-        <canvas id="capChart" height="120" style="display:none"></canvas>
       </div>
     </div>
-
-    <!-- WIN RATE DONUT -->
-    <div class="b-card b-wr">
-      <div class="b-eyebrow">◈ Performance globale</div>
-      <div class="wr-wrap">
-        <div class="wrc">
-          <svg width="125" height="125" viewBox="0 0 125 125">
-            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="rgba(43,43,61,0.8)" stroke-width="8"/>
-            <circle id="wr-arc" cx="62.5" cy="62.5" r="50" fill="none" stroke="url(#wg)" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round"/>
-            <defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#1e40af"/></linearGradient></defs>
+    <!-- Profit Factor -->
+    <div class="tz-card">
+      <div class="tz-lbl">Profit Factor <span class="tz-i">i</span></div>
+      <div class="tz-body">
+        <div><div class="tz-big" id="k-pf">—</div><div class="tz-sub" id="k-pf-s">RRR —</div></div>
+        <div class="tz-donut">
+          <svg width="62" height="62" viewBox="0 0 125 125">
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="var(--card2)" stroke-width="12"/>
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="#0f9d6e" stroke-width="12" stroke-dasharray="314.16" stroke-dashoffset="72" stroke-linecap="round" transform="rotate(-90 62.5 62.5)"/>
           </svg>
-          <div class="wrc-ctr"><div class="wr-pct" id="wr-d">—</div><div class="wr-lbl">Win Rate</div></div>
         </div>
-        <div class="wr-stats">
-          <div class="wr-r"><span class="wr-k">✓ Gagnants</span><span class="wr-v g" id="sw">0</span></div>
-          <div class="wr-r"><span class="wr-k">✗ Perdants</span><span class="wr-v r" id="sl">0</span></div>
-          <div class="wr-r"><span class="wr-k">◈ Break Even</span><span class="wr-v" style="color:var(--gb)" id="sbe">0</span></div>
-          <div class="wr-r"><span class="wr-k">∑ Total</span><span class="wr-v b" id="st">0</span></div>
-          <div class="wr-r"><span class="wr-k">⊕ P&L Net</span><span class="wr-v g" id="spnl">—</span></div>
-          <div class="wr-r"><span class="wr-k">⚡ Streak Max</span><span class="wr-v g" id="sstr">0</span></div>
-        </div>
+      </div>
+    </div>
+    <!-- Max Drawdown -->
+    <div class="tz-card">
+      <div class="tz-lbl">Max Drawdown <span class="tz-i">i</span></div>
+      <div class="tz-body"><div><div class="tz-big" id="k-dd" style="color:var(--reb)">—</div><div class="tz-sub" id="k-dd-s">Pic → creux</div></div></div>
+    </div>
+    <!-- Espérance / trade -->
+    <div class="tz-card">
+      <div class="tz-lbl">Espérance / trade <span class="tz-i">i</span></div>
+      <div class="tz-body" style="display:block">
+        <div class="tz-big" id="k-exp">—</div>
+        <div class="tz-wlbar"><i style="width:62%;background:var(--grb)"></i><i style="width:38%;background:var(--reb)"></i></div>
+        <div class="tz-sub" id="k-exp-s">R moyen —</div>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STAT CHIPS ░░ -->
-  <div class="chips">
+  <!-- ░░ CAPITAL / P&L CUMULÉ ░░ -->
+  <div class="b-card b-hero" style="margin-bottom:16px">
+    <div class="b-hero-top">
+      <div>
+        <div class="b-eyebrow">◈ Capital actuel</div>
+        <div class="b-bignum kv" id="k-cap">—</div>
+        <div class="b-sub" id="k-cap-s">—</div>
+      </div>
+      <div class="b-hero-side">
+        <div class="b-mini">Capital initial<b class="kv" id="k-init">—</b></div>
+        <button class="b-set" onclick="openModal()">⚙ Définir le capital</button>
+      </div>
+    </div>
+    <div class="b-chartwrap">
+      <div id="no-cap-msg" style="text-align:center;padding:24px;color:var(--td);margin:auto"><div style="font-size:30px">📈</div><div style="font-size:11px;letter-spacing:1px;margin-top:8px">Définis ton capital et ajoute des trades</div></div>
+      <canvas id="capChart" height="120" style="display:none"></canvas>
+    </div>
+  </div>
+
+  <!-- ░░ STATS SECONDAIRES ░░ -->
+  <div class="tz-chips">
     <div class="chip" style="--c:#2563eb"><div class="chip-l">Win Rate</div><div class="chip-v kv" id="k-wr">—</div><div class="chip-s" id="k-wr-s">0 trades</div></div>
     <div class="chip" style="--c:#3b82f6"><div class="chip-l">Total Trades</div><div class="chip-v kv" id="k-tot">0</div><div class="chip-s" id="k-tot-s">0 W · 0 L · 0 BE</div></div>
-    <div class="chip" style="--c:#34d399"><div class="chip-l">Profit Factor</div><div class="chip-v kv" id="k-pf">—</div><div class="chip-s" id="k-pf-s">RRR —</div></div>
-    <div class="chip" style="--c:#ef4444"><div class="chip-l">Max Drawdown</div><div class="chip-v kv" id="k-dd" style="color:var(--reb)">—</div><div class="chip-s" id="k-dd-s">—</div></div>
     <div class="chip" style="--c:#34d399"><div class="chip-l">Total R</div><div class="chip-v kv" id="k-totalr" style="color:var(--grb)">—</div><div class="chip-s">R cumulés</div></div>
-    <div class="chip" style="--c:#22d3ee"><div class="chip-l">Espérance / trade</div><div class="chip-v kv" id="k-exp">—</div><div class="chip-s" id="k-exp-s">R moyen —</div></div>
     <div class="chip" style="--c:#818cf8"><div class="chip-l">Durée Moy.</div><div class="chip-v kv" id="k-dur">—</div><div class="chip-s">Par trade</div></div>
     <div class="chip" style="--c:#fbbf24"><div class="chip-l">Note Moy. ★</div><div class="chip-v kv" id="k-star" style="color:var(--gb)">—</div><div class="chip-s" id="k-star-s">Setup quality</div></div>
+    <div class="chip" style="--c:#10b981"><div class="chip-l">Streak Max</div><div class="chip-v kv" id="sstr">0</div><div class="chip-s">Gains consécutifs</div></div>
   </div>
 
   <!-- ░░ PAIR CHART ░░ -->
