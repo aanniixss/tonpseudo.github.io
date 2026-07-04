@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TrackRecord PRO — Ton journal de trading. Ton edge, chiffré.</title>
+<title>BAKOU — Ton journal de trading. Ton edge, chiffré.</title>
 <meta name="description" content="Journal de trading professionnel : analytiques pro, heatmaps d'edge, psychologie & discipline, objectifs. Compatible FTMO / MT5. Bêta gratuite.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0a0a0f; --bg2:#0e0e15; --card:#14141d; --card2:#1a1a25;
-  --bo:#262633; --be:#7c5cff; --bb:#9d83ff; --ba:#6d28d9; --cy:#c4b5fd;
+  --bo:#262633; --be:#2563eb; --bb:#3b82f6; --ba:#1d4ed8; --cy:#60a5fa;
   --tp:#f3f4fb; --ts:#a6abbd; --td:#7d8398;
   --gr:#10b981; --grb:#34d399; --re:#ef4444; --reb:#f87171; --go:#f59e0b;
   --radius:18px;
@@ -19,15 +19,15 @@
 html{scroll-behavior:smooth;}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--tp);line-height:1.6;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:
-  radial-gradient(900px 520px at 12% -8%,rgba(124,92,255,.12),transparent 60%),
-  radial-gradient(720px 520px at 100% 0%,rgba(99,102,241,.07),transparent 55%);}
+  radial-gradient(900px 520px at 12% -8%,rgba(37,99,235,.12),transparent 60%),
+  radial-gradient(720px 520px at 100% 0%,rgba(59,130,246,.07),transparent 55%);}
 h1,h2,h3,.sg{font-family:'Space Grotesk','Inter',sans-serif;}
 a{color:inherit;text-decoration:none;}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
 .btn{display:inline-block;padding:13px 26px;border-radius:11px;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:all .2s;}
-.btn-p{background:linear-gradient(135deg,var(--be),var(--ba));color:#fff;box-shadow:0 10px 30px -12px rgba(124,92,255,.55);}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 14px 34px -10px rgba(124,92,255,.7);}
-.btn-g{background:rgba(124,92,255,.08);border:1px solid var(--bo);color:var(--ts);}
+.btn-p{background:linear-gradient(135deg,var(--be),var(--ba));color:#fff;box-shadow:0 10px 30px -12px rgba(37,99,235,.55);}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 14px 34px -10px rgba(37,99,235,.7);}
+.btn-g{background:rgba(37,99,235,.08);border:1px solid var(--bo);color:var(--ts);}
 .btn-g:hover{border-color:var(--be);color:var(--tp);}
 :focus-visible{outline:2px solid var(--be);outline-offset:2px;border-radius:6px;}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;}}
@@ -36,7 +36,8 @@ a{color:inherit;text-decoration:none;}
 .nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--bo);}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
 .logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:16px;letter-spacing:1px;}
-.logo-i{width:34px;height:34px;background:linear-gradient(135deg,var(--be),var(--cy));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#000;font-weight:900;}
+.logo-i{width:36px;height:36px;background:#0b1020;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 16px -8px rgba(37,99,235,.6);}
+.logo-i img{width:100%;height:100%;object-fit:cover;display:block;}
 .logo span{color:var(--be);}
 .nav-links{display:flex;gap:26px;font-size:13px;color:var(--ts);}
 .nav-links a:hover{color:var(--tp);}
@@ -52,7 +53,7 @@ a{color:inherit;text-decoration:none;}
 .hero p{font-size:18px;color:var(--ts);max-width:620px;margin:0 auto 34px;}
 .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
 .hero-note{font-size:12px;color:var(--td);}
-.hero-shot{margin:54px auto 0;max-width:960px;border-radius:var(--radius);border:1px solid var(--bo);overflow:hidden;box-shadow:0 40px 100px -30px rgba(124,92,255,.35),0 0 0 1px rgba(124,92,255,.12);}
+.hero-shot{margin:54px auto 0;max-width:960px;border-radius:var(--radius);border:1px solid var(--bo);overflow:hidden;box-shadow:0 40px 100px -30px rgba(37,99,235,.35),0 0 0 1px rgba(37,99,235,.12);}
 .hero-shot img{width:100%;display:block;}
 @media(max-width:760px){.hero{padding:56px 0 30px;}.hero h1{font-size:32px;}.hero p{font-size:15px;}}
 
@@ -73,7 +74,7 @@ section{padding:84px 0;}
 /* FEATURES */
 .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .feat{background:var(--card);border:1px solid var(--bo);border-radius:var(--radius);padding:26px;transition:all .25s;}
-.feat:hover{border-color:rgba(124,92,255,.5);transform:translateY(-3px);}
+.feat:hover{border-color:rgba(37,99,235,.5);transform:translateY(-3px);}
 .feat .ic{font-size:26px;margin-bottom:14px;}
 .feat h3{font-size:16px;margin-bottom:8px;}
 .feat p{font-size:13px;color:var(--ts);}
@@ -83,7 +84,7 @@ section{padding:84px 0;}
 /* SHOWCASE ALTERNÉ */
 .show{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;margin-bottom:74px;}
 .show:last-child{margin-bottom:0;}
-.show img{width:100%;border-radius:var(--radius);border:1px solid var(--bo);box-shadow:0 30px 70px -30px rgba(124,92,255,.3);}
+.show img{width:100%;border-radius:var(--radius);border:1px solid var(--bo);box-shadow:0 30px 70px -30px rgba(37,99,235,.3);}
 .show h3{font-size:24px;margin-bottom:12px;letter-spacing:-.3px;}
 .show p{color:var(--ts);font-size:14px;margin-bottom:16px;}
 .show ul{list-style:none;font-size:14px;color:var(--ts);}
@@ -94,7 +95,7 @@ section{padding:84px 0;}
 /* PRICING */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
 .plan{background:var(--card);border:1px solid var(--bo);border-radius:var(--radius);padding:30px 26px;display:flex;flex-direction:column;position:relative;}
-.plan.hot{border-color:var(--be);box-shadow:0 0 0 1px rgba(124,92,255,.3),0 30px 70px -30px rgba(124,92,255,.45);}
+.plan.hot{border-color:var(--be);box-shadow:0 0 0 1px rgba(37,99,235,.3),0 30px 70px -30px rgba(37,99,235,.45);}
 .plan .tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--be),var(--ba));color:#fff;font-size:10px;font-weight:800;letter-spacing:2px;padding:5px 14px;border-radius:12px;text-transform:uppercase;white-space:nowrap;}
 .plan h3{font-size:15px;letter-spacing:2px;text-transform:uppercase;color:var(--ts);margin-bottom:14px;}
 .price{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;line-height:1;}
@@ -119,7 +120,7 @@ section{padding:84px 0;}
 .faq .a{padding:0 20px 18px;font-size:13.5px;color:var(--ts);}
 
 /* CTA FINAL */
-.cta-final{text-align:center;background:linear-gradient(180deg,transparent,rgba(124,92,255,.06));border-top:1px solid var(--bo);}
+.cta-final{text-align:center;background:linear-gradient(180deg,transparent,rgba(37,99,235,.06));border-top:1px solid var(--bo);}
 .cta-final h2{font-size:34px;margin-bottom:14px;letter-spacing:-.5px;}
 .cta-final p{color:var(--ts);margin-bottom:30px;}
 @media(max-width:760px){.cta-final h2{font-size:24px;}}
@@ -135,7 +136,7 @@ footer a:hover{color:var(--ts);}
 <!-- NAV -->
 <nav class="nav" aria-label="Navigation principale">
   <div class="wrap">
-    <a class="logo" href="#"><span class="logo-i">TR</span>TRACK<span>RECORD</span>&nbsp;PRO</a>
+    <a class="logo" href="#"><span class="logo-i"><img src="assets/logo-bakou.png" alt="BAKOU"></span>BAK<span>OU</span></a>
     <div class="nav-links">
       <a href="#features">Fonctionnalités</a>
       <a href="#analytics">Analytiques</a>
@@ -154,13 +155,13 @@ footer a:hover{color:var(--ts);}
   <div class="wrap">
     <div class="badge-beta">🎁 BÊTA OUVERTE — ACCÈS GRATUIT</div>
     <h1>Ton journal de trading.<br><em>Ton edge, chiffré.</em></h1>
-    <p>TrackRecord PRO transforme chaque trade que tu enregistres en statistiques qui te font progresser : expectancy, heatmaps d'edge, score de discipline, détection de revenge trading. Compatible FTMO &amp; MT5.</p>
+    <p>BAKOU transforme chaque trade que tu enregistres en statistiques qui te font progresser : expectancy, heatmaps d'edge, score de discipline, détection de revenge trading. Compatible FTMO &amp; MT5.</p>
     <div class="hero-cta">
       <a class="btn btn-p" href="app.html?signup=1">Commencer gratuitement →</a>
       <a class="btn btn-g" href="#analytics">Voir les analytiques</a>
     </div>
     <div class="hero-note">Sans carte bancaire · Tes données restent privées · Prêt en 30 secondes</div>
-    <div class="hero-shot"><img src="assets/shot-dashboard.png" alt="Dashboard TrackRecord PRO : capital, win rate, profit factor" loading="eager"></div>
+    <div class="hero-shot"><img src="assets/shot-dashboard.png" alt="Dashboard BAKOU : capital, win rate, profit factor" loading="eager"></div>
   </div>
 </header>
 
@@ -219,7 +220,7 @@ footer a:hover{color:var(--ts);}
     <div class="show">
       <div class="txt">
         <h3>🧠 Ta tête te coûte combien ?</h3>
-        <p>Tague tes erreurs psychologiques (FOMO, SL déplacé, entrée précipitée…) et TrackRecord te dit exactement combien chacune t'a coûté. Le revenge trading est détecté automatiquement.</p>
+        <p>Tague tes erreurs psychologiques (FOMO, SL déplacé, entrée précipitée…) et BAKOU te dit exactement combien chacune t'a coûté. Le revenge trading est détecté automatiquement.</p>
         <ul><li>Score de discipline sur 100</li><li>Coût en $ de chaque erreur</li><li>Détection du tilt après une série de pertes</li></ul>
       </div>
       <img src="assets/shot-mobile.png" alt="Psychologie et discipline sur mobile" loading="lazy" style="max-width:320px;justify-self:center">
@@ -292,7 +293,7 @@ footer a:hover{color:var(--ts);}
       <details><summary>Mes trades sont-ils privés ?</summary><div class="a">Totalement. Chaque compte est isolé : toi seul peux voir tes trades, protégés par ton mot de passe et par des règles de sécurité au niveau de la base de données.</div></details>
       <details><summary>Ça marche avec FTMO / MT5 ?</summary><div class="a">Oui. Tu peux importer ton historique complet depuis un export MT5 ou FTMO en un clic, ou saisir tes trades manuellement en 30 secondes chacun.</div></details>
       <details><summary>Ça marche sur téléphone ?</summary><div class="a">Oui, l'application est entièrement pensée pour mobile : tu peux journaliser et consulter tes stats depuis n'importe où.</div></details>
-      <details><summary>C'est quoi la différence avec un fichier Excel ?</summary><div class="a">Excel te donne des chiffres. TrackRecord te donne des réponses : où est ton edge, combien te coûtent tes erreurs psychologiques, es-tu en train de tilt. Et tout se calcule tout seul.</div></details>
+      <details><summary>C'est quoi la différence avec un fichier Excel ?</summary><div class="a">Excel te donne des chiffres. BAKOU te donne des réponses : où est ton edge, combien te coûtent tes erreurs psychologiques, es-tu en train de tilt. Et tout se calcule tout seul.</div></details>
     </div>
   </div>
 </section>
@@ -309,7 +310,7 @@ footer a:hover{color:var(--ts);}
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
-    <div>© 2026 TrackRecord PRO — Journal de trading professionnel</div>
+    <div>© 2026 BAKOU — Journal de trading professionnel</div>
     <div style="display:flex;gap:18px">
       <a href="#pricing">Tarifs</a>
       <a href="#faq">FAQ</a>

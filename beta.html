@@ -5414,9 +5414,10 @@ async function boot(){
   try{ if(new URLSearchParams(location.search).get('signup')==='1') lgMode('up'); }catch(e){}
   try{
     const {data:{session}}=await sb.auth.getSession();
-    if(session){OWNER_UUID=session.user.id;const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';}
+    if(session){OWNER_UUID=session.user.id;hideLogin();const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';}
   }catch(e){console.warn('auth getSession',e);}
   if(AUTH_REQUIRED&&!OWNER_UUID){showLogin();return;}
+  hideLogin();
   await startApp();
 }
 try{sb.auth.onAuthStateChange((ev,s)=>{if(ev==='SIGNED_OUT'&&AUTH_REQUIRED)location.reload();});}catch(e){}
