@@ -601,6 +601,20 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .cal-foot{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:18px;margin-top:14px;font-size:11.5px;color:var(--ts);}
 .cal-foot b{color:var(--tp);}
 @media(max-width:600px){.cal-cell{min-height:42px;padding:4px 5px;}.cal-cell .cal-pnl{font-size:10px;}.cal-cell .cal-n{display:none;}.bk-score-num{font-size:42px;}}
+/* ════════ TRADE LOG ════════ */
+.tl-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;}
+@media(max-width:900px){.tl-kpis{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:520px){.tl-kpis{grid-template-columns:1fr;}}
+.tl-tbl-wrap{overflow-x:auto;}
+#tl-table{width:100%;border-collapse:collapse;min-width:920px;}
+#tl-table th{text-align:left;font-size:10px;font-weight:600;color:var(--td);letter-spacing:.4px;text-transform:uppercase;padding:10px 12px;border-bottom:1px solid var(--bo);white-space:nowrap;}
+#tl-table td{padding:11px 12px;border-bottom:1px solid var(--bo);white-space:nowrap;vertical-align:middle;}
+#tl-table tbody tr{transition:background .15s;}
+#tl-table tbody tr:hover{background:rgba(37,99,235,.04);}
+.tl-scale{position:relative;width:80px;height:16px;}
+.tl-scale .tl-mid{position:absolute;left:50%;top:1px;bottom:1px;width:1px;background:var(--bo);}
+.tl-scale i{position:absolute;top:4px;height:8px;border-radius:3px;min-width:2px;}
+.tl-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:11.5px;color:var(--ts);}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
@@ -636,6 +650,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
       <button class="tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-title="Dashboard" data-sub="Vue d'ensemble" onclick="showTab('dashboard',this);rdToggleSidebar(false)"><span class="ti">⬡</span> Dashboard</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="journal" data-title="Journal" data-sub="Saisie &amp; historique des trades" onclick="showTab('journal',this);rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tradelog" data-title="Trade Log" data-sub="Journal détaillé de tes trades" onclick="showTab('tradelog',this);rdToggleSidebar(false)"><span class="ti">▤</span> Trade Log</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="analyse" data-title="Analytique" data-sub="Statistiques avancées" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analytique</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="bilan" data-title="Bilan" data-sub="Performance mensuelle &amp; annuelle" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="setups" data-title="Setups" data-sub="Journal mensuel détaillé" onclick="showTab('setups',this);rdToggleSidebar(false)"><span class="ti">⬢</span> Setups</button>
@@ -1101,6 +1116,69 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       </table>
     </div>
     <div id="t-cards" class="trade-cards"></div>
+  </div>
+</div>
+
+<!-- ══ TRADE LOG ══ -->
+<div id="tradelog" class="sec" role="tabpanel" aria-label="Trade Log">
+
+  <!-- KPI -->
+  <div class="tl-kpis">
+    <div class="tz-card">
+      <div class="tz-lbl">Net P&amp;L cumulé <span class="tz-badge" id="tl-count">0</span></div>
+      <div class="tz-body"><div><div class="tz-big" id="tl-pnl">—</div><div class="tz-sub">Sur l'année</div></div></div>
+    </div>
+    <div class="tz-card">
+      <div class="tz-lbl">Profit Factor <span class="tz-i">i</span></div>
+      <div class="tz-body">
+        <div><div class="tz-big" id="tl-pf">—</div><div class="tz-sub">Gains / pertes</div></div>
+        <div class="tz-donut">
+          <svg width="62" height="62" viewBox="0 0 125 125">
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="var(--card2)" stroke-width="12"/>
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="#0f9d6e" stroke-width="12" stroke-dasharray="314.16" stroke-dashoffset="72" stroke-linecap="round" transform="rotate(-90 62.5 62.5)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="tz-card">
+      <div class="tz-lbl">Trade Win % <span class="tz-i">i</span></div>
+      <div class="tz-body">
+        <div>
+          <div class="tz-big" id="tl-wr">—</div>
+          <div class="tz-wl"><span class="tz-pill g" id="tl-w">0</span><span class="tz-pill b" id="tl-be">0</span><span class="tz-pill r" id="tl-l">0</span></div>
+        </div>
+        <div class="tz-donut">
+          <svg width="62" height="62" viewBox="0 0 125 125">
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="var(--card2)" stroke-width="12"/>
+            <circle id="tl-wr-arc" cx="62.5" cy="62.5" r="50" fill="none" stroke="#2563eb" stroke-width="12" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round" transform="rotate(-90 62.5 62.5)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="tz-card">
+      <div class="tz-lbl">Avg win / loss <span class="tz-i">i</span></div>
+      <div class="tz-body" style="display:block">
+        <div class="tz-big" id="tl-awl">—</div>
+        <div class="tz-wlbar"><i style="width:60%;background:var(--grb)"></i><i style="width:40%;background:var(--reb)"></i></div>
+        <div class="tz-sub" id="tl-awl-s">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <div class="ct" style="justify-content:space-between"><span>▤ Trade Log</span><span style="font-size:10px;color:var(--td)" id="tl-year">—</span></div>
+    <div class="tl-tbl-wrap">
+      <table id="tl-table">
+        <thead><tr>
+          <th>Date</th><th>Paire</th><th>Instrument</th><th>Statut</th><th>Dir.</th>
+          <th>Entrée</th><th>Sortie</th><th>Net P&amp;L</th><th>ROI</th><th>R</th>
+          <th>Setups</th><th>BAKOU Scale</th><th>Durée</th><th>★</th>
+        </tr></thead>
+        <tbody id="tl-tbody"></tbody>
+      </table>
+    </div>
+    <div class="tl-foot"><span id="tl-foot">0 trade</span><span style="color:var(--td)">🟢 gain &nbsp;·&nbsp; 🔴 perte — barre proportionnelle au R du trade</span></div>
   </div>
 </div>
 
@@ -2114,6 +2192,7 @@ function showTab(id,el){
   if(id==='analyse')setTimeout(initAnalyse,100);
   if(id==='setups')setTimeout(initSetups,100);
   if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
+  if(id==='tradelog')setTimeout(buildTradeLog,100);
 }
 
 // ── TOAST ──
@@ -2725,6 +2804,7 @@ function updateDash(){
   buildCorePerfAndOptim();
   buildBakouScore();
   buildCalendar();
+  buildTradeLog();
 }
 
 // ── HEATMAP ──
@@ -2833,6 +2913,65 @@ function buildCalendar(){
   grid.innerHTML=html;
   const foot=document.getElementById('cal-foot');
   if(foot)foot.innerHTML=`<span>Jours actifs : <b>${tradeDays}</b></span><span>Trades : <b>${monthTrades}</b></span><span>P&amp;L du mois : <b style="color:${monthPnl>=0?'var(--grb)':'var(--reb)'}">${monthPnl>=0?'+':'-'}$${fmt(monthPnl)}</b></span>`;
+}
+// ══ TRADE LOG ══
+function buildTradeLog(){
+  const rowsEl=document.getElementById('tl-tbody'); if(!rowsEl) return;
+  const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),bes=TS.filter(t=>t.result==='BE'),n=TS.length;
+  const pnl=TS.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);
+  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const pf=gl>0?(gp/gl):(gp>0?'∞':'—');
+  const wr=n?Math.round(wins.length/n*1000)/10:0;
+  const avgWin=wins.length?gp/wins.length:0, avgLoss=losses.length?gl/losses.length:0;
+  const awl=avgLoss>0?(avgWin/avgLoss).toFixed(2):(avgWin>0?'∞':'—');
+  const set=(id,v,col)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(col!==undefined)e.style.color=col;}};
+  set('tl-pnl',n?(pnl>=0?'+':'-')+'$'+Math.abs(Math.round(pnl)).toLocaleString():'—',pnl>=0?'var(--grb)':'var(--reb)');
+  set('tl-count',n);
+  set('tl-pf',typeof pf==='number'?pf.toFixed(2):pf);
+  set('tl-wr',n?wr+'%':'—');
+  set('tl-w',wins.length);set('tl-be',bes.length);set('tl-l',losses.length);
+  set('tl-awl',awl);
+  set('tl-awl-s',n?'moy gain +$'+Math.round(avgWin)+' / perte -$'+Math.round(avgLoss):'—');
+  set('tl-year',GLOBAL_YEAR);
+  const arc=document.getElementById('tl-wr-arc'); if(arc){const c=314.16;arc.setAttribute('stroke-dashoffset',c-(wr/100)*c);}
+  if(!n){ rowsEl.innerHTML='<tr><td colspan="14" style="text-align:center;padding:28px;color:var(--td)">Aucun trade cette année — ajoute-en dans le Journal</td></tr>'; set('tl-foot','0 trade'); return; }
+  const maxR=Math.max(1,...TS.map(t=>Math.abs(computeActualR(t))));
+  let html='';
+  [...TS].reverse().forEach(t=>{
+    const r=computeActualR(t);
+    const isW=t.result==='WIN',isL=t.result==='LOSS';
+    const stCol=isW?'var(--grb)':isL?'var(--reb)':'var(--gb)';
+    const stBg=isW?'rgba(15,157,110,.12)':isL?'rgba(224,64,90,.12)':'rgba(217,119,6,.12)';
+    const stTxt=isW?'WIN':isL?'LOSS':'BE';
+    const pv=parseFloat(t.pnl_amt||0);
+    const pnlStr=(pv>=0?'+':'-')+'$'+Math.abs(pv).toFixed(2);
+    const roiv=parseFloat(t.pnl_pct);
+    const roi=t.pnl_pct!=null&&!isNaN(roiv)?(roiv>=0?'+':'')+roiv.toFixed(2)+'%':'—';
+    const dt=t.created_at?new Date(t.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'—';
+    const setups=(JSON.parse(t.strats||'[]')).slice(0,2).join(', ')||'—';
+    const w=Math.min(Math.abs(r)/maxR*50,50);
+    const bar=r>=0?`<i style="left:50%;width:${w}%;background:var(--grb)"></i>`:`<i style="left:${50-w}%;width:${w}%;background:var(--reb)"></i>`;
+    html+=`<tr>
+      <td style="font-size:11px;color:var(--ts)">${dt}</td>
+      <td><span class="pb ${pbc(t.pair)}">${t.pair}</span></td>
+      <td style="font-size:10px;color:var(--td)">${t.cat}</td>
+      <td><span style="font-size:9px;font-weight:700;padding:2px 10px;border-radius:20px;background:${stBg};color:${stCol}">${stTxt}</span></td>
+      <td style="color:${t.dir==='LONG'?'var(--grb)':'var(--reb)'};font-weight:700;font-size:11px">${t.dir==='LONG'?'↑ L':'↓ S'}</td>
+      <td style="font-family:'Share Tech Mono',monospace;font-size:10px">${t.entry_time||'—'}</td>
+      <td style="font-family:'Share Tech Mono',monospace;font-size:10px">${t.exit_time||'—'}</td>
+      <td style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:${pv>=0?'var(--grb)':'var(--reb)'}">${pnlStr}</td>
+      <td style="font-size:11px;color:${(roiv||0)>=0?'var(--grb)':'var(--reb)'}">${roi}</td>
+      <td style="font-family:'Share Tech Mono',monospace;font-size:11px;color:${r>=0?'var(--grb)':'var(--reb)'}">${r>=0?'+':''}${r.toFixed(2)}R</td>
+      <td style="font-size:10px;color:var(--bb);max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${setups}</td>
+      <td><div class="tl-scale"><span class="tl-mid"></span>${bar}</div></td>
+      <td style="font-size:10px;color:var(--ts)">${t.duration||'—'}</td>
+      <td style="color:var(--gb);font-size:11px">${t.star?'★'.repeat(t.star):'—'}</td>
+    </tr>`;
+  });
+  rowsEl.innerHTML=html;
+  set('tl-foot',n+' trade'+(n>1?'s':''));
 }
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
