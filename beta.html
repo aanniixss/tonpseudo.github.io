@@ -656,6 +656,52 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 @media(max-width:1100px){.rep-cal-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:800px){.rep-cal-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.rep-cal-grid{grid-template-columns:1fr;}}
+/* ════════ NOTEBOOK ════════ */
+.nb-wrap{display:grid;grid-template-columns:210px 270px 1fr;gap:14px;height:calc(100vh - 150px);min-height:520px;}
+.nb-side,.nb-list-col,.nb-editor{background:var(--card);border:1px solid var(--bo);border-radius:14px;box-shadow:var(--glow);overflow:hidden;display:flex;flex-direction:column;}
+.nb-side{padding:12px;overflow-y:auto;}
+.nb-addfolder,.nb-newnote{width:100%;box-sizing:border-box;padding:9px;border-radius:10px;border:1px solid rgba(37,99,235,.3);background:rgba(37,99,235,.08);color:#1d4ed8;font-weight:600;font-size:12px;cursor:pointer;margin-bottom:12px;}
+.nb-addfolder:hover,.nb-newnote:hover{background:rgba(37,99,235,.15);}
+.nb-cap{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);font-weight:700;margin:8px 4px 6px;}
+.nb-folder{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:9px;cursor:pointer;font-size:12.5px;color:var(--ts);}
+.nb-folder:hover{background:var(--card2);}
+.nb-folder.active{background:rgba(37,99,235,.1);color:#1d4ed8;font-weight:600;}
+.nb-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0;}
+.nb-fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nb-count{font-size:10px;color:var(--td);}
+.nb-fdel{background:none;border:none;color:var(--td);cursor:pointer;font-size:10px;opacity:0;flex-shrink:0;}
+.nb-folder:hover .nb-fdel{opacity:1;}
+.nb-tagitem{display:flex;justify-content:space-between;padding:5px 9px;border-radius:8px;cursor:pointer;font-size:11.5px;color:var(--ts);}
+.nb-tagitem:hover{background:var(--card2);} .nb-tagitem.active{background:rgba(37,99,235,.1);color:#1d4ed8;}
+.nb-muted{font-size:11px;color:var(--td);padding:4px;}
+.nb-list-col{padding:12px;}
+.nb-search{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--bo);border-radius:9px;font-size:12px;margin-bottom:10px;background:#fff !important;}
+.nb-list{overflow-y:auto;flex:1;}
+.nb-item{padding:11px 12px;border-radius:10px;cursor:pointer;border:1px solid transparent;margin-bottom:4px;}
+.nb-item:hover{background:var(--card2);}
+.nb-item.active{background:rgba(37,99,235,.08);border-color:rgba(37,99,235,.25);}
+.nb-item-t{font-size:13px;font-weight:600;color:var(--tp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nb-item-d{font-size:10px;color:var(--td);margin-top:2px;}
+.nb-editor{padding:20px 22px;overflow-y:auto;}
+.nb-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:14px;text-align:center;}
+.nb-title{width:100%;box-sizing:border-box;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--tp);background:transparent;margin-bottom:6px;}
+.nb-meta{font-size:10px;color:var(--td);margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.nb-meta select{font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--bo);background:#fff;color:var(--tp);}
+.nb-templates{font-size:11px;color:var(--td);margin-bottom:12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.nb-templates button{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--bo);background:#fff;color:var(--ts);cursor:pointer;}
+.nb-templates button:hover{border-color:#2563eb;color:#1d4ed8;}
+.nb-tags-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.nb-tagchip{display:inline-flex;align-items:center;gap:5px;background:rgba(37,99,235,.1);color:#1d4ed8;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;}
+.nb-tagchip button{background:none;border:none;color:#1d4ed8;cursor:pointer;font-size:10px;}
+.nb-tag-input{border:1px dashed var(--bo);border-radius:20px;padding:3px 10px;font-size:11px;outline:none;background:transparent;width:80px;}
+.nb-toolbar{display:flex;gap:2px;flex-wrap:wrap;border:1px solid var(--bo);border-radius:10px;padding:5px;margin-bottom:10px;background:var(--card2);}
+.nb-toolbar button{min-width:30px;height:28px;border:none;background:none;border-radius:6px;cursor:pointer;color:var(--ts);font-size:13px;}
+.nb-toolbar button:hover{background:rgba(37,99,235,.1);color:#1d4ed8;}
+.nb-body{flex:1;min-height:260px;outline:none;font-size:14px;line-height:1.7;color:var(--tp);}
+.nb-body:empty:before{content:'Écris ici...';color:var(--td);}
+.nb-body h3{font-size:16px;margin:8px 0 4px;} .nb-body p{margin:2px 0;} .nb-body ul,.nb-body ol{margin:4px 0 4px 22px;}
+.nb-del-btn{margin-left:auto;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:#c72c46;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;}
+@media(max-width:900px){.nb-wrap{grid-template-columns:1fr;height:auto;}.nb-side,.nb-list-col{height:auto;max-height:320px;}.nb-body{min-height:280px;}}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
@@ -693,6 +739,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <button class="tab" role="tab" aria-selected="false" aria-controls="journal" data-title="Journal" data-sub="Saisie &amp; historique des trades" onclick="showTab('journal',this);rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="tradelog" data-title="Trade Log" data-sub="Journal détaillé de tes trades" onclick="showTab('tradelog',this);rdToggleSidebar(false)"><span class="ti">▤</span> Trade Log</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="report" data-title="Reports" data-sub="Rapports détaillés de performance" onclick="showTab('report',this);rdToggleSidebar(false)"><span class="ti">📑</span> Reports</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="notebook" data-title="Notebook" data-sub="Notes, plans &amp; recaps" onclick="showTab('notebook',this);rdToggleSidebar(false)"><span class="ti">📓</span> Notebook</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="analyse" data-title="Analytique" data-sub="Statistiques avancées" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analytique</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="bilan" data-title="Bilan" data-sub="Performance mensuelle &amp; annuelle" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="setups" data-title="Setups" data-sub="Journal mensuel détaillé" onclick="showTab('setups',this);rdToggleSidebar(false)"><span class="ti">⬢</span> Setups</button>
@@ -1359,6 +1406,44 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       </div>
       <div class="rep-cal-grid" id="rep-cal-grid"></div>
       <div style="display:flex;justify-content:flex-end;gap:16px;margin-top:12px;font-size:11px;color:var(--ts)"><span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(15,157,110,.4);vertical-align:middle"></span> jour gagnant</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(224,64,90,.4);vertical-align:middle"></span> jour perdant</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NOTEBOOK ══ -->
+<div id="notebook" class="sec" role="tabpanel" aria-label="Notebook">
+  <div class="nb-wrap">
+    <div class="nb-side">
+      <button class="nb-addfolder" onclick="nbNewFolder()">📁 Nouveau dossier</button>
+      <div class="nb-cap">Dossiers</div>
+      <div id="nb-folders"></div>
+      <div class="nb-cap">Tags</div>
+      <div id="nb-tags"></div>
+    </div>
+    <div class="nb-list-col">
+      <button class="nb-newnote" onclick="nbNewNote()">📝 Nouvelle note</button>
+      <input class="nb-search" id="nb-search" placeholder="🔎 Rechercher une note..." oninput="nbSearch(this.value)">
+      <div id="nb-list" class="nb-list"></div>
+    </div>
+    <div class="nb-editor">
+      <div id="nb-empty" class="nb-empty">Sélectionne une note ou clique « Nouvelle note » ✍️</div>
+      <div id="nb-edit-wrap" style="display:none;flex-direction:column;flex:1">
+        <input id="nb-title" class="nb-title" placeholder="Titre de la note" oninput="nbTitleChange(this.value)">
+        <div class="nb-meta"><span id="nb-meta"></span><select id="nb-folder-sel" onchange="nbMoveFolder(this.value)" aria-label="Dossier"></select><button class="nb-del-btn" onclick="nbDelNote()">🗑 Supprimer</button></div>
+        <div class="nb-templates"><span>Templates :</span><button onclick="nbApplyTemplate('Plan de journée')">Plan de journée</button><button onclick="nbApplyTemplate('Recap de journée')">Recap de journée</button><button onclick="nbApplyTemplate('Analyse de trade')">Analyse de trade</button></div>
+        <div class="nb-tags-row" id="nb-note-tags"></div>
+        <div class="nb-toolbar">
+          <button onclick="nbCmd('bold')" title="Gras"><b>B</b></button>
+          <button onclick="nbCmd('italic')" title="Italique"><i>I</i></button>
+          <button onclick="nbCmd('underline')" title="Souligné"><u>U</u></button>
+          <button onclick="nbFormat('h3')" title="Titre">H</button>
+          <button onclick="nbCmd('insertUnorderedList')" title="Liste à puces">•</button>
+          <button onclick="nbCmd('insertOrderedList')" title="Liste numérotée">1.</button>
+          <button onclick="nbLink()" title="Lien">🔗</button>
+          <button onclick="nbCmd('removeFormat')" title="Effacer le format">⌫</button>
+        </div>
+        <div id="nb-body" class="nb-body" contenteditable="true" oninput="nbBodyChange()"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -2375,6 +2460,7 @@ function showTab(id,el){
   if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
   if(id==='tradelog')setTimeout(buildTradeLog,100);
   if(id==='report')setTimeout(buildReport,100);
+  if(id==='notebook')setTimeout(initNotebook,80);
 }
 
 // ── TOAST ──
@@ -3469,6 +3555,71 @@ function buildRepWinsLoss(){
     {label:'Perdants',data:[Math.round(avgL),Math.round(totL)],backgroundColor:'rgba(224,64,90,0.8)',borderRadius:4}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5b6478',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+' : $'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
+// ══════════ NOTEBOOK ══════════
+var NB_FOLDERS=[], NB_NOTES=[], NB_CUR=null, NB_FILTER={folderId:null,tag:null,q:''};
+var NB_TEMPLATES={
+ 'Plan de journée':"<h3>🎯 Plan de journée</h3><p><b>Biais du jour :</b> </p><p><b>Niveaux clés :</b> </p><p><b>Setups à surveiller :</b> </p><p><b>Gestion du risque :</b> </p>",
+ 'Recap de journée':"<h3>📓 Recap de journée</h3><p><b>Ce que j'ai bien fait :</b> </p><p><b>Erreurs :</b> </p><p><b>À améliorer :</b> </p><p><b>Note /10 :</b> </p>",
+ 'Analyse de trade':"<h3>🔍 Analyse de trade</h3><p><b>Paire / Setup :</b> </p><p><b>Entrée / Sortie :</b> </p><p><b>Confluences :</b> </p><p><b>Émotions :</b> </p><p><b>Leçon apprise :</b> </p>"
+};
+function nbEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function nbEscA(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function nbLsF(){return lsKey('bakou_nb_folders');}
+function nbLsN(){return lsKey('bakou_nb_notes');}
+function nbDefaultFolders(){return [{id:'f_notes',name:'Notes de trade',color:'#3b82f6'},{id:'f_journal',name:'Journal quotidien',color:'#10b981'},{id:'f_plan',name:'Plan de trading',color:'#f59e0b'},{id:'f_recap',name:'Sessions Recap',color:'#ef4444'}];}
+function nbSave(){ try{ localStorage.setItem(nbLsF(),JSON.stringify(NB_FOLDERS)); localStorage.setItem(nbLsN(),JSON.stringify(NB_NOTES)); }catch(e){} }
+function nbLoad(){ try{ NB_FOLDERS=JSON.parse(localStorage.getItem(nbLsF())||'null')||nbDefaultFolders(); }catch(e){NB_FOLDERS=nbDefaultFolders();} try{ NB_NOTES=JSON.parse(localStorage.getItem(nbLsN())||'[]')||[]; }catch(e){NB_NOTES=[];} }
+function nbUID(){return 'n'+Date.now().toString(36)+Math.floor(Math.random()*1000);}
+function initNotebook(){ nbLoad(); nbRenderFolders(); nbRenderList(); if(NB_CUR&&NB_NOTES.some(n=>n.id===NB_CUR)) nbOpen(NB_CUR); else { const f=nbFiltered()[0]; if(f)nbOpen(f.id); else nbShowEmpty(); } }
+function nbFiltered(){
+  let arr=NB_NOTES.slice();
+  if(NB_FILTER.folderId)arr=arr.filter(n=>n.folderId===NB_FILTER.folderId);
+  if(NB_FILTER.tag)arr=arr.filter(n=>(n.tags||[]).indexOf(NB_FILTER.tag)>=0);
+  if(NB_FILTER.q){ const q=NB_FILTER.q.toLowerCase(); arr=arr.filter(n=>(n.title||'').toLowerCase().indexOf(q)>=0||(n.html||'').toLowerCase().indexOf(q)>=0); }
+  arr.sort((a,b)=>(b.updated||0)-(a.updated||0));
+  return arr;
+}
+function nbRenderFolders(){
+  const fc=document.getElementById('nb-folders'); if(!fc)return;
+  const cnt=id=>NB_NOTES.filter(n=>n.folderId===id).length;
+  let h=`<div class="nb-folder ${!NB_FILTER.folderId&&!NB_FILTER.tag?'active':''}" onclick="nbSelFolder(null)"><span class="nb-dot" style="background:#8a93a8"></span><span class="nb-fname">Toutes les notes</span><span class="nb-count">${NB_NOTES.length}</span></div>`;
+  NB_FOLDERS.forEach(f=>{ h+=`<div class="nb-folder ${NB_FILTER.folderId===f.id?'active':''}" onclick="nbSelFolder('${f.id}')"><span class="nb-dot" style="background:${f.color}"></span><span class="nb-fname">${nbEsc(f.name)}</span><span class="nb-count">${cnt(f.id)}</span><button class="nb-fdel" onclick="event.stopPropagation();nbDelFolder('${f.id}')" title="Supprimer le dossier">✕</button></div>`; });
+  fc.innerHTML=h;
+  const tc=document.getElementById('nb-tags'); if(tc){ const tags={}; NB_NOTES.forEach(n=>(n.tags||[]).forEach(t=>tags[t]=(tags[t]||0)+1)); const keys=Object.keys(tags); tc.innerHTML=keys.length?keys.map(t=>`<div class="nb-tagitem ${NB_FILTER.tag===t?'active':''}" onclick="nbSelTag('${nbEscA(t)}')"><span>${nbEsc(t)}</span><span class="nb-count">${tags[t]}</span></div>`).join(''):'<div class="nb-muted">Aucun tag</div>'; }
+}
+function nbRenderList(){
+  const lc=document.getElementById('nb-list'); if(!lc)return;
+  const arr=nbFiltered();
+  if(!arr.length){ lc.innerHTML='<div class="nb-muted" style="padding:16px">Aucune note ici. Clique « Nouvelle note ».</div>'; return; }
+  lc.innerHTML=arr.map(n=>{ const d=new Date(n.updated||n.created||Date.now()); return `<div class="nb-item ${NB_CUR===n.id?'active':''}" onclick="nbOpen('${n.id}')"><div class="nb-item-t">${nbEsc(n.title||'Sans titre')}</div><div class="nb-item-d">${d.toLocaleDateString('fr-FR')}</div></div>`; }).join('');
+}
+function nbSelFolder(id){ NB_FILTER.folderId=id; NB_FILTER.tag=null; nbRenderFolders(); nbRenderList(); }
+function nbSelTag(t){ NB_FILTER.tag=(NB_FILTER.tag===t?null:t); NB_FILTER.folderId=null; nbRenderFolders(); nbRenderList(); }
+function nbSearch(v){ NB_FILTER.q=v; nbRenderList(); }
+function nbNewFolder(){ const name=prompt('Nom du dossier :'); if(!name)return; const colors=['#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#6366f1']; NB_FOLDERS.push({id:'f'+nbUID(),name:name.trim(),color:colors[NB_FOLDERS.length%colors.length]}); nbSave(); nbRenderFolders(); }
+function nbDelFolder(id){ if(!confirm('Supprimer ce dossier ? Les notes seront déplacées vers « Toutes les notes ».'))return; NB_FOLDERS=NB_FOLDERS.filter(f=>f.id!==id); NB_NOTES.forEach(n=>{ if(n.folderId===id)n.folderId=null; }); if(NB_FILTER.folderId===id)NB_FILTER.folderId=null; nbSave(); nbRenderFolders(); nbRenderList(); if(NB_CUR)nbRenderFolderSel(); }
+function nbNewNote(){ const n={id:nbUID(),title:'',folderId:NB_FILTER.folderId||null,tags:[],html:'',created:Date.now(),updated:Date.now()}; NB_NOTES.unshift(n); nbSave(); nbRenderFolders(); nbOpen(n.id); nbRenderList(); setTimeout(()=>{const t=document.getElementById('nb-title'); if(t)t.focus();},60); }
+function nbShowEmpty(){ NB_CUR=null; const e=document.getElementById('nb-empty'),w=document.getElementById('nb-edit-wrap'); if(e)e.style.display='flex'; if(w)w.style.display='none'; }
+function nbCur(){ return NB_NOTES.find(x=>x.id===NB_CUR); }
+function nbOpen(id){ const n=NB_NOTES.find(x=>x.id===id); if(!n)return; NB_CUR=id; const e=document.getElementById('nb-empty'),w=document.getElementById('nb-edit-wrap'); if(e)e.style.display='none'; if(w)w.style.display='flex';
+  const ti=document.getElementById('nb-title'); if(ti)ti.value=n.title||'';
+  const bd=document.getElementById('nb-body'); if(bd)bd.innerHTML=n.html||'';
+  const meta=document.getElementById('nb-meta'); if(meta)meta.textContent='Modifié le '+new Date(n.updated||n.created).toLocaleString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  nbRenderFolderSel(); nbRenderNoteTags(); nbRenderList();
+}
+function nbRenderFolderSel(){ const s=document.getElementById('nb-folder-sel'); const n=nbCur(); if(!s||!n)return; let h='<option value="">📁 Sans dossier</option>'; NB_FOLDERS.forEach(f=>h+=`<option value="${f.id}" ${n.folderId===f.id?'selected':''}>${nbEsc(f.name)}</option>`); s.innerHTML=h; }
+function nbTouch(){ const n=nbCur(); if(n)n.updated=Date.now(); }
+function nbTitleChange(v){ const n=nbCur(); if(!n)return; n.title=v; nbTouch(); nbSave(); nbRenderList(); }
+function nbBodyChange(){ const n=nbCur(); if(!n)return; const b=document.getElementById('nb-body'); n.html=b?b.innerHTML:''; nbTouch(); nbSave(); }
+function nbCmd(c){ document.execCommand(c,false,null); const b=document.getElementById('nb-body'); if(b)b.focus(); nbBodyChange(); }
+function nbFormat(tag){ document.execCommand('formatBlock',false,tag); nbBodyChange(); }
+function nbLink(){ const url=prompt('URL du lien :'); if(url){ document.execCommand('createLink',false,url); nbBodyChange(); } }
+function nbApplyTemplate(name){ const t=NB_TEMPLATES[name]; if(!t)return; const b=document.getElementById('nb-body'); if(!b)return; b.innerHTML=(b.innerHTML&&b.textContent.trim())?(b.innerHTML+t):t; nbBodyChange(); }
+function nbDelNote(){ if(!NB_CUR)return; if(!confirm('Supprimer définitivement cette note ?'))return; NB_NOTES=NB_NOTES.filter(n=>n.id!==NB_CUR); NB_CUR=null; nbSave(); nbRenderFolders(); nbRenderList(); nbShowEmpty(); }
+function nbMoveFolder(fid){ const n=nbCur(); if(!n)return; n.folderId=fid||null; nbTouch(); nbSave(); nbRenderFolders(); nbRenderList(); }
+function nbRenderNoteTags(){ const n=nbCur(); const c=document.getElementById('nb-note-tags'); if(!c||!n)return; c.innerHTML=(n.tags||[]).map(t=>`<span class="nb-tagchip">${nbEsc(t)}<button onclick="nbRemoveTag('${nbEscA(t)}')" title="Retirer">✕</button></span>`).join('')+`<input class="nb-tag-input" placeholder="+ tag" onkeydown="if(event.key==='Enter'){event.preventDefault();nbAddTag(this.value);this.value='';}">`; }
+function nbAddTag(v){ v=(v||'').trim(); if(!v)return; const n=nbCur(); if(!n)return; if(!n.tags)n.tags=[]; if(n.tags.indexOf(v)<0)n.tags.push(v); nbTouch(); nbSave(); nbRenderNoteTags(); nbRenderFolders(); }
+function nbRemoveTag(t){ const n=nbCur(); if(!n)return; n.tags=(n.tags||[]).filter(x=>x!==t); nbTouch(); nbSave(); nbRenderNoteTags(); nbRenderFolders(); }
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
   DC('day');DC('sess');DC('close');DC('hour');
