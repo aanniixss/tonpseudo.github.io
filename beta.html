@@ -541,11 +541,67 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .lg-tab.active{border-color:#2563eb !important;background:#eaf1ff !important;color:#1d4ed8 !important;}
 .hm-c{color:#fff;}
 .toast{background:#1e2333 !important;color:#1e2333 !important;}
+/* Logo image (remplace le monogramme BK par le logo bleu) */
+.side-brand .logo-i,.logo-i{background:#0b1020 !important;padding:0 !important;overflow:hidden;box-shadow:0 6px 18px -8px rgba(37,99,235,.55) !important;}
+.logo-i img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
+.side-brand .logo-i{width:46px !important;height:46px !important;border-radius:13px !important;}
+.lg-logo{background:#0b1020 !important;padding:0;overflow:hidden;}
+.lg-logo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
+/* ════════ DASHBOARD — RANGÉE KPI STYLE TRADEZELLA ════════ */
+.tz-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:16px;}
+.tz-card{background:var(--card);border:1px solid var(--bo);border-radius:16px;padding:15px 17px;box-shadow:var(--glow);display:flex;flex-direction:column;min-height:116px;transition:border-color .2s,box-shadow .2s;}
+.tz-card:hover{border-color:rgba(37,99,235,.28);box-shadow:0 10px 24px -16px rgba(37,99,235,.5);}
+.tz-lbl{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--td);letter-spacing:.1px;margin-bottom:2px;}
+.tz-i{width:14px;height:14px;border-radius:50%;border:1px solid var(--bo);color:var(--td);font-size:9px;font-style:italic;display:inline-flex;align-items:center;justify-content:center;line-height:1;}
+.tz-body{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;}
+.tz-big{font-family:'Space Grotesk','Inter',sans-serif !important;font-size:28px;font-weight:700;color:var(--tp);line-height:1.05;letter-spacing:-.5px;}
+.tz-sub{font-size:11px;color:var(--ts);margin-top:4px;}
+.tz-badge{font-size:10px;font-weight:700;color:#1d4ed8;background:#eaf1ff;border:1px solid rgba(37,99,235,.25);border-radius:20px;padding:1px 8px;margin-left:auto;}
+.tz-donut{position:relative;width:62px;height:62px;flex-shrink:0;}
+.tz-wl{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;}
+.tz-pill{font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;line-height:1.4;}
+.tz-pill.g{background:rgba(15,157,110,.12);color:var(--grb);}
+.tz-pill.b{background:rgba(217,119,6,.14);color:var(--gb);}
+.tz-pill.r{background:rgba(224,64,90,.12);color:var(--reb);}
+.tz-wlbar{display:flex;height:7px;border-radius:5px;overflow:hidden;margin:9px 0 5px;background:var(--card2);}
+.tz-wlbar i{display:block;height:100%;}
+.tz-chips{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0;}
+@media(max-width:1150px){.tz-kpis{grid-template-columns:repeat(3,1fr);}.tz-chips{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:760px){.tz-kpis{grid-template-columns:repeat(2,1fr);}.tz-chips{grid-template-columns:repeat(2,1fr);}.tz-big{font-size:23px;}}
+/* ════════ BAKOU SCORE (radar) ════════ */
+.bk-score-wrap{display:flex;gap:26px;align-items:center;flex-wrap:wrap;padding-top:6px;}
+.bk-radar{flex:1 1 300px;min-width:250px;max-width:400px;height:300px;position:relative;margin:0 auto;}
+.bk-score-side{flex:1 1 220px;min-width:210px;}
+.bk-score-lbl{font-size:11px;color:var(--td);letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.bk-score-num{font-family:'Space Grotesk',sans-serif !important;font-size:52px;font-weight:700;color:var(--tp);line-height:1;margin:4px 0 16px;letter-spacing:-1px;}
+.bk-score-bar{position:relative;height:10px;border-radius:6px;background:linear-gradient(90deg,#e0405a,#f59e0b,#fbbf24,#34d399,#0f9d6e);}
+.bk-score-dot{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--tp);transform:translate(-50%,-50%);transition:left .7s cubic-bezier(.4,0,.2,1);left:0;box-shadow:0 2px 6px rgba(30,35,51,.3);}
+.bk-score-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-top:6px;}
+.bk-score-legend{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:7px 16px;}
+.bk-lg{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;border-bottom:1px dashed var(--bo);padding-bottom:5px;}
+.bk-lg .bk-lg-k{color:var(--ts);}
+.bk-lg .bk-lg-v{font-weight:700;color:var(--tp);font-variant-numeric:tabular-nums;}
+/* ════════ CALENDRIER P&L ════════ */
+.cal-nav{width:27px;height:27px;border-radius:8px;border:1px solid var(--bo);background:var(--card2);color:var(--be);cursor:pointer;font-size:15px;line-height:1;transition:border-color .2s,background .2s;}
+.cal-nav:hover{border-color:var(--be);background:rgba(37,99,235,.08);}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:16px 0 6px;}
+.cal-dow span{font-size:10px;color:var(--td);text-align:center;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.cal-cell{aspect-ratio:1.1;border:1px solid var(--bo);border-radius:10px;padding:6px 7px;background:var(--card2);min-height:54px;display:flex;flex-direction:column;overflow:hidden;}
+.cal-cell.empty{background:transparent;border-color:transparent;}
+.cal-cell .cal-d{font-size:10px;color:var(--td);text-align:right;line-height:1;}
+.cal-cell.win{background:rgba(15,157,110,.13);border-color:rgba(15,157,110,.32);}
+.cal-cell.loss{background:rgba(224,64,90,.11);border-color:rgba(224,64,90,.32);}
+.cal-cell .cal-pnl{font-family:'Space Grotesk',sans-serif !important;font-size:12.5px;font-weight:700;margin-top:auto;line-height:1.1;}
+.cal-cell .cal-n{font-size:8.5px;color:var(--ts);margin-top:1px;}
+.cal-foot{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:18px;margin-top:14px;font-size:11.5px;color:var(--ts);}
+.cal-foot b{color:var(--tp);}
+@media(max-width:600px){.cal-cell{min-height:42px;padding:4px 5px;}.cal-cell .cal-pnl{font-size:10px;}.cal-cell .cal-n{display:none;}.bk-score-num{font-size:42px;}}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
   <div class="lg-box">
-    <div class="lg-logo">BK</div>
+    <div class="lg-logo"><img src="./assets/logo-bakou.png" alt="BAKOU" loading="eager"></div>
     <div class="lg-title">BAK<span>OU</span></div>
     <div class="lg-sub" id="lg-sub">Ton journal de trading professionnel</div>
     <div style="display:flex;gap:6px;margin-bottom:16px" role="tablist" aria-label="Connexion ou inscription">
@@ -569,7 +625,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   <!-- SIDEBAR -->
   <aside class="sidebar" id="rd-sidebar">
     <div class="side-brand">
-      <div class="logo-i">BK</div>
+      <div class="logo-i"><img src="./assets/logo-bakou.png" alt="BAKOU" loading="eager"></div>
       <div><div class="logo-t">BAK<span>OU</span></div><div class="logo-s">Trading Journal</div></div>
     </div>
     <div class="side-cap">Navigation</div>
@@ -644,61 +700,86 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div id="recovery-diag" style="font-size:9px;color:var(--td);margin-top:6px;font-family:monospace"></div>
   </div>
 
-  <!-- ░░ BENTO HERO ░░ -->
-  <div class="bento">
-    <!-- CAPITAL HERO -->
-    <div class="b-card b-hero">
-      <div class="b-hero-top">
+  <!-- ░░ RANGÉE KPI — style TradeZella ░░ -->
+  <div class="tz-kpis">
+    <!-- Net P&L -->
+    <div class="tz-card">
+      <div class="tz-lbl">Net P&amp;L <span class="tz-badge" id="st">0</span></div>
+      <div class="tz-body"><div><div class="tz-big" id="spnl">—</div><div class="tz-sub">Résultat net cumulé</div></div></div>
+    </div>
+    <!-- Trade Win % -->
+    <div class="tz-card">
+      <div class="tz-lbl">Trade Win % <span class="tz-i">i</span></div>
+      <div class="tz-body">
         <div>
-          <div class="b-eyebrow">◈ Capital actuel</div>
-          <div class="b-bignum kv" id="k-cap">—</div>
-          <div class="b-sub" id="k-cap-s">—</div>
+          <div class="tz-big" id="wr-d">—</div>
+          <div class="tz-wl"><span class="tz-pill g" id="sw">0</span><span class="tz-pill b" id="sbe">0</span><span class="tz-pill r" id="sl">0</span></div>
         </div>
-        <div class="b-hero-side">
-          <div class="b-mini">Capital initial<b class="kv" id="k-init">—</b></div>
-          <button class="b-set" onclick="openModal()">⚙ Définir le capital</button>
+        <div class="tz-donut">
+          <svg width="62" height="62" viewBox="0 0 125 125">
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="var(--card2)" stroke-width="12"/>
+            <circle id="wr-arc" cx="62.5" cy="62.5" r="50" fill="none" stroke="url(#wg)" stroke-width="12" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round" transform="rotate(-90 62.5 62.5)"/>
+            <defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0f9d6e"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
+          </svg>
         </div>
-      </div>
-      <div class="b-chartwrap">
-        <div id="no-cap-msg" style="text-align:center;padding:24px;color:var(--td);margin:auto"><div style="font-size:30px">📈</div><div style="font-size:11px;letter-spacing:1px;margin-top:8px">Définis ton capital et ajoute des trades</div></div>
-        <canvas id="capChart" height="120" style="display:none"></canvas>
       </div>
     </div>
-
-    <!-- WIN RATE DONUT -->
-    <div class="b-card b-wr">
-      <div class="b-eyebrow">◈ Performance globale</div>
-      <div class="wr-wrap">
-        <div class="wrc">
-          <svg width="125" height="125" viewBox="0 0 125 125">
-            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="rgba(43,43,61,0.8)" stroke-width="8"/>
-            <circle id="wr-arc" cx="62.5" cy="62.5" r="50" fill="none" stroke="url(#wg)" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round"/>
-            <defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#1e40af"/></linearGradient></defs>
+    <!-- Profit Factor -->
+    <div class="tz-card">
+      <div class="tz-lbl">Profit Factor <span class="tz-i">i</span></div>
+      <div class="tz-body">
+        <div><div class="tz-big" id="k-pf">—</div><div class="tz-sub" id="k-pf-s">RRR —</div></div>
+        <div class="tz-donut">
+          <svg width="62" height="62" viewBox="0 0 125 125">
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="var(--card2)" stroke-width="12"/>
+            <circle cx="62.5" cy="62.5" r="50" fill="none" stroke="#0f9d6e" stroke-width="12" stroke-dasharray="314.16" stroke-dashoffset="72" stroke-linecap="round" transform="rotate(-90 62.5 62.5)"/>
           </svg>
-          <div class="wrc-ctr"><div class="wr-pct" id="wr-d">—</div><div class="wr-lbl">Win Rate</div></div>
         </div>
-        <div class="wr-stats">
-          <div class="wr-r"><span class="wr-k">✓ Gagnants</span><span class="wr-v g" id="sw">0</span></div>
-          <div class="wr-r"><span class="wr-k">✗ Perdants</span><span class="wr-v r" id="sl">0</span></div>
-          <div class="wr-r"><span class="wr-k">◈ Break Even</span><span class="wr-v" style="color:var(--gb)" id="sbe">0</span></div>
-          <div class="wr-r"><span class="wr-k">∑ Total</span><span class="wr-v b" id="st">0</span></div>
-          <div class="wr-r"><span class="wr-k">⊕ P&L Net</span><span class="wr-v g" id="spnl">—</span></div>
-          <div class="wr-r"><span class="wr-k">⚡ Streak Max</span><span class="wr-v g" id="sstr">0</span></div>
-        </div>
+      </div>
+    </div>
+    <!-- Max Drawdown -->
+    <div class="tz-card">
+      <div class="tz-lbl">Max Drawdown <span class="tz-i">i</span></div>
+      <div class="tz-body"><div><div class="tz-big" id="k-dd" style="color:var(--reb)">—</div><div class="tz-sub" id="k-dd-s">Pic → creux</div></div></div>
+    </div>
+    <!-- Espérance / trade -->
+    <div class="tz-card">
+      <div class="tz-lbl">Espérance / trade <span class="tz-i">i</span></div>
+      <div class="tz-body" style="display:block">
+        <div class="tz-big" id="k-exp">—</div>
+        <div class="tz-wlbar"><i style="width:62%;background:var(--grb)"></i><i style="width:38%;background:var(--reb)"></i></div>
+        <div class="tz-sub" id="k-exp-s">R moyen —</div>
       </div>
     </div>
   </div>
 
-  <!-- ░░ STAT CHIPS ░░ -->
-  <div class="chips">
+  <!-- ░░ CAPITAL / P&L CUMULÉ ░░ -->
+  <div class="b-card b-hero" style="margin-bottom:16px">
+    <div class="b-hero-top">
+      <div>
+        <div class="b-eyebrow">◈ Capital actuel</div>
+        <div class="b-bignum kv" id="k-cap">—</div>
+        <div class="b-sub" id="k-cap-s">—</div>
+      </div>
+      <div class="b-hero-side">
+        <div class="b-mini">Capital initial<b class="kv" id="k-init">—</b></div>
+        <button class="b-set" onclick="openModal()">⚙ Définir le capital</button>
+      </div>
+    </div>
+    <div class="b-chartwrap">
+      <div id="no-cap-msg" style="text-align:center;padding:24px;color:var(--td);margin:auto"><div style="font-size:30px">📈</div><div style="font-size:11px;letter-spacing:1px;margin-top:8px">Définis ton capital et ajoute des trades</div></div>
+      <canvas id="capChart" height="120" style="display:none"></canvas>
+    </div>
+  </div>
+
+  <!-- ░░ STATS SECONDAIRES ░░ -->
+  <div class="tz-chips">
     <div class="chip" style="--c:#2563eb"><div class="chip-l">Win Rate</div><div class="chip-v kv" id="k-wr">—</div><div class="chip-s" id="k-wr-s">0 trades</div></div>
     <div class="chip" style="--c:#3b82f6"><div class="chip-l">Total Trades</div><div class="chip-v kv" id="k-tot">0</div><div class="chip-s" id="k-tot-s">0 W · 0 L · 0 BE</div></div>
-    <div class="chip" style="--c:#34d399"><div class="chip-l">Profit Factor</div><div class="chip-v kv" id="k-pf">—</div><div class="chip-s" id="k-pf-s">RRR —</div></div>
-    <div class="chip" style="--c:#ef4444"><div class="chip-l">Max Drawdown</div><div class="chip-v kv" id="k-dd" style="color:var(--reb)">—</div><div class="chip-s" id="k-dd-s">—</div></div>
     <div class="chip" style="--c:#34d399"><div class="chip-l">Total R</div><div class="chip-v kv" id="k-totalr" style="color:var(--grb)">—</div><div class="chip-s">R cumulés</div></div>
-    <div class="chip" style="--c:#22d3ee"><div class="chip-l">Espérance / trade</div><div class="chip-v kv" id="k-exp">—</div><div class="chip-s" id="k-exp-s">R moyen —</div></div>
     <div class="chip" style="--c:#818cf8"><div class="chip-l">Durée Moy.</div><div class="chip-v kv" id="k-dur">—</div><div class="chip-s">Par trade</div></div>
     <div class="chip" style="--c:#fbbf24"><div class="chip-l">Note Moy. ★</div><div class="chip-v kv" id="k-star" style="color:var(--gb)">—</div><div class="chip-s" id="k-star-s">Setup quality</div></div>
+    <div class="chip" style="--c:#10b981"><div class="chip-l">Streak Max</div><div class="chip-v kv" id="sstr">0</div><div class="chip-s">Gains consécutifs</div></div>
   </div>
 
   <!-- ░░ PAIR CHART ░░ -->
@@ -774,6 +855,38 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <div id="opt-good"><div style="color:var(--td);font-size:10px">Aucun bon comportement tagué</div></div>
       </div>
     </div>
+  </div>
+
+  <div class="grouphead"><span class="gh-i">◈</span><span class="gh-t">BAKOU Score &amp; Calendrier</span><span class="gh-d">Note globale de ton trading &amp; performance jour par jour</span></div>
+
+  <!-- ░░ BAKOU SCORE ░░ -->
+  <div class="card" style="margin-top:12px">
+    <div class="ct">◈ BAKOU Score</div>
+    <div class="bk-score-wrap">
+      <div class="bk-radar"><canvas id="bkScoreChart"></canvas></div>
+      <div class="bk-score-side">
+        <div class="bk-score-lbl">Ton BAKOU Score</div>
+        <div class="bk-score-num" id="bk-score-num">—</div>
+        <div class="bk-score-bar"><div class="bk-score-dot" id="bk-score-dot"></div></div>
+        <div class="bk-score-scale"><span>0</span><span>50</span><span>100</span></div>
+        <div class="bk-score-legend" id="bk-score-legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ CALENDRIER P&L ░░ -->
+  <div class="card" style="margin-top:16px">
+    <div class="ct" style="justify-content:space-between">
+      <span>📅 Calendrier P&amp;L</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <button class="cal-nav" onclick="calMove(-1)" aria-label="Mois précédent">‹</button>
+        <span id="cal-title" style="font-size:12px;font-weight:700;min-width:130px;text-align:center;color:var(--tp)">—</span>
+        <button class="cal-nav" onclick="calMove(1)" aria-label="Mois suivant">›</button>
+      </span>
+    </div>
+    <div id="cal-dow" class="cal-dow"></div>
+    <div id="cal-grid" class="cal-grid"></div>
+    <div id="cal-foot" class="cal-foot"></div>
   </div>
 </div>
 
@@ -2612,6 +2725,8 @@ function updateDash(){
     document.getElementById('s-'+key+'-d').textContent=st.length+' trade'+(st.length>1?'s':'')+' · WR '+wr2;
   });
   buildCorePerfAndOptim();
+  buildBakouScore();
+  buildCalendar();
 }
 
 // ── HEATMAP ──
@@ -2664,6 +2779,63 @@ function initPairChart(){
   ]},options:{...CD,scales:{x:{grid:{color:'rgba(30,35,51,0.08)'},ticks:{color:'#5b6478',font:{family:'Rajdhani',size:9}}},y:{grid:{color:'rgba(30,35,51,0.08)'},ticks:{color:'#5b6478',font:{family:'Rajdhani'},stepSize:1}}}}});
 }
 
+// ══ BAKOU SCORE (radar) ══
+function bkC(v){return Math.max(0,Math.min(100,v));}
+function buildBakouScore(){
+  const canvas=document.getElementById('bkScoreChart'); if(!canvas||!canvas.offsetParent) return;
+  const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const numEl=document.getElementById('bk-score-num'),dot=document.getElementById('bk-score-dot'),leg=document.getElementById('bk-score-legend');
+  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),n=TS.length;
+  const winPct=n?wins.length/n*100:0;
+  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const pf=gl>0?gp/gl:(gp>0?3:0);
+  const avgWin=wins.length?gp/wins.length:0, avgLoss=losses.length?gl/losses.length:0;
+  const awl=avgLoss>0?avgWin/avgLoss:(avgWin>0?2:0);
+  const ordered=[...TS].sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+  let eq=0,peak=0,maxDD=0,net=0;
+  ordered.forEach(t=>{const p=parseFloat(t.pnl_amt||0);eq+=p;net+=p;if(eq>peak)peak=eq;const dd=peak-eq;if(dd>maxDD)maxDD=dd;});
+  const recovery=maxDD>0?net/maxDD:(net>0?3:0);
+  const ddPct=CAP>0?maxDD/CAP*100:(peak>0?maxDD/peak*100:0);
+  const maxWin=wins.reduce((m,t)=>Math.max(m,Math.abs(parseFloat(t.pnl_amt||0))),0);
+  const consistency=gp>0?100-(maxWin/gp*100):0;
+  const sc={'Win %':bkC(winPct),'Profit factor':bkC(pf*40),'Avg win/loss':bkC(awl*50),'Recovery factor':bkC(recovery*33),'Max drawdown':bkC(100-ddPct*3),'Consistency':bkC(consistency)};
+  const labels=Object.keys(sc), vals=labels.map(k=>Math.round(sc[k]));
+  const overall=n?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  if(numEl)numEl.textContent=n?overall.toFixed(2):'—';
+  if(dot)dot.style.left=(n?overall:0)+'%';
+  if(leg)leg.innerHTML=labels.map((k,i)=>`<div class="bk-lg"><span class="bk-lg-k">${k}</span><span class="bk-lg-v">${n?vals[i]:'—'}</span></div>`).join('');
+  DC('bkscore');
+  CI['bkscore']=new Chart(canvas,{type:'radar',data:{labels,datasets:[{data:vals,backgroundColor:'rgba(37,99,235,0.16)',borderColor:'#2563eb',borderWidth:2,pointBackgroundColor:'#2563eb',pointBorderColor:'#fff',pointBorderWidth:1,pointRadius:3,pointHoverRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+' : '+c.raw+'/100'}}},scales:{r:{min:0,max:100,ticks:{display:false,stepSize:20},grid:{color:'rgba(30,35,51,0.10)'},angleLines:{color:'rgba(30,35,51,0.10)'},pointLabels:{color:'#5b6478',font:{size:11,family:'Inter'}}}}}});
+}
+// ══ CALENDRIER P&L ══
+let CAL_Y=null,CAL_M=null;
+function calInit(){ if(CAL_Y===null){ const now=new Date(); CAL_Y=parseInt(GLOBAL_YEAR)||now.getFullYear(); CAL_M=now.getMonth(); } }
+function calMove(d){ calInit(); CAL_M+=d; if(CAL_M<0){CAL_M=11;CAL_Y--;} if(CAL_M>11){CAL_M=0;CAL_Y++;} buildCalendar(); }
+function buildCalendar(){
+  calInit();
+  const grid=document.getElementById('cal-grid'); if(!grid) return;
+  const MN=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const tt=document.getElementById('cal-title'); if(tt)tt.textContent=MN[CAL_M]+' '+CAL_Y;
+  const dow=document.getElementById('cal-dow'); if(dow)dow.innerHTML=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(d=>`<span>${d}</span>`).join('');
+  const map={};
+  T.forEach(t=>{ if(!t.created_at) return; const d=new Date(t.created_at); if(d.getFullYear()!==CAL_Y||d.getMonth()!==CAL_M) return; const day=d.getDate(); if(!map[day])map[day]={pnl:0,n:0}; map[day].pnl+=parseFloat(t.pnl_amt||0); map[day].n++; });
+  let startDow=new Date(CAL_Y,CAL_M,1).getDay(); startDow=(startDow+6)%7;
+  const days=new Date(CAL_Y,CAL_M+1,0).getDate();
+  const fmt=v=>Math.abs(v)>=1000?(Math.abs(v)/1000).toFixed(1)+'K':Math.abs(v).toFixed(0);
+  let html='',monthPnl=0,tradeDays=0,monthTrades=0;
+  for(let i=0;i<startDow;i++) html+='<div class="cal-cell empty"></div>';
+  for(let day=1;day<=days;day++){
+    const e=map[day];
+    if(e){ monthPnl+=e.pnl; tradeDays++; monthTrades+=e.n;
+      const cls=e.pnl>=0?'win':'loss', col=e.pnl>=0?'var(--grb)':'var(--reb)';
+      html+=`<div class="cal-cell ${cls}"><div class="cal-d">${day}</div><div class="cal-pnl" style="color:${col}">${e.pnl>=0?'+':'-'}$${fmt(e.pnl)}</div><div class="cal-n">${e.n} trade${e.n>1?'s':''}</div></div>`;
+    } else html+=`<div class="cal-cell"><div class="cal-d">${day}</div></div>`;
+  }
+  grid.innerHTML=html;
+  const foot=document.getElementById('cal-foot');
+  if(foot)foot.innerHTML=`<span>Jours actifs : <b>${tradeDays}</b></span><span>Trades : <b>${monthTrades}</b></span><span>P&amp;L du mois : <b style="color:${monthPnl>=0?'var(--grb)':'var(--reb)'}">${monthPnl>=0?'+':'-'}$${fmt(monthPnl)}</b></span>`;
+}
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
   DC('day');DC('sess');DC('close');DC('hour');
