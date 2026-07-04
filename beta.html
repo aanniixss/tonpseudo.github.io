@@ -1270,7 +1270,20 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     </div>
   </div>
   <div id="rep-risk" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Risk</b> — on le construit ensuite 🛠️</div></div>
-  <div id="rep-winsloss" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Wins vs Losses</b> — on le construit ensuite 🛠️</div></div>
+  <!-- ─ WINS VS LOSSES ─ -->
+  <div id="rep-winsloss" class="rep-panel">
+    <div class="tl-kpis">
+      <div class="tz-card"><div class="tz-lbl">Win Rate</div><div class="tz-body"><div><div class="tz-big" id="wl-wr">—</div><div class="tz-sub" id="wl-wr-s">—</div></div></div></div>
+      <div class="tz-card"><div class="tz-lbl">Trade gagnant moyen</div><div class="tz-body"><div><div class="tz-big" id="wl-avgw" style="color:var(--grb)">—</div><div class="tz-sub">Moyenne des gains</div></div></div></div>
+      <div class="tz-card"><div class="tz-lbl">Trade perdant moyen</div><div class="tz-body"><div><div class="tz-big" id="wl-avgl" style="color:var(--reb)">—</div><div class="tz-sub">Moyenne des pertes</div></div></div></div>
+      <div class="tz-card"><div class="tz-lbl">Ratio gain / perte</div><div class="tz-body"><div><div class="tz-big" id="wl-payoff">—</div><div class="tz-sub" id="wl-exp">—</div></div></div></div>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="ct" style="color:var(--grb)">🟢 Trades gagnants</div><div id="wl-wins" class="rep-stats" style="grid-template-columns:1fr"></div></div>
+      <div class="card"><div class="ct" style="color:var(--reb)">🔴 Trades perdants</div><div id="wl-losses" class="rep-stats" style="grid-template-columns:1fr"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px"><div class="ct">📊 Gagnants vs Perdants</div><div class="rep-chart"><canvas id="wlChart"></canvas></div></div>
+  </div>
   <div id="rep-compare" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Compare</b> — on le construit ensuite 🛠️</div></div>
   <div id="rep-market" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Market Behavior</b> — on le construit ensuite 🛠️</div></div>
   <div id="rep-calendar" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Calendar</b> — on le construit ensuite 🛠️</div></div>
@@ -2902,6 +2915,7 @@ function updateDash(){
   buildTradeLog();
   buildReport();
   if(typeof buildReportDetailed==='function'){const _dt=document.getElementById('rep-det-tbody');if(_dt&&_dt.offsetParent)buildReportDetailed(REP_DET_CUR);}
+  if(typeof buildRepWinsLoss==='function'){const _wl=document.getElementById('wl-wins');if(_wl&&_wl.offsetParent)buildRepWinsLoss();}
 }
 
 // ── HEATMAP ──
@@ -3078,6 +3092,7 @@ function showRepTab(id,btn){
   if(btn)btn.classList.add('active');
   if(id==='rep-overview')setTimeout(buildReport,60);
   if(id==='rep-detailed')setTimeout(()=>showRepDetail(REP_DET_CUR, document.querySelector('#rep-det-tabs .rep-subtab[data-dim="'+REP_DET_CUR+'"]')),60);
+  if(id==='rep-winsloss')setTimeout(buildRepWinsLoss,60);
 }
 function repMins(m){ m=Math.round(m||0); if(!m)return '—'; if(m<60)return m+' min'; const h=Math.floor(m/60),mm=m%60; return h+'h'+(mm?' '+mm+'m':''); }
 function repMoney(v){ v=parseFloat(v)||0; return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -3220,6 +3235,51 @@ function buildRepDetCharts(labels,dist,perf){
   if(c1){ DC('repdetdist'); if(labels.length) CI['repdetdist']=new Chart(c1,{type:'bar',data:{labels,datasets:[{data:dist,backgroundColor:'rgba(124,92,255,0.78)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},precision:0}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}}); }
   const c2=document.getElementById('repDetPerf');
   if(c2){ DC('repdetperf'); if(labels.length) CI['repdetperf']=new Chart(c2,{type:'bar',data:{labels,datasets:[{data:perf,backgroundColor:perf.map(v=>v>=0?'rgba(15,157,110,0.80)':'rgba(224,64,90,0.80)'),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}}); }
+}
+// ── Reports › Wins vs Losses ──
+function buildRepWinsLoss(){
+  const host=document.getElementById('wl-wins'); if(!host||!host.offsetParent)return;
+  const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),n=TS.length;
+  const totW=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const totL=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const avgW=wins.length?totW/wins.length:0, avgL=losses.length?totL/losses.length:0;
+  const dec=wins.length+losses.length, wr=dec?wins.length/dec*100:0;
+  const payoff=avgL>0?(avgW/avgL):(avgW>0?'∞':'—');
+  const wrf=dec?wins.length/dec:0, lrf=dec?losses.length/dec:0, expectancy=(wrf*avgW)-(lrf*avgL);
+  const set=(id,v,c)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(c!==undefined)e.style.color=c;}};
+  set('wl-wr', dec?wr.toFixed(1)+'%':'—'); set('wl-wr-s', wins.length+' gagnants · '+losses.length+' perdants');
+  set('wl-avgw', wins.length?'+$'+Math.round(avgW).toLocaleString():'—');
+  set('wl-avgl', losses.length?'-$'+Math.round(avgL).toLocaleString():'—');
+  set('wl-payoff', typeof payoff==='number'?payoff.toFixed(2):payoff);
+  set('wl-exp', n?'Espérance '+(expectancy>=0?'+':'-')+'$'+Math.abs(Math.round(expectancy)).toLocaleString()+' / trade':'—');
+  const ordered=[...TS].sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+  const streak=res=>{let m=0,c=0;ordered.forEach(t=>{if(t.result===res){c++;m=Math.max(m,c);}else c=0;});return m;};
+  const sideRows=(arr,isWin)=>{
+    const cnt=arr.length, tot=arr.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+    const avg=cnt?tot/cnt:0, largest=cnt?Math.max.apply(null,arr.map(t=>Math.abs(parseFloat(t.pnl_amt||0)))):0;
+    const hold=cnt?arr.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/cnt:0;
+    const rr=cnt?arr.reduce((a,t)=>a+Math.abs(computeActualR(t)),0)/cnt:0;
+    const col=isWin?'var(--grb)':'var(--reb)', sgn=isWin?'+':'-';
+    const rows=[
+      ['Nombre de trades',cnt,false],
+      ['% du total', n?(cnt/n*100).toFixed(1)+'%':'—',false],
+      ['P&L total', cnt?sgn+'$'+Math.round(tot).toLocaleString():'—',true],
+      ['Trade moyen', cnt?sgn+'$'+Math.round(avg).toLocaleString():'—',true],
+      [isWin?'Plus gros gain':'Plus grosse perte', cnt?sgn+'$'+Math.round(largest).toLocaleString():'—',true],
+      ['Durée moyenne', repMins(hold),false],
+      ['R moyen', cnt?(isWin?'+':'-')+rr.toFixed(2)+'R':'—',true],
+      ['Série max '+(isWin?'gains':'pertes'), streak(isWin?'WIN':'LOSS'),false]
+    ];
+    return rows.map(r=>`<div class="rep-row"><span class="rep-k">${r[0]}</span><span class="rep-v" style="color:${r[2]?col:'var(--tp)'}">${r[1]}</span></div>`).join('');
+  };
+  host.innerHTML=sideRows(wins,true);
+  const lh=document.getElementById('wl-losses'); if(lh)lh.innerHTML=sideRows(losses,false);
+  const c=document.getElementById('wlChart');
+  if(c){ DC('wl'); CI['wl']=new Chart(c,{type:'bar',data:{labels:['Trade moyen ($)','P&L total ($)'],datasets:[
+    {label:'Gagnants',data:[Math.round(avgW),Math.round(totW)],backgroundColor:'rgba(15,157,110,0.8)',borderRadius:4},
+    {label:'Perdants',data:[Math.round(avgL),Math.round(totL)],backgroundColor:'rgba(224,64,90,0.8)',borderRadius:4}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5b6478',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+' : $'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
