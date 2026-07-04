@@ -631,6 +631,16 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .rep-row .rep-k{color:var(--ts);}
 .rep-row .rep-v{font-weight:700;color:var(--tp);font-variant-numeric:tabular-nums;white-space:nowrap;}
 @media(max-width:760px){.rep-stats{grid-template-columns:1fr;}.rep-months{grid-template-columns:1fr;gap:12px;}}
+.rep-chart{position:relative;height:260px;}
+.rep-sub{display:flex;align-items:center;gap:5px;flex-wrap:wrap;background:var(--card);border:1px solid var(--bo);border-radius:12px;padding:10px 12px;margin-bottom:16px;box-shadow:var(--glow);}
+.rep-sub-lbl{font-size:10px;font-weight:700;color:var(--td);letter-spacing:.5px;text-transform:uppercase;margin-right:6px;}
+.rep-subtab{background:none;border:1px solid transparent;border-radius:8px;color:var(--ts);font-size:11.5px;font-weight:600;padding:6px 11px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.rep-subtab:hover{background:var(--card2);color:var(--tp);}
+.rep-subtab.active{background:#eaf1ff;border-color:rgba(37,99,235,.3);color:#2563eb;}
+#rep-det-table{width:100%;border-collapse:collapse;min-width:640px;}
+#rep-det-table th{text-align:left;font-size:10px;font-weight:600;color:var(--td);letter-spacing:.4px;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--bo);white-space:nowrap;}
+#rep-det-table td{padding:10px 12px;border-bottom:1px solid var(--bo);font-size:12px;vertical-align:middle;}
+#rep-det-table tbody tr:hover{background:rgba(37,99,235,.04);}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
@@ -1223,12 +1233,42 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <div class="rep-stats" id="rep-stats"></div>
     </div>
     <div class="g2" style="margin-top:16px">
-      <div class="card"><div class="ct">📈 P&amp;L net cumulé</div><canvas id="repCumChart" height="160"></canvas></div>
-      <div class="card"><div class="ct">📊 P&amp;L net journalier</div><canvas id="repDailyChart" height="160"></canvas></div>
+      <div class="card"><div class="ct">📈 P&amp;L net cumulé</div><div class="rep-chart"><canvas id="repCumChart"></canvas></div></div>
+      <div class="card"><div class="ct">📊 P&amp;L net journalier</div><div class="rep-chart"><canvas id="repDailyChart"></canvas></div></div>
     </div>
   </div>
 
-  <div id="rep-detailed" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Detailed</b> — on le construit ensuite 🛠️</div></div>
+  <!-- ─ DETAILED ─ -->
+  <div id="rep-detailed" class="rep-panel">
+    <div class="rep-sub" id="rep-det-tabs">
+      <span class="rep-sub-lbl">Filtrer par</span>
+      <button class="rep-subtab active" data-dim="days" onclick="showRepDetail('days',this)">Jours</button>
+      <button class="rep-subtab" data-dim="weeks" onclick="showRepDetail('weeks',this)">Semaines</button>
+      <button class="rep-subtab" data-dim="months" onclick="showRepDetail('months',this)">Mois</button>
+      <button class="rep-subtab" data-dim="sessions" onclick="showRepDetail('sessions',this)">Sessions</button>
+      <button class="rep-subtab" data-dim="duration" onclick="showRepDetail('duration',this)">Durée</button>
+      <button class="rep-subtab" data-dim="volume" onclick="showRepDetail('volume',this)">Volume</button>
+      <button class="rep-subtab" data-dim="pairs" onclick="showRepDetail('pairs',this)">Paires</button>
+      <button class="rep-subtab" data-dim="cat" onclick="showRepDetail('cat',this)">Catégorie</button>
+      <button class="rep-subtab" data-dim="dir" onclick="showRepDetail('dir',this)">Direction</button>
+      <button class="rep-subtab" data-dim="setups" onclick="showRepDetail('setups',this)">Setups</button>
+      <button class="rep-subtab" data-dim="confs" onclick="showRepDetail('confs',this)">Confluences</button>
+      <button class="rep-subtab" data-dim="mistakes" onclick="showRepDetail('mistakes',this)">Erreurs</button>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="ct" id="rep-det-t1">Distribution</div><div class="rep-chart"><canvas id="repDetDist"></canvas></div></div>
+      <div class="card"><div class="ct" id="rep-det-t2">Performance</div><div class="rep-chart"><canvas id="repDetPerf"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="ct">📋 Résumé</div>
+      <div class="tl-tbl-wrap">
+        <table id="rep-det-table">
+          <thead><tr><th>Groupe</th><th style="text-align:center">Trades</th><th>Win %</th><th style="text-align:right">Gains</th><th style="text-align:right">Pertes</th><th style="text-align:right">Net P&amp;L</th></tr></thead>
+          <tbody id="rep-det-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   <div id="rep-risk" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Risk</b> — on le construit ensuite 🛠️</div></div>
   <div id="rep-winsloss" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Wins vs Losses</b> — on le construit ensuite 🛠️</div></div>
   <div id="rep-compare" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Compare</b> — on le construit ensuite 🛠️</div></div>
@@ -2861,6 +2901,7 @@ function updateDash(){
   buildCalendar();
   buildTradeLog();
   buildReport();
+  if(typeof buildReportDetailed==='function'){const _dt=document.getElementById('rep-det-tbody');if(_dt&&_dt.offsetParent)buildReportDetailed(REP_DET_CUR);}
 }
 
 // ── HEATMAP ──
@@ -3036,6 +3077,7 @@ function showRepTab(id,btn){
   const el=document.getElementById(id); if(el)el.classList.add('active');
   if(btn)btn.classList.add('active');
   if(id==='rep-overview')setTimeout(buildReport,60);
+  if(id==='rep-detailed')setTimeout(()=>showRepDetail(REP_DET_CUR, document.querySelector('#rep-det-tabs .rep-subtab[data-dim="'+REP_DET_CUR+'"]')),60);
 }
 function repMins(m){ m=Math.round(m||0); if(!m)return '—'; if(m<60)return m+' min'; const h=Math.floor(m/60),mm=m%60; return h+'h'+(mm?' '+mm+'m':''); }
 function repMoney(v){ v=parseFloat(v)||0; return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -3128,6 +3170,56 @@ function buildReportCharts(dayKeys,dayVals){
   if(c1){ DC('repcum'); if(labels.length) CI['repcum']=new Chart(c1,{type:'line',data:{labels,datasets:[{data:cum,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.08)',borderWidth:2,fill:true,tension:0.3,pointRadius:0,pointHoverRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#8a93a8',font:{size:9},maxTicksLimit:8}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
   const c2=document.getElementById('repDailyChart');
   if(c2){ DC('repdaily'); if(labels.length) CI['repdaily']=new Chart(c2,{type:'bar',data:{labels,datasets:[{data:dayVals,backgroundColor:dayVals.map(v=>v>=0?'rgba(15,157,110,0.75)':'rgba(224,64,90,0.75)'),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#8a93a8',font:{size:9},maxTicksLimit:8}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
+}
+// ── Reports › Detailed (moteur générique par dimension) ──
+function repDurBucket(m){m=parseFloat(m||0); if(!m)return '—'; if(m<15)return '<15m'; if(m<30)return '15-30m'; if(m<60)return '30-60m'; if(m<120)return '1-2h'; if(m<240)return '2-4h'; return '>4h';}
+function repVolBucket(l){l=parseFloat(l||0); if(!l)return '—'; if(l<0.1)return '<0.10'; if(l<0.5)return '0.10-0.5'; if(l<1)return '0.5-1'; if(l<2)return '1-2'; if(l<5)return '2-5'; return '>5';}
+var REP_DIMS={
+  days:{label:'jour',order:['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'],fn:t=>t.day?[t.day]:[]},
+  weeks:{label:'semaine',order:['Semaine 1','Semaine 2','Semaine 3','Semaine 4','Semaine 5'],fn:t=>t.created_at?['Semaine '+Math.min(Math.ceil(new Date(t.created_at).getDate()/7),5)]:[]},
+  months:{label:'mois',order:['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'],fn:t=>{var M=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];return t.trade_month!=null?[M[parseInt(t.trade_month)]]:[];}},
+  sessions:{label:'session',fn:t=>t.sess?[t.sess]:[]},
+  duration:{label:'durée',order:['<15m','15-30m','30-60m','1-2h','2-4h','>4h'],fn:t=>[repDurBucket(t.duration_mins)]},
+  volume:{label:'volume',order:['<0.10','0.10-0.5','0.5-1','1-2','2-5','>5'],fn:t=>[repVolBucket(t.lot_size)]},
+  pairs:{label:'paire',fn:t=>t.pair?[t.pair]:[]},
+  cat:{label:'catégorie',fn:t=>t.cat?[t.cat]:[]},
+  dir:{label:'direction',fn:t=>t.dir?[t.dir]:[]},
+  setups:{label:'setup',fn:t=>{try{return JSON.parse(t.strats||'[]');}catch(e){return [];}}},
+  confs:{label:'confluence',fn:t=>{try{return JSON.parse(t.confs||'[]');}catch(e){return [];}}},
+  mistakes:{label:'erreur',fn:t=>{try{return JSON.parse(t.psych_errors||'[]');}catch(e){return [];}}}
+};
+var REP_DET_CUR='days';
+function showRepDetail(dim,btn){
+  REP_DET_CUR=dim;
+  document.querySelectorAll('#rep-det-tabs .rep-subtab').forEach(b=>b.classList.toggle('active', btn?(b===btn):(b.dataset.dim===dim)));
+  buildReportDetailed(dim);
+}
+function buildReportDetailed(dimKey){
+  const dim=REP_DIMS[dimKey]; if(!dim)return;
+  const tb=document.getElementById('rep-det-tbody'); if(!tb||!tb.offsetParent)return;
+  const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const g={};
+  TS.forEach(t=>{ (dim.fn(t)||[]).forEach(lb=>{ if(lb==null||lb==='')return; if(!g[lb])g[lb]={n:0,pnl:0,w:0,l:0,be:0,gain:0,loss:0}; const o=g[lb],p=parseFloat(t.pnl_amt||0); o.n++;o.pnl+=p; if(t.result==='WIN'){o.w++;o.gain+=Math.abs(p);} else if(t.result==='LOSS'){o.l++;o.loss+=Math.abs(p);} else o.be++; }); });
+  let keys=Object.keys(g);
+  if(dim.order){ keys=dim.order.filter(k=>g[k]); } else { keys.sort((a,b)=>g[b].n-g[a].n); }
+  buildRepDetCharts(keys, keys.map(k=>g[k].n), keys.map(k=>parseFloat(g[k].pnl.toFixed(2))));
+  const t1=document.getElementById('rep-det-t1'),t2=document.getElementById('rep-det-t2');
+  if(t1)t1.textContent='Distribution des trades par '+dim.label;
+  if(t2)t2.textContent='Performance (P&L net) par '+dim.label;
+  const rowHtml=k=>{const o=g[k],tot=o.w+o.l,wp=tot?o.w/tot*100:0;return `<tr>
+    <td style="font-weight:600">${k}</td>
+    <td style="text-align:center">${o.n}</td>
+    <td><div style="display:flex;align-items:center;gap:7px"><div style="display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--card2);width:66px;flex-shrink:0"><i style="width:${wp}%;background:var(--grb)"></i><i style="width:${100-wp}%;background:var(--reb)"></i></div><span style="font-size:10px;color:var(--td)">${tot?wp.toFixed(0)+'%':'—'}</span></div></td>
+    <td style="color:var(--grb);text-align:right">+$${Math.round(o.gain).toLocaleString()}</td>
+    <td style="color:var(--reb);text-align:right">-$${Math.round(o.loss).toLocaleString()}</td>
+    <td style="text-align:right;font-weight:700;color:${o.pnl>=0?'var(--grb)':'var(--reb)'}">${o.pnl>=0?'+':'-'}$${Math.abs(Math.round(o.pnl)).toLocaleString()}</td></tr>`;};
+  tb.innerHTML = keys.length ? keys.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;padding:26px;color:var(--td)">Aucune donnée pour cette dimension</td></tr>';
+}
+function buildRepDetCharts(labels,dist,perf){
+  const c1=document.getElementById('repDetDist');
+  if(c1){ DC('repdetdist'); if(labels.length) CI['repdetdist']=new Chart(c1,{type:'bar',data:{labels,datasets:[{data:dist,backgroundColor:'rgba(124,92,255,0.78)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},precision:0}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}}); }
+  const c2=document.getElementById('repDetPerf');
+  if(c2){ DC('repdetperf'); if(labels.length) CI['repdetperf']=new Chart(c2,{type:'bar',data:{labels,datasets:[{data:perf,backgroundColor:perf.map(v=>v>=0?'rgba(15,157,110,0.80)':'rgba(224,64,90,0.80)'),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}}); }
 }
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
