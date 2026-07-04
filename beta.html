@@ -21,7 +21,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .logo-t span{color:var(--be);}
 .logo-s{font-size:9px;color:var(--td);letter-spacing:5px;text-transform:uppercase;margin-top:1px;}
 .hdr-r{display:flex;align-items:center;gap:14px;padding-bottom:16px;}
-.badge{padding:5px 13px;border-radius:20px;background:linear-gradient(135deg,rgba(37,99,235,0.15),rgba(196,181,253,0.05));border:1px solid rgba(37,99,235,0.3);font-size:9px;letter-spacing:2px;color:var(--bb);text-transform:uppercase;}
+.badge{padding:5px 13px;border-radius:20px;background:linear-gradient(135deg,rgba(37,99,235,0.15),rgba(147,197,253,0.05));border:1px solid rgba(37,99,235,0.3);font-size:9px;letter-spacing:2px;color:var(--bb);text-transform:uppercase;}
 /* NAV */
 .nav{position:relative;z-index:9999;display:flex;gap:1px;padding:0 32px;background:var(--bg2);border-bottom:1px solid var(--bo);overflow-x:auto;scrollbar-width:none;}
 .nav::-webkit-scrollbar{display:none;}
@@ -70,7 +70,7 @@ canvas{display:block;width:100%!important;}
 /* PAIR BADGES */
 .pb{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:.5px;border:1px solid;}
 .pb.major{background:rgba(37,99,235,0.1);border-color:rgba(37,99,235,0.3);color:var(--bb);}
-.pb.minor{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);color:#818cf8;}
+.pb.minor{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);color:#3b82f6;}
 .pb.crypto{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;}
 .pb.index{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:var(--grb);}
 .pb.metal{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);color:var(--gb);}
@@ -92,8 +92,8 @@ canvas{display:block;width:100%!important;}
 .tag{padding:3px 10px;border-radius:20px;font-size:9px;font-weight:600;letter-spacing:.5px;cursor:pointer;transition:all .2s;user-select:none;border:1px solid;}
 .tag.strat{background:rgba(37,99,235,0.07);border-color:rgba(37,99,235,0.2);color:var(--bb);}
 .tag.strat.sel{background:rgba(37,99,235,0.25);border-color:var(--be);color:#fff;}
-.tag.conf{background:rgba(196,181,253,0.05);border-color:rgba(196,181,253,0.15);color:var(--cy);}
-.tag.conf.sel{background:rgba(196,181,253,0.18);border-color:var(--cy);color:#fff;}
+.tag.conf{background:rgba(147,197,253,0.05);border-color:rgba(147,197,253,0.15);color:var(--cy);}
+.tag.conf.sel{background:rgba(147,197,253,0.18);border-color:var(--cy);color:#fff;}
 .tag.pat{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.18);color:var(--gb);}
 .tag.pat.sel{background:rgba(245,158,11,0.22);border-color:var(--go);color:#fff;}
 .tag.perr{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.2);color:var(--reb);}
@@ -193,7 +193,7 @@ hr.sd{border:none;border-top:1px solid var(--bo);margin:16px 0;}
 body{background:var(--bg);}
 body::before{background:
   radial-gradient(ellipse 70% 50% at 16% -10%,rgba(37,99,235,.11),transparent 60%),
-  radial-gradient(ellipse 60% 45% at 102% -5%,rgba(196,181,253,.06),transparent 55%),
+  radial-gradient(ellipse 60% 45% at 102% -5%,rgba(147,197,253,.06),transparent 55%),
   repeating-linear-gradient(0deg,transparent,transparent 64px,rgba(37,99,235,.014) 64px,rgba(37,99,235,.014) 65px),
   repeating-linear-gradient(90deg,transparent,transparent 64px,rgba(37,99,235,.014) 64px,rgba(37,99,235,.014) 65px);}
 
@@ -329,8 +329,8 @@ body::before{background:
 .sidebar .tab{border-radius:12px !important;}
 .sidebar .tab.active{background:linear-gradient(135deg,rgba(37,99,235,.20),rgba(37,99,235,.04)) !important;
   border-color:rgba(37,99,235,.42) !important;color:#1d4ed8 !important;}
-.sidebar .tab.active::before{background:linear-gradient(180deg,#a855f7,#2563eb) !important;}
-.side-brand .logo-i{background:linear-gradient(135deg,#2563eb,#a855f7) !important;color:#fff !important;border-radius:12px !important;box-shadow:0 6px 18px -6px rgba(37,99,235,.7) !important;}
+.sidebar .tab.active::before{background:linear-gradient(180deg,#60a5fa,#2563eb) !important;}
+.side-brand .logo-i{background:linear-gradient(135deg,#2563eb,#60a5fa) !important;color:#fff !important;border-radius:12px !important;box-shadow:0 6px 18px -6px rgba(37,99,235,.7) !important;}
 .logo-t span{color:#3b82f6 !important;}
 
 /* topbar */
@@ -342,7 +342,7 @@ body::before{background:
   box-shadow:0 1px 0 rgba(255,255,255,.02) inset !important;padding:22px !important;}
 .card:hover{border-color:rgba(37,99,235,.28) !important;}
 .ct{color:#1d4ed8 !important;}
-.ct::before{background:linear-gradient(180deg,#a855f7,#2563eb) !important;}
+.ct::before{background:linear-gradient(180deg,#60a5fa,#2563eb) !important;}
 
 /* KPIs propres */
 .kpi{background:var(--card) !important;border:1px solid var(--bo) !important;border-radius:16px !important;
@@ -355,7 +355,7 @@ body::before{background:
 .grouphead .gh-t{color:#1e2333 !important;}
 
 /* boutons */
-.btn-p{background:linear-gradient(135deg,#2563eb,#a855f7) !important;border-radius:11px !important;box-shadow:0 8px 22px -8px rgba(37,99,235,.7) !important;}
+.btn-p{background:linear-gradient(135deg,#2563eb,#60a5fa) !important;border-radius:11px !important;box-shadow:0 8px 22px -8px rgba(37,99,235,.7) !important;}
 .btn-g{border-radius:11px !important;border-color:rgba(37,99,235,.4) !important;color:#1d4ed8 !important;}
 
 /* champs */
@@ -372,7 +372,7 @@ body::before{background:
 .tbl tr:hover td{background:rgba(37,99,235,.05) !important;}
 
 /* FAB */
-.fab{background:linear-gradient(135deg,#2563eb,#a855f7) !important;box-shadow:0 12px 30px -8px rgba(37,99,235,.7) !important;border-radius:14px !important;}
+.fab{background:linear-gradient(135deg,#2563eb,#60a5fa) !important;box-shadow:0 12px 30px -8px rgba(37,99,235,.7) !important;border-radius:14px !important;}
 
 /* modale + scrollbar */
 .mb{border:1px solid rgba(37,99,235,.35) !important;border-radius:18px !important;}
@@ -637,10 +637,24 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .rep-subtab{background:none;border:1px solid transparent;border-radius:8px;color:var(--ts);font-size:11.5px;font-weight:600;padding:6px 11px;cursor:pointer;white-space:nowrap;transition:all .15s;}
 .rep-subtab:hover{background:var(--card2);color:var(--tp);}
 .rep-subtab.active{background:#eaf1ff;border-color:rgba(37,99,235,.3);color:#2563eb;}
-#rep-det-table{width:100%;border-collapse:collapse;min-width:640px;}
-#rep-det-table th{text-align:left;font-size:10px;font-weight:600;color:var(--td);letter-spacing:.4px;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--bo);white-space:nowrap;}
-#rep-det-table td{padding:10px 12px;border-bottom:1px solid var(--bo);font-size:12px;vertical-align:middle;}
-#rep-det-table tbody tr:hover{background:rgba(37,99,235,.04);}
+.rep-tbl{width:100%;border-collapse:collapse;min-width:640px;}
+.rep-tbl th{text-align:left;font-size:10px;font-weight:600;color:var(--td);letter-spacing:.4px;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--bo);white-space:nowrap;}
+.rep-tbl td{padding:10px 12px;border-bottom:1px solid var(--bo);font-size:12px;vertical-align:middle;}
+.rep-tbl tbody tr:hover{background:rgba(37,99,235,.04);}
+/* Calendrier annuel (Reports) */
+.rep-cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:14px;}
+.rep-mini{border:1px solid var(--bo);border-radius:12px;padding:12px;background:var(--card2);}
+.rep-mini-h{text-align:center;font-weight:700;font-size:12.5px;margin-bottom:8px;color:var(--tp);}
+.rep-mini-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px;}
+.rep-mini-dow span{font-size:8px;color:var(--td);text-align:center;}
+.rep-mini-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.rep-mini-d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:9px;border-radius:4px;color:var(--ts);}
+.rep-mini-d.win{background:rgba(15,157,110,.28);color:#0a6b48;font-weight:700;}
+.rep-mini-d.loss{background:rgba(224,64,90,.24);color:#a01f38;font-weight:700;}
+.rep-mini-d.empty{visibility:hidden;}
+@media(max-width:1100px){.rep-cal-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:800px){.rep-cal-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.rep-cal-grid{grid-template-columns:1fr;}}
 
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
@@ -822,7 +836,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   <div class="tz-chips">
     <div class="chip" style="--c:#3b82f6"><div class="chip-l">Total Trades</div><div class="chip-v kv" id="k-tot">0</div><div class="chip-s" id="k-tot-s">0 W · 0 L · 0 BE</div></div>
     <div class="chip" style="--c:#34d399"><div class="chip-l">Total R</div><div class="chip-v kv" id="k-totalr" style="color:var(--grb)">—</div><div class="chip-s">R cumulés</div></div>
-    <div class="chip" style="--c:#818cf8"><div class="chip-l">Durée Moy.</div><div class="chip-v kv" id="k-dur">—</div><div class="chip-s">Par trade</div></div>
+    <div class="chip" style="--c:#3b82f6"><div class="chip-l">Durée Moy.</div><div class="chip-v kv" id="k-dur">—</div><div class="chip-s">Par trade</div></div>
     <div class="chip" style="--c:#fbbf24"><div class="chip-l">Note Moy. ★</div><div class="chip-v kv" id="k-star" style="color:var(--gb)">—</div><div class="chip-s" id="k-star-s">Setup quality</div></div>
     <div class="chip" style="--c:#10b981"><div class="chip-l">Streak Max</div><div class="chip-v kv" id="sstr">0</div><div class="chip-s">Gains consécutifs</div></div>
   </div>
@@ -847,11 +861,11 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Loss</div>
       </div>
       <div style="text-align:center">
-        <div id="cp-longshort" style="width:88px;height:88px;border-radius:50%;border:3px solid #818cf8;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#818cf8;background:rgba(129,140,248,0.06)">— / —</div>
+        <div id="cp-longshort" style="width:88px;height:88px;border-radius:50%;border:3px solid #3b82f6;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#3b82f6;background:rgba(59,130,246,0.06)">— / —</div>
         <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Long / Short</div>
       </div>
       <div style="text-align:center">
-        <div id="cp-avgrr" style="width:88px;height:88px;border-radius:50%;border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#a78bfa;background:rgba(167,139,250,0.06)">—</div>
+        <div id="cp-avgrr" style="width:88px;height:88px;border-radius:50%;border:3px solid #60a5fa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#60a5fa;background:rgba(96,165,250,0.06)">—</div>
         <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg RR ciblé</div>
       </div>
     </div>
@@ -1262,14 +1276,34 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div class="card" style="margin-top:16px">
       <div class="ct">📋 Résumé</div>
       <div class="tl-tbl-wrap">
-        <table id="rep-det-table">
+        <table class="rep-tbl">
           <thead><tr><th>Groupe</th><th style="text-align:center">Trades</th><th>Win %</th><th style="text-align:right">Gains</th><th style="text-align:right">Pertes</th><th style="text-align:right">Net P&amp;L</th></tr></thead>
           <tbody id="rep-det-tbody"></tbody>
         </table>
       </div>
     </div>
   </div>
-  <div id="rep-risk" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Risk</b> — on le construit ensuite 🛠️</div></div>
+  <!-- ─ RISK ─ -->
+  <div id="rep-risk" class="rep-panel">
+    <div class="rep-sub" id="rep-risk-tabs">
+      <span class="rep-sub-lbl">Filtrer par</span>
+      <button class="rep-subtab active" data-dim="rmult" onclick="showRepRisk('rmult',this)">R-multiple</button>
+      <button class="rep-subtab" data-dim="possize" onclick="showRepRisk('possize',this)">Taille de position</button>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="ct" id="rep-risk-t1">Distribution</div><div class="rep-chart"><canvas id="repRiskDist"></canvas></div></div>
+      <div class="card"><div class="ct" id="rep-risk-t2">Performance</div><div class="rep-chart"><canvas id="repRiskPerf"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="ct">📋 Résumé</div>
+      <div class="tl-tbl-wrap">
+        <table class="rep-tbl">
+          <thead><tr><th>Tranche</th><th style="text-align:center">Trades</th><th>Win %</th><th style="text-align:right">Gains</th><th style="text-align:right">Pertes</th><th style="text-align:right">Net P&amp;L</th></tr></thead>
+          <tbody id="rep-risk-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   <!-- ─ WINS VS LOSSES ─ -->
   <div id="rep-winsloss" class="rep-panel">
     <div class="tl-kpis">
@@ -1285,8 +1319,29 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div class="card" style="margin-top:16px"><div class="ct">📊 Gagnants vs Perdants</div><div class="rep-chart"><canvas id="wlChart"></canvas></div></div>
   </div>
   <div id="rep-compare" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Compare</b> — on le construit ensuite 🛠️</div></div>
-  <div id="rep-market" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Market Behavior</b> — on le construit ensuite 🛠️</div></div>
-  <div id="rep-calendar" class="rep-panel"><div class="card" style="text-align:center;padding:44px;color:var(--td)">Onglet <b>Calendar</b> — on le construit ensuite 🛠️</div></div>
+  <!-- ─ MARKET BEHAVIOR ─ -->
+  <div id="rep-market" class="rep-panel">
+    <div class="card" style="text-align:center;padding:40px 30px">
+      <div style="font-size:34px;margin-bottom:10px">🌐</div>
+      <div style="font-weight:700;font-size:15px;color:var(--tp);margin-bottom:8px">Market Behavior — bientôt</div>
+      <div style="font-size:12.5px;color:var(--ts);max-width:520px;margin:0 auto;line-height:1.6">Cet onglet croise tes trades avec le <b>comportement du marché</b> (mouvement du jour, gaps d'ouverture, type de journée). Il nécessite des <b>données de marché externes</b> (ex : indice de référence), qui ne sont pas encore connectées à BAKOU. On l'activera dès que la source de données sera branchée.</div>
+    </div>
+  </div>
+  <!-- ─ CALENDAR ─ -->
+  <div id="rep-calendar" class="rep-panel">
+    <div class="card">
+      <div class="ct" style="justify-content:space-between">
+        <span>📅 Calendrier annuel</span>
+        <span style="display:flex;align-items:center;gap:10px">
+          <button class="cal-nav" onclick="repCalMove(-1)" aria-label="Année précédente">‹</button>
+          <span id="rep-cal-year" style="font-weight:700;font-size:14px;min-width:60px;text-align:center;color:var(--tp)">—</span>
+          <button class="cal-nav" onclick="repCalMove(1)" aria-label="Année suivante">›</button>
+        </span>
+      </div>
+      <div class="rep-cal-grid" id="rep-cal-grid"></div>
+      <div style="display:flex;justify-content:flex-end;gap:16px;margin-top:12px;font-size:11px;color:var(--ts)"><span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(15,157,110,.4);vertical-align:middle"></span> jour gagnant</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(224,64,90,.4);vertical-align:middle"></span> jour perdant</span></div>
+    </div>
+  </div>
 </div>
 
 <!-- ══ ANALYTIQUE ══ -->
@@ -1619,11 +1674,11 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
           <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Total R</div>
         </div>
         <div style="text-align:center">
-          <div id="md-pp-net" style="width:80px;height:80px;border-radius:50%;border:3px solid #1e40af;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#1e40af;background:rgba(196,181,253,0.06)">—</div>
+          <div id="md-pp-net" style="width:80px;height:80px;border-radius:50%;border:3px solid #1e40af;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#1e40af;background:rgba(147,197,253,0.06)">—</div>
           <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Total $</div>
         </div>
         <div style="text-align:center">
-          <div id="md-pp-trades" style="width:80px;height:80px;border-radius:50%;border:3px solid #818cf8;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#818cf8;background:rgba(129,140,248,0.06)">—</div>
+          <div id="md-pp-trades" style="width:80px;height:80px;border-radius:50%;border:3px solid #3b82f6;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:17px;color:#3b82f6;background:rgba(59,130,246,0.06)">—</div>
           <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Trades</div>
         </div>
         <div style="text-align:center">
@@ -1649,11 +1704,11 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
           <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg R Loss</div>
         </div>
         <div style="text-align:center">
-          <div id="md-cp-ls" style="width:80px;height:80px;border-radius:50%;border:3px solid #818cf8;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:14px;color:#818cf8;background:rgba(129,140,248,0.06)">— / —</div>
+          <div id="md-cp-ls" style="width:80px;height:80px;border-radius:50%;border:3px solid #3b82f6;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:14px;color:#3b82f6;background:rgba(59,130,246,0.06)">— / —</div>
           <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Long / Short</div>
         </div>
         <div style="text-align:center">
-          <div id="md-cp-rr" style="width:80px;height:80px;border-radius:50%;border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#a78bfa;background:rgba(167,139,250,0.06)">—</div>
+          <div id="md-cp-rr" style="width:80px;height:80px;border-radius:50%;border:3px solid #60a5fa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Share Tech Mono',monospace;font-size:15px;color:#60a5fa;background:rgba(96,165,250,0.06)">—</div>
           <div style="font-size:9px;color:var(--td);margin-top:7px;font-family:'Orbitron',sans-serif;letter-spacing:1px">Avg RR ciblé</div>
         </div>
       </div>
@@ -1877,7 +1932,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
           <div onclick="selectColor('#10b981',this)" style="width:28px;height:28px;border-radius:50%;background:#10b981;cursor:pointer;border:2px solid transparent"></div>
           <div onclick="selectColor('#f59e0b',this)" style="width:28px;height:28px;border-radius:50%;background:#f59e0b;cursor:pointer;border:2px solid transparent"></div>
           <div onclick="selectColor('#ef4444',this)" style="width:28px;height:28px;border-radius:50%;background:#ef4444;cursor:pointer;border:2px solid transparent"></div>
-          <div onclick="selectColor('#8b5cf6',this)" style="width:28px;height:28px;border-radius:50%;background:#8b5cf6;cursor:pointer;border:2px solid transparent"></div>
+          <div onclick="selectColor('#3b82f6',this)" style="width:28px;height:28px;border-radius:50%;background:#3b82f6;cursor:pointer;border:2px solid transparent"></div>
           <div onclick="selectColor('#f97316',this)" style="width:28px;height:28px;border-radius:50%;background:#f97316;cursor:pointer;border:2px solid transparent"></div>
         </div>
       </div>
@@ -2601,7 +2656,7 @@ function renderTable(){
       <td style="font-size:10px;color:var(--ts)">${t.fonda?t.fonda+'/5':'—'}</td>
       <td style="font-size:9px">${(()=>{const e=JSON.parse(t.psych_errors||'[]');return e.length?`<span style="color:var(--reb)" title="${e.join(', ')}">⚠ ${e.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
       <td style="font-size:9px">${(()=>{const g=JSON.parse(t.psych_good||'[]');return g.length?`<span style="color:var(--grb)" title="${g.join(', ')}">✅ ${g.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
-      <td style="display:flex;gap:4px"><button onclick="openTradeDetail('${t.id}')" aria-label="Voir le trade" style="background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button><button onclick="openEditTrade('${t.id}')" aria-label="Modifier le trade" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" aria-label="Supprimer le trade" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
+      <td style="display:flex;gap:4px"><button onclick="openTradeDetail('${t.id}')" aria-label="Voir le trade" style="background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button><button onclick="openEditTrade('${t.id}')" aria-label="Modifier le trade" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✎</button><button onclick="delTrade('${t.id}')" aria-label="Supprimer le trade" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">✕</button></td>
     `;
     tb.appendChild(row);
     // ── Fiche mobile (même donnée que la ligne) ──
@@ -2621,7 +2676,7 @@ function renderTable(){
         +`<div style="text-align:right">RR ${t.rr||'—'} · Risque ${t.risk_pct}%</div>`
       +`</div>`
       +`<div style="display:flex;gap:6px">`
-        +`<button onclick="openTradeDetail('${t.id}')" style="flex:1;background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:7px;border-radius:6px;cursor:pointer;font-size:11px">👁 Voir</button>`
+        +`<button onclick="openTradeDetail('${t.id}')" style="flex:1;background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.2);color:var(--cy);padding:7px;border-radius:6px;cursor:pointer;font-size:11px">👁 Voir</button>`
         +`<button onclick="openEditTrade('${t.id}')" style="flex:1;background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);color:var(--bb);padding:7px;border-radius:6px;cursor:pointer;font-size:11px">✎ Éditer</button>`
         +`<button onclick="delTrade('${t.id}')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:7px 11px;border-radius:6px;cursor:pointer;font-size:11px">✕</button>`
       +`</div>`
@@ -2916,6 +2971,8 @@ function updateDash(){
   buildReport();
   if(typeof buildReportDetailed==='function'){const _dt=document.getElementById('rep-det-tbody');if(_dt&&_dt.offsetParent)buildReportDetailed(REP_DET_CUR);}
   if(typeof buildRepWinsLoss==='function'){const _wl=document.getElementById('wl-wins');if(_wl&&_wl.offsetParent)buildRepWinsLoss();}
+  if(typeof buildRepRisk==='function'){const _rk=document.getElementById('rep-risk-tbody');if(_rk&&_rk.offsetParent)buildRepRisk(REP_RISK_CUR);}
+  if(typeof buildRepCalendar==='function'){const _cl=document.getElementById('rep-cal-grid');if(_cl&&_cl.offsetParent)buildRepCalendar();}
 }
 
 // ── HEATMAP ──
@@ -3093,6 +3150,8 @@ function showRepTab(id,btn){
   if(id==='rep-overview')setTimeout(buildReport,60);
   if(id==='rep-detailed')setTimeout(()=>showRepDetail(REP_DET_CUR, document.querySelector('#rep-det-tabs .rep-subtab[data-dim="'+REP_DET_CUR+'"]')),60);
   if(id==='rep-winsloss')setTimeout(buildRepWinsLoss,60);
+  if(id==='rep-risk')setTimeout(()=>showRepRisk(REP_RISK_CUR, document.querySelector('#rep-risk-tabs .rep-subtab[data-dim="'+REP_RISK_CUR+'"]')),60);
+  if(id==='rep-calendar')setTimeout(buildRepCalendar,60);
 }
 function repMins(m){ m=Math.round(m||0); if(!m)return '—'; if(m<60)return m+' min'; const h=Math.floor(m/60),mm=m%60; return h+'h'+(mm?' '+mm+'m':''); }
 function repMoney(v){ v=parseFloat(v)||0; return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -3241,8 +3300,65 @@ function buildRepDetCharts(labels,dist,perf){
     c.style.display='block';
     CI[key]=new Chart(c,cfg);
   };
-  mk('repDetDist','repdetdist',{type:'bar',data:{labels,datasets:[{data:dist,backgroundColor:'rgba(124,92,255,0.78)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},precision:0}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}});
+  mk('repDetDist','repdetdist',{type:'bar',data:{labels,datasets:[{data:dist,backgroundColor:'rgba(59,130,246,0.78)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},precision:0}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}});
   mk('repDetPerf','repdetperf',{type:'bar',data:{labels,datasets:[{data:perf,backgroundColor:perf.map(v=>v>=0?'rgba(15,157,110,0.80)':'rgba(224,64,90,0.80)'),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}}}}});
+}
+// ── Reports › Risk ──
+function repRBucket(r){ if(r>=4)return '+4R et plus'; if(r>=3)return '+3R à 3.99R'; if(r>=2)return '+2R à 2.99R'; if(r>=1)return '+1R à 1.99R'; if(r>=0)return '0R à 0.99R'; if(r>-1)return '-0.99R à -0.01R'; if(r>-2)return '-1R à -1.99R'; if(r>-3)return '-2R à -2.99R'; if(r>-4)return '-3R à -3.99R'; return '-4R ou moins'; }
+var RISK_DIMS={
+  rmult:{label:'R-multiple',order:['+4R et plus','+3R à 3.99R','+2R à 2.99R','+1R à 1.99R','0R à 0.99R','-0.99R à -0.01R','-1R à -1.99R','-2R à -2.99R','-3R à -3.99R','-4R ou moins'],fn:t=>[repRBucket(computeActualR(t))]},
+  possize:{label:'taille de position (lots)',order:['<0.10','0.10-0.5','0.5-1','1-2','2-5','>5'],fn:t=>[repVolBucket(t.lot_size)]}
+};
+var REP_RISK_CUR='rmult';
+function showRepRisk(dim,btn){ REP_RISK_CUR=dim; document.querySelectorAll('#rep-risk-tabs .rep-subtab').forEach(b=>b.classList.toggle('active', btn?(b===btn):(b.dataset.dim===dim))); buildRepRisk(dim); }
+function buildRepRisk(dimKey){
+  const dim=RISK_DIMS[dimKey]; if(!dim)return;
+  const tb=document.getElementById('rep-risk-tbody'); if(!tb||!tb.offsetParent)return;
+  const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
+  const g={};
+  TS.forEach(t=>{ (dim.fn(t)||[]).forEach(lb=>{ if(lb==null||lb==='')return; if(!g[lb])g[lb]={n:0,pnl:0,w:0,l:0,gain:0,loss:0}; const o=g[lb],p=parseFloat(t.pnl_amt||0); o.n++;o.pnl+=p; if(t.result==='WIN'){o.w++;o.gain+=Math.abs(p);} else if(t.result==='LOSS'){o.l++;o.loss+=Math.abs(p);} }); });
+  let keys=dim.order?dim.order.filter(k=>g[k]):Object.keys(g).sort((a,b)=>g[b].n-g[a].n);
+  const t1=document.getElementById('rep-risk-t1'),t2=document.getElementById('rep-risk-t2');
+  if(t1)t1.textContent='Distribution des trades par '+dim.label;
+  if(t2)t2.textContent='Performance (P&L net) par '+dim.label;
+  const rowHtml=k=>{const o=g[k],tot=o.w+o.l,wp=tot?o.w/tot*100:0;return `<tr><td style="font-weight:600">${k}</td><td style="text-align:center">${o.n}</td><td><div style="display:flex;align-items:center;gap:7px"><div style="display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--card2);width:66px;flex-shrink:0"><i style="width:${wp}%;background:var(--grb)"></i><i style="width:${100-wp}%;background:var(--reb)"></i></div><span style="font-size:10px;color:var(--td)">${tot?wp.toFixed(0)+'%':'—'}</span></div></td><td style="color:var(--grb);text-align:right">+$${Math.round(o.gain).toLocaleString()}</td><td style="color:var(--reb);text-align:right">-$${Math.round(o.loss).toLocaleString()}</td><td style="text-align:right;font-weight:700;color:${o.pnl>=0?'var(--grb)':'var(--reb)'}">${o.pnl>=0?'+':'-'}$${Math.abs(Math.round(o.pnl)).toLocaleString()}</td></tr>`;};
+  tb.innerHTML = keys.length ? keys.map(rowHtml).join('') : '<tr><td colspan="6" style="text-align:center;padding:26px;color:var(--td)">Aucun trade sur cette période — ajoute des trades dans le Journal</td></tr>';
+  try{ buildRepRiskCharts(keys, keys.map(k=>g[k].n), keys.map(k=>parseFloat(g[k].pnl.toFixed(2)))); }catch(e){ console.warn('Reports/Risk charts:', e); }
+}
+function buildRepRiskCharts(labels,dist,perf){
+  const empty=!labels.length;
+  const mk=(canvasId,key,cfg)=>{
+    const c=document.getElementById(canvasId); if(!c)return;
+    const wrap=c.parentNode; const old=wrap&&wrap.querySelector('.rep-empty'); if(old)old.remove();
+    DC(key);
+    if(empty){ c.style.display='none'; if(wrap){const m=document.createElement('div');m.className='rep-empty';m.textContent='Aucun trade sur cette période';m.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:12px';wrap.appendChild(m);} return; }
+    c.style.display='block';
+    CI[key]=new Chart(c,cfg);
+  };
+  mk('repRiskDist','repriskdist',{type:'bar',data:{labels,datasets:[{data:dist,backgroundColor:'rgba(59,130,246,0.78)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},precision:0}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:9}}}}}});
+  mk('repRiskPerf','repriskperf',{type:'bar',data:{labels,datasets:[{data:perf,backgroundColor:perf.map(v=>v>=0?'rgba(15,157,110,0.80)':'rgba(224,64,90,0.80)'),borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+c.raw.toLocaleString()}}},scales:{x:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}},y:{grid:{display:false},ticks:{color:'#5b6478',font:{size:9}}}}}});
+}
+// ── Reports › Calendar (vue année) ──
+var REP_CAL_Y=null;
+function repCalMove(d){ if(REP_CAL_Y===null)REP_CAL_Y=parseInt(GLOBAL_YEAR); REP_CAL_Y+=d; buildRepCalendar(); }
+function buildRepCalendar(){
+  const grid=document.getElementById('rep-cal-grid'); if(!grid||!grid.offsetParent)return;
+  if(REP_CAL_Y===null)REP_CAL_Y=parseInt(GLOBAL_YEAR);
+  const ye=document.getElementById('rep-cal-year'); if(ye)ye.textContent=REP_CAL_Y;
+  const map={};
+  T.forEach(t=>{ if(!t.created_at)return; const d=new Date(t.created_at); if(d.getFullYear()!==REP_CAL_Y)return; const k=d.getMonth()+'-'+d.getDate(); map[k]=(map[k]||0)+parseFloat(t.pnl_amt||0); });
+  const MN=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const DOW=['L','M','M','J','V','S','D'];
+  let html='';
+  for(let m=0;m<12;m++){
+    let start=new Date(REP_CAL_Y,m,1).getDay(); start=(start+6)%7;
+    const days=new Date(REP_CAL_Y,m+1,0).getDate();
+    let cells='';
+    for(let i=0;i<start;i++)cells+='<div class="rep-mini-d empty"></div>';
+    for(let d=1;d<=days;d++){ const v=map[m+'-'+d]; const cls=v===undefined?'':(v>0?'win':v<0?'loss':''); cells+=`<div class="rep-mini-d ${cls}" title="${v!==undefined?((v>=0?'+':'-')+'$'+Math.abs(Math.round(v))):''}">${d}</div>`; }
+    html+=`<div class="rep-mini"><div class="rep-mini-h">${MN[m]}</div><div class="rep-mini-dow">${DOW.map(x=>`<span>${x}</span>`).join('')}</div><div class="rep-mini-days">${cells}</div></div>`;
+  }
+  grid.innerHTML=html;
 }
 // ── Reports › Wins vs Losses ──
 function buildRepWinsLoss(){
@@ -4013,7 +4129,7 @@ function renderScope(mt, scope){
         <td><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'var(--grb)':t.result==='LOSS'?'var(--reb)':'var(--gb)'}">${t.result}</span></td>
         <td style="font-size:9px;color:var(--bb)">${strs[0]||'—'}</td>
         <td style="color:var(--gb);font-size:9px">${t.star?'★'.repeat(t.star):'—'}</td>
-        <td><button onclick="openTradeDetail('${t.id}')" aria-label="Voir le trade" style="background:rgba(196,181,253,0.08);border:1px solid rgba(196,181,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button></td>
+        <td><button onclick="openTradeDetail('${t.id}')" aria-label="Voir le trade" style="background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:9px">👁</button></td>
       </tr>`;
     }).join('');
   }
@@ -4438,8 +4554,8 @@ function genReport(mt, titleMain, titleSub){
     {l:'Win Rate', v:_wrPct.toFixed(0)+'%', c:_wrPct>=60?'#10b981':_wrPct>=50?'#f59e0b':'#ef4444'},
     {l:'Avg R Win', v:_arWin!==null?'+'+_arWin.toFixed(2)+'R':'—', c:'#10b981'},
     {l:'Avg R Loss', v:_arLoss!==null?_arLoss.toFixed(2)+'R':'—', c:'#ef4444'},
-    {l:'Long / Short', v:_longs+' / '+_shorts, c:'#818cf8'},
-    {l:'Avg RR ciblé', v:_avgRR?_avgRR.toFixed(2):'—', c:'#a78bfa'},
+    {l:'Long / Short', v:_longs+' / '+_shorts, c:'#3b82f6'},
+    {l:'Avg RR ciblé', v:_avgRR?_avgRR.toFixed(2):'—', c:'#60a5fa'},
   ];
   const coreSection=`<div class="section"><div class="section-title">🎯 Core Performance</div>
     <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-around;padding:10px 0">
