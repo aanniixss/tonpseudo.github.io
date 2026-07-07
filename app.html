@@ -748,7 +748,8 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
       <button class="side-action accent" onclick="openCoach();rdToggleSidebar(false)"><span class="ti">✨</span> Coach IA — Résumé</button>
       <button class="side-action" onclick="rdNewTrade();rdToggleSidebar(false)"><span class="ti">＋</span> Nouveau trade</button>
-      <button class="side-action" onclick="if(typeof exportAnnualPDF==='function')exportAnnualPDF();rdToggleSidebar(false)"><span class="ti">📄</span> Export PDF annuel</button>
+      <button class="side-action" onclick="downloadBilanPDF();rdToggleSidebar(false)"><span class="ti">📥</span> Télécharger le bilan PDF</button>
+      <button class="side-action" onclick="if(typeof exportAnnualPDF==='function')exportAnnualPDF();rdToggleSidebar(false)"><span class="ti">🖨️</span> Aperçu / Imprimer</button>
     </div>
     <div class="side-foot">◈ BAKOU · v4</div>
   </aside>
@@ -1286,7 +1287,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   <!-- ─ OVERVIEW ─ -->
   <div id="rep-overview" class="rep-panel active" role="tabpanel">
     <div class="card">
-      <div class="ct" style="justify-content:space-between"><span>📊 Tes statistiques</span><span style="font-size:10px;color:var(--td);font-weight:600">Année <span id="rep-year">—</span></span></div>
+      <div class="ct" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><span>📊 Tes statistiques</span><span style="display:flex;align-items:center;gap:10px"><button onclick="downloadBilanPDF()" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer">📥 Télécharger le bilan PDF</button><span style="font-size:10px;color:var(--td);font-weight:600">Année <span id="rep-year">—</span></span></span></div>
       <div class="rep-months">
         <div><div class="rep-m-l">Meilleur mois</div><div class="rep-m-v" id="rep-best" style="color:var(--grb)">—</div><div class="rep-m-s" id="rep-best-s">—</div></div>
         <div><div class="rep-m-l">Pire mois</div><div class="rep-m-v" id="rep-worst" style="color:var(--reb)">—</div><div class="rep-m-s" id="rep-worst-s">—</div></div>
@@ -2185,6 +2186,8 @@ function rdNewTrade(){
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ── SUPABASE ──
 const SUPA_URL = 'https://nogfrvpvknaqlgfnrjol.supabase.co';
@@ -3620,6 +3623,143 @@ function nbMoveFolder(fid){ const n=nbCur(); if(!n)return; n.folderId=fid||null;
 function nbRenderNoteTags(){ const n=nbCur(); const c=document.getElementById('nb-note-tags'); if(!c||!n)return; c.innerHTML=(n.tags||[]).map(t=>`<span class="nb-tagchip">${nbEsc(t)}<button onclick="nbRemoveTag('${nbEscA(t)}')" title="Retirer">✕</button></span>`).join('')+`<input class="nb-tag-input" placeholder="+ tag" onkeydown="if(event.key==='Enter'){event.preventDefault();nbAddTag(this.value);this.value='';}">`; }
 function nbAddTag(v){ v=(v||'').trim(); if(!v)return; const n=nbCur(); if(!n)return; if(!n.tags)n.tags=[]; if(n.tags.indexOf(v)<0)n.tags.push(v); nbTouch(); nbSave(); nbRenderNoteTags(); nbRenderFolders(); }
 function nbRemoveTag(t){ const n=nbCur(); if(!n)return; n.tags=(n.tags||[]).filter(x=>x!==t); nbTouch(); nbSave(); nbRenderNoteTags(); nbRenderFolders(); }
+// ══════════ BILAN GLOBAL — PDF TÉLÉCHARGEABLE ══════════
+function downloadBilanPDF(){
+  if(typeof html2canvas==='undefined' || !(window.jspdf&&window.jspdf.jsPDF)){ if(typeof toast==='function')toast('⏳ Librairie PDF en cours de chargement — réessaie dans 2 s'); return; }
+  const yr=GLOBAL_YEAR;
+  const TS=T.filter(t=>parseInt(t.trade_year)===yr);
+  if(!TS.length){ if(typeof toast==='function')toast('Aucun trade cette année à exporter'); return; }
+  if(typeof toast==='function')toast('📄 Génération du bilan PDF…');
+  const M=v=>(v>=0?'+':'-')+'$'+Math.abs(Math.round(v)).toLocaleString();
+  const HM=m=>{m=Math.round(m||0);return !m?'—':(m<60?m+' min':(Math.floor(m/60)+'h'+(m%60?' '+(m%60)+'m':'')));};
+  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),bes=TS.filter(t=>t.result==='BE'),n=TS.length;
+  const net=TS.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);
+  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
+  const pf=gl>0?(gp/gl):(gp>0?Infinity:0);
+  const dec=wins.length+losses.length, wr=dec?wins.length/dec*100:0;
+  const avgW=wins.length?gp/wins.length:0, avgL=losses.length?gl/losses.length:0, payoff=avgL>0?avgW/avgL:0;
+  const wrf=dec?wins.length/dec:0, lrf=dec?losses.length/dec:0, expc=wrf*avgW-lrf*avgL;
+  const comm=TS.reduce((a,t)=>a+parseFloat(t.commission||0),0);
+  const largestW=wins.length?Math.max.apply(null,wins.map(t=>parseFloat(t.pnl_amt||0))):0;
+  const largestL=losses.length?Math.min.apply(null,losses.map(t=>parseFloat(t.pnl_amt||0))):0;
+  const totalR=TS.reduce((a,t)=>a+computeActualR(t),0), plannedR=n?TS.reduce((a,t)=>a+(parseFloat(t.rr)||0),0)/n:0, realizedR=n?totalR/n:0;
+  const holdAll=n?TS.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/n:0;
+  const holdW=wins.length?wins.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/wins.length:0;
+  const holdL=losses.length?losses.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/losses.length:0;
+  const MN3=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const monthPnl={}; TS.forEach(t=>{const m=parseInt(t.trade_month);monthPnl[m]=(monthPnl[m]||0)+parseFloat(t.pnl_amt||0);});
+  const mkeys=Object.keys(monthPnl); let best=null,worst=null; mkeys.forEach(m=>{if(best===null||monthPnl[m]>monthPnl[best])best=m;if(worst===null||monthPnl[m]<monthPnl[worst])worst=m;});
+  const avgMonth=mkeys.length?net/mkeys.length:0;
+  const dayMap={}; TS.forEach(t=>{if(!t.created_at)return;const k=new Date(t.created_at).toISOString().slice(0,10);dayMap[k]=(dayMap[k]||0)+parseFloat(t.pnl_amt||0);});
+  const dv=Object.keys(dayMap).map(k=>dayMap[k]); const tradingDays=dv.length, winDays=dv.filter(v=>v>0).length, lossDays=dv.filter(v=>v<0).length;
+  const ord=[...TS].sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+  let mcw=0,mcl=0,cw=0,cl=0; ord.forEach(t=>{if(t.result==='WIN'){cw++;cl=0;}else if(t.result==='LOSS'){cl++;cw=0;}else{cw=0;cl=0;}mcw=Math.max(mcw,cw);mcl=Math.max(mcl,cl);});
+  let eq=0,peak=0,maxDD=0; ord.forEach(t=>{eq+=parseFloat(t.pnl_amt||0);if(eq>peak)peak=eq;const d=peak-eq;if(d>maxDD)maxDD=d;});
+  const ddPct=CAP>0?maxDD/CAP*100:0, recovery=maxDD>0?net/maxDD:(net>0?3:0);
+  const maxWinAmt=wins.length?Math.max.apply(null,wins.map(t=>Math.abs(parseFloat(t.pnl_amt||0)))):0;
+  const consistency=gp>0?100-(maxWinAmt/gp*100):0;
+  const cl0=v=>Math.max(0,Math.min(100,v));
+  const scLabels=['Win %','Profit factor','Avg win/loss','Recovery','Max DD','Consistency'];
+  const scVals=[cl0(wr),cl0((isFinite(pf)?pf:3)*40),cl0(payoff*50),cl0(recovery*33),cl0(100-ddPct*3),cl0(consistency)].map(Math.round);
+  const bakouScore=Math.round(scVals.reduce((a,b)=>a+b,0)/scVals.length);
+  const agg=fn=>{const g={};TS.forEach(t=>{(fn(t)||[]).forEach(lb=>{if(lb==null||lb==='')return;if(!g[lb])g[lb]={n:0,pnl:0,w:0,l:0};const o=g[lb];o.n++;o.pnl+=parseFloat(t.pnl_amt||0);if(t.result==='WIN')o.w++;else if(t.result==='LOSS')o.l++;});});return g;};
+  const rowsOf=(g,order)=>{let keys=order?order.filter(k=>g[k]):Object.keys(g).sort((a,b)=>g[b].pnl-g[a].pnl);return keys.slice(0,10).map(k=>{const o=g[k],tot=o.w+o.l,wp=tot?(o.w/tot*100).toFixed(0)+'%':'—';return `<tr><td>${k}</td><td>${o.n}</td><td>${wp}</td><td style="color:${o.pnl>=0?'#0a8a5f':'#c72c46'};text-align:right">${M(o.pnl)}</td></tr>`;}).join('')||'<tr><td colspan="4" style="color:#8a93a8">—</td></tr>';};
+  const jp=t=>{try{return JSON.parse(t||'[]');}catch(e){return[];}};
+  const tile=(l,v,c)=>`<div style="border:1px solid #e4e7ef;border-radius:10px;padding:11px 13px"><div style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:#8a93a8;font-weight:600">${l}</div><div style="font-size:19px;font-weight:700;color:${c||'#1e2333'};margin-top:3px">${v}</div></div>`;
+  const kv=(k,v)=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid #eef0f5;padding:5px 2px;font-size:11.5px"><span style="color:#5b6478">${k}</span><b>${v}</b></div>`;
+  const monthTable=MN3.map((mn,m)=>{const mt=TS.filter(t=>parseInt(t.trade_month)===m);if(!mt.length)return '';const mw=mt.filter(t=>t.result==='WIN').length,ml=mt.filter(t=>t.result==='LOSS').length,mp=mt.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0),mwr=(mw/mt.length*100).toFixed(0);return `<tr><td><b>${mn}</b></td><td>${mt.length}</td><td>${mw}W / ${ml}L</td><td>${mwr}%</td><td style="color:${mp>=0?'#0a8a5f':'#c72c46'};text-align:right">${M(mp)}</td></tr>`;}).join('');
+  const th='style="text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:#8a93a8;padding:7px 8px;border-bottom:1px solid #e4e7ef"';
+  const td='style="padding:7px 8px;border-bottom:1px solid #eef0f5;font-size:11px"';
+  const tbl=(head,rows)=>`<table style="width:100%;border-collapse:collapse"><thead><tr>${head.map(h=>`<th ${th}>${h}</th>`).join('')}</tr></thead><tbody style="[TD]">${rows}</tbody></table>`.replace('[TD]','');
+  const R=document.createElement('div'); R.id='bilan-pdf-root';
+  R.style.cssText='position:absolute;left:-99999px;top:0;width:780px;background:#fff;color:#1e2333;font-family:Inter,Arial,sans-serif;padding:34px;box-sizing:border-box;line-height:1.5;';
+  R.innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;border-bottom:2px solid #2563eb;padding-bottom:16px;margin-bottom:22px">
+      <img src="./assets/logo-bakou.png" style="width:46px;height:46px;border-radius:11px;object-fit:cover">
+      <div><div style="font-size:24px;font-weight:800;letter-spacing:1px">BAK<span style="color:#2563eb">OU</span> — Bilan global ${yr}</div>
+      <div style="font-size:11px;color:#8a93a8">Généré le ${new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})} · Capital initial ${CAP>0?'$'+CAP.toLocaleString():'—'} · Capital estimé ${CAP>0?'$'+Math.round(CAP+net).toLocaleString():'—'}</div></div>
+      <div style="margin-left:auto;text-align:center"><div style="font-size:9px;color:#8a93a8;text-transform:uppercase;letter-spacing:1px">BAKOU Score</div><div style="font-size:30px;font-weight:800;color:#2563eb">${n?bakouScore:'—'}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px">
+      ${tile('Net P&L',M(net),net>=0?'#0a8a5f':'#c72c46')}
+      ${tile('Win Rate',wr.toFixed(1)+'%')}
+      ${tile('Profit Factor',isFinite(pf)?pf.toFixed(2):'∞')}
+      ${tile('Total trades',n)}
+      ${tile('Trade gagnant moy.','+'+M(avgW).slice(1),'#0a8a5f')}
+      ${tile('Trade perdant moy.','-'+M(avgL).slice(1),'#c72c46')}
+      ${tile('Ratio gain/perte',payoff?payoff.toFixed(2):'—')}
+      ${tile('Espérance / trade',M(expc),expc>=0?'#0a8a5f':'#c72c46')}
+      ${tile('Total R',(totalR>=0?'+':'')+totalR.toFixed(2)+'R')}
+      ${tile('Max Drawdown','-'+ddPct.toFixed(1)+'%','#c72c46')}
+      ${tile('Jours de trading',tradingDays)}
+      ${tile('Note moyenne',(n?(TS.reduce((a,t)=>a+(parseInt(t.star)||0),0)/n).toFixed(1):'—')+'★')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px">
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Statistiques détaillées</div>
+        ${kv('Gagnants / Perdants / BE',wins.length+' / '+losses.length+' / '+bes.length)}
+        ${kv('Volume total (lots)',TS.reduce((a,t)=>a+parseFloat(t.lot_size||0),0).toFixed(2))}
+        ${kv('Commissions totales',M(-comm).replace('+','-'))}
+        ${kv('Plus gros gain','+'+M(largestW).slice(1))}
+        ${kv('Plus grosse perte',M(largestL))}
+        ${kv('Max gains consécutifs',mcw)}
+        ${kv('Max pertes consécutives',mcl)}
+        ${kv('Durée moy. (tous)',HM(holdAll))}
+        ${kv('Durée moy. (gagnants)',HM(holdW))}
+        ${kv('Durée moy. (perdants)',HM(holdL))}
+      </div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Périodes & R-multiples</div>
+        ${kv('Meilleur mois',best!==null?M(monthPnl[best])+' ('+MN3[best]+')':'—')}
+        ${kv('Pire mois',worst!==null?M(monthPnl[worst])+' ('+MN3[worst]+')':'—')}
+        ${kv('Moyenne / mois actif',M(avgMonth))}
+        ${kv('Jours gagnants / perdants',winDays+' / '+lossDays)}
+        ${kv('P&L journalier moyen',tradingDays?M(net/tradingDays):'—')}
+        ${kv('R planifié moyen',plannedR?plannedR.toFixed(2)+'R':'—')}
+        ${kv('R réalisé moyen',(realizedR>=0?'+':'')+realizedR.toFixed(2)+'R')}
+        ${kv('Recovery factor',maxDD>0?recovery.toFixed(2):'—')}
+        ${kv('Consistency',Math.round(consistency)+'/100')}
+        ${kv('CA brut',M(TS.reduce((a,t)=>a+parseFloat(t.ca_amt||t.pnl_amt||0),0)))}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px">
+      <div style="border:1px solid #e4e7ef;border-radius:12px;padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📈 Courbe de capital ${yr}</div><canvas id="pdf-eq" width="690" height="190"></canvas></div>
+      <div style="border:1px solid #e4e7ef;border-radius:12px;padding:14px"><div style="font-weight:700;font-size:12px;margin-bottom:8px">📊 P&L net par mois</div><canvas id="pdf-mon" width="690" height="180"></canvas></div>
+    </div>
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:22px;margin-bottom:22px;align-items:center">
+      <div style="text-align:center"><div style="font-weight:700;font-size:12px;margin-bottom:6px">◈ BAKOU Score : ${n?bakouScore:'—'}/100</div><canvas id="pdf-radar" width="230" height="230"></canvas></div>
+      <div>${scLabels.map((l,i)=>kv(l,scVals[i]+'/100')).join('')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px">
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Performance par jour</div>${tbl(['Jour','N','WR','Net'],rowsOf(agg(t=>[t.day]),['Lundi','Mardi','Mercredi','Jeudi','Vendredi']))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Performance par session</div>${tbl(['Session','N','WR','Net'],rowsOf(agg(t=>[t.sess])))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Top paires</div>${tbl(['Paire','N','WR','Net'],rowsOf(agg(t=>[t.pair])))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Par setup</div>${tbl(['Setup','N','WR','Net'],rowsOf(agg(t=>jp(t.strats))))}</div>
+    </div>
+    <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Bilan mensuel ${yr}</div>${tbl(['Mois','Trades','W/L','WR','Net P&L'],monthTable||'<tr><td colspan="5" style="color:#8a93a8">—</td></tr>')}</div>
+    <div style="margin-top:22px;padding-top:12px;border-top:1px solid #e4e7ef;font-size:9px;color:#8a93a8;text-align:center">BAKOU — Journal de trading · Bilan généré automatiquement · Données du compte « ${(ACTIVE_ACCOUNT&&ACTIVE_ACCOUNT.name)||'—'} »</div>
+  `;
+  document.body.appendChild(R);
+  try{
+    const eqRun=(()=>{let r=CAP||0;return MN3.map((_,m)=>{r+=(monthPnl[m]||0);return Math.round(r);});})();
+    new Chart(R.querySelector('#pdf-eq'),{type:'line',data:{labels:MN3,datasets:[{data:eqRun,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.10)',borderWidth:2,fill:true,tension:0.3,pointRadius:0}]},options:{animation:false,responsive:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:9},callback:v=>'$'+v.toLocaleString()}}}}});
+    new Chart(R.querySelector('#pdf-mon'),{type:'bar',data:{labels:MN3,datasets:[{data:MN3.map((_,m)=>Math.round(monthPnl[m]||0)),backgroundColor:MN3.map((_,m)=>(monthPnl[m]||0)>=0?'#0f9d6e':'#e0405a')}]},options:{animation:false,responsive:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:9},callback:v=>'$'+v.toLocaleString()}}}}});
+    new Chart(R.querySelector('#pdf-radar'),{type:'radar',data:{labels:scLabels,datasets:[{data:scVals,backgroundColor:'rgba(37,99,235,0.16)',borderColor:'#2563eb',borderWidth:2,pointRadius:2}]},options:{animation:false,responsive:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{display:false,stepSize:20},pointLabels:{font:{size:9}}}}}});
+  }catch(e){console.warn('pdf charts',e);}
+  setTimeout(()=>{
+    html2canvas(R,{scale:2,backgroundColor:'#ffffff',windowWidth:780,logging:false}).then(canvas=>{
+      const jsPDF=window.jspdf.jsPDF;
+      const pdf=new jsPDF('p','mm','a4');
+      const pw=210, ph=297, imgW=pw, imgH=canvas.height*pw/canvas.width;
+      const img=canvas.toDataURL('image/jpeg',0.92);
+      let heightLeft=imgH, pos=0;
+      pdf.addImage(img,'JPEG',0,pos,imgW,imgH); heightLeft-=ph;
+      while(heightLeft>0){ pos-=ph; pdf.addPage(); pdf.addImage(img,'JPEG',0,pos,imgW,imgH); heightLeft-=ph; }
+      pdf.save('BAKOU-bilan-'+yr+'.pdf');
+      R.remove();
+      if(typeof toast==='function')toast('✅ Bilan PDF téléchargé');
+    }).catch(e=>{console.error('bilan pdf',e);R.remove();if(typeof toast==='function')toast('❌ Erreur PDF : '+e.message);});
+  }, 400);
+}
 function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
   DC('day');DC('sess');DC('close');DC('hour');
