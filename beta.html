@@ -3672,6 +3672,11 @@ function downloadBilanPDF(){
   const th='style="text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:#8a93a8;padding:7px 8px;border-bottom:1px solid #e4e7ef"';
   const td='style="padding:7px 8px;border-bottom:1px solid #eef0f5;font-size:11px"';
   const tbl=(head,rows)=>`<table style="width:100%;border-collapse:collapse"><thead><tr>${head.map(h=>`<th ${th}>${h}</th>`).join('')}</tr></thead><tbody style="[TD]">${rows}</tbody></table>`.replace('[TD]','');
+  const psychAgg=field=>{const m={};TS.forEach(t=>{let a;try{a=JSON.parse(t[field]||'[]');}catch(e){a=[];}a.forEach(x=>{if(!x)return;if(!m[x])m[x]={n:0,amt:0};m[x].n++;m[x].amt+=parseFloat(t.pnl_amt||0);});});return m;};
+  const errG=psychAgg('psych_errors'), goodG=psychAgg('psych_good');
+  const psychRows=(g,mode)=>{const keys=Object.keys(g).sort(mode==='cost'?(a,b)=>g[a].amt-g[b].amt:(a,b)=>g[b].n-g[a].n);return keys.map(k=>`<tr><td>${k}</td><td>${g[k].n}</td><td>${(g[k].n/n*100).toFixed(0)}%</td><td style="color:${g[k].amt>=0?'#0a8a5f':'#c72c46'};text-align:right">${M(g[k].amt)}</td></tr>`).join('')||'<tr><td colspan="4" style="color:#8a93a8">Aucune donnée taguée</td></tr>';};
+  const psychByMonth=field=>MN3.map((mn,m)=>{const mt=TS.filter(t=>parseInt(t.trade_month)===m);const em={};mt.forEach(t=>{let a;try{a=JSON.parse(t[field]||'[]');}catch(e){a=[];}a.forEach(x=>{if(!x)return;if(!em[x])em[x]={n:0,amt:0};em[x].n++;em[x].amt+=parseFloat(t.pnl_amt||0);});});const keys=Object.keys(em);if(!keys.length)return '';const tot=keys.reduce((a,k)=>a+em[k].amt,0);const list=keys.sort((a,b)=>em[a].amt-em[b].amt).map(k=>`${k} <span style="color:#8a93a8">(${em[k].n}× · ${M(em[k].amt)})</span>`).join(' &nbsp;·&nbsp; ');return `<tr><td style="white-space:nowrap;vertical-align:top"><b>${mn}</b></td><td style="text-align:right;white-space:nowrap;vertical-align:top;color:${tot>=0?'#0a8a5f':'#c72c46'}">${M(tot)}</td><td style="font-size:10px;vertical-align:top;line-height:1.7">${list}</td></tr>`;}).filter(Boolean).join('');
+  const errByMonth=psychByMonth('psych_errors'), goodByMonth=psychByMonth('psych_good');
   const R=document.createElement('div'); R.id='bilan-pdf-root';
   R.style.cssText='position:absolute;left:-99999px;top:0;width:780px;background:#fff;color:#1e2333;font-family:Inter,Arial,sans-serif;padding:34px;box-sizing:border-box;line-height:1.5;';
   R.innerHTML=`
@@ -3735,6 +3740,19 @@ function downloadBilanPDF(){
       <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Top paires</div>${tbl(['Paire','N','WR','Net'],rowsOf(agg(t=>[t.pair])))}</div>
       <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Par setup</div>${tbl(['Setup','N','WR','Net'],rowsOf(agg(t=>jp(t.strats))))}</div>
     </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px">
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Par confluence</div>${tbl(['Confluence','N','WR','Net'],rowsOf(agg(t=>jp(t.confs))))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Par pattern</div>${tbl(['Pattern','N','WR','Net'],rowsOf(agg(t=>jp(t.pats))))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Par analyse fonda</div>${tbl(['Fonda','N','WR','Net'],rowsOf(agg(t=>t.fonda?[t.fonda+'/5']:[])))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Par note (★)</div>${tbl(['Note','N','WR','Net'],rowsOf(agg(t=>t.star?[t.star+'★']:[])))}</div>
+    </div>
+    <div style="border-top:2px solid #c72c46;padding-top:14px;margin-bottom:12px"><div style="font-weight:800;font-size:16px;color:#c72c46">🧠 Psychologie — ce qui te coûte &amp; ce qui te fait gagner</div><div style="font-size:10px;color:#8a93a8">Le « coût » = P&L net cumulé des trades où l'erreur a été taguée. C'est là que tu progresses le plus vite.</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:18px">
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#c72c46">⚠ Erreurs psychologiques (les plus coûteuses)</div>${tbl(['Erreur','Nb','% trades','Coût'],psychRows(errG,'cost'))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#0a8a5f">✅ Bonne psychologie</div>${tbl(['Comportement','Nb','% trades','P&L'],psychRows(goodG,'freq'))}</div>
+    </div>
+    <div style="margin-bottom:20px"><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#c72c46">⚠ Erreurs psychologiques — mois par mois ${yr}</div>${tbl(['Mois','Coût','Détail des erreurs (nb × · coût)'],errByMonth||'<tr><td colspan="3" style="color:#8a93a8;padding:10px">Aucune erreur psychologique taguée cette année 👏</td></tr>')}</div>
+    <div style="margin-bottom:22px"><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#0a8a5f">✅ Bonne psychologie — mois par mois ${yr}</div>${tbl(['Mois','P&L','Détail (nb × · P&L)'],goodByMonth||'<tr><td colspan="3" style="color:#8a93a8;padding:10px">Aucun bon comportement tagué — pense à cocher tes bonnes attitudes !</td></tr>')}</div>
     <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#2563eb">Bilan mensuel ${yr}</div>${tbl(['Mois','Trades','W/L','WR','Net P&L'],monthTable||'<tr><td colspan="5" style="color:#8a93a8">—</td></tr>')}</div>
     <div style="margin-top:22px;padding-top:12px;border-top:1px solid #e4e7ef;font-size:9px;color:#8a93a8;text-align:center">BAKOU — Journal de trading · Bilan généré automatiquement · Données du compte « ${(ACTIVE_ACCOUNT&&ACTIVE_ACCOUNT.name)||'—'} »</div>
   `;
