@@ -544,7 +544,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .lg-btn{background:linear-gradient(135deg,#2563eb,#1d4ed8) !important;}
 .lg-tab.active{border-color:#2563eb !important;background:#eaf1ff !important;color:#1d4ed8 !important;}
 .hm-c{color:#fff;}
-.toast{background:#1e2333 !important;color:#1e2333 !important;}
+.toast{background:#1e2333 !important;color:#fff !important;border:1px solid #2b3350 !important;box-shadow:0 12px 30px -12px rgba(30,35,51,.5) !important;}
 /* Logo image (remplace le monogramme BK par le logo bleu) */
 .side-brand .logo-i,.logo-i{background:#0b1020 !important;padding:0 !important;overflow:hidden;box-shadow:0 6px 18px -8px rgba(37,99,235,.55) !important;}
 .logo-i img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
@@ -713,9 +713,9 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <button class="lg-tab active" id="lg-tab-in" role="tab" aria-selected="true" onclick="lgMode('in')">Se connecter</button>
       <button class="lg-tab" id="lg-tab-up" role="tab" aria-selected="false" onclick="lgMode('up')">Créer un compte</button>
     </div>
-    <input type="email" id="lg-email" placeholder="Email" autocomplete="username" aria-label="Email">
+    <input type="email" id="lg-email" placeholder="Email" autocomplete="username" aria-label="Email" onkeydown="if(event.key==='Enter'){LG_MODE==='in'?doLogin():doSignup();}">
     <input type="password" id="lg-pass" placeholder="Mot de passe" autocomplete="current-password" aria-label="Mot de passe" onkeydown="if(event.key==='Enter'){LG_MODE==='in'?doLogin():doSignup();}">
-    <input type="password" id="lg-pass2" placeholder="Confirme le mot de passe" aria-label="Confirmation du mot de passe" style="display:none" onkeydown="if(event.key==='Enter')doSignup()">
+    <input type="password" id="lg-pass2" placeholder="Confirme le mot de passe" autocomplete="new-password" aria-label="Confirmation du mot de passe" style="display:none" onkeydown="if(event.key==='Enter')doSignup()">
     <div id="lg-beta" style="display:none;font-size:11px;color:var(--grb);background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:8px;margin-bottom:10px">🎁 Accès bêta gratuit — toutes les fonctionnalités débloquées</div>
     <div id="lg-err" class="lg-err" aria-live="polite"></div>
     <button class="lg-btn" id="lg-btn" onclick="LG_MODE==='in'?doLogin():doSignup()">Se connecter</button>
@@ -967,6 +967,8 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <button onclick="exportCSV()" title="Exporter tous les trades de l'année en CSV (Excel)" style="padding:5px 10px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);color:var(--grb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">⤓ CSV</button>
         <button onclick="document.getElementById('csv-import-input').click()" title="Importer des trades depuis un fichier CSV" style="padding:5px 10px;border-radius:7px;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.35);color:var(--bb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">⤒ CSV</button>
         <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
+        <button onclick="document.getElementById('mt5-import-input').click()" title="Importer un rapport MT5 / FTMO (.xlsx) — remplace les trades du compte actif" style="padding:5px 10px;border-radius:7px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:var(--gb);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">⤒ MT5 / FTMO</button>
+        <input type="file" id="mt5-import-input" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="display:none" onchange="importMT5(event)">
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(37,99,235,0.2);border:1px solid var(--be);color:var(--be);font-size:9px;cursor:pointer;font-family:'Orbitron',sans-serif;letter-spacing:1px">TOUT</button>
@@ -1183,6 +1185,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <input type="file" id="f-av" accept="image/*" style="display:none" onchange="prevUp(event,'av')">
       <input type="file" id="f-co" accept="image/*" style="display:none" onchange="prevUp(event,'co')">
       <input type="file" id="f-ap" accept="image/*" style="display:none" onchange="prevUp(event,'ap')">
+      <button class="btn-ai" id="ai-parse-btn" onclick="aiParseTrade()">✨ Pré-remplir depuis la capture (IA)</button>
     </div>
 
     <div style="display:flex;gap:10px">
@@ -2737,7 +2740,8 @@ function renderTable(){
   [...filtered].reverse().forEach((t,i)=>{
     const cls=t.result==='WIN'?'win':t.result==='LOSS'?'loss':'be-r';
     const bc=pbc(t.pair);
-    const pnlStr=t.pnl_amt!==0?(t.pnl_amt>0?'+':'')+'$'+Math.abs(t.pnl_amt).toFixed(2):'$0';
+    const pv0=parseFloat(t.pnl_amt||0);
+    const pnlStr=pv0!==0?(pv0>0?'+':'-')+'$'+Math.abs(pv0).toFixed(2):'$0';
     const row=document.createElement('tr');
     row.innerHTML=`
       <td style="color:var(--td);font-family:'Share Tech Mono',monospace;font-size:10px">#${String(filtered.length-i).padStart(3,'0')}</td>
@@ -2803,7 +2807,7 @@ function exportCSV(){
   const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob), a=document.createElement('a');
   const nm=(ACTIVE_ACCOUNT&&ACTIVE_ACCOUNT.name?ACTIVE_ACCOUNT.name.replace(/[^a-z0-9]/gi,'_'):'compte');
-  a.href=url; a.download='trackrecord_'+nm+'_'+GLOBAL_YEAR+'.csv';
+  a.href=url; a.download='bakou_'+nm+'_'+GLOBAL_YEAR+'.csv';
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   toast('✅ '+rows.length+' trades exportés en CSV');
 }
@@ -2842,10 +2846,10 @@ async function importCSV(ev){
     return o;
   });
   try{
-    batch=batch.map(function(r){return Object.assign({},r,ownExtra());});
-    let { error } = await sb.from('trades').insert(batch);
+    const batchOwned=batch.map(function(r){return Object.assign({},r,ownExtra());});
+    let { error } = await sb.from('trades').insert(batchOwned);
     if(error){
-      const slim=batch.map(({psych_errors,psych_good,photo_av,photo_co,photo_ap,...r})=>r);
+      const slim=batchOwned.map(({psych_errors,psych_good,photo_av,photo_co,photo_ap,...r})=>r);
       slim.forEach(function(c){delete c.owner_uuid;});
       const r2=await sb.from('trades').insert(slim); error=r2.error;
     }
@@ -2937,7 +2941,7 @@ function stats(){
   const adm=tot>0?TY.reduce((s,t)=>s+(parseFloat(t.duration_mins||0)),0)/tot:0;
   const ads=adm>0?(()=>{const h=Math.floor(adm/60),m=Math.round(adm%60);return h>0?h+'h '+m+'m':m+'m';})():null;
   const sa=TY.filter(t=>t.star>0);const as=sa.length>0?(sa.reduce((s,t)=>s+(t.star||0),0)/sa.length).toFixed(1):null;
-  let pk=CAP,cp=CAP,dd=0;TY.forEach(t=>{cp+=t.pnl_amt||0;if(cp>pk)pk=cp;const d=(cp-pk)/pk*100;if(d<dd)dd=d;});
+  let pk=CAP,cp=CAP,dd=0;TY.forEach(t=>{cp+=parseFloat(t.pnl_amt||0);if(cp>pk)pk=cp;const d=pk>0?(cp-pk)/pk*100:0;if(d<dd)dd=d;});
   return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd};
 }
 
@@ -4151,6 +4155,7 @@ let SELECTED_MONTH = null;
 function changeGlobalYear(dir){
   GLOBAL_YEAR += dir;
   SELECTED_YEAR = GLOBAL_YEAR;
+  calInit(); CAL_Y = GLOBAL_YEAR; // le calendrier P&L suit l'année globale
   document.getElementById('global-year-display').textContent = GLOBAL_YEAR;
   document.getElementById('journal-year-label').textContent = GLOBAL_YEAR;
   JOURNAL_MONTH_FILTER = null;
@@ -4708,7 +4713,7 @@ document.addEventListener('click',e=>{if(e.target.id==='editModal')closeEditModa
 const mn_pdf=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
 function buildReportHTML(title, subtitle, kpis, sections){
-  const acc = ACTIVE_ACCOUNT || {name:'TrackRecord PRO', color:'#2563eb'};
+  const acc = ACTIVE_ACCOUNT || {name:'BAKOU', color:'#2563eb'};
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -4724,12 +4729,12 @@ function buildReportHTML(title, subtitle, kpis, sections){
     .page{page-break-after:always;}
   }
   .print-btn{position:fixed;top:16px;right:16px;background:#2563eb;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;z-index:999;box-shadow:0 4px 12px rgba(37,99,235,0.4);}
-  .header{background:linear-gradient(135deg,var(--bg),var(--card));color:#fff;padding:32px;border-bottom:3px solid #2563eb;}
+  .header{background:linear-gradient(135deg,#0d0d14,#171c2e);color:#fff;padding:32px;border-bottom:3px solid #2563eb;}
   .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
   .logo{display:flex;align-items:center;gap:12px;}
-  .logo-box{width:44px;height:44px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#000;}
+  .logo-box{width:44px;height:44px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;}
   .logo-text{font-size:18px;font-weight:700;letter-spacing:3px;color:#fff;}
-  .logo-sub{font-size:9px;color:#475569;letter-spacing:3px;}
+  .logo-sub{font-size:9px;color:#8b93ad;letter-spacing:3px;}
   .confidential{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#f87171;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:2px;}
   .report-title{font-size:22px;font-weight:700;color:#2563eb;margin-bottom:4px;}
   .report-sub{font-size:11px;color:#94a3b8;letter-spacing:1px;}
@@ -4737,17 +4742,17 @@ function buildReportHTML(title, subtitle, kpis, sections){
   .account-dot{width:8px;height:8px;border-radius:50%;background:${acc.color||'#2563eb'};}
   .account-name{font-size:11px;color:#2563eb;font-weight:700;}
   .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;padding:24px 32px;background:#f8fafc;}
-  .kpi{background:#fff;border:1px solid #1e2333;border-radius:10px;padding:14px;border-top:3px solid #2563eb;}
+  .kpi{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px;border-top:3px solid #2563eb;}
   .kpi-label{font-size:9px;letter-spacing:2px;color:#94a3b8;text-transform:uppercase;margin-bottom:6px;}
   .kpi-value{font-size:22px;font-weight:700;}
   .kpi.green .kpi-value{color:#10b981;}
   .kpi.red .kpi-value{color:#ef4444;}
   .kpi.blue .kpi-value{color:#2563eb;}
   .kpi.gold .kpi-value{color:#f59e0b;}
-  .section{padding:24px 32px;border-bottom:1px solid #1e2333;}
+  .section{padding:24px 32px;border-bottom:1px solid #e2e8f0;}
   .section-title{font-size:12px;font-weight:700;color:#20202d;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #2563eb;display:inline-block;}
   table{width:100%;border-collapse:collapse;font-size:12px;}
-  th{background:var(--card);color:#94a3b8;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:8px 10px;text-align:left;}
+  th{background:#f1f5f9;color:#5b6478;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:8px 10px;text-align:left;}
   td{padding:8px 10px;border-bottom:1px solid #f1f5f9;}
   tr:nth-child(even) td{background:#f8fafc;}
   .win{color:#10b981;font-weight:700;}
@@ -4757,7 +4762,7 @@ function buildReportHTML(title, subtitle, kpis, sections){
   .badge.win{background:rgba(16,185,129,0.1);color:#10b981;}
   .badge.loss{background:rgba(239,68,68,0.1);color:#ef4444;}
   .badge.be{background:rgba(245,158,11,0.1);color:#f59e0b;}
-  .footer{background:var(--bg);color:#475569;padding:16px 32px;font-size:10px;display:flex;justify-content:space-between;margin-top:auto;}
+  .footer{background:#0d0d14;color:#8b93ad;padding:16px 32px;font-size:10px;display:flex;justify-content:space-between;margin-top:auto;}
   .generated{font-size:9px;color:#94a3b8;margin-top:4px;}
   .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
   .bar-label{width:100px;font-size:11px;color:#475569;flex-shrink:0;}
@@ -4779,8 +4784,8 @@ function buildReportHTML(title, subtitle, kpis, sections){
 <div class="header">
   <div class="header-top">
     <div class="logo">
-      <div class="logo-box">TR</div>
-      <div><div class="logo-text">TRACKRECORD <span style="color:#2563eb">PRO</span></div><div class="logo-sub">PROFESSIONAL TRADING JOURNAL</div></div>
+      <div class="logo-box">BK</div>
+      <div><div class="logo-text">BAK<span style="color:#3b82f6">OU</span></div><div class="logo-sub">JOURNAL DE TRADING PROFESSIONNEL</div></div>
     </div>
     <div class="confidential">🔒 CONFIDENTIEL</div>
   </div>
@@ -4795,7 +4800,7 @@ function buildReportHTML(title, subtitle, kpis, sections){
 ${sections}
 
 <div class="footer">
-  <div>TrackRecord PRO · Rapport de performance · Données confidentielles</div>
+  <div>BAKOU · Rapport de performance · Données confidentielles</div>
   <div>${acc.name} · ${title}</div>
 </div>
 </body></html>`;
@@ -4892,11 +4897,11 @@ function genReport(mt, titleMain, titleSub){
 
   // Notes
   const notesWithTrades=mt.filter(t=>t.notes&&t.notes.trim());
-  const notesSection=notesWithTrades.length?`<div class="section"><div class="section-title">📝 Notes des Trades</div>${notesWithTrades.map((t,i)=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');return`<div style="margin-bottom:12px;padding:14px;background:#171722;border-radius:8px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;gap:14px;flex-wrap:wrap"><b style="color:#1e2333">${t.pair}</b><span style="color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'}">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'}">${net>=0?'+':''}$${net.toFixed(2)}</span><span>${t.duration||'—'}</span>${strs[0]?`<span style="color:#2563eb">${strs[0]}</span>`:''}</div><div style="font-size:11px;color:#cbd5e1;white-space:pre-line;line-height:1.6">Note ${i+1} : ${t.notes.trim()}</div></div>`}).join('')}</div>`:'';
+  const notesSection=notesWithTrades.length?`<div class="section"><div class="section-title">📝 Notes des Trades</div>${notesWithTrades.map((t,i)=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');return`<div style="margin-bottom:12px;padding:14px;background:#f8fafc;border-radius:8px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="font-size:10px;color:#64748b;margin-bottom:8px;display:flex;gap:14px;flex-wrap:wrap"><b style="color:#1e2333">${t.pair}</b><span style="color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'}">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'}">${net>=0?'+':''}$${net.toFixed(2)}</span><span>${t.duration||'—'}</span>${strs[0]?`<span style="color:#2563eb">${strs[0]}</span>`:''}</div><div style="font-size:11px;color:#334155;white-space:pre-line;line-height:1.6">Note ${i+1} : ${t.notes.trim()}</div></div>`}).join('')}</div>`:'';
 
   // Photos setups
   const tradesWithPhotos=mt.filter(t=>t.photo_av||t.photo_co||t.photo_ap);
-  const photosSection=tradesWithPhotos.length?`<div class="section"><div class="section-title">📊 Graphiques des Setups</div>${tradesWithPhotos.map(t=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');const pics=[{k:'photo_av',l:'Avant — Analyse'},{k:'photo_co',l:'En cours — Gestion'},{k:'photo_ap',l:'Après — Résultat'}].filter(p=>t[p.k]);return`<div style="margin-bottom:20px;padding:16px;background:#171722;border-radius:10px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><b style="color:#1e2333;font-size:13px">${t.pair}</b><span style="color:${t.dir==='LONG'?'#10b981':'#ef4444'};font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span><span style="background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'};font-size:12px;font-weight:700">${net>=0?'+':''}$${net.toFixed(2)}</span><span style="color:#94a3b8;font-size:10px">${t.sess||''} · ${t.duration||''}</span>${strs[0]?`<span style="background:rgba(37,99,235,0.15);color:#2563eb;padding:2px 8px;border-radius:20px;font-size:10px">${strs[0]}</span>`:''}</div><div style="display:grid;grid-template-columns:repeat(${pics.length},1fr);gap:10px">${pics.map(p=>`<div><div style="font-size:9px;letter-spacing:1px;color:#64748b;text-transform:uppercase;margin-bottom:5px">${p.l}</div><img src="${t[p.k]}" style="width:100%;border-radius:6px;border:1px solid #2b2b3d;display:block"></div>`).join('')}</div></div>`;}).join('')}</div>`:'';
+  const photosSection=tradesWithPhotos.length?`<div class="section"><div class="section-title">📊 Graphiques des Setups</div>${tradesWithPhotos.map(t=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');const pics=[{k:'photo_av',l:'Avant — Analyse'},{k:'photo_co',l:'En cours — Gestion'},{k:'photo_ap',l:'Après — Résultat'}].filter(p=>t[p.k]);return`<div style="margin-bottom:20px;padding:16px;background:#f8fafc;border-radius:10px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><b style="color:#1e2333;font-size:13px">${t.pair}</b><span style="color:${t.dir==='LONG'?'#10b981':'#ef4444'};font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span><span style="background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${t.result}</span><span style="font-family:monospace;color:${net>=0?'#10b981':'#ef4444'};font-size:12px;font-weight:700">${net>=0?'+':''}$${net.toFixed(2)}</span><span style="color:#94a3b8;font-size:10px">${t.sess||''} · ${t.duration||''}</span>${strs[0]?`<span style="background:rgba(37,99,235,0.15);color:#2563eb;padding:2px 8px;border-radius:20px;font-size:10px">${strs[0]}</span>`:''}</div><div style="display:grid;grid-template-columns:repeat(${pics.length},1fr);gap:10px">${pics.map(p=>`<div><div style="font-size:9px;letter-spacing:1px;color:#64748b;text-transform:uppercase;margin-bottom:5px">${p.l}</div><img src="${t[p.k]}" style="width:100%;border-radius:6px;border:1px solid #e2e8f0;display:block"></div>`).join('')}</div></div>`;}).join('')}</div>`:'';
 
   // Psychologie du mois
   const errMap={};const goodMap={};
@@ -5520,11 +5525,12 @@ function lgMode(m){
   document.getElementById('lg-beta').style.display=isUp?'':'none';
   document.getElementById('lg-forgot').style.display=isUp?'none':'';
   document.getElementById('lg-btn').textContent=isUp?'Créer mon compte gratuit':'Se connecter';
-  document.getElementById('lg-err').textContent='';
+  const _e=document.getElementById('lg-err');_e.textContent='';_e.style.color='';
 }
 async function doSignup(){
   const email=document.getElementById('lg-email').value.trim(),pass=document.getElementById('lg-pass').value,pass2=document.getElementById('lg-pass2').value;
   const err=document.getElementById('lg-err'),btn=document.getElementById('lg-btn');
+  err.style.color='';
   if(!email||!pass){err.textContent='Email et mot de passe requis';return;}
   if(pass.length<8){err.textContent='Mot de passe : 8 caractères minimum';return;}
   if(pass!==pass2){err.textContent='Les deux mots de passe ne correspondent pas';return;}
@@ -5546,6 +5552,7 @@ async function doSignup(){
 async function doLogin(){
   const email=document.getElementById('lg-email').value.trim(),pass=document.getElementById('lg-pass').value;
   const err=document.getElementById('lg-err'),btn=document.getElementById('lg-btn');
+  err.style.color='';
   if(!email||!pass){err.textContent='Email et mot de passe requis';return;}
   btn.disabled=true;btn.textContent='Connexion…';err.textContent='';
   try{
@@ -5558,9 +5565,11 @@ async function doLogin(){
 async function forgotPwd(){
   const email=document.getElementById('lg-email').value.trim();
   const err=document.getElementById('lg-err');
+  err.style.color='';
   if(!email){err.textContent='Renseigne ton email d\'abord';return;}
   const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
-  err.textContent=error?error.message:'📩 Email de réinitialisation envoyé';
+  if(error){err.textContent=error.message;}
+  else{err.style.color='var(--grb)';err.textContent='📩 Email de réinitialisation envoyé — clique sur le lien reçu';}
 }
 async function doLogout(){await sb.auth.signOut();location.reload();}
 async function startApp(){
@@ -5578,7 +5587,20 @@ async function boot(){
   hideLogin();
   await startApp();
 }
-try{sb.auth.onAuthStateChange((ev,s)=>{if(ev==='SIGNED_OUT'&&AUTH_REQUIRED)location.reload();});}catch(e){}
+try{sb.auth.onAuthStateChange(async (ev,s)=>{
+  if(ev==='PASSWORD_RECOVERY'){
+    // L'utilisateur arrive depuis le lien « mot de passe oublié » : on lui demande son nouveau mot de passe
+    setTimeout(async ()=>{
+      let np=prompt('🔑 Réinitialisation — choisis ton nouveau mot de passe (8 caractères minimum) :');
+      while(np!==null&&np.length<8){ np=prompt('❌ Trop court (8 caractères minimum). Nouveau mot de passe :'); }
+      if(np===null) return;
+      const {error}=await sb.auth.updateUser({password:np});
+      if(typeof toast==='function') toast(error?('❌ '+error.message):'✅ Mot de passe mis à jour — tu es connecté');
+    },400);
+    return;
+  }
+  if(ev==='SIGNED_OUT'&&AUTH_REQUIRED)location.reload();
+});}catch(e){}
 document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
