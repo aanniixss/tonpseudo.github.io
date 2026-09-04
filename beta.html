@@ -5673,7 +5673,7 @@ async function doSignup(){
       return;
     }
     if(data&&data.session){
-      OWNER_UUID=data.user.id;hideLogin();await startApp();showLoggedIn(data.session);
+      OWNER_UUID=data.user.id;hideLogin();showLoggedIn(data.session);await startApp();
     }else{
       lgMode('in');
       lgMsg('ok','🎉 <b>Compte créé !</b> 📩 Un email de confirmation vient de t\'être envoyé — clique sur le lien (regarde aussi tes <b>spams</b>), puis connecte-toi ici.');
@@ -5695,7 +5695,7 @@ async function doLogin(){
       if(String(error.message||'').toLowerCase().indexOf('not confirmed')>=0)lgShowResend(true);
       return;
     }
-    OWNER_UUID=data.user.id;hideLogin();await startApp();showLoggedIn(data.session);
+    OWNER_UUID=data.user.id;hideLogin();showLoggedIn(data.session);await startApp();
   }catch(e){console.error('login',e);lgMsg('err',lgErrFr(e));}
   finally{lgBusy(false,LG_MODE==='up'?'Créer mon compte gratuit':'Se connecter');}
 }
@@ -5721,8 +5721,10 @@ async function forgotPwd(){
 // ════ SESSION : connecté une fois, on le reste jusqu'à une déconnexion volontaire ════
 let USER_SIGNOUT=false;
 // Affiche partout que l'utilisateur est connecté (bouton déconnexion + bloc compte)
+let CURRENT_SESSION=null;
 function showLoggedIn(session){
-  const em=(session&&session.user&&session.user.email)||'';
+  if(session)CURRENT_SESSION=session;
+  const em=(CURRENT_SESSION&&CURRENT_SESSION.user&&CURRENT_SESSION.user.email)||'';
   const lo=document.getElementById('logout-btn'); if(lo)lo.style.display='';
   const box=document.getElementById('side-account'); if(box)box.classList.add('on');
   const ml=document.getElementById('side-account-mail'); if(ml){ml.textContent=em||'Mon compte';ml.title=em||'Mon compte';}
@@ -5738,16 +5740,39 @@ function hasStoredSession(){
   }catch(e){}
   return false;
 }
+// Efface les jetons de session stockes dans ce navigateur
+function clearStoredSession(){
+  try{
+    const ks=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0)ks.push(k);
+    }
+    ks.forEach(function(k){localStorage.removeItem(k);});
+  }catch(e){ console.warn('clearStoredSession',e); }
+}
 async function doLogout(){
   if(!confirm('Se déconnecter de BAKOU ?\n\nTes trades restent enregistrés, tu les retrouveras à la prochaine connexion.'))return;
   USER_SIGNOUT=true;
-  try{ await sb.auth.signOut(); }catch(e){ console.warn('signOut',e); }
+  const btns=document.querySelectorAll('#logout-btn,.side-acc-out');
+  btns.forEach(function(b){b.disabled=true;b.textContent='⏳';});
+  // Deconnexion serveur, mais sans jamais bloquer plus de 2,5 s :
+  // si le reseau ne repond pas, on se deconnecte quand meme localement.
+  try{
+    if(sb) await Promise.race([
+      sb.auth.signOut(),
+      new Promise(function(r){setTimeout(r,2500);})
+    ]);
+  }catch(e){ console.warn('signOut',e); }
+  clearStoredSession();   // garantit la deconnexion meme si le serveur n'a pas repondu
   location.reload();
 }
 async function startApp(){
-  updatePairs();
-  await initAccounts();
-  if(DRSK)document.getElementById('f-rsk').value=DRSK;
+  try{ updatePairs(); }catch(e){ console.error('updatePairs',e); }
+  try{ await initAccounts(); }
+  catch(e){ console.error('initAccounts',e); toast('⚠️ Chargement partiel — recharge la page'); }
+  try{ if(DRSK){const r=document.getElementById('f-rsk'); if(r)r.value=DRSK;} }catch(e){}
+  if(OWNER_UUID) showLoggedIn();   // filet : le bouton de deconnexion est toujours la
 }
 async function boot(){
   try{ if(new URLSearchParams(location.search).get('signup')==='1') lgMode('up'); }catch(e){}
