@@ -217,6 +217,15 @@ body::before{background:
   color:var(--be);border-color:rgba(37,99,235,.30);box-shadow:var(--glow);}
 .sidebar .tab.active::before{content:'';position:absolute;left:-1px;top:20%;bottom:20%;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--cy),var(--be));}
 .side-foot{margin-top:auto;font-size:8px;letter-spacing:1.5px;color:var(--td);text-align:center;padding-top:14px;border-top:1px solid var(--bo);font-family:'Orbitron',sans-serif;}
+.side-acc{display:none;align-items:center;gap:9px;margin-top:auto;padding:10px;border:1px solid var(--bo);border-radius:12px;background:var(--card2);}
+.side-acc.on{display:flex;}
+.side-acc-av{width:30px;height:30px;flex-shrink:0;border-radius:9px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.side-acc-i{flex:1;min-width:0;}
+.side-acc-l{font-size:8.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--td);}
+.side-acc-m{font-size:11px;color:var(--tp);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.side-acc-out{flex-shrink:0;background:rgba(224,64,90,.08);border:1px solid rgba(224,64,90,.3);color:#c72c46;border-radius:9px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;line-height:1;}
+.side-acc-out:hover{background:rgba(224,64,90,.16);}
+.side-acc.on + .side-foot{margin-top:12px;}
 .shell{flex:1;min-width:0;margin-left:var(--side-w);}
 
 /* ─── TOPBAR ─── */
@@ -819,6 +828,14 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <button class="side-action" onclick="rdNewTrade();rdToggleSidebar(false)"><span class="ti">＋</span> Nouveau trade</button>
       <button class="side-action" onclick="downloadBilanPDF();rdToggleSidebar(false)"><span class="ti">📥</span> Télécharger le bilan PDF</button>
       <button class="side-action" onclick="if(typeof exportAnnualPDF==='function')exportAnnualPDF();rdToggleSidebar(false)"><span class="ti">🖨️</span> Aperçu / Imprimer</button>
+    </div>
+    <div class="side-acc" id="side-account">
+      <div class="side-acc-av" id="side-account-av">?</div>
+      <div class="side-acc-i">
+        <div class="side-acc-l">Connecté</div>
+        <div class="side-acc-m" id="side-account-mail">—</div>
+      </div>
+      <button class="side-acc-out" onclick="doLogout()" title="Se déconnecter" aria-label="Se déconnecter">⎋ Quitter</button>
     </div>
     <div class="side-foot">◈ BAKOU · v4</div>
   </aside>
@@ -2262,7 +2279,14 @@ function rdNewTrade(){
 const SUPA_URL = 'https://nogfrvpvknaqlgfnrjol.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vZ2ZydnB2a25hcWxnZm5yam9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODczMzUsImV4cCI6MjA5MDY2MzMzNX0.t9RzZ2g8YqOR2dCZOyfl2AveA4BssQYzmW7LXxfn1i4';
 let sb = null;
-try{ sb = supabase.createClient(SUPA_URL, SUPA_KEY); }
+try{ sb = supabase.createClient(SUPA_URL, SUPA_KEY, {
+  auth:{
+    persistSession:true,      // la session reste dans le navigateur
+    autoRefreshToken:true,    // le jeton se renouvelle tout seul
+    detectSessionInUrl:true,  // liens de confirmation / reset pris en charge
+    storage:window.localStorage
+  }
+}); }
 catch(e){ console.error('SDK Supabase non chargé (CDN bloqué ?)', e); }
 let OWNER_ID = 'user_cmqlipot4'; // légacy — remplacé par un id dérivé de l'UUID pour les nouveaux clients (voir initAccounts)
 // ── AUTH ── passe AUTH_REQUIRED à true une fois le compte créé (dashboard Supabase)
@@ -5649,8 +5673,7 @@ async function doSignup(){
       return;
     }
     if(data&&data.session){
-      OWNER_UUID=data.user.id;hideLogin();await startApp();
-      const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';
+      OWNER_UUID=data.user.id;hideLogin();await startApp();showLoggedIn(data.session);
     }else{
       lgMode('in');
       lgMsg('ok','🎉 <b>Compte créé !</b> 📩 Un email de confirmation vient de t\'être envoyé — clique sur le lien (regarde aussi tes <b>spams</b>), puis connecte-toi ici.');
@@ -5672,8 +5695,7 @@ async function doLogin(){
       if(String(error.message||'').toLowerCase().indexOf('not confirmed')>=0)lgShowResend(true);
       return;
     }
-    OWNER_UUID=data.user.id;hideLogin();await startApp();
-    const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';
+    OWNER_UUID=data.user.id;hideLogin();await startApp();showLoggedIn(data.session);
   }catch(e){console.error('login',e);lgMsg('err',lgErrFr(e));}
   finally{lgBusy(false,LG_MODE==='up'?'Créer mon compte gratuit':'Se connecter');}
 }
@@ -5696,7 +5718,32 @@ async function forgotPwd(){
     lgMsg(error?'err':'ok',error?lgErrFr(error):'📩 Email de réinitialisation envoyé — vérifie ta boîte (et tes spams).');
   }catch(e){lgMsg('err',lgErrFr(e));}
 }
-async function doLogout(){await sb.auth.signOut();location.reload();}
+// ════ SESSION : connecté une fois, on le reste jusqu'à une déconnexion volontaire ════
+let USER_SIGNOUT=false;
+// Affiche partout que l'utilisateur est connecté (bouton déconnexion + bloc compte)
+function showLoggedIn(session){
+  const em=(session&&session.user&&session.user.email)||'';
+  const lo=document.getElementById('logout-btn'); if(lo)lo.style.display='';
+  const box=document.getElementById('side-account'); if(box)box.classList.add('on');
+  const ml=document.getElementById('side-account-mail'); if(ml){ml.textContent=em||'Mon compte';ml.title=em||'Mon compte';}
+  const av=document.getElementById('side-account-av'); if(av)av.textContent=(em?em.charAt(0):'?').toUpperCase();
+}
+// Un jeton de session est-il stocké dans ce navigateur ?
+function hasStoredSession(){
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.indexOf('sb-')===0&&k.indexOf('-auth-token')>0&&(localStorage.getItem(k)||'').length>20)return true;
+    }
+  }catch(e){}
+  return false;
+}
+async function doLogout(){
+  if(!confirm('Se déconnecter de BAKOU ?\n\nTes trades restent enregistrés, tu les retrouveras à la prochaine connexion.'))return;
+  USER_SIGNOUT=true;
+  try{ await sb.auth.signOut(); }catch(e){ console.warn('signOut',e); }
+  location.reload();
+}
 async function startApp(){
   updatePairs();
   await initAccounts();
@@ -5706,14 +5753,48 @@ async function boot(){
   try{ if(new URLSearchParams(location.search).get('signup')==='1') lgMode('up'); }catch(e){}
   if(!sb){ showLogin(); lgMsg('err','⚠️ <b>Le module de connexion n\'a pas pu se charger.</b> Vérifie ta connexion internet (ou désactive ton bloqueur de publicités), puis recharge la page.'); return; }
   try{
-    const {data:{session}}=await sb.auth.getSession();
-    if(session){OWNER_UUID=session.user.id;hideLogin();const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';}
+    let session=null;
+    try{ session=(await sb.auth.getSession()).data.session; }catch(e){ console.warn('getSession',e); }
+    // Un jeton existe mais la lecture a échoué (réseau) : on retente au lieu de déconnecter
+    if(!session&&hasStoredSession()){
+      await new Promise(r=>setTimeout(r,1000));
+      try{ session=(await sb.auth.getSession()).data.session; }catch(e){}
+    }
+    if(session){OWNER_UUID=session.user.id;hideLogin();showLoggedIn(session);}
   }catch(e){console.warn('auth getSession',e);}
   if(AUTH_REQUIRED&&!OWNER_UUID){showLogin();lgHealthCheck();return;}
   hideLogin();
   await startApp();
 }
-try{sb.auth.onAuthStateChange((ev,s)=>{if(ev==='SIGNED_OUT'&&AUTH_REQUIRED)location.reload();});}catch(e){}
+try{
+  sb.auth.onAuthStateChange(function(ev,s){
+    if(ev==='SIGNED_IN'||ev==='TOKEN_REFRESHED'||ev==='USER_UPDATED'){
+      if(s){ OWNER_UUID=s.user.id; showLoggedIn(s); }
+      return;
+    }
+    if(ev==='SIGNED_OUT'&&AUTH_REQUIRED){
+      if(USER_SIGNOUT)return;              // déconnexion voulue : le rechargement est déjà lancé
+      // Déconnexion NON demandée (jeton non renouvelé, coupure réseau) : on tente de récupérer
+      setTimeout(async function(){
+        try{
+          const {data:{session}}=await sb.auth.getSession();
+          if(session){ OWNER_UUID=session.user.id; showLoggedIn(session); return; }
+        }catch(e){}
+        showLogin();
+        lgMsg('info','Ta session a expiré. Reconnecte-toi une fois — ensuite tu resteras connecté.');
+      },1500);
+    }
+  });
+}catch(e){}
+// Au retour sur l'onglet (ou de connexion), on relance le renouvellement du jeton
+function keepSessionAlive(){
+  if(!sb||!OWNER_UUID)return;
+  try{ if(sb.auth.startAutoRefresh) sb.auth.startAutoRefresh(); }catch(e){}
+  try{ sb.auth.getSession().catch(function(){}); }catch(e){}
+}
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') keepSessionAlive(); });
+window.addEventListener('focus',keepSessionAlive);
+window.addEventListener('online',keepSessionAlive);
 document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
