@@ -3154,20 +3154,103 @@ async function _mt5DoImport(trades, replace){
 // ── STATS ──
 function stats(){
   const TY=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
-  const tot=TY.length,w=TY.filter(t=>t.result==='WIN').length,l=TY.filter(t=>t.result==='LOSS').length,b=TY.filter(t=>t.result==='BE').length;
-  const wr=tot>0?(w/tot*100).toFixed(1):null;
-  const tpnl=TY.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
-  const tpnlPct=TY.reduce((s,t)=>s+(parseFloat(t.pnl_pct||0)),0);
-  const wp=TY.filter(t=>t.result==='WIN').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
-  const lp=Math.abs(TY.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0));
-  const pf=lp>0?(wp/lp).toFixed(2):null;
-  const avgRR=tot>0?(TY.reduce((s,t)=>s+(t.rr||0),0)/tot).toFixed(1):null;
+  const P=perf(TY);
+  const tot=P.n,w=P.w,l=P.l,b=P.be;
+  const wr=tot>0?P.wrTous.toFixed(1):null;                 // BE au denominateur
+  const tpnl=P.net;
+  const tpnlPct=P.pctTotal;
+  const pf=P.perteL>0?P.pfEtiq.toFixed(2):null;            // fonde sur l'etiquette
+  const avgRR=tot>0?P.rrMoyen.toFixed(1):null;
   let mx=0,cu=0;TY.forEach(t=>{if(t.result==='WIN'){cu++;mx=Math.max(mx,cu);}else cu=0;});
-  const adm=tot>0?TY.reduce((s,t)=>s+(parseFloat(t.duration_mins||0)),0)/tot:0;
+  const adm=P.dureeMoy;
   const ads=adm>0?(()=>{const h=Math.floor(adm/60),m=Math.round(adm%60);return h>0?h+'h '+m+'m':m+'m';})():null;
   const sa=TY.filter(t=>t.star>0);const as=sa.length>0?(sa.reduce((s,t)=>s+(t.star||0),0)/sa.length).toFixed(1):null;
   let pk=CAP,cp=CAP,dd=0;TY.forEach(t=>{cp+=t.pnl_amt||0;if(cp>pk)pk=cp;const d=pk>0?(cp-pk)/pk*100:0;if(d<dd)dd=d;});
   return{tot,w,l,b,wr,tpnl,tpnlPct,pf,avgRR,maxStr:mx,ads,as,dd};
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  NOYAU DE CALCUL — une seule fonction mesure un ensemble de trades.
+//
+//  ATTENTION : deux notions coexistent historiquement dans l'application et
+//  ne donnent PAS le meme resultat des qu'un break even a un P&L non nul
+//  (cas courant : l'import MT5 classe en BE tout trade au net faible).
+//  Les deux sont exposees explicitement pour que chaque ecran conserve son
+//  comportement d'origine. Les unifier est une decision produit : voir la
+//  fonction perfNotes() plus bas.
+//
+//    Taux de reussite
+//      wrTous    = gagnants / total                  (les BE comptent au denominateur)
+//      wrDecides = gagnants / (gagnants + perdants)   (les BE sont exclus)
+//
+//    Profit factor
+//      pfEtiq  = somme signee des P&L des WIN / |somme signee des P&L des LOSS|
+//      pfAbs   = somme des |P&L| des WIN / somme des |P&L| des LOSS
+//      pfSigne = somme des P&L positifs / |somme des P&L negatifs|  (inclut les BE)
+// ════════════════════════════════════════════════════════════════════
+function perf(S){
+  S = Array.isArray(S) ? S : [];
+  const wins=[], losses=[], bes=[];
+  let net=0, gainW=0, perteL=0, gainAbsW=0, perteAbsL=0, gainPos=0, perteNeg=0;
+  let comm=0, lots=0, totalR=0, dureeTot=0, rrTot=0, pctTot=0;
+  for(let i=0;i<S.length;i++){
+    const t=S[i], v=parseFloat(t.pnl_amt)||0;
+    net+=v;
+    comm    += parseFloat(t.commission)||0;
+    lots    += parseFloat(t.lot_size)||0;
+    dureeTot+= parseFloat(t.duration_mins)||0;
+    rrTot   += parseFloat(t.rr)||0;
+    pctTot  += parseFloat(t.pnl_pct)||0;
+    totalR  += computeActualR(t);
+    if(v>0) gainPos+=v; else if(v<0) perteNeg+=Math.abs(v);
+    if(t.result==='WIN'){ wins.push(t);   gainW+=v;  gainAbsW+=Math.abs(v); }
+    else if(t.result==='LOSS'){ losses.push(t); perteL+=v; perteAbsL+=Math.abs(v); }
+    else bes.push(t);
+  }
+  perteL=Math.abs(perteL);
+  const n=S.length, w=wins.length, l=losses.length, decides=w+l;
+  const gainMoy = w?gainAbsW/w:0, perteMoy = l?perteAbsL/l:0;
+  const pf=(gain,perte)=> perte>0 ? gain/perte : (gain>0?Infinity:null);
+  return {
+    S,n,wins,losses,bes,w,l,be:bes.length,decides,
+    net, comm, lots, totalR, pctTotal:pctTot,
+    gainW, perteL, gainAbsW, perteAbsL, gainPos, perteNeg,
+    wrTous:    n?w/n*100:0,
+    wrDecides: decides?w/decides*100:0,
+    pfEtiq:  pf(gainW,perteL),
+    pfAbs:   pf(gainAbsW,perteAbsL),
+    pfSigne: pf(gainPos,perteNeg),
+    gainMoy, perteMoy,
+    ratioGainPerte: perteMoy>0 ? gainMoy/perteMoy : 0,
+    esperance: decides ? (w/decides)*gainMoy-(l/decides)*perteMoy : 0,
+    dureeMoy: n?dureeTot/n:0,
+    rrMoyen:  n?rrTot/n:0,
+    rMoyen:   n?totalR/n:0
+  };
+}
+// Regroupe des trades par critere et mesure chaque groupe avec perf().
+// Remplace les agregations refaites a la main dans chaque tableau.
+function grouperPar(S, cle){
+  const m=new Map();
+  (S||[]).forEach(t=>{
+    const k = (typeof cle==='function') ? cle(t) : t[cle];
+    if(k==null||k==='') return;
+    if(!m.has(k)) m.set(k,[]);
+    m.get(k).push(t);
+  });
+  const out=[];
+  m.forEach((trades,k)=>{ const P=perf(trades); P.cle=k; P.trades=trades; out.push(P); });
+  return out;
+}
+// Series de gains / pertes consecutifs, dans l'ordre chronologique
+function perfSeries(S){
+  const ord=[...S].sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+  let mg=0,mp=0,cg=0,cp=0;
+  ord.forEach(t=>{
+    if(t.result==='WIN'){cg++;cp=0;} else if(t.result==='LOSS'){cp++;cg=0;} else {cg=0;cp=0;}
+    if(cg>mg)mg=cg; if(cp>mp)mp=cp;
+  });
+  return {maxGains:mg, maxPertes:mp, ordonnes:ord};
 }
 
 function computeActualR(t){
@@ -3424,14 +3507,13 @@ function buildCalendar(){
 function buildTradeLog(){
   const rowsEl=document.getElementById('tl-tbody'); if(!rowsEl) return;
   const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
-  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),bes=TS.filter(t=>t.result==='BE'),n=TS.length;
-  const pnl=TS.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);
-  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
-  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
-  const pf=gl>0?(gp/gl):(gp>0?'∞':'—');
-  const wr=n?Math.round(wins.length/n*1000)/10:0;
-  const avgWin=wins.length?gp/wins.length:0, avgLoss=losses.length?gl/losses.length:0;
-  const awl=avgLoss>0?(avgWin/avgLoss).toFixed(2):(avgWin>0?'∞':'—');
+  const P=perf(TS);
+  const wins=P.wins, losses=P.losses, bes=P.bes, n=P.n;
+  const pnl=P.net;
+  const pf=P.pfAbs===null?'—':(P.pfAbs===Infinity?'∞':P.pfAbs);   // valeurs absolues
+  const wr=n?Math.round(P.wrTous*10)/10:0;                        // BE au denominateur
+  const avgWin=P.gainMoy, avgLoss=P.perteMoy;
+  const awl=avgLoss>0?P.ratioGainPerte.toFixed(2):(avgWin>0?'∞':'—');
   const set=(id,v,col)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(col!==undefined)e.style.color=col;}};
   set('tl-pnl',n?(pnl>=0?'+':'-')+'$'+Math.abs(Math.round(pnl)).toLocaleString():'—',pnl>=0?'var(--grb)':'var(--reb)');
   set('tl-count',n);
@@ -3703,14 +3785,12 @@ function buildRepCalendar(){
 function repPeriodStats(mf){
   let TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
   if(mf!=='') TS=TS.filter(t=>parseInt(t.trade_month)===parseInt(mf));
-  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),n=TS.length;
-  const pnl=TS.reduce((a,t)=>a+parseFloat(t.pnl_amt||0),0);
-  const gp=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
-  const gl=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
-  const dec=wins.length+losses.length, wr=dec?wins.length/dec*100:0;
-  const pf=gl>0?gp/gl:(gp>0?Infinity:0);
-  const avgW=wins.length?gp/wins.length:0, avgL=losses.length?gl/losses.length:0, wl=avgL>0?avgW/avgL:0;
-  const totalR=TS.reduce((a,t)=>a+computeActualR(t),0), exp=n?pnl/n:0;
+  const P=perf(TS);
+  const n=P.n, pnl=P.net;
+  const wr=P.wrDecides;                                    // BE exclus
+  const pf=P.pfAbs===null?0:P.pfAbs;                       // fonde sur les valeurs absolues
+  const wl=P.ratioGainPerte;
+  const totalR=P.totalR, exp=n?pnl/n:0;
   return {n,pnl,wr,pf,wl,totalR,exp};
 }
 function buildRepCompare(){
@@ -3746,13 +3826,13 @@ function buildRepCompare(){
 function buildRepWinsLoss(){
   const host=document.getElementById('wl-wins'); if(!host||!host.offsetParent)return;
   const TS=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
-  const wins=TS.filter(t=>t.result==='WIN'),losses=TS.filter(t=>t.result==='LOSS'),n=TS.length;
-  const totW=wins.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
-  const totL=losses.reduce((a,t)=>a+Math.abs(parseFloat(t.pnl_amt||0)),0);
-  const avgW=wins.length?totW/wins.length:0, avgL=losses.length?totL/losses.length:0;
-  const dec=wins.length+losses.length, wr=dec?wins.length/dec*100:0;
-  const payoff=avgL>0?(avgW/avgL):(avgW>0?'∞':'—');
-  const wrf=dec?wins.length/dec:0, lrf=dec?losses.length/dec:0, expectancy=(wrf*avgW)-(lrf*avgL);
+  const P=perf(TS);
+  const wins=P.wins, losses=P.losses, n=P.n;
+  const totW=P.gainAbsW, totL=P.perteAbsL;
+  const avgW=P.gainMoy, avgL=P.perteMoy;
+  const dec=P.decides, wr=P.wrDecides;                            // BE exclus
+  const payoff=avgL>0?P.ratioGainPerte:(avgW>0?'∞':'—');
+  const expectancy=P.esperance;
   const set=(id,v,c)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(c!==undefined)e.style.color=c;}};
   set('wl-wr', dec?wr.toFixed(1)+'%':'—'); set('wl-wr-s', wins.length+' gagnants · '+losses.length+' perdants');
   set('wl-avgw', wins.length?'+$'+Math.round(avgW).toLocaleString():'—');
@@ -5338,17 +5418,15 @@ function aFmtR(v,signed){v=parseFloat(v)||0;return(v<0?'-':(signed&&v>0?'+':''))
 function aCls(v){return v>0?'win':v<0?'loss':'be-r';}
 function aTile(l,v,cls,s){return '<div class="akpi"><div class="ak-l">'+l+'</div><div class="ak-v '+(cls||'')+'">'+v+'</div>'+(s?'<div class="ak-s">'+s+'</div>':'')+'</div>';}
 function aCore(S){
+  const P=perf(S);
   const Rs=S.map(tradeR);
-  const W=S.filter(t=>t.result==='WIN'),L=S.filter(t=>t.result==='LOSS');
   const pnls=S.map(t=>parseFloat(t.pnl_amt)||0);
-  const gw=pnls.filter(p=>p>0).reduce((s,p)=>s+p,0);
-  const gl=Math.abs(pnls.filter(p=>p<0).reduce((s,p)=>s+p,0));
-  return{n:S.length,W,L,Rs,
-    wr:(W.length+L.length)>0?W.length/(W.length+L.length)*100:null,
+  return{n:P.n,W:P.wins,L:P.losses,Rs,
+    wr:P.decides>0?P.wrDecides:null,                       // BE exclus
     expR:mean(Rs),expUsd:mean(pnls),
-    pf:gl>0?gw/gl:(gw>0?Infinity:null),
+    pf:P.pfSigne,                                          // fonde sur le signe du P&L
     sumR:Rs.reduce((s,r)=>s+r,0),
-    netPnl:pnls.reduce((s,p)=>s+p,0)};
+    netPnl:P.net};
 }
 function aMaxDD(arr){let peak=-Infinity,peakI=0,dd=0,s=0,e=0;arr.forEach((v,i)=>{if(v>peak){peak=v;peakI=i;}const d=peak-v;if(d>dd){dd=d;s=peakI;e=i;}});return{dd,start:s,end:e};}
 function aMaxDDPct(arr){let peak=-Infinity,dd=0;arr.forEach(v=>{if(v>peak)peak=v;if(peak>0){const d=(peak-v)/peak;if(d>dd)dd=d;}});return dd*100;}
