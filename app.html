@@ -223,6 +223,12 @@ body::before{background:
 .side-acc-i{flex:1;min-width:0;}
 .side-acc-l{font-size:8.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--td);}
 .side-acc-m{font-size:11px;color:var(--tp);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wz-step{display:flex;gap:13px;align-items:flex-start;background:var(--card2);border:1px solid var(--bo);border-radius:11px;padding:12px 14px;}
+.wz-n{width:26px;height:26px;flex-shrink:0;border-radius:8px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.wz-t{font-size:13.5px;font-weight:700;color:var(--tp);margin-bottom:2px;}
+.wz-d{font-size:11.5px;color:var(--ts);line-height:1.5;}
+.side-acc-open{display:flex;align-items:center;gap:9px;flex:1;min-width:0;background:none;border:none;padding:0;cursor:pointer;text-align:left;border-radius:9px;}
+.side-acc-open:hover .side-acc-m{color:var(--bb);}
 .side-acc-out{flex-shrink:0;background:rgba(224,64,90,.08);border:1px solid rgba(224,64,90,.3);color:#c72c46;border-radius:9px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;line-height:1;}
 .side-acc-out:hover{background:rgba(224,64,90,.16);}
 .side-acc.on + .side-foot{margin-top:12px;}
@@ -797,7 +803,18 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <button class="lg2-link" id="lg-forgot" onclick="forgotPwd()">Mot de passe oublié ?</button>
       <a class="lg2-link" href="./?home">← Retour au site</a>
     </div>
-    <div class="lg2-trust">🔒 Données privées · Sans carte bancaire · Prêt en 30 secondes</div>
+    <div class="lg2-trust" id="lg-cgu" style="display:none;padding-bottom:2px;border:none">
+      En créant un compte, tu acceptes les <a href="cgu.html" target="_blank" style="color:#1d4ed8">CGU</a>
+      et la <a href="confidentialite.html" target="_blank" style="color:#1d4ed8">Politique de confidentialité</a>.
+    </div>
+    <div class="lg2-trust">
+      🔒 Données privées · Sans carte bancaire · Prêt en 30 secondes
+      <div style="margin-top:8px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="cgu.html" target="_blank" style="color:#8a93a8">CGU / CGV</a>
+        <a href="confidentialite.html" target="_blank" style="color:#8a93a8">Confidentialité</a>
+        <a href="mentions-legales.html" target="_blank" style="color:#8a93a8">Mentions légales</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -830,12 +847,14 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       <button class="side-action" onclick="if(typeof exportAnnualPDF==='function')exportAnnualPDF();rdToggleSidebar(false)"><span class="ti">🖨️</span> Aperçu / Imprimer</button>
     </div>
     <div class="side-acc" id="side-account">
+      <button class="side-acc-open" onclick="openAcctModal()" title="Mon compte, export et suppression" aria-label="Mon compte">
       <div class="side-acc-av" id="side-account-av">?</div>
       <div class="side-acc-i">
-        <div class="side-acc-l">Connecté</div>
+        <div class="side-acc-l">Mon compte</div>
         <div class="side-acc-m" id="side-account-mail">—</div>
       </div>
-      <button class="side-acc-out" onclick="doLogout()" title="Se déconnecter" aria-label="Se déconnecter">⎋ Quitter</button>
+      </button>
+      <button class="side-acc-out" onclick="doLogout()" title="Se déconnecter" aria-label="Se déconnecter">⎋</button>
     </div>
     <div class="side-foot">◈ BAKOU · v4</div>
   </aside>
@@ -2016,6 +2035,75 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 </div><!-- /app -->
 
 <!-- CAPITAL MODAL -->
+<!-- BIENVENUE / PREMIERS PAS -->
+<div class="mo" id="welcomeModal" role="dialog" aria-modal="true" aria-label="Bienvenue sur BAKOU">
+  <div class="mb" style="width:500px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:56px;height:56px;margin:0 auto 12px;border-radius:15px;overflow:hidden;box-shadow:0 10px 26px -10px rgba(37,99,235,.5)">
+        <img src="./assets/logo-bakou.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+      </div>
+      <div style="font-size:20px;font-weight:800;color:var(--tp);letter-spacing:-.2px">Bienvenue sur BAKOU 👋</div>
+      <div style="font-size:13px;color:var(--ts);margin-top:6px;line-height:1.5">Trois minutes pour tout mettre en place.<br>Ensuite, chaque trade que tu notes travaille pour toi.</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+      <div class="wz-step"><div class="wz-n">1</div><div><div class="wz-t">Définis ton capital</div><div class="wz-d">Indispensable pour calculer ton risque, tes pourcentages et ta courbe de capital.</div></div></div>
+      <div class="wz-step"><div class="wz-n">2</div><div><div class="wz-t">Enregistre ton premier trade</div><div class="wz-d">Onglet Journal. Paire, session, résultat : 30 secondes suffisent.</div></div></div>
+      <div class="wz-step"><div class="wz-n">3</div><div><div class="wz-t">Regarde tes statistiques</div><div class="wz-d">Dès 10 à 20 trades, tes tendances se dessinent : où tu gagnes, ce qui te coûte.</div></div></div>
+    </div>
+
+    <div style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.28);border-radius:10px;padding:11px 13px;font-size:11.5px;color:var(--ts);line-height:1.55;margin-bottom:20px">
+      💡 <b style="color:var(--grb)">Le conseil qui change tout :</b> note tes trades <b>le jour même</b>, avec tes erreurs, même les mauvais. C'est en les taguant que BAKOU peut chiffrer ce qu'ils te coûtent.
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-p" onclick="wzStart()">🚀 Définir mon capital</button>
+      <button class="btn btn-g" onclick="wzClose()">Plus tard</button>
+    </div>
+  </div>
+</div>
+
+<!-- MON COMPTE / RGPD -->
+<div class="mo" id="acctModal" role="dialog" aria-modal="true" aria-label="Mon compte">
+  <div class="mb" style="width:470px">
+    <div class="mt">👤 Mon compte</div>
+    <div style="background:var(--card2);border:1px solid var(--bo);border-radius:11px;padding:13px 15px;margin-bottom:18px">
+      <div style="font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--td);margin-bottom:3px">Connecté en tant que</div>
+      <div style="font-size:14px;font-weight:700;color:var(--tp);word-break:break-all" id="acct-email">—</div>
+      <div style="font-size:11px;color:var(--grb);margin-top:6px">🎁 Accès bêta — toutes les fonctionnalités débloquées</div>
+    </div>
+
+    <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--td);margin-bottom:9px">Mes données</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <button class="btn btn-g" style="width:100%;text-align:left" onclick="exportAllDataJSON()">
+        <span style="text-transform:none;letter-spacing:.2px;font-size:13px">📦 Exporter toutes mes données (JSON)</span>
+        <div style="font-size:10.5px;color:var(--td);font-weight:400;margin-top:3px;text-transform:none;letter-spacing:0;line-height:1.45">Sauvegarde complète : trades, comptes, notes, objectifs</div>
+      </button>
+      <button class="btn btn-g" style="width:100%;text-align:left" onclick="exportCSV();closeAcctModal()">
+        <span style="text-transform:none;letter-spacing:.2px;font-size:13px">📄 Exporter mes trades (CSV)</span>
+        <div style="font-size:10.5px;color:var(--td);font-weight:400;margin-top:3px;text-transform:none;letter-spacing:0;line-height:1.45">Pour Excel ou Google Sheets — année affichée</div>
+      </button>
+    </div>
+
+    <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--td);margin-bottom:9px">Zone sensible</div>
+    <button class="btn" style="width:100%;text-align:left;background:rgba(224,64,90,.07);border:1px solid rgba(224,64,90,.35);color:#c72c46" onclick="deleteMyAccount()">
+      <span style="text-transform:none;letter-spacing:.2px;font-size:13px">🗑 Supprimer définitivement mon compte</span>
+      <div style="font-size:10.5px;color:var(--td);font-weight:400;margin-top:3px;text-transform:none;letter-spacing:0;line-height:1.45">Efface tous tes trades et ton compte. Irréversible.</div>
+    </button>
+
+    <div style="display:flex;gap:14px;justify-content:center;margin:20px 0 16px;font-size:10.5px;flex-wrap:wrap">
+      <a href="cgu.html" target="_blank" style="color:var(--td)">CGU / CGV</a>
+      <a href="confidentialite.html" target="_blank" style="color:var(--td)">Confidentialité</a>
+      <a href="mentions-legales.html" target="_blank" style="color:var(--td)">Mentions légales</a>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-g" onclick="closeAcctModal()">Fermer</button>
+      <button class="btn" style="background:rgba(224,64,90,.1);border:1px solid rgba(224,64,90,.3);color:#c72c46" onclick="closeAcctModal();doLogout()">⎋ Se déconnecter</button>
+    </div>
+  </div>
+</div>
+
 <div class="mo" id="capModal" role="dialog" aria-modal="true" aria-label="Définir le capital">
   <div class="mb">
     <div class="mt">⚙ Définir le Capital</div>
@@ -5620,6 +5708,7 @@ function lgMode(m){
   const hint=document.getElementById('lg-pass-hint');if(hint)hint.style.display=isUp?'':'none';
   const pw=document.getElementById('lg-pass');if(pw)pw.setAttribute('autocomplete',isUp?'new-password':'current-password');
   const fg=document.getElementById('lg-forgot');if(fg)fg.style.display=isUp?'none':'';
+  const cg=document.getElementById('lg-cgu');if(cg)cg.style.display=isUp?'block':'none';
   const h=document.getElementById('lg2-h'),pp=document.getElementById('lg2-p'),bt=document.getElementById('lg-btn-txt');
   if(h)h.textContent=isUp?'Crée ton compte gratuit':'Content de te revoir';
   if(pp)pp.textContent=isUp?'30 secondes, sans carte bancaire. Toutes les fonctionnalités sont débloquées pendant la bêta.':'Connecte-toi pour retrouver ton journal.';
@@ -5751,6 +5840,97 @@ function clearStoredSession(){
     ks.forEach(function(k){localStorage.removeItem(k);});
   }catch(e){ console.warn('clearStoredSession',e); }
 }
+// ════════ PREMIERS PAS — guide affiche une seule fois ════════
+function wzKey(){ return lsKey('bakou_onboard_vu'); }
+function wzClose(){
+  const m=document.getElementById('welcomeModal'); if(m)m.classList.remove('show');
+  try{ localStorage.setItem(wzKey(),'1'); }catch(e){}
+}
+function wzStart(){ wzClose(); if(typeof openModal==='function') openModal(); }
+// S'affiche uniquement au tout premier lancement : pas de capital et aucun trade
+function maybeShowWelcome(){
+  try{ if(localStorage.getItem(wzKey())==='1') return; }catch(e){}
+  if(CAP>0 || (Array.isArray(T)&&T.length)) { try{ localStorage.setItem(wzKey(),'1'); }catch(e){} return; }
+  const m=document.getElementById('welcomeModal');
+  if(m) setTimeout(function(){ m.classList.add('show'); }, 700);
+}
+document.addEventListener('click',function(e){ if(e.target.id==='welcomeModal')wzClose(); });
+
+// ════════ MON COMPTE — droits RGPD (accès, portabilité, effacement) ════════
+function openAcctModal(){
+  const em=(CURRENT_SESSION&&CURRENT_SESSION.user&&CURRENT_SESSION.user.email)||'—';
+  const el=document.getElementById('acct-email'); if(el)el.textContent=em;
+  const m=document.getElementById('acctModal'); if(m)m.classList.add('show');
+}
+function closeAcctModal(){ const m=document.getElementById('acctModal'); if(m)m.classList.remove('show'); }
+document.addEventListener('click',function(e){ if(e.target.id==='acctModal')closeAcctModal(); });
+
+// Droit d'accès et de portabilité (RGPD art. 15 et 20) : tout, dans un fichier lisible
+function exportAllDataJSON(){
+  try{
+    const local={};
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.indexOf('sb-')!==0) local[k]=localStorage.getItem(k);   // on exclut les jetons de session
+    }
+    const paquet={
+      export_bakou:{
+        genere_le:new Date().toISOString(),
+        version:1,
+        email:(CURRENT_SESSION&&CURRENT_SESSION.user&&CURRENT_SESSION.user.email)||null,
+        note:"Export complet de tes données BAKOU (RGPD art. 15 et 20). Conserve ce fichier en lieu sûr : il contient l'intégralité de ton journal."
+      },
+      comptes_de_trading:ACCOUNTS,
+      trades:T,
+      preferences_et_notes:local
+    };
+    const blob=new Blob([JSON.stringify(paquet,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download='bakou-mes-donnees-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    toast('📦 Export terminé — '+T.length+' trades, '+ACCOUNTS.length+' compte(s)');
+  }catch(e){ console.error('exportAllDataJSON',e); toast('❌ Export impossible : '+e.message); }
+}
+
+// Droit à l'effacement (RGPD art. 17)
+async function deleteMyAccount(){
+  const em=(CURRENT_SESSION&&CURRENT_SESSION.user&&CURRENT_SESSION.user.email)||'';
+  if(!confirm('⚠️ SUPPRESSION DÉFINITIVE\n\nTous tes trades, tes comptes de trading et ton compte '+em+' vont être effacés.\n\nCette action est IRRÉVERSIBLE.\n\nPense à exporter tes données avant si tu veux les garder.\n\nContinuer ?'))return;
+  const saisie=prompt('Dernière étape.\n\nTape SUPPRIMER (en majuscules) pour confirmer :');
+  if(saisie!=='SUPPRIMER'){ toast('Suppression annulée'); return; }
+  toast('⏳ Suppression en cours…');
+  try{
+    // Voie normale : la fonction serveur efface aussi l'identifiant de connexion
+    let faitParLeServeur=false;
+    try{
+      const {data,error}=await sb.functions.invoke('delete-account');
+      if(!error && data && data.ok) faitParLeServeur=true;
+      else console.warn('delete-account',error||data);
+    }catch(e){ console.warn('delete-account indisponible',e); }
+
+    // Repli : on efface au moins toutes les données de l'utilisateur
+    if(!faitParLeServeur && OWNER_UUID){
+      await sb.from('trades').delete().eq('owner_uuid',OWNER_UUID);
+      await sb.from('accounts').delete().eq('owner_uuid',OWNER_UUID);
+    }
+    // Nettoyage local complet
+    try{
+      const cles=[];
+      for(let i=0;i<localStorage.length;i++)cles.push(localStorage.key(i));
+      cles.forEach(function(k){ if(k)localStorage.removeItem(k); });
+    }catch(e){}
+    USER_SIGNOUT=true;
+    try{ await Promise.race([sb.auth.signOut(),new Promise(function(r){setTimeout(r,2500);})]); }catch(e){}
+    alert(faitParLeServeur
+      ? 'Ton compte et toutes tes données ont été définitivement supprimés.\n\nMerci d\'avoir essayé BAKOU.'
+      : 'Toutes tes données ont été supprimées.\n\nL\'identifiant de connexion sera retiré sous 30 jours — écris-nous si tu veux que ce soit immédiat.');
+    location.replace('./?home');
+  }catch(e){
+    console.error('deleteMyAccount',e);
+    toast('❌ Suppression incomplète : '+(e.message||e)+' — contacte le support');
+  }
+}
+
 async function doLogout(){
   if(!confirm('Se déconnecter de BAKOU ?\n\nTes trades restent enregistrés, tu les retrouveras à la prochaine connexion.'))return;
   USER_SIGNOUT=true;
@@ -5773,6 +5953,7 @@ async function startApp(){
   catch(e){ console.error('initAccounts',e); toast('⚠️ Chargement partiel — recharge la page'); }
   try{ if(DRSK){const r=document.getElementById('f-rsk'); if(r)r.value=DRSK;} }catch(e){}
   if(OWNER_UUID) showLoggedIn();   // filet : le bouton de deconnexion est toujours la
+  try{ maybeShowWelcome(); }catch(e){ console.warn('welcome',e); }
 }
 async function boot(){
   try{ if(new URLSearchParams(location.search).get('signup')==='1') lgMode('up'); }catch(e){}
