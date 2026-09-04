@@ -703,23 +703,92 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .nb-del-btn{margin-left:auto;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:#c72c46;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;}
 @media(max-width:900px){.nb-wrap{grid-template-columns:1fr;height:auto;}.nb-side,.nb-list-col{height:auto;max-height:320px;}.nb-body{min-height:280px;}}
 
+
+/* ════ LOGIN V2 — écran de connexion moderne ════ */
+#login-gate{background:#f4f5f9;overflow:auto;padding:26px 14px;}
+.lg2-bg{position:fixed;inset:0;pointer-events:none;background:
+  radial-gradient(640px 420px at 12% -6%,rgba(37,99,235,.16),transparent 60%),
+  radial-gradient(520px 380px at 105% 8%,rgba(96,165,250,.14),transparent 55%),
+  radial-gradient(700px 520px at 50% 115%,rgba(37,99,235,.10),transparent 60%);}
+.lg2-card{position:relative;width:400px;max-width:100%;background:#fff;border:1px solid #e4e7ef;border-radius:22px;padding:32px 30px 24px;box-shadow:0 30px 80px -30px rgba(30,35,51,.25),0 0 0 1px rgba(37,99,235,.06);margin:auto;text-align:center;}
+.lg2-logo{width:56px;height:56px;margin:0 auto 10px;border-radius:15px;overflow:hidden;box-shadow:0 10px 26px -10px rgba(37,99,235,.5);}
+.lg2-logo img{width:100%;height:100%;object-fit:cover;display:block;}
+.lg2-brand{font-weight:800;font-size:18px;letter-spacing:2.5px;color:#1e2333;}
+.lg2-brand span{color:#2563eb;}
+.lg2-tag{display:inline-block;margin-top:8px;font-size:10.5px;font-weight:700;letter-spacing:.6px;color:#0a8a5f;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.3);padding:4px 12px;border-radius:20px;}
+.lg2-h{font-size:20px;font-weight:800;color:#1e2333;margin:14px 0 4px;letter-spacing:-.2px;}
+.lg2-p{font-size:12.5px;color:#8a93a8;margin-bottom:18px;line-height:1.5;}
+.lg2-tabs{display:flex;background:#eef0f5;border-radius:12px;padding:4px;gap:4px;margin-bottom:18px;}
+.lg2-tab{flex:1;padding:9px 6px;border:none;border-radius:9px;background:transparent;color:#5b6478;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s;}
+.lg2-tab.active{background:#fff;color:#1d4ed8;box-shadow:0 2px 8px rgba(30,35,51,.10);}
+.lg2-field{margin-bottom:12px;text-align:left;}
+.lg2-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.4px;color:#5b6478;margin-bottom:5px;}
+.lg2-field input{width:100%;box-sizing:border-box;background:#f8f9fc;border:1.5px solid #e4e7ef;border-radius:11px;padding:12px 42px 12px 13px;color:#1e2333;font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s;}
+.lg2-field input:focus{border-color:#2563eb;background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+.lg2-field input#lg-email{padding-right:13px;}
+.lg2-pwwrap{position:relative;}
+.lg2-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:15px;cursor:pointer;color:#8a93a8;padding:6px;border-radius:7px;line-height:1;}
+.lg2-eye:hover{background:#eef0f5;}
+.lg2-hint{font-size:10.5px;color:#8a93a8;margin-top:4px;}
+.lg2-msg{font-size:12px;line-height:1.55;border-radius:10px;padding:10px 12px;margin:4px 0 10px;text-align:left;}
+.lg2-msg.err{background:rgba(224,64,90,.07);border:1px solid rgba(224,64,90,.3);color:#c72c46;}
+.lg2-msg.ok{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);color:#0a8a5f;}
+.lg2-msg.info{background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.25);color:#1d4ed8;}
+.lg2-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-weight:800;font-size:14px;letter-spacing:.4px;cursor:pointer;box-shadow:0 12px 26px -12px rgba(37,99,235,.6);transition:transform .12s,box-shadow .12s;margin-top:2px;}
+.lg2-btn:hover{transform:translateY(-1px);box-shadow:0 16px 30px -12px rgba(37,99,235,.7);}
+.lg2-btn:disabled{opacity:.65;cursor:wait;transform:none;}
+.lg2-spin{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:lg2rot .7s linear infinite;}
+.lg2-btn.loading .lg2-spin{display:inline-block;}
+@keyframes lg2rot{to{transform:rotate(360deg);}}
+.lg2-ghost{width:100%;padding:10px;border:1px dashed rgba(37,99,235,.4);border-radius:10px;background:rgba(37,99,235,.05);color:#1d4ed8;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:10px;}
+.lg2-ghost:hover{background:rgba(37,99,235,.10);}
+.lg2-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.lg2-link{background:none;border:none;color:#8a93a8;font-size:11.5px;cursor:pointer;text-decoration:none;padding:0;}
+.lg2-link:hover{color:#1d4ed8;text-decoration:underline;}
+.lg2-trust{margin-top:16px;padding-top:14px;border-top:1px solid #eef0f5;font-size:10.5px;color:#8a93a8;}
+@media(max-width:440px){.lg2-card{padding:26px 20px 18px;border-radius:18px;}}
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
-  <div class="lg-box">
-    <div class="lg-logo"><img src="./assets/logo-bakou.png" alt="BAKOU" loading="eager"></div>
-    <div class="lg-title">BAK<span>OU</span></div>
-    <div class="lg-sub" id="lg-sub">Ton journal de trading professionnel</div>
-    <div style="display:flex;gap:6px;margin-bottom:16px" role="tablist" aria-label="Connexion ou inscription">
-      <button class="lg-tab active" id="lg-tab-in" role="tab" aria-selected="true" onclick="lgMode('in')">Se connecter</button>
-      <button class="lg-tab" id="lg-tab-up" role="tab" aria-selected="false" onclick="lgMode('up')">Créer un compte</button>
+  <div class="lg2-bg" aria-hidden="true"></div>
+  <div class="lg2-card">
+    <div class="lg2-logo"><img src="./assets/logo-bakou.png" alt="BAKOU" loading="eager"></div>
+    <div class="lg2-brand">BAK<span>OU</span></div>
+    <div class="lg2-tag">🎁 Bêta ouverte — accès gratuit</div>
+    <h1 class="lg2-h" id="lg2-h">Content de te revoir</h1>
+    <p class="lg2-p" id="lg2-p">Connecte-toi pour retrouver ton journal.</p>
+    <div class="lg2-tabs" role="tablist" aria-label="Connexion ou inscription">
+      <button class="lg2-tab active" id="lg-tab-in" role="tab" aria-selected="true" onclick="lgMode('in')">Se connecter</button>
+      <button class="lg2-tab" id="lg-tab-up" role="tab" aria-selected="false" onclick="lgMode('up')">Créer un compte</button>
     </div>
-    <input type="email" id="lg-email" placeholder="Email" autocomplete="username" aria-label="Email">
-    <input type="password" id="lg-pass" placeholder="Mot de passe" autocomplete="current-password" aria-label="Mot de passe" onkeydown="if(event.key==='Enter'){LG_MODE==='in'?doLogin():doSignup();}">
-    <input type="password" id="lg-pass2" placeholder="Confirme le mot de passe" aria-label="Confirmation du mot de passe" style="display:none" onkeydown="if(event.key==='Enter')doSignup()">
-    <div id="lg-beta" style="display:none;font-size:11px;color:var(--grb);background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:8px;margin-bottom:10px">🎁 Accès bêta gratuit — toutes les fonctionnalités débloquées</div>
-    <div id="lg-err" class="lg-err" aria-live="polite"></div>
-    <button class="lg-btn" id="lg-btn" onclick="LG_MODE==='in'?doLogin():doSignup()">Se connecter</button>
-    <br><button class="lg-forgot" id="lg-forgot" onclick="forgotPwd()">Mot de passe oublié ?</button>
+    <form id="lg-form" onsubmit="event.preventDefault();lgSubmit();" novalidate>
+      <div class="lg2-field">
+        <label for="lg-email">Email</label>
+        <input type="email" id="lg-email" placeholder="ton@email.com" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false">
+      </div>
+      <div class="lg2-field">
+        <label for="lg-pass">Mot de passe</label>
+        <div class="lg2-pwwrap">
+          <input type="password" id="lg-pass" placeholder="••••••••" autocomplete="current-password">
+          <button type="button" class="lg2-eye" onclick="lgTogglePw('lg-pass',this)" aria-label="Afficher le mot de passe">👁</button>
+        </div>
+        <div class="lg2-hint" id="lg-pass-hint" style="display:none">8 caractères minimum</div>
+      </div>
+      <div class="lg2-field" id="lg-f-pass2" style="display:none">
+        <label for="lg-pass2">Confirme le mot de passe</label>
+        <div class="lg2-pwwrap">
+          <input type="password" id="lg-pass2" placeholder="••••••••" autocomplete="new-password">
+          <button type="button" class="lg2-eye" onclick="lgTogglePw('lg-pass2',this)" aria-label="Afficher le mot de passe">👁</button>
+        </div>
+      </div>
+      <div id="lg-msg" class="lg2-msg" aria-live="polite" style="display:none"></div>
+      <button type="button" id="lg-resend" class="lg2-ghost" style="display:none" onclick="resendConfirm()">📩 Renvoyer l'email de confirmation</button>
+      <button type="submit" class="lg2-btn" id="lg-btn"><span class="lg2-spin" aria-hidden="true"></span><span id="lg-btn-txt">Se connecter</span></button>
+    </form>
+    <div class="lg2-foot">
+      <button class="lg2-link" id="lg-forgot" onclick="forgotPwd()">Mot de passe oublié ?</button>
+      <a class="lg2-link" href="./?home">← Retour au site</a>
+    </div>
+    <div class="lg2-trust">🔒 Données privées · Sans carte bancaire · Prêt en 30 secondes</div>
   </div>
 </div>
 
@@ -2192,7 +2261,9 @@ function rdNewTrade(){
 // ── SUPABASE ──
 const SUPA_URL = 'https://nogfrvpvknaqlgfnrjol.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vZ2ZydnB2a25hcWxnZm5yam9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODczMzUsImV4cCI6MjA5MDY2MzMzNX0.t9RzZ2g8YqOR2dCZOyfl2AveA4BssQYzmW7LXxfn1i4';
-const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+let sb = null;
+try{ sb = supabase.createClient(SUPA_URL, SUPA_KEY); }
+catch(e){ console.error('SDK Supabase non chargé (CDN bloqué ?)', e); }
 let OWNER_ID = 'user_cmqlipot4'; // légacy — remplacé par un id dérivé de l'UUID pour les nouveaux clients (voir initAccounts)
 // ── AUTH ── passe AUTH_REQUIRED à true une fois le compte créé (dashboard Supabase)
 // et la migration owner_uuid appliquée. Tant que false : comportement historique.
@@ -5511,58 +5582,119 @@ function renderCompare(){
 function showLogin(){const g=document.getElementById('login-gate');if(g)g.style.display='flex';document.querySelector('.app').style.display='none';}
 function hideLogin(){const g=document.getElementById('login-gate');if(g)g.style.display='none';document.querySelector('.app').style.display='block';}
 let LG_MODE='in';
+function lgMsg(type,html){const m=document.getElementById('lg-msg');if(!m)return;if(!type){m.className='lg2-msg';m.style.display='none';m.innerHTML='';return;}m.className='lg2-msg '+type;m.style.display='block';m.innerHTML=html;}
+function lgShowResend(show){const b=document.getElementById('lg-resend');if(b)b.style.display=show?'block':'none';}
+function lgBusy(on,txt){const b=document.getElementById('lg-btn'),t=document.getElementById('lg-btn-txt');if(!b)return;b.disabled=!!on;b.classList.toggle('loading',!!on);if(t&&txt)t.textContent=txt;}
+function lgTogglePw(id,btn){const inp=document.getElementById(id);if(!inp)return;const show=inp.type==='password';inp.type=show?'text':'password';btn.textContent=show?'🙈':'👁';btn.setAttribute('aria-label',show?'Masquer le mot de passe':'Afficher le mot de passe');}
+function lgSubmit(){LG_MODE==='in'?doLogin():doSignup();}
 function lgMode(m){
-  LG_MODE=m;
-  const isUp=m==='up';
-  document.getElementById('lg-tab-in').classList.toggle('active',!isUp);
-  document.getElementById('lg-tab-in').setAttribute('aria-selected',String(!isUp));
-  document.getElementById('lg-tab-up').classList.toggle('active',isUp);
-  document.getElementById('lg-tab-up').setAttribute('aria-selected',String(isUp));
-  document.getElementById('lg-pass2').style.display=isUp?'':'none';
-  document.getElementById('lg-beta').style.display=isUp?'':'none';
-  document.getElementById('lg-forgot').style.display=isUp?'none':'';
-  document.getElementById('lg-btn').textContent=isUp?'Créer mon compte gratuit':'Se connecter';
-  document.getElementById('lg-err').textContent='';
+  LG_MODE=m;const isUp=m==='up';
+  const ti=document.getElementById('lg-tab-in'),tu=document.getElementById('lg-tab-up');
+  if(ti){ti.classList.toggle('active',!isUp);ti.setAttribute('aria-selected',String(!isUp));}
+  if(tu){tu.classList.toggle('active',isUp);tu.setAttribute('aria-selected',String(isUp));}
+  const f2=document.getElementById('lg-f-pass2');if(f2)f2.style.display=isUp?'':'none';
+  const hint=document.getElementById('lg-pass-hint');if(hint)hint.style.display=isUp?'':'none';
+  const pw=document.getElementById('lg-pass');if(pw)pw.setAttribute('autocomplete',isUp?'new-password':'current-password');
+  const fg=document.getElementById('lg-forgot');if(fg)fg.style.display=isUp?'none':'';
+  const h=document.getElementById('lg2-h'),pp=document.getElementById('lg2-p'),bt=document.getElementById('lg-btn-txt');
+  if(h)h.textContent=isUp?'Crée ton compte gratuit':'Content de te revoir';
+  if(pp)pp.textContent=isUp?'30 secondes, sans carte bancaire. Toutes les fonctionnalités sont débloquées pendant la bêta.':'Connecte-toi pour retrouver ton journal.';
+  if(bt)bt.textContent=isUp?'Créer mon compte gratuit':'Se connecter';
+  lgMsg(null);lgShowResend(false);
+}
+// Traduit les erreurs Supabase (souvent en anglais) en messages clairs
+function lgErrFr(err){
+  const m=String((err&&err.message)||err||'').toLowerCase();
+  if(m.indexOf('failed to fetch')>=0||m.indexOf('networkerror')>=0||m.indexOf('load failed')>=0||m.indexOf('network request failed')>=0||m.indexOf('abort')>=0)
+    return '🔌 Impossible de joindre le serveur. Vérifie ta connexion internet et réessaie dans un instant.';
+  if(m.indexOf('invalid login credentials')>=0)return 'Email ou mot de passe incorrect.';
+  if(m.indexOf('email not confirmed')>=0)return 'Ton email n\'est pas encore confirmé — clique sur le lien reçu par email (regarde aussi tes spams), ou renvoie l\'email ci-dessous.';
+  if(m.indexOf('already registered')>=0||m.indexOf('already been registered')>=0)return 'Un compte existe déjà avec cet email — connecte-toi.';
+  if(m.indexOf('password should be at least')>=0)return 'Mot de passe trop court : 8 caractères minimum.';
+  if(m.indexOf('rate limit')>=0||m.indexOf('too many requests')>=0||m.indexOf('security purposes')>=0)return 'Trop de tentatives — patiente une minute puis réessaie.';
+  if(m.indexOf('signup')>=0&&(m.indexOf('disabled')>=0||m.indexOf('not allowed')>=0))return 'Les inscriptions sont momentanément désactivées. Réessaie plus tard.';
+  if(m.indexOf('is invalid')>=0||m.indexOf('invalid format')>=0||m.indexOf('unable to validate email')>=0)return 'Adresse email invalide — vérifie la saisie.';
+  return (err&&err.message)?('Erreur : '+err.message):'Erreur inconnue — réessaie.';
+}
+// Ping du serveur au chargement : si le backend est KO, on le dit clairement
+async function lgHealthCheck(){
+  if(!sb)return;
+  try{
+    const ctl=('AbortController' in window)?new AbortController():null;
+    if(ctl)setTimeout(function(){ctl.abort();},7000);
+    const r=await fetch(SUPA_URL+'/auth/v1/health',{headers:{apikey:SUPA_KEY},signal:ctl?ctl.signal:undefined});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+  }catch(e){
+    console.error('healthcheck',e);
+    lgMsg('err','🔌 <b>Le serveur ne répond pas.</b> Impossible de se connecter ou de créer un compte pour le moment.<br><span style="font-size:11px;opacity:.85">Admin : le projet Supabase est probablement en pause (plan gratuit) → dashboard Supabase → « Restore project ».</span>');
+  }
 }
 async function doSignup(){
   const email=document.getElementById('lg-email').value.trim(),pass=document.getElementById('lg-pass').value,pass2=document.getElementById('lg-pass2').value;
-  const err=document.getElementById('lg-err'),btn=document.getElementById('lg-btn');
-  if(!email||!pass){err.textContent='Email et mot de passe requis';return;}
-  if(pass.length<8){err.textContent='Mot de passe : 8 caractères minimum';return;}
-  if(pass!==pass2){err.textContent='Les deux mots de passe ne correspondent pas';return;}
-  btn.disabled=true;btn.textContent='Création du compte…';err.textContent='';
+  lgShowResend(false);
+  if(!sb){lgMsg('err','Module de connexion non chargé — recharge la page.');return;}
+  if(!email||!pass){lgMsg('err','Email et mot de passe requis.');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){lgMsg('err','Adresse email invalide — vérifie la saisie.');return;}
+  if(pass.length<8){lgMsg('err','Mot de passe : 8 caractères minimum.');return;}
+  if(pass!==pass2){lgMsg('err','Les deux mots de passe ne correspondent pas.');return;}
+  lgBusy(true,'Création du compte…');lgMsg(null);
   try{
     const plan=(new URLSearchParams(location.search).get('plan'))||'beta';
-    const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{plan}}});
-    if(error){err.textContent=error.message.includes('already registered')?'Un compte existe déjà avec cet email — connecte-toi':error.message;return;}
-    if(data.session){
+    const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{plan},emailRedirectTo:location.origin+location.pathname}});
+    if(error){lgMsg('err',lgErrFr(error));return;}
+    // Cas piège Supabase : email déjà inscrit + confirmation activée → succès factice sans identité
+    if(data&&data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){
+      lgMode('in');
+      lgMsg('err','Un compte existe déjà avec cet email — connecte-toi, ou utilise « Mot de passe oublié ».');
+      return;
+    }
+    if(data&&data.session){
       OWNER_UUID=data.user.id;hideLogin();await startApp();
       const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';
     }else{
-      err.style.color='var(--grb)';
-      err.textContent='📩 Compte créé ! Vérifie tes emails pour confirmer, puis connecte-toi.';
       lgMode('in');
+      lgMsg('ok','🎉 <b>Compte créé !</b> 📩 Un email de confirmation vient de t\'être envoyé — clique sur le lien (regarde aussi tes <b>spams</b>), puis connecte-toi ici.');
+      lgShowResend(true);
     }
-  }finally{btn.disabled=false;btn.textContent=LG_MODE==='in'?'Se connecter':'Créer mon compte gratuit';}
+  }catch(e){console.error('signup',e);lgMsg('err',lgErrFr(e));}
+  finally{lgBusy(false,LG_MODE==='up'?'Créer mon compte gratuit':'Se connecter');}
 }
 async function doLogin(){
   const email=document.getElementById('lg-email').value.trim(),pass=document.getElementById('lg-pass').value;
-  const err=document.getElementById('lg-err'),btn=document.getElementById('lg-btn');
-  if(!email||!pass){err.textContent='Email et mot de passe requis';return;}
-  btn.disabled=true;btn.textContent='Connexion…';err.textContent='';
+  lgShowResend(false);
+  if(!sb){lgMsg('err','Module de connexion non chargé — recharge la page.');return;}
+  if(!email||!pass){lgMsg('err','Email et mot de passe requis.');return;}
+  lgBusy(true,'Connexion…');lgMsg(null);
   try{
     const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
-    if(error){err.textContent=error.message==='Invalid login credentials'?'Identifiants incorrects':error.message;return;}
+    if(error){
+      lgMsg('err',lgErrFr(error));
+      if(String(error.message||'').toLowerCase().indexOf('not confirmed')>=0)lgShowResend(true);
+      return;
+    }
     OWNER_UUID=data.user.id;hideLogin();await startApp();
     const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';
-  }finally{btn.disabled=false;btn.textContent='Se connecter';}
+  }catch(e){console.error('login',e);lgMsg('err',lgErrFr(e));}
+  finally{lgBusy(false,LG_MODE==='up'?'Créer mon compte gratuit':'Se connecter');}
+}
+async function resendConfirm(){
+  const email=document.getElementById('lg-email').value.trim();
+  if(!email){lgMsg('err','Renseigne ton email d\'abord.');return;}
+  if(!sb){lgMsg('err','Module de connexion non chargé — recharge la page.');return;}
+  try{
+    const {error}=await sb.auth.resend({type:'signup',email,options:{emailRedirectTo:location.origin+location.pathname}});
+    if(error){lgMsg('err',lgErrFr(error));return;}
+    lgMsg('ok','📩 Email de confirmation renvoyé à <b>'+email.replace(/</g,'&lt;')+'</b> — pense à vérifier tes spams.');
+  }catch(e){lgMsg('err',lgErrFr(e));}
 }
 async function forgotPwd(){
   const email=document.getElementById('lg-email').value.trim();
-  const err=document.getElementById('lg-err');
-  if(!email){err.textContent='Renseigne ton email d\'abord';return;}
-  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
-  err.textContent=error?error.message:'📩 Email de réinitialisation envoyé';
+  if(!email){lgMsg('info','Renseigne ton email ci-dessus, puis reclique sur « Mot de passe oublié ».');return;}
+  if(!sb){lgMsg('err','Module de connexion non chargé — recharge la page.');return;}
+  try{
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+    lgMsg(error?'err':'ok',error?lgErrFr(error):'📩 Email de réinitialisation envoyé — vérifie ta boîte (et tes spams).');
+  }catch(e){lgMsg('err',lgErrFr(e));}
 }
 async function doLogout(){await sb.auth.signOut();location.reload();}
 async function startApp(){
@@ -5572,11 +5704,12 @@ async function startApp(){
 }
 async function boot(){
   try{ if(new URLSearchParams(location.search).get('signup')==='1') lgMode('up'); }catch(e){}
+  if(!sb){ showLogin(); lgMsg('err','⚠️ <b>Le module de connexion n\'a pas pu se charger.</b> Vérifie ta connexion internet (ou désactive ton bloqueur de publicités), puis recharge la page.'); return; }
   try{
     const {data:{session}}=await sb.auth.getSession();
     if(session){OWNER_UUID=session.user.id;hideLogin();const lo=document.getElementById('logout-btn');if(lo)lo.style.display='';}
   }catch(e){console.warn('auth getSession',e);}
-  if(AUTH_REQUIRED&&!OWNER_UUID){showLogin();return;}
+  if(AUTH_REQUIRED&&!OWNER_UUID){showLogin();lgHealthCheck();return;}
   hideLogin();
   await startApp();
 }
