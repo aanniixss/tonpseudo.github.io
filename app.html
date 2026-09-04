@@ -31,6 +31,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* MAIN */
 .main{position:relative;z-index:1;padding:24px 32px;}
 .sec{display:none;}.sec.active{display:block;}
+.subnav{display:none;gap:2px;margin:-4px 0 20px;border-bottom:1px solid var(--bo);}
+.subtab{position:relative;padding:9px 15px 11px;border:none;background:none;color:var(--td);
+  font-size:13px;font-weight:600;cursor:pointer;transition:color .15s;font-family:inherit;}
+.subtab::after{content:'';position:absolute;left:12px;right:12px;bottom:-1px;height:2px;
+  border-radius:2px;background:transparent;transition:background .15s;}
+.subtab:hover{color:var(--bb);}
+.subtab.active{color:var(--be);}
+.subtab.active::after{background:var(--be);}
+@media(max-width:560px){.subnav{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .subtab{white-space:nowrap;flex-shrink:0;padding:9px 11px 11px;}}
 /* KPI STRIP */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-bottom:22px;}
 .kpi{background:var(--card);border:1px solid var(--bo);border-radius:11px;padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s;}
@@ -740,6 +750,21 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .lg2-link:hover{color:#1d4ed8;text-decoration:underline;}
 .lg2-trust{margin-top:16px;padding-top:14px;border-top:1px solid #eef0f5;font-size:11px;color:#8a93a8;}
 @media(max-width:440px){.lg2-card{padding:26px 20px 18px;border-radius:18px;}}
+/* ════ THEME UNIFIE — source unique de verite ════ */
+:root{
+  /* ── Fonds et surfaces ── */
+  --bg:#f4f5f9; --bg2:#eef0f5; --card:#ffffff; --card2:#f6f7fb; --bo:#e4e7ef;
+  /* ── Texte ── */
+  --tp:#1e2333; --ts:#5b6478; --td:#8a93a8;
+  /* ── Bleu de marque ── */
+  --be:#2563eb; --bb:#3b82f6; --ba:#1d4ed8; --cy:#1e40af; --bri:#2563eb;
+  /* ── Couleurs de sens (gain, perte, alerte) ── */
+  --gr:#0f9d6e; --grb:#0a8a5f; --re:#e0405a; --reb:#c72c46; --go:#d97706; --gb:#b45309;
+  /* ── Elevation et geometrie ── */
+  --glow:0 1px 2px rgba(30,35,51,.04),0 8px 24px -12px rgba(30,35,51,.12);
+  --elev:0 1px 2px rgba(30,35,51,.04),0 10px 28px -16px rgba(30,35,51,.14);
+  --radius:14px; --side-w:240px;
+}
 </style>
 <div id="login-gate" role="dialog" aria-modal="true" aria-label="Connexion">
   <div class="lg2-bg" aria-hidden="true"></div>
@@ -808,14 +833,11 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     </div>
     <div class="side-cap">Navigation</div>
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
-      <button class="tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-title="Dashboard" data-sub="Vue d'ensemble" onclick="showTab('dashboard',this);rdToggleSidebar(false)"><span class="ti">⬡</span> Dashboard</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="journal" data-title="Journal" data-sub="Saisie &amp; historique des trades" onclick="showTab('journal',this);rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="tradelog" data-title="Trade Log" data-sub="Journal détaillé de tes trades" onclick="showTab('tradelog',this);rdToggleSidebar(false)"><span class="ti">▤</span> Trade Log</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="report" data-title="Reports" data-sub="Rapports détaillés de performance" onclick="showTab('report',this);rdToggleSidebar(false)"><span class="ti">📑</span> Reports</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="notebook" data-title="Notebook" data-sub="Notes, plans &amp; recaps" onclick="showTab('notebook',this);rdToggleSidebar(false)"><span class="ti">📓</span> Notebook</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="analyse" data-title="Analytique" data-sub="Statistiques avancées" onclick="showTab('analyse',this);rdToggleSidebar(false)"><span class="ti">◈</span> Analytique</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="bilan" data-title="Bilan" data-sub="Performance mensuelle &amp; annuelle" onclick="showTab('bilan',this);rdToggleSidebar(false)"><span class="ti">▲</span> Bilan</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="setups" data-title="Setups" data-sub="Journal mensuel détaillé" onclick="showTab('setups',this);rdToggleSidebar(false)"><span class="ti">⬢</span> Setups</button>
+      <button class="tab active" role="tab" aria-selected="true" data-groupe="dashboard" data-title="Tableau de bord" data-sub="Vue d'ensemble" onclick="showGroupe('dashboard');rdToggleSidebar(false)"><span class="ti">⬡</span> Tableau de bord</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="journal" data-title="Journal" data-sub="Saisir et retrouver tes trades" onclick="showGroupe('journal');rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="analyse" data-title="Analyse" data-sub="Où est ton edge" onclick="showGroupe('analyse');rdToggleSidebar(false)"><span class="ti">◈</span> Analyse</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="report" data-title="Rapports" data-sub="Bilans exportables" onclick="showGroupe('report');rdToggleSidebar(false)"><span class="ti">📑</span> Rapports</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="notebook" data-title="Notebook" data-sub="Notes, plans et recaps" onclick="showGroupe('notebook');rdToggleSidebar(false)"><span class="ti">📓</span> Notebook</button>
     </div>
     <div class="side-cap">Intelligence ✨</div>
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
@@ -879,6 +901,9 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     </header>
 
 <div class="main">
+
+<!-- Sous-onglets du groupe actif (masques quand le groupe n'a qu'une vue) -->
+<div class="subnav" id="subnav" role="tablist" aria-label="Vues de la section"></div>
 
 <!-- ══ DASHBOARD ══ -->
 <div id="dashboard" class="sec active" role="tabpanel" aria-label="Dashboard">
@@ -2614,17 +2639,60 @@ function clk(){document.getElementById('clockB').textContent=new Date().toLocale
 setInterval(clk,1000);clk();
 
 // ── TABS ──
-function showTab(id,el){
-  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false');});
-  document.getElementById(id).classList.add('active');el.classList.add('active');el.setAttribute('aria-selected','true');
+// ════════ NAVIGATION ════════
+// Cinq sections. Celles qui regroupent plusieurs vues affichent une barre
+// de sous-onglets. Les vues elles-memes n'ont pas bouge : seul le routage change.
+const GROUPES=[
+  {cle:'dashboard',titre:"Tableau de bord",sous:"Vue d'ensemble",
+   vues:[{id:'dashboard',nom:"Vue d'ensemble"}]},
+  {cle:'journal',  titre:"Journal",       sous:"Saisir et retrouver tes trades",
+   vues:[{id:'journal',nom:'Saisie'},{id:'tradelog',nom:'Historique détaillé'}]},
+  {cle:'analyse',  titre:"Analyse",       sous:"Où est ton edge",
+   vues:[{id:'analyse',nom:'Statistiques'},{id:'bilan',nom:'Vue annuelle'},{id:'setups',nom:'Mois par mois'}]},
+  {cle:'report',   titre:"Rapports",      sous:"Bilans exportables",
+   vues:[{id:'report',nom:'Rapports'}]},
+  {cle:'notebook', titre:"Notebook",      sous:"Notes, plans et recaps",
+   vues:[{id:'notebook',nom:'Notes'}]}
+];
+let GROUPE_ACTIF='dashboard';
+const DERNIERE_VUE={};   // on revient sur la derniere vue consultee dans chaque section
+
+function initSection(id){
   if(id==='bilan')setTimeout(initBilan,100);
-  if(id==='analyse')setTimeout(initAnalyse,100);
-  if(id==='setups')setTimeout(initSetups,100);
-  if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
-  if(id==='tradelog')setTimeout(buildTradeLog,100);
-  if(id==='report')setTimeout(buildReport,100);
-  if(id==='notebook')setTimeout(initNotebook,80);
+  else if(id==='analyse')setTimeout(initAnalyse,100);
+  else if(id==='setups')setTimeout(initSetups,100);
+  else if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
+  else if(id==='tradelog')setTimeout(buildTradeLog,100);
+  else if(id==='report')setTimeout(buildReport,100);
+  else if(id==='notebook')setTimeout(initNotebook,80);
+}
+function renderSousOnglets(g,idActif){
+  const bar=document.getElementById('subnav'); if(!bar)return;
+  if(!g||g.vues.length<2){ bar.style.display='none'; bar.innerHTML=''; return; }
+  bar.style.display='flex';
+  bar.innerHTML=g.vues.map(v=>'<button class="subtab'+(v.id===idActif?' active':'')+
+    '" role="tab" aria-selected="'+(v.id===idActif)+'" onclick="showGroupe(\''+g.cle+'\',\''+v.id+'\')">'+v.nom+'</button>').join('');
+}
+function showGroupe(cle,vueId){
+  const g=GROUPES.find(x=>x.cle===cle); if(!g)return;
+  GROUPE_ACTIF=cle;
+  const id=vueId||DERNIERE_VUE[cle]||g.vues[0].id;
+  DERNIERE_VUE[cle]=id;
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  const sec=document.getElementById(id); if(sec)sec.classList.add('active');
+  document.querySelectorAll('.side-nav .tab').forEach(t=>{
+    const on=t.dataset.groupe===cle;
+    t.classList.toggle('active',on); t.setAttribute('aria-selected',String(on));
+  });
+  const ti=document.getElementById('rd-title'),su=document.getElementById('rd-sub');
+  if(ti)ti.textContent=g.titre; if(su)su.textContent=g.sous;
+  renderSousOnglets(g,id);
+  initSection(id);
+}
+// Conservee : du code existant appelle encore showTab avec un identifiant de vue
+function showTab(id,el){
+  const g=GROUPES.find(x=>x.vues.some(v=>v.id===id));
+  showGroupe(g?g.cle:'dashboard', id);
 }
 
 // ── TOAST ──
@@ -4932,21 +5000,7 @@ function buildReportHTML(title, subtitle, kpis, sections){
   .negative{color:#ef4444;font-weight:700;}
   .neutral{color:#94a3b8;}
 
-/* ════ THEME UNIFIE — source unique de verite ════ */
-:root{
-  /* ── Fonds et surfaces ── */
-  --bg:#f4f5f9; --bg2:#eef0f5; --card:#ffffff; --card2:#f6f7fb; --bo:#e4e7ef;
-  /* ── Texte ── */
-  --tp:#1e2333; --ts:#5b6478; --td:#8a93a8;
-  /* ── Bleu de marque ── */
-  --be:#2563eb; --bb:#3b82f6; --ba:#1d4ed8; --cy:#1e40af; --bri:#2563eb;
-  /* ── Couleurs de sens (gain, perte, alerte) ── */
-  --gr:#0f9d6e; --grb:#0a8a5f; --re:#e0405a; --reb:#c72c46; --go:#d97706; --gb:#b45309;
-  /* ── Elevation et geometrie ── */
-  --glow:0 1px 2px rgba(30,35,51,.04),0 8px 24px -12px rgba(30,35,51,.12);
-  --elev:0 1px 2px rgba(30,35,51,.04),0 10px 28px -16px rgba(30,35,51,.14);
-  --radius:14px; --side-w:240px;
-}
+
 </style>
 </head>
 <body>
