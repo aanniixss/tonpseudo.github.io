@@ -908,15 +908,6 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 <!-- ══ DASHBOARD ══ -->
 <div id="dashboard" class="sec active" role="tabpanel" aria-label="Dashboard">
 
-  <!-- RECOVERY BUTTON (shown only when no trades) -->
-  <div id="recovery-bar" style="display:none;margin-bottom:14px">
-    <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:11px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div style="font-size:11px;color:var(--reb);letter-spacing:1px;font-weight:600">⚠ Aucun trade détecté</div>
-      <button onclick="forceRecover()" style="background:linear-gradient(135deg,rgba(239,68,68,0.3),rgba(239,68,68,0.1));border:1px solid rgba(239,68,68,0.5);color:var(--reb);padding:7px 16px;border-radius:9px;cursor:pointer;font-size:11px;letter-spacing:1px;font-weight:600">🔄 Récupérer mes trades</button>
-    </div>
-    <div id="recovery-diag" style="font-size:10px;color:var(--td);margin-top:6px;font-variant-numeric:tabular-nums;"></div>
-  </div>
-
   <!-- ░░ RANGÉE KPI — style TradeZella ░░ -->
   <div class="tz-kpis">
     <!-- Net P&L -->
@@ -2422,6 +2413,9 @@ async function saveAccounts(){
 }
 
 async function initAccounts(){
+  // Nettoyage : ces cles globales faisaient fuiter le capital d'un compte a
+  // l'autre (et d'un utilisateur a l'autre sur un meme navigateur).
+  try{ localStorage.removeItem('tr_capital'); localStorage.removeItem('tr_risk'); }catch(e){}
   // Try loading from Supabase first
   try {
     const {data,error} = await ((AUTH_REQUIRED&&OWNER_UUID)?sb.from('accounts').select('*').eq('owner_uuid',OWNER_UUID):sb.from('accounts').select('*').eq('owner_id',OWNER_ID)).order('created_at',{ascending:true});
@@ -2452,10 +2446,10 @@ async function initAccounts(){
   // Load active account
   const savedId = localStorage.getItem(lsKey('tr_active_account'));
   ACTIVE_ACCOUNT = ACCOUNTS.find(a=>a.id===savedId) || ACCOUNTS[0];
-  CAP = ACTIVE_ACCOUNT.capital || 0;
-  DRSK = ACTIVE_ACCOUNT.risk || 1;
-  if(!CAP){ var _lc=parseFloat(localStorage.getItem('tr_capital')); if(_lc>0){ CAP=_lc; ACTIVE_ACCOUNT.capital=_lc; } }
-  if(DRSK===1){ var _lr=parseFloat(localStorage.getItem('tr_risk')); if(_lr>0){ DRSK=_lr; ACTIVE_ACCOUNT.risk=_lr; } }
+  // Chaque compte a SON capital et SON risque. Aucune valeur n'est heritee
+  // d'un autre compte : un compte neuf demarre a 0 et attend sa saisie.
+  CAP = parseFloat(ACTIVE_ACCOUNT.capital) || 0;
+  DRSK = parseFloat(ACTIVE_ACCOUNT.risk) || 1;
   updateAccountUI();
   await loadTrades();
 }
@@ -2557,32 +2551,6 @@ async function deleteAccount(id){
 // Close account menu on outside click
 document.addEventListener('click',e=>{ if(!e.target.closest('#account-selector-wrap')) document.getElementById('account-menu').style.display='none'; });
 
-async function forceRecover(){
-  toast('🔄 Recherche en cours...');
-  try {
-    let q=sb.from('trades').select('*').order('created_at',{ascending:true}).limit(1000);
-    if(AUTH_REQUIRED&&OWNER_UUID)q=q.eq('owner_uuid',OWNER_UUID);
-    const {data,error} = await q;
-    if(error){ toast('❌ Erreur Supabase: '+error.message); return; }
-    if(!data || !data.length){ toast('❌ Aucun trade dans Supabase'); return; }
-    T = data;
-    const realId = [...new Set(data.map(t=>t.user_id))][0];
-    if(realId){
-      ACTIVE_ACCOUNT.id = realId;
-      if(ACCOUNTS[0]) ACCOUNTS[0].id = realId;
-      localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS));
-      localStorage.setItem(lsKey('tr_active_account'), realId);
-    }
-    toast('✅ '+T.length+' trades récupérés !');
-    document.getElementById('recovery-bar').style.display='none';
-    renderTable(); updateDash(); buildHM();
-    setTimeout(()=>{initCapChart();initPairChart();},100);
-  } catch(e){ 
-    toast('❌ Exception: '+e.message);
-    const d=document.getElementById('recovery-diag');
-    if(d) d.textContent='Erreur: '+e.message;
-  }
-}
 
 async function loadTrades(){
   if(!ACTIVE_ACCOUNT) return;
@@ -2594,13 +2562,6 @@ async function loadTrades(){
     // ses propres trades (user_id = compte actif). Évite qu'un compte vide vole les trades
     // d'un autre et réécrive les IDs (bug de bascule de compte).
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
-  // Show recovery button if still no trades
-  const rb=document.getElementById('recovery-bar');
-  if(rb){
-    rb.style.display=!T.length?'block':'none';
-    const diagEl=document.getElementById('recovery-diag');
-    if(diagEl && !T.length) diagEl.textContent='ID compte: '+(ACTIVE_ACCOUNT?ACTIVE_ACCOUNT.id:'?');
-  }
   renderTable(); updateDash(); buildHM();
   setTimeout(()=>{initCapChart();initPairChart();},100);
 }
@@ -2707,7 +2668,7 @@ async function saveCapital(){
   if(!isNaN(v)&&v>0)CAP=v;
   if(!isNaN(r)&&r>0){DRSK=r;document.getElementById('f-rsk').value=r;}
   ACTIVE_ACCOUNT.capital=CAP; ACTIVE_ACCOUNT.risk=DRSK;
-  try{ localStorage.setItem('tr_capital', CAP); localStorage.setItem('tr_risk', DRSK); localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS)); }catch(e){}
+  try{ localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS)); }catch(e){}
   try{ await sb.from('accounts').upsert(Object.assign({id:ACTIVE_ACCOUNT.id, owner_id:OWNER_ID, name:ACTIVE_ACCOUNT.name, capital:CAP, risk:DRSK, color:ACTIVE_ACCOUNT.color||'#2563eb'}, ownExtra())); }catch(e){}
   updateAccountUI();closeModal();updateDash();initCapChart();
   toast('✅ '+ACTIVE_ACCOUNT.name+' · $'+CAP.toLocaleString()+' · Risque '+DRSK+'%');
