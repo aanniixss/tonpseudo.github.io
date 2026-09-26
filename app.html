@@ -2540,12 +2540,45 @@ async function createAccount(){
 
 async function deleteAccount(id){
   if(ACCOUNTS.length<=1){ toast('❌ Tu dois garder au moins 1 compte'); return; }
-  if(!confirm('Supprimer ce compte ? Les trades associés resteront en base.')) return;
-  await sb.from('accounts').delete().eq('id',id);
+  const acc = ACCOUNTS.find(a=>a.id===id);
+  const nom = acc ? acc.name : 'ce compte';
+
+  // Combien de trades ce compte contient-il ? On demande a la base : T ne
+  // contient que le compte actif, et supprimer a l'aveugle est irreversible.
+  let nb = null;
+  try{
+    const {count,error} = await sb.from('trades').select('id',{count:'exact',head:true}).eq('user_id',id);
+    if(!error) nb = count || 0;
+  }catch(e){ console.warn('deleteAccount count',e); }
+  if(nb === null){
+    toast('❌ Impossible de verifier le contenu de ce compte — reessaie dans un instant');
+    return;
+  }
+
+  const msg = nb === 0
+    ? 'Supprimer le compte "'+nom+'" ?\n\nIl ne contient aucun trade.'
+    : 'Supprimer le compte "'+nom+'" ET ses '+nb+' trade'+(nb>1?'s':'')+' ?\n\n'
+      + '⚠️ DEFINITIF : ces trades seront effaces de la base.\n'
+      + 'Exporte-les avant (onglet Rapports) si tu veux les garder.';
+  if(!confirm(msg)) return;
+
+  // Les trades d'abord. Supprimer le compte en laissant ses trades en base
+  // les rendait invisibles ET irrecuperables depuis l'app : plus aucun
+  // compte a selectionner pour les afficher.
+  if(nb > 0){
+    const delT = await sb.from('trades').delete().eq('user_id',id);
+    if(delT.error){ toast('❌ Suppression impossible : '+(delT.error.message||'')); return; }
+  }
+  const delA = await sb.from('accounts').delete().eq('id',id);
+  if(delA.error){ toast('❌ Suppression impossible : '+(delA.error.message||'')); return; }
+
   ACCOUNTS = ACCOUNTS.filter(a=>a.id!==id);
+  // Sans ca, une coupure reseau au prochain chargement ressuscite le compte
+  // supprime depuis le cache local.
+  try{ localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS)); }catch(e){}
   if(ACTIVE_ACCOUNT.id===id) switchAccount(ACCOUNTS[0].id);
   else renderAccountList();
-  toast('Compte supprimé');
+  toast('Compte "'+nom+'" supprimé'+(nb>0?' ('+nb+' trade'+(nb>1?'s':'')+')':''));
 }
 
 // Close account menu on outside click
