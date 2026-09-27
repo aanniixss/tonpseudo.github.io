@@ -1014,7 +1014,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       </div>
       <div style="text-align:center">
         <div id="cp-avgrr" style="width:88px;height:88px;border-radius:50%;border:3px solid #60a5fa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-variant-numeric:tabular-nums;font-size:18px;color:#60a5fa;background:rgba(96,165,250,0.06)">—</div>
-        <div style="font-size:10px;color:var(--td);margin-top:7px;letter-spacing:1px">Avg RR ciblé</div>
+        <div style="font-size:10px;color:var(--td);margin-top:7px;letter-spacing:1px">R:R réalisé moy.</div>
       </div>
     </div>
   </div>
@@ -1915,7 +1915,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         </div>
         <div style="text-align:center">
           <div id="md-cp-rr" style="width:80px;height:80px;border-radius:50%;border:3px solid #60a5fa;display:flex;align-items:center;justify-content:center;margin:0 auto;font-variant-numeric:tabular-nums;font-size:15px;color:#60a5fa;background:rgba(96,165,250,0.06)">—</div>
-          <div style="font-size:10px;color:var(--td);margin-top:7px;letter-spacing:1px">Avg RR ciblé</div>
+          <div style="font-size:10px;color:var(--td);margin-top:7px;letter-spacing:1px">R:R réalisé moy.</div>
         </div>
       </div>
     </div>
@@ -3209,7 +3209,14 @@ function importMT5(ev){
       else if(tp && Math.abs(clp-tp)<=Math.abs(opp-tp)*0.15) cl='TP';
       else if(sl && Math.abs(clp-sl)<=Math.abs(opp-sl)*0.15) cl='SL';
       totNet+=net;
-      trades.push({user_id:ACTIVE_ACCOUNT.id,pair:sym,cat:_mt5Cat(sym),day:days[op.getDay()],sess:_mt5Sess(op.getHours()),dir:dir,cl:cl,entry_time:en||null,exit_time:ex||null,duration:dur.str,duration_mins:dur.mins,lot_size:vol,risk_pct:(CAP>0&&riskAmt)?parseFloat((riskAmt/CAP*100).toFixed(2)):0,risk_amt:parseFloat(riskAmt.toFixed(2)),rr:rr,result:result,ca_amt:parseFloat(profit.toFixed(2)),commission:parseFloat((-(commMt+swap)).toFixed(2)),pnl_amt:parseFloat(net.toFixed(2)),pnl_pct:CAP>0?parseFloat((net/CAP*100).toFixed(4)):0,fonda:'',star:0,strats:'[]',confs:'[]',pats:'[]',psych_errors:'[]',psych_good:'[]',notes:'',trade_month:op.getMonth(),trade_year:op.getFullYear()});
+      // Date/heure REELLE du trade. Sans elle, la base met la date du jour de
+      // l'import : tous les trades importes se retrouvaient empiles sur une
+      // seule journee, ce qui faussait pire journee, jours de trading, series
+      // et P&L journalier. On ecrit l'heure locale telle quelle (suffixe Z)
+      // pour que la date du jour soit exacte quel que soit le fuseau.
+      var iso = op.getFullYear()+'-'+pad(op.getMonth()+1)+'-'+pad(op.getDate())
+              + 'T'+pad(op.getHours())+':'+pad(op.getMinutes())+':'+pad(op.getSeconds())+'Z';
+      trades.push({created_at:iso,user_id:ACTIVE_ACCOUNT.id,pair:sym,cat:_mt5Cat(sym),day:days[op.getDay()],sess:_mt5Sess(op.getHours()),dir:dir,cl:cl,entry_time:en||null,exit_time:ex||null,duration:dur.str,duration_mins:dur.mins,lot_size:vol,risk_pct:(CAP>0&&riskAmt)?parseFloat((riskAmt/CAP*100).toFixed(2)):0,risk_amt:parseFloat(riskAmt.toFixed(2)),rr:rr,result:result,ca_amt:parseFloat(profit.toFixed(2)),commission:parseFloat((-(commMt+swap)).toFixed(2)),pnl_amt:parseFloat(net.toFixed(2)),pnl_pct:CAP>0?parseFloat((net/CAP*100).toFixed(4)):0,fonda:'',star:0,strats:'[]',confs:'[]',pats:'[]',psych_errors:'[]',psych_good:'[]',notes:'',trade_month:op.getMonth(),trade_year:op.getFullYear()});
     }
     if(!trades.length){ toast('❌ Aucun trade trouvé dans le fichier'); return; }
     // Periode couverte, pour qu'il puisse verifier que c'est le bon rapport
@@ -3725,7 +3732,11 @@ function buildReport(){
   dayVals.forEach(v=>{ if(v>0){cwd++;cld=0;} else if(v<0){cld++;cwd=0;} else {cwd=0;cld=0;} mcwd=Math.max(mcwd,cwd);mcld=Math.max(mcld,cld); });
   const plannedR=n?TS.reduce((a,t)=>a+(parseFloat(t.rr)||0),0)/n:0;
   const realizedR=n?TS.reduce((a,t)=>a+computeActualR(t),0)/n:0;
-  const wr=n?wins.length/n:0, lr=n?losses.length/n:0;
+  // Esperance sur les trades DECIDES (gagnants + perdants). Diviser par tous
+  // les trades tout en ignorant le P&L des break-even donnait un 3e chiffre
+  // qui ne correspondait ni au P&L moyen ni a l'esperance affichee ailleurs.
+  const decides=wins.length+losses.length;
+  const wr=decides?wins.length/decides:0, lr=decides?losses.length/decides:0;
   const expectancy=(wr*avgWin)-(lr*avgLoss);
   const L=[
     ['Total P&L', n?(total>=0?'+':'')+repMoney(total):'—'],
@@ -3757,7 +3768,7 @@ function buildReport(){
     ['Max jours perdants conséc.', mcld],
     ['P&L journalier moyen', tradingDays?((avgDaily>=0?'+':'')+repMoney(avgDaily)):'—'],
     ['Pire journée', dayVals.length?repMoney(largestLossDay):'—'],
-    ['R planifié moyen', plannedR?plannedR.toFixed(2)+'R':'—'],
+    ['R:R réalisé moyen', plannedR?plannedR.toFixed(2)+'R':'—'],
     ['R réalisé moyen', n?((realizedR>=0?'+':'')+realizedR.toFixed(2)+'R'):'—'],
     ['Espérance / trade', n?((expectancy>=0?'+':'')+repMoney(expectancy)):'—'],
   ];
@@ -4135,7 +4146,7 @@ function downloadBilanPDF(){
         ${kv('Moyenne / mois actif',M(avgMonth))}
         ${kv('Jours gagnants / perdants',winDays+' / '+lossDays)}
         ${kv('P&L journalier moyen',tradingDays?M(net/tradingDays):'—')}
-        ${kv('R planifié moyen',plannedR?plannedR.toFixed(2)+'R':'—')}
+        ${kv('R:R réalisé moyen',plannedR?plannedR.toFixed(2)+'R':'—')}
         ${kv('R réalisé moyen',(realizedR>=0?'+':'')+realizedR.toFixed(2)+'R')}
         ${kv('Recovery factor',maxDD>0?recovery.toFixed(2):'—')}
         ${kv('Consistency',Math.round(consistency)+'/100')}
@@ -5348,7 +5359,7 @@ function genReport(mt, titleMain, titleSub){
     {l:'Avg R Win', v:_arWin!==null?'+'+_arWin.toFixed(2)+'R':'—', c:'#10b981'},
     {l:'Avg R Loss', v:_arLoss!==null?_arLoss.toFixed(2)+'R':'—', c:'#ef4444'},
     {l:'Long / Short', v:_longs+' / '+_shorts, c:'#3b82f6'},
-    {l:'Avg RR ciblé', v:_avgRR?_avgRR.toFixed(2):'—', c:'#60a5fa'},
+    {l:'R:R réalisé moy.', v:_avgRR?_avgRR.toFixed(2):'—', c:'#60a5fa'},
   ];
   const coreSection=`<div class="section"><div class="section-title">🎯 Core Performance</div>
     <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-around;padding:10px 0">
