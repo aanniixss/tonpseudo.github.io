@@ -3128,6 +3128,35 @@ function _mt5LignesHTML(txt){
   }
   return rows;
 }
+// Un trade porte-t-il une saisie manuelle qu'il ne faut surtout pas perdre ?
+function _mt5Annote(t){
+  var plein=function(v){ return v && v!=='[]' && v!=='null'; };
+  return plein(t.strats)||plein(t.confs)||plein(t.pats)
+      || plein(t.psych_errors)||plein(t.psych_good)
+      || (t.notes&&t.notes.trim()!=='') || (t.fonda&&t.fonda!=='') || (parseInt(t.star)||0)>0
+      || !!(t.photo_av||t.photo_co||t.photo_ap);
+}
+// Rapproche le rapport MT5 des trades deja enregistres.
+//   Cle = paire + sens + lot + profit brut. Verifie sur un rapport reel de
+//   162 positions contre 107 trades deja saisis : 106 retrouves, dont 64 des
+//   65 annotes. Le seul rate avait un lot a 0 (saisi a la main sans le lot).
+//   L'appariement est 1 pour 1 : deux trades identiques le meme jour restent
+//   deux trades, le second n'est pas avale par le premier.
+function _mt5Fusion(duRapport, deLApp){
+  var cle=function(t){
+    return (t.pair||'')+'|'+(t.dir||'')+'|'+(parseFloat(t.lot_size)||0)+'|'+(parseFloat(t.ca_amt)||0);
+  };
+  var dispo={};
+  for(var i=0;i<deLApp.length;i++){ var k=cle(deLApp[i]); (dispo[k]=dispo[k]||[]).push(i); }
+  var pris={}, nouveaux=[], dejaLa=0;
+  for(var j=0;j<duRapport.length;j++){
+    var k2=cle(duRapport[j]), l=dispo[k2]||[], trouve=-1;
+    for(var m=0;m<l.length;m++){ if(!pris[l[m]]){ trouve=l[m]; break; } }
+    if(trouve>=0){ pris[trouve]=true; dejaLa++; }
+    else nouveaux.push(duRapport[j]);
+  }
+  return {nouveaux:nouveaux, dejaLa:dejaLa};
+}
 function importMT5(ev){
   var file=ev.target.files&&ev.target.files[0]; if(!file) return; ev.target.value='';
   if(!ACTIVE_ACCOUNT){ toast('❌ Aucun compte actif'); return; }
@@ -3181,13 +3210,30 @@ function importMT5(ev){
     var pr=function(t){ return mois[t.trade_month]+' '+t.trade_year; };
     var periode=pr(trades[0])===pr(trades[trades.length-1]) ? pr(trades[0])
               : 'de '+pr(trades[0])+' a '+pr(trades[trades.length-1]);
-    var msg='J\'ai trouvé '+trades.length+' trades dans ton rapport MT5 ('+periode+').\n'
-          + 'P&L net total : '+(totNet>=0?'+':'')+Math.round(totNet).toLocaleString()+' $\n\n'
-          + '⚠️ Les '+T.length+' trade'+(T.length>1?'s':'')+' actuellement dans le compte « '+ACTIVE_ACCOUNT.name+' » '
-          + (T.length>1?'seront SUPPRIMÉS':'sera SUPPRIMÉ')+' et remplacé'+(trades.length>1?'s':'')+' par ces '+trades.length+'.\n'
-          + 'Exporte-les avant (bouton ⤓ CSV) si tu veux les garder.\n\nContinuer ?';
+    var entete='J\'ai trouvé '+trades.length+' trades dans ton rapport MT5 ('+periode+').\n'
+             + 'P&L net total : '+(totNet>=0?'+':'')+Math.round(totNet).toLocaleString()+' $\n\n';
+
+    // Compte vide : rien a proteger, on importe directement.
+    if(!T.length){
+      if(!confirm(entete+'Le compte « '+ACTIVE_ACCOUNT.name+' » est vide.\nImporter les '+trades.length+' trades ?')) return;
+      _mt5DoImport(trades, false); return;
+    }
+
+    // Compte deja rempli : on repere ce qui existe deja pour ne pas ecraser
+    // les annotations (strategies, psychologie, notes) saisies a la main.
+    var f=_mt5Fusion(trades, T);
+    var annotes=T.filter(_mt5Annote).length;
+    var msg=entete
+          + 'Le compte « '+ACTIVE_ACCOUNT.name+' » contient déjà '+T.length+' trade'+(T.length>1?'s':'')
+          + (annotes?', dont '+annotes+' annoté'+(annotes>1?'s':'')+' (stratégie / psycho / notes)':'')+'.\n\n'
+          + '▶ OK = FUSIONNER (recommandé)\n'
+          + '   · '+f.nouveaux.length+' trade'+(f.nouveaux.length>1?'s':'')+' ajouté'+(f.nouveaux.length>1?'s':'')+'\n'
+          + '   · '+f.dejaLa+' déjà présent'+(f.dejaLa>1?'s':'')+' → laissé'+(f.dejaLa>1?'s':'')+' intact'+(f.dejaLa>1?'s':'')+', tes annotations sont gardées\n'
+          + '   · total après fusion : '+(T.length+f.nouveaux.length)+'\n\n'
+          + '▶ Annuler = ne rien faire';
     if(!confirm(msg)) return;
-    _mt5DoImport(trades, true);
+    if(!f.nouveaux.length){ toast('✅ Rien à ajouter — tout ce rapport est déjà dans le compte'); return; }
+    _mt5DoImport(f.nouveaux, false);
   };
   reader.readAsArrayBuffer(file);
 }
