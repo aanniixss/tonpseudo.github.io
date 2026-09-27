@@ -1067,7 +1067,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <button onclick="document.getElementById('csv-import-input').click()" title="Importer des trades depuis un fichier CSV" style="padding:5px 10px;border-radius:7px;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.35);color:var(--bb);font-size:10px;cursor:pointer;letter-spacing:1px">⤒ CSV</button>
         <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
         <button onclick="document.getElementById('mt5-import-input').click()" title="Importer l'historique depuis un rapport MetaTrader 5 (Historique → clic droit → Rapport)" style="padding:5px 10px;border-radius:7px;background:rgba(217,119,6,0.12);border:1px solid rgba(217,119,6,0.35);color:var(--gb);font-size:10px;cursor:pointer;letter-spacing:1px">⤒ MT5</button>
-        <input type="file" id="mt5-import-input" accept=".html,.htm,.xlsx,.xls" style="display:none" onchange="importMT5(event)">
+        <input type="file" id="mt5-import-input" style="display:none" onchange="importMT5(event)">
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(37,99,235,0.2);border:1px solid var(--be);color:var(--be);font-size:10px;cursor:pointer;letter-spacing:1px">TOUT</button>
@@ -3164,12 +3164,19 @@ function importMT5(ev){
   var reader=new FileReader();
   reader.onload=function(e){
     var rows=null, hi=-1;
-    var estHTML=/\.html?$/i.test(file.name);
+    // On reconnait le format au CONTENU, pas au nom : sur telephone le fichier
+    // arrive souvent renomme, sans extension, ou en « document.html (1) ».
+    var apercu='';
+    try{ apercu=_mt5Texte(e.target.result.slice(0,4096)).replace(/^\uFEFF/,'').slice(0,600).toLowerCase(); }catch(_e){}
+    var estHTML = apercu.indexOf('<html')>=0 || apercu.indexOf('<!doctype html')>=0
+               || apercu.indexOf('<table')>=0 || /\.html?$/i.test(file.name);
     if(!estHTML){
       // .xlsx / .xls : meme ordre de colonnes, l'entete sert de repere.
-      if(typeof XLSX==='undefined'){ toast('❌ Lecteur Excel pas encore chargé, recharge la page'); return; }
+      if(typeof XLSX==='undefined'){
+        toast('❌ Ce fichier n\'est pas un rapport MT5 — dans MT5 : Historique → clic droit → Rapport → HTML'); return; }
       try{ var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'}); var ws=wb.Sheets[wb.SheetNames[0]]; rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}); }
-      catch(err){ console.error('importMT5 xlsx',err); toast('❌ Fichier illisible'); return; }
+      catch(err){ console.error('importMT5 xlsx',err);
+        toast('❌ Fichier illisible — dans MT5 : onglet Historique → clic droit → Rapport → HTML'); return; }
       for(var i=0;i<rows.length;i++){ var r=rows[i]; if(r && (''+r[2]).trim()==='Symbole' && (''+r[3]).trim()==='Type'){ hi=i; break; } }
       if(hi<0){ toast('❌ Tableau "Positions" introuvable dans le fichier'); return; }
     } else {
