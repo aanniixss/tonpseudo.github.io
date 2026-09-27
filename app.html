@@ -1055,6 +1055,51 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 </div>
 
 <!-- ══ JOURNAL ══ -->
+<div id="resume" class="sec" role="tabpanel" aria-label="Résumé">
+
+  <!-- ── RESULTAT ── -->
+  <div class="card" style="margin-bottom:12px">
+    <div id="rs-hero" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between"></div>
+  </div>
+
+  <!-- ── LES 4 CHIFFRES QUI COMPTENT ── -->
+  <div id="rs-kpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:12px"></div>
+
+  <!-- ── COURBE DE CAPITAL ── -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">📈 Évolution du capital</div>
+    <div id="rs-eq-sub" style="font-size:11px;color:var(--ts);margin:-4px 0 10px"></div>
+    <div style="position:relative;height:260px"><canvas id="rsEqChart"></canvas></div>
+  </div>
+
+  <!-- ── MOIS PAR MOIS ── -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">🗓 Résultat net par mois</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 10px">Au-dessus de la ligne = mois gagnant, en dessous = mois perdant.</div>
+    <div style="position:relative;height:230px"><canvas id="rsMoisChart"></canvas></div>
+  </div>
+
+  <!-- ── PAIRES ── -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">💱 Ce qui te rapporte, ce qui te coûte</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 10px">Résultat net par paire, de la meilleure à la pire.</div>
+    <div style="position:relative;height:300px"><canvas id="rsPaireChart"></canvas></div>
+  </div>
+
+  <!-- ── FAITS ── -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px">
+    <div class="card"><div class="ct">📅 Tes journées</div><div id="rs-jours"></div></div>
+    <div class="card"><div class="ct">🎯 Tes trades</div><div id="rs-trades"></div></div>
+  </div>
+
+  <!-- ── CE QUI SE VOIT DANS LES CHIFFRES ── -->
+  <div class="card" style="margin-top:12px">
+    <div class="ct">🔎 Ce que disent tes chiffres</div>
+    <div id="rs-constats" style="display:grid;gap:8px"></div>
+  </div>
+
+</div>
+
 <div id="journal" class="sec" role="tabpanel" aria-label="Journal">
 
   <!-- MONTH FILTER BAR -->
@@ -2639,6 +2684,8 @@ setInterval(clk,1000);clk();
 // Cinq sections. Celles qui regroupent plusieurs vues affichent une barre
 // de sous-onglets. Les vues elles-memes n'ont pas bouge : seul le routage change.
 const GROUPES=[
+  {cle:'resume',   titre:"Résumé",          sous:"L'essentiel en un coup d'oeil",
+   vues:[{id:'resume',nom:'Résumé'}]},
   {cle:'dashboard',titre:"Tableau de bord",sous:"Vue d'ensemble",
    vues:[{id:'dashboard',nom:"Vue d'ensemble"}]},
   {cle:'journal',  titre:"Journal",       sous:"Saisir et retrouver tes trades",
@@ -2650,11 +2697,12 @@ const GROUPES=[
   {cle:'notebook', titre:"Notebook",      sous:"Notes, plans et recaps",
    vues:[{id:'notebook',nom:'Notes'}]}
 ];
-let GROUPE_ACTIF='dashboard';
+let GROUPE_ACTIF='resume';
 const DERNIERE_VUE={};   // on revient sur la derniere vue consultee dans chaque section
 
 function initSection(id){
-  if(id==='bilan')setTimeout(initBilan,100);
+  if(id==='resume')setTimeout(initResume,100);
+  else if(id==='bilan')setTimeout(initBilan,100);
   else if(id==='analyse')setTimeout(initAnalyse,100);
   else if(id==='setups')setTimeout(initSetups,100);
   else if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
@@ -3534,6 +3582,197 @@ function buildHM(){
 const CD={responsive:true,plugins:{legend:{labels:{color:'#5b6478',font:{family:'Inter',size:11}}}},scales:{x:{grid:{color:'rgba(30,35,51,0.08)'},ticks:{color:'#5b6478',font:{family:'Inter'}}},y:{grid:{color:'rgba(30,35,51,0.08)'},ticks:{color:'#5b6478',font:{family:'Inter'}}}}};
 let CI={};
 function DC(id){if(CI[id]){CI[id].destroy();delete CI[id];}}
+
+// ═══════════════════════════════════════════════════════════════════
+//  RESUME — tout ce qu'il faut savoir sur l'annee, en une page
+//
+//  Couleurs : le vert et le rouge de l'app ne se distinguent pas en
+//  daltonisme (ecart mesure 4.2, seuil 8). Ils ne portent donc JAMAIS
+//  l'information seuls ici : chaque barre est au-dessus ou en dessous
+//  de zero, et chaque montant est ecrit avec son signe.
+// ═══════════════════════════════════════════════════════════════════
+var RS_VERT='#0a8a5f', RS_ROUGE='#e34948', RS_BLEU='#2563eb';
+var RS_MOIS=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+function rsArgent(v){ v=parseFloat(v)||0;
+  return (v<0?'−':'+')+'$'+Math.abs(Math.round(v)).toLocaleString('fr-FR'); }
+function rsLigne(k,v,c){
+  return '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--bo)">'
+       + '<span style="font-size:11px;color:var(--ts)">'+k+'</span>'
+       + '<span style="font-size:12px;font-weight:700;font-variant-numeric:tabular-nums'+(c?';color:'+c:'')+'">'+v+'</span></div>'; }
+function rsTuile(lbl,val,sub,c){
+  return '<div class="card" style="padding:14px">'
+       + '<div style="font-size:10px;letter-spacing:1px;color:var(--td);text-transform:uppercase">'+lbl+'</div>'
+       + '<div style="font-size:26px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums'+(c?';color:'+c:'')+'">'+val+'</div>'
+       + '<div style="font-size:11px;color:var(--ts);margin-top:3px">'+sub+'</div></div>'; }
+
+function initResume(){
+  var TY=T.filter(function(t){return parseInt(t.trade_year)===GLOBAL_YEAR;});
+  var hero=document.getElementById('rs-hero');
+  if(!TY.length){
+    hero.innerHTML='<div style="padding:18px 0;color:var(--td);font-size:12px">Aucun trade en '+GLOBAL_YEAR+' — ajoute ou importe tes trades pour voir ton résumé.</div>';
+    ['rs-kpi','rs-jours','rs-trades','rs-constats'].forEach(function(id){var e=document.getElementById(id);if(e)e.innerHTML='';});
+    ['rsEq','rsMois','rsPaire'].forEach(function(k){DC(k);});
+    return;
+  }
+  var P=perf(TY), S=perfSeries(TY);
+  var capFin=CAP+P.net, pct=CAP>0?(P.net/CAP*100):0;
+  var coul=P.net>=0?RS_VERT:RS_ROUGE;
+
+  // ── Resultat ────────────────────────────────────────────────────
+  hero.innerHTML=
+      '<div><div style="font-size:10px;letter-spacing:2px;color:var(--td);text-transform:uppercase">Résultat net '+GLOBAL_YEAR+'</div>'
+    + '<div style="font-size:42px;font-weight:800;line-height:1.1;color:'+coul+';font-variant-numeric:tabular-nums">'+rsArgent(P.net)+'</div>'
+    + '<div style="font-size:12px;color:var(--ts);margin-top:2px">'+(pct>=0?'+':'−')+Math.abs(pct).toFixed(2)+' % du capital · '+P.n+' trades</div></div>'
+    + '<div style="text-align:right"><div style="font-size:10px;letter-spacing:2px;color:var(--td);text-transform:uppercase">Capital</div>'
+    + '<div style="font-size:22px;font-weight:700;font-variant-numeric:tabular-nums">$'+Math.round(capFin).toLocaleString('fr-FR')+'</div>'
+    + '<div style="font-size:11px;color:var(--ts)">départ $'+Math.round(CAP).toLocaleString('fr-FR')+'</div></div>';
+
+  // ── Les 4 chiffres qui comptent ─────────────────────────────────
+  // Taux de reussite : break-even exclus (ils ne sont ni gain ni perte).
+  var wr=P.wrDecides, pf=P.pfEtiq;
+  var esp=P.esperance;
+  // Drawdown sur la courbe de capital trade par trade.
+  var run=CAP, pic=CAP, dd=0;
+  S.ordonnes.forEach(function(t){ run+=parseFloat(t.pnl_amt)||0; if(run>pic)pic=run;
+    if(pic>0){ var d=(pic-run)/pic*100; if(d>dd)dd=d; } });
+  document.getElementById('rs-kpi').innerHTML=
+      rsTuile('Taux de réussite', wr.toFixed(1)+' %', P.w+' gagnants · '+P.l+' perdants'+(P.be?' · '+P.be+' BE':''), null)
+    + rsTuile('Profit factor', (pf===null?'—':(isFinite(pf)?pf.toFixed(2):'∞')),
+        (pf!==null&&isFinite(pf)&&pf>=1)?'Tu gagnes plus que tu ne perds':'Tu perds plus que tu ne gagnes',
+        (pf!==null&&isFinite(pf)&&pf>=1)?RS_VERT:RS_ROUGE)
+    + rsTuile('Par trade', rsArgent(esp), 'En moyenne, à chaque trade', esp>=0?RS_VERT:RS_ROUGE)
+    + rsTuile('Pire chute', '−'+dd.toFixed(1)+' %', 'Du plus haut au plus bas', dd>0?RS_ROUGE:null);
+
+  // ── Courbe de capital ───────────────────────────────────────────
+  DC('rsEq');
+  var eqL=[], eqD=[], cum=CAP;
+  S.ordonnes.forEach(function(t){ cum+=parseFloat(t.pnl_amt)||0;
+    eqL.push(new Date(t.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}));
+    eqD.push(parseFloat(cum.toFixed(2))); });
+  document.getElementById('rs-eq-sub').textContent=
+    'Trade par trade, du premier au dernier. Ligne pleine = ton capital de départ ($'+Math.round(CAP).toLocaleString('fr-FR')+').';
+  var eqCtx=document.getElementById('rsEqChart');
+  if(eqCtx) CI['rsEq']=new Chart(eqCtx,{type:'line',
+    data:{labels:eqL,datasets:[{label:'Capital',data:eqD,borderColor:RS_BLEU,
+      backgroundColor:'rgba(37,99,235,0.07)',borderWidth:2,fill:true,tension:0.25,
+      pointRadius:0,pointHoverRadius:6,pointHoverBackgroundColor:RS_BLEU,
+      pointHoverBorderColor:'#fff',pointHoverBorderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'#1e2333',borderColor:RS_BLEU,borderWidth:1,padding:10,
+          callbacks:{label:function(c){ var d=c.raw-CAP;
+            return ['Capital : $'+Math.round(c.raw).toLocaleString('fr-FR'),
+                    'Depuis le départ : '+rsArgent(d)]; }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#8a93a8',font:{family:'Inter',size:10},maxTicksLimit:8,autoSkip:true}},
+        y:{grid:{color:'rgba(30,35,51,0.07)'},ticks:{color:'#8a93a8',font:{family:'Inter',size:10},
+          callback:function(v){return '$'+Math.round(v).toLocaleString('fr-FR');}}}}}});
+
+  // ── Mois par mois ───────────────────────────────────────────────
+  DC('rsMois');
+  var parMois=RS_MOIS.map(function(_,m){
+    return TY.filter(function(t){return parseInt(t.trade_month)===m;})
+             .reduce(function(a,t){return a+(parseFloat(t.pnl_amt)||0);},0); });
+  var moisActifs=[];
+  RS_MOIS.forEach(function(nm,m){ if(TY.some(function(t){return parseInt(t.trade_month)===m;})) moisActifs.push(m); });
+  var mCtx=document.getElementById('rsMoisChart');
+  if(mCtx) CI['rsMois']=new Chart(mCtx,{type:'bar',
+    data:{labels:moisActifs.map(function(m){return RS_MOIS[m];}),
+      datasets:[{label:'Net',data:moisActifs.map(function(m){return parseFloat(parMois[m].toFixed(2));}),
+        backgroundColor:moisActifs.map(function(m){return parMois[m]>=0?RS_VERT:RS_ROUGE;}),
+        borderRadius:4,borderSkipped:false,barPercentage:0.62}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'#1e2333',borderWidth:1,padding:10,
+          callbacks:{label:function(c){return 'Net : '+rsArgent(c.raw);}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#8a93a8',font:{family:'Inter',size:11}}},
+        y:{grid:{color:'rgba(30,35,51,0.07)'},ticks:{color:'#8a93a8',font:{family:'Inter',size:10},
+          callback:function(v){return (v<0?'−$':'$')+Math.abs(v).toLocaleString('fr-FR');}}}}}});
+
+  // ── Paires ──────────────────────────────────────────────────────
+  DC('rsPaire');
+  var gp=grouperPar(TY,'pair').sort(function(a,b){return b.net-a.net;});
+  var pCtx=document.getElementById('rsPaireChart');
+  if(pCtx) CI['rsPaire']=new Chart(pCtx,{type:'bar',
+    data:{labels:gp.map(function(g){return g.cle;}),
+      datasets:[{label:'Net',data:gp.map(function(g){return parseFloat(g.net.toFixed(2));}),
+        backgroundColor:gp.map(function(g){return g.net>=0?RS_VERT:RS_ROUGE;}),
+        borderRadius:4,borderSkipped:false,barPercentage:0.68}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'#1e2333',borderWidth:1,padding:10,
+          callbacks:{label:function(c){ var g=gp[c.dataIndex];
+            return ['Net : '+rsArgent(g.net), g.n+' trades · '+g.wrDecides.toFixed(0)+' % de réussite']; }}}},
+      scales:{x:{grid:{color:'rgba(30,35,51,0.07)'},ticks:{color:'#8a93a8',font:{family:'Inter',size:10},
+          callback:function(v){return (v<0?'−$':'$')+Math.abs(v).toLocaleString('fr-FR');}}},
+        y:{grid:{display:false},ticks:{color:'#5b6478',font:{family:'Inter',size:11}}}}}});
+
+  // ── Journees ────────────────────────────────────────────────────
+  var jm={};
+  TY.forEach(function(t){ if(!t.created_at)return;
+    var k=new Date(t.created_at).toISOString().slice(0,10);
+    jm[k]=(jm[k]||0)+(parseFloat(t.pnl_amt)||0); });
+  var jk=Object.keys(jm).sort(), jv=jk.map(function(k){return jm[k];});
+  var jg=jv.filter(function(v){return v>0;}).length, jp=jv.filter(function(v){return v<0;}).length;
+  var meilleur=jv.length?Math.max.apply(null,jv):0, pire=jv.length?Math.min.apply(null,jv):0;
+  var dateDe=function(val){ var k=jk[jv.indexOf(val)];
+    return k?new Date(k+'T12:00:00Z').toLocaleDateString('fr-FR',{day:'2-digit',month:'long'}):'—'; };
+  document.getElementById('rs-jours').innerHTML=
+      rsLigne('Jours de trading', jk.length)
+    + rsLigne('Jours gagnants', jg+' ('+(jk.length?Math.round(jg/jk.length*100):0)+' %)', RS_VERT)
+    + rsLigne('Jours perdants', jp+' ('+(jk.length?Math.round(jp/jk.length*100):0)+' %)', RS_ROUGE)
+    + rsLigne('Meilleure journée', rsArgent(meilleur)+' · '+dateDe(meilleur), RS_VERT)
+    + rsLigne('Pire journée', rsArgent(pire)+' · '+dateDe(pire), RS_ROUGE)
+    + rsLigne('Moyenne par jour', rsArgent(jk.length?P.net/jk.length:0), null);
+
+  document.getElementById('rs-trades').innerHTML=
+      rsLigne('Gain moyen', rsArgent(P.gainMoy), RS_VERT)
+    + rsLigne('Perte moyenne', rsArgent(-P.perteMoy), RS_ROUGE)
+    + rsLigne('Plus gros gain', rsArgent(Math.max.apply(null,TY.map(function(t){return parseFloat(t.pnl_amt)||0;}))), RS_VERT)
+    + rsLigne('Plus grosse perte', rsArgent(Math.min.apply(null,TY.map(function(t){return parseFloat(t.pnl_amt)||0;}))), RS_ROUGE)
+    + rsLigne('Plus longue série de gains', S.maxGains, RS_VERT)
+    + rsLigne('Plus longue série de pertes', S.maxPertes, RS_ROUGE)
+    + rsLigne('Commissions payées', '−$'+Math.round(P.comm).toLocaleString('fr-FR'), RS_ROUGE);
+
+  // ── Constats ────────────────────────────────────────────────────
+  var out=[];
+  var enc=function(txt,ton){
+    var c=ton==='bon'?RS_VERT:(ton==='mauvais'?RS_ROUGE:'#b45309');
+    var ic=ton==='bon'?'✔':(ton==='mauvais'?'⚠':'•');
+    return '<div style="display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:9px;'
+         + 'background:var(--card2);border-left:3px solid '+c+'">'
+         + '<span style="color:'+c+';font-weight:800;font-size:12px;line-height:1.5">'+ic+'</span>'
+         + '<span style="font-size:12px;line-height:1.55;color:var(--tp)">'+txt+'</span></div>'; };
+
+  var brut=P.net+P.comm;
+  if(P.comm>0 && brut>0 && P.comm>brut*0.5)
+    out.push(enc('Avant commissions tu es <b>positif de '+rsArgent(brut)+'</b>. Les frais t\'ont pris <b>$'
+      +Math.round(P.comm).toLocaleString('fr-FR')+'</b> et te font finir à '+rsArgent(P.net)
+      +'. C\'est ta taille de position qu\'il faut regarder, pas ta stratégie.','mauvais'));
+  else if(P.comm>0 && Math.abs(P.net)>0 && P.comm>Math.abs(P.net))
+    out.push(enc('Tes commissions ($'+Math.round(P.comm).toLocaleString('fr-FR')
+      +') dépassent ton résultat net. Chaque trade en plus te coûte cher.','mauvais'));
+
+  if(P.ratioGainPerte>0)
+    out.push(enc('Tes gains valent <b>'+P.ratioGainPerte.toFixed(2)+'×</b> tes pertes. Avec '
+      +wr.toFixed(0)+' % de réussite, il t\'en faudrait <b>'
+      +(100/(1+P.ratioGainPerte)).toFixed(0)+' %</b> pour être à l\'équilibre.',
+      wr>=100/(1+P.ratioGainPerte)?'bon':'mauvais'));
+
+  if(gp.length>1){
+    var best=gp[0], worst=gp[gp.length-1];
+    if(best.net>0) out.push(enc('<b>'+best.cle+'</b> est ta meilleure paire : '+rsArgent(best.net)
+      +' sur '+best.n+' trades.','bon'));
+    if(worst.net<0) out.push(enc('<b>'+worst.cle+'</b> te coûte le plus : '+rsArgent(worst.net)
+      +' sur '+worst.n+' trades. À surveiller, voire à éviter.','mauvais'));
+  }
+  if(S.maxPertes>=5)
+    out.push(enc('Tu as enchaîné jusqu\'à <b>'+S.maxPertes+' pertes d\'affilée</b>. Prévois une règle d\'arrêt.','mauvais'));
+  if(P.be>0)
+    out.push(enc('<b>'+P.be+' trades</b> finissent à l\'équilibre. Ils ne comptent ni en gain ni en perte dans ton taux de réussite.','neutre'));
+  document.getElementById('rs-constats').innerHTML=out.join('');
+}
 
 function initCapChart(){
   DC('cap');
