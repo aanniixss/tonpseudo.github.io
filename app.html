@@ -1066,6 +1066,8 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <button onclick="exportCSV()" title="Exporter tous les trades de l'année en CSV (Excel)" style="padding:5px 10px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);color:var(--grb);font-size:10px;cursor:pointer;letter-spacing:1px">⤓ CSV</button>
         <button onclick="document.getElementById('csv-import-input').click()" title="Importer des trades depuis un fichier CSV" style="padding:5px 10px;border-radius:7px;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.35);color:var(--bb);font-size:10px;cursor:pointer;letter-spacing:1px">⤒ CSV</button>
         <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
+        <button onclick="document.getElementById('mt5-import-input').click()" title="Importer l'historique depuis un rapport MetaTrader 5 (Historique → clic droit → Rapport)" style="padding:5px 10px;border-radius:7px;background:rgba(217,119,6,0.12);border:1px solid rgba(217,119,6,0.35);color:var(--gb);font-size:10px;cursor:pointer;letter-spacing:1px">⤒ MT5</button>
+        <input type="file" id="mt5-import-input" accept=".html,.htm,.xlsx,.xls" style="display:none" onchange="importMT5(event)">
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(37,99,235,0.2);border:1px solid var(--be);color:var(--be);font-size:10px;cursor:pointer;letter-spacing:1px">TOUT</button>
@@ -2540,12 +2542,45 @@ async function createAccount(){
 
 async function deleteAccount(id){
   if(ACCOUNTS.length<=1){ toast('❌ Tu dois garder au moins 1 compte'); return; }
-  if(!confirm('Supprimer ce compte ? Les trades associés resteront en base.')) return;
-  await sb.from('accounts').delete().eq('id',id);
+  const acc = ACCOUNTS.find(a=>a.id===id);
+  const nom = acc ? acc.name : 'ce compte';
+
+  // Combien de trades ce compte contient-il ? On demande a la base : T ne
+  // contient que le compte actif, et supprimer a l'aveugle est irreversible.
+  let nb = null;
+  try{
+    const {count,error} = await sb.from('trades').select('id',{count:'exact',head:true}).eq('user_id',id);
+    if(!error) nb = count || 0;
+  }catch(e){ console.warn('deleteAccount count',e); }
+  if(nb === null){
+    toast('❌ Impossible de verifier le contenu de ce compte — reessaie dans un instant');
+    return;
+  }
+
+  const msg = nb === 0
+    ? 'Supprimer le compte "'+nom+'" ?\n\nIl ne contient aucun trade.'
+    : 'Supprimer le compte "'+nom+'" ET ses '+nb+' trade'+(nb>1?'s':'')+' ?\n\n'
+      + '⚠️ DEFINITIF : ces trades seront effaces de la base.\n'
+      + 'Exporte-les avant (onglet Rapports) si tu veux les garder.';
+  if(!confirm(msg)) return;
+
+  // Les trades d'abord. Supprimer le compte en laissant ses trades en base
+  // les rendait invisibles ET irrecuperables depuis l'app : plus aucun
+  // compte a selectionner pour les afficher.
+  if(nb > 0){
+    const delT = await sb.from('trades').delete().eq('user_id',id);
+    if(delT.error){ toast('❌ Suppression impossible : '+(delT.error.message||'')); return; }
+  }
+  const delA = await sb.from('accounts').delete().eq('id',id);
+  if(delA.error){ toast('❌ Suppression impossible : '+(delA.error.message||'')); return; }
+
   ACCOUNTS = ACCOUNTS.filter(a=>a.id!==id);
+  // Sans ca, une coupure reseau au prochain chargement ressuscite le compte
+  // supprime depuis le cache local.
+  try{ localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS)); }catch(e){}
   if(ACTIVE_ACCOUNT.id===id) switchAccount(ACCOUNTS[0].id);
   else renderAccountList();
-  toast('Compte supprimé');
+  toast('Compte "'+nom+'" supprimé'+(nb>0?' ('+nb+' trade'+(nb>1?'s':'')+')':''));
 }
 
 // Close account menu on outside click
@@ -3052,19 +3087,97 @@ function _mt5Date(v){ var d=null; if(v instanceof Date){ d=new Date(v.getTime())
 function _mt5Sess(h){ if(h<8) return 'Tokyo / Asia'; if(h<13) return 'London'; if(h<16) return 'Overlap Lon/NY'; if(h<22) return 'New York'; return 'Tokyo / Asia'; }
 function _mt5Dur(a,b){ if(!a||!b) return {str:'—',mins:0}; var mins=Math.round((b-a)/60000); if(mins<0)mins=0; var str; if(mins<60)str=mins+'m'; else if(mins<1440){var h=Math.floor(mins/60);str=h+'h '+(mins%60)+'m';}else{var d=Math.floor(mins/1440),hh=Math.floor((mins%1440)/60);str=d+'j '+hh+'h';} return {str:str,mins:mins}; }
 function _mt5Num(x){ var n=parseFloat((''+x).replace(/\s/g,'').replace(',','.')); return isNaN(n)?0:n; }
+// ── Lecture du rapport MT5 au format HTML ──
+// MetaTrader exporte « Rapport d'historique » en HTML encode en UTF-16, ce que
+// le lecteur Excel ne sait pas ouvrir. On decode donc nous-memes.
+function _mt5Texte(buf){
+  var b=new Uint8Array(buf);
+  if(b.length>1 && b[0]===0xFF && b[1]===0xFE) return new TextDecoder('utf-16le').decode(b);
+  if(b.length>1 && b[0]===0xFE && b[1]===0xFF) return new TextDecoder('utf-16be').decode(b);
+  // Pas de BOM : l'UTF-16 laisse un octet nul sur deux, l'UTF-8 quasiment jamais.
+  var n=Math.min(b.length,2000), nuls=0;
+  for(var i=1;i<n;i+=2){ if(b[i]===0) nuls++; }
+  return new TextDecoder(nuls>n/8?'utf-16le':'utf-8').decode(b);
+}
+// Cellules d'une ligne. MT5 glisse un <td class="hidden" colspan="8"> dans chaque
+// ligne de donnees : en l'ignorant, on retombe exactement sur les 13 colonnes de
+// l'entete (Heure, Position, Symbole, Type, Volume, Prix, S/L, T/P, Heure, Prix,
+// Commission, Echange, Profit).
+function _mt5Cellules(tr, garderCachees){
+  var out=[], re=/<t[dh]([^>]*)>([\s\S]*?)<\/t[dh]>/gi, m;
+  while((m=re.exec(tr))){
+    if(!garderCachees && /class\s*=\s*"[^"]*\bhidden\b/i.test(m[1]||'')) continue;
+    out.push(m[2].replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').trim());
+  }
+  return out;
+}
+function _mt5LignesHTML(txt){
+  var trs=txt.match(/<tr[\s\S]*?<\/tr>/gi)||[], hi=-1;
+  for(var i=0;i<trs.length;i++){
+    var c=_mt5Cellules(trs[i],true).map(function(x){return x.toLowerCase();});
+    if(c.indexOf('symbole')>=0 && c.indexOf('type')>=0 && c.indexOf('volume')>=0){ hi=i; break; }
+  }
+  if(hi<0) return null;
+  var rows=[];
+  for(var j=hi+1;j<trs.length;j++){
+    var d=_mt5Cellules(trs[j],false);
+    if(d.length<13){ if(rows.length) break; else continue; }
+    var typ=(d[3]||'').toLowerCase();
+    if(typ!=='buy' && typ!=='sell'){ if(rows.length) break; else continue; }
+    rows.push(d);
+  }
+  return rows;
+}
+// Un trade porte-t-il une saisie manuelle qu'il ne faut surtout pas perdre ?
+function _mt5Annote(t){
+  var plein=function(v){ return v && v!=='[]' && v!=='null'; };
+  return plein(t.strats)||plein(t.confs)||plein(t.pats)
+      || plein(t.psych_errors)||plein(t.psych_good)
+      || (t.notes&&t.notes.trim()!=='') || (t.fonda&&t.fonda!=='') || (parseInt(t.star)||0)>0
+      || !!(t.photo_av||t.photo_co||t.photo_ap);
+}
+// Rapproche le rapport MT5 des trades deja enregistres.
+//   Cle = paire + sens + lot + profit brut. Verifie sur un rapport reel de
+//   162 positions contre 107 trades deja saisis : 106 retrouves, dont 64 des
+//   65 annotes. Le seul rate avait un lot a 0 (saisi a la main sans le lot).
+//   L'appariement est 1 pour 1 : deux trades identiques le meme jour restent
+//   deux trades, le second n'est pas avale par le premier.
+function _mt5Fusion(duRapport, deLApp){
+  var cle=function(t){
+    return (t.pair||'')+'|'+(t.dir||'')+'|'+(parseFloat(t.lot_size)||0)+'|'+(parseFloat(t.ca_amt)||0);
+  };
+  var dispo={};
+  for(var i=0;i<deLApp.length;i++){ var k=cle(deLApp[i]); (dispo[k]=dispo[k]||[]).push(i); }
+  var pris={}, nouveaux=[], dejaLa=0;
+  for(var j=0;j<duRapport.length;j++){
+    var k2=cle(duRapport[j]), l=dispo[k2]||[], trouve=-1;
+    for(var m=0;m<l.length;m++){ if(!pris[l[m]]){ trouve=l[m]; break; } }
+    if(trouve>=0){ pris[trouve]=true; dejaLa++; }
+    else nouveaux.push(duRapport[j]);
+  }
+  return {nouveaux:nouveaux, dejaLa:dejaLa};
+}
 function importMT5(ev){
   var file=ev.target.files&&ev.target.files[0]; if(!file) return; ev.target.value='';
-  if(typeof XLSX==='undefined'){ toast('❌ Lecteur Excel pas encore chargé, recharge la page'); return; }
   if(!ACTIVE_ACCOUNT){ toast('❌ Aucun compte actif'); return; }
   toast('⏳ Lecture du fichier MT5...');
   var reader=new FileReader();
   reader.onload=function(e){
-    var rows;
-    try{ var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'}); var ws=wb.Sheets[wb.SheetNames[0]]; rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}); }
-    catch(err){ console.error(err); toast('❌ Fichier illisible (envoie le rapport MT5 .xlsx)'); return; }
-    var hi=-1;
-    for(var i=0;i<rows.length;i++){ var r=rows[i]; if(r && (''+r[2]).trim()==='Symbole' && (''+r[3]).trim()==='Type'){ hi=i; break; } }
-    if(hi<0){ toast('❌ Tableau "Positions" introuvable dans le fichier'); return; }
+    var rows=null, hi=-1;
+    var estHTML=/\.html?$/i.test(file.name);
+    if(!estHTML){
+      // .xlsx / .xls : meme ordre de colonnes, l'entete sert de repere.
+      if(typeof XLSX==='undefined'){ toast('❌ Lecteur Excel pas encore chargé, recharge la page'); return; }
+      try{ var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'}); var ws=wb.Sheets[wb.SheetNames[0]]; rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}); }
+      catch(err){ console.error('importMT5 xlsx',err); toast('❌ Fichier illisible'); return; }
+      for(var i=0;i<rows.length;i++){ var r=rows[i]; if(r && (''+r[2]).trim()==='Symbole' && (''+r[3]).trim()==='Type'){ hi=i; break; } }
+      if(hi<0){ toast('❌ Tableau "Positions" introuvable dans le fichier'); return; }
+    } else {
+      try{ rows=_mt5LignesHTML(_mt5Texte(e.target.result)); }
+      catch(err){ console.error('importMT5 html',err); toast('❌ Fichier illisible'); return; }
+      if(rows===null){ toast('❌ Tableau "Positions" introuvable — exporte bien « Rapport » depuis l\'onglet Historique'); return; }
+      hi=-1; // les lignes renvoyees commencent deja apres l'entete
+    }
     var trades=[], totNet=0;
     var days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
     for(var j=hi+1;j<rows.length;j++){
@@ -3092,9 +3205,35 @@ function importMT5(ev){
       trades.push({user_id:ACTIVE_ACCOUNT.id,pair:sym,cat:_mt5Cat(sym),day:days[op.getDay()],sess:_mt5Sess(op.getHours()),dir:dir,cl:cl,entry_time:en||null,exit_time:ex||null,duration:dur.str,duration_mins:dur.mins,lot_size:vol,risk_pct:(CAP>0&&riskAmt)?parseFloat((riskAmt/CAP*100).toFixed(2)):0,risk_amt:parseFloat(riskAmt.toFixed(2)),rr:rr,result:result,ca_amt:parseFloat(profit.toFixed(2)),commission:parseFloat((-(commMt+swap)).toFixed(2)),pnl_amt:parseFloat(net.toFixed(2)),pnl_pct:CAP>0?parseFloat((net/CAP*100).toFixed(4)):0,fonda:'',star:0,strats:'[]',confs:'[]',pats:'[]',psych_errors:'[]',psych_good:'[]',notes:'',trade_month:op.getMonth(),trade_year:op.getFullYear()});
     }
     if(!trades.length){ toast('❌ Aucun trade trouvé dans le fichier'); return; }
-    var msg='J\'ai trouvé '+trades.length+' trades dans ton rapport MT5.\nP&L net total : '+(totNet>=0?'+':'')+Math.round(totNet).toLocaleString()+' $\n\nCela va SUPPRIMER les trades actuels du compte « '+ACTIVE_ACCOUNT.name+' » puis importer les '+trades.length+' nouveaux.\n\nContinuer ?';
+    // Periode couverte, pour qu'il puisse verifier que c'est le bon rapport
+    var mois=['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
+    var pr=function(t){ return mois[t.trade_month]+' '+t.trade_year; };
+    var periode=pr(trades[0])===pr(trades[trades.length-1]) ? pr(trades[0])
+              : 'de '+pr(trades[0])+' a '+pr(trades[trades.length-1]);
+    var entete='J\'ai trouvé '+trades.length+' trades dans ton rapport MT5 ('+periode+').\n'
+             + 'P&L net total : '+(totNet>=0?'+':'')+Math.round(totNet).toLocaleString()+' $\n\n';
+
+    // Compte vide : rien a proteger, on importe directement.
+    if(!T.length){
+      if(!confirm(entete+'Le compte « '+ACTIVE_ACCOUNT.name+' » est vide.\nImporter les '+trades.length+' trades ?')) return;
+      _mt5DoImport(trades, false); return;
+    }
+
+    // Compte deja rempli : on repere ce qui existe deja pour ne pas ecraser
+    // les annotations (strategies, psychologie, notes) saisies a la main.
+    var f=_mt5Fusion(trades, T);
+    var annotes=T.filter(_mt5Annote).length;
+    var msg=entete
+          + 'Le compte « '+ACTIVE_ACCOUNT.name+' » contient déjà '+T.length+' trade'+(T.length>1?'s':'')
+          + (annotes?', dont '+annotes+' annoté'+(annotes>1?'s':'')+' (stratégie / psycho / notes)':'')+'.\n\n'
+          + '▶ OK = FUSIONNER (recommandé)\n'
+          + '   · '+f.nouveaux.length+' trade'+(f.nouveaux.length>1?'s':'')+' ajouté'+(f.nouveaux.length>1?'s':'')+'\n'
+          + '   · '+f.dejaLa+' déjà présent'+(f.dejaLa>1?'s':'')+' → laissé'+(f.dejaLa>1?'s':'')+' intact'+(f.dejaLa>1?'s':'')+', tes annotations sont gardées\n'
+          + '   · total après fusion : '+(T.length+f.nouveaux.length)+'\n\n'
+          + '▶ Annuler = ne rien faire';
     if(!confirm(msg)) return;
-    _mt5DoImport(trades, true);
+    if(!f.nouveaux.length){ toast('✅ Rien à ajouter — tout ce rapport est déjà dans le compte'); return; }
+    _mt5DoImport(f.nouveaux, false);
   };
   reader.readAsArrayBuffer(file);
 }

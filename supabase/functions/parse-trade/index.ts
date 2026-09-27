@@ -7,8 +7,12 @@
 //  depuis le secret ANTHROPIC_API_KEY (configuré côté Supabase).
 //
 //  Déploiement :
-//    supabase functions deploy parse-trade --no-verify-jwt
+//    supabase functions deploy parse-trade
 //    supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
+//
+//  ⚠️  La fonction exige un jeton utilisateur valide (verify_jwt).
+//      Sans ça, n'importe qui sur Internet pourrait consommer les
+//      crédits Anthropic du projet.
 // ════════════════════════════════════════════════════════════════
 
 const CORS = {
@@ -18,7 +22,17 @@ const CORS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-// Schéma de sortie structuré — Claude renvoie EXACTEMENT cette forme.
+// Modèle : Sonnet lit très bien une capture de plateforme et coûte une
+// fraction d'Opus — ce qui compte quand chaque client déclenche des appels.
+const MODEL = "claude-sonnet-5";
+
+// Taille max d'image acceptée (base64). Au-delà, l'API Anthropic refuse
+// de toute façon, autant répondre clairement tout de suite.
+const MAX_B64 = 6 * 1024 * 1024;
+
+const MEDIA_OK = ["image/png", "image/jpeg", "image/gif", "image/webp"];
+
+// Schéma de sortie — Claude renvoie EXACTEMENT cette forme.
 const SCHEMA = {
   type: "object",
   additionalProperties: false,
@@ -46,7 +60,7 @@ const SCHEMA = {
 };
 
 const PROMPT = `Tu extrais UN trade depuis une capture d'écran de plateforme de trading (MT4/MT5, TradingView, cTrader, dashboard prop-firm, etc.).
-Lis les valeurs visibles et renvoie-les.
+Lis les valeurs visibles et renvoie-les via l'outil enregistrer_trade.
 - direction: LONG pour un achat/buy, SHORT pour une vente/sell.
 - result: WIN si le net est positif, LOSS si négatif, BE si ~0.
 - gross_pnl: profit avant commission (négatif pour une perte). commission: frais (nombre positif). net_pnl: résultat net final.
@@ -66,11 +80,17 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { image, media_type } = await req.json();
-    if (!image) return json({ error: "Champ 'image' (base64) manquant" }, 400);
+    if (!image || typeof image !== "string") {
+      return json({ error: "Champ 'image' (base64) manquant" }, 400);
+    }
+    if (image.length > MAX_B64) {
+      return json({ error: "Capture trop lourde — réduis-la avant d'envoyer" }, 413);
+    }
+    const mt = MEDIA_OK.includes(media_type) ? media_type : "image/png";
 
     const key = Deno.env.get("ANTHROPIC_API_KEY");
     if (!key) {
-      return json({ error: "ANTHROPIC_API_KEY non configurée (supabase secrets set)" }, 500);
+      return json({ error: "ANTHROPIC_API_KEY non configurée (Supabase → Edge Functions → Secrets)" }, 500);
     }
 
     const r = await fetch("https://api.anthropic.com/v1/messages", {
@@ -81,13 +101,20 @@ Deno.serve(async (req: Request) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-opus-4-8",
+        model: MODEL,
         max_tokens: 1024,
-        output_config: { format: { type: "json_schema", schema: SCHEMA } },
+        // Outil forcé : Claude est obligé de répondre selon le schéma,
+        // donc pas de texte libre à re-parser au hasard.
+        tools: [{
+          name: "enregistrer_trade",
+          description: "Enregistre les champs du trade lus sur la capture.",
+          input_schema: SCHEMA,
+        }],
+        tool_choice: { type: "tool", name: "enregistrer_trade" },
         messages: [{
           role: "user",
           content: [
-            { type: "image", source: { type: "base64", media_type: media_type || "image/png", data: image } },
+            { type: "image", source: { type: "base64", media_type: mt, data: image } },
             { type: "text", text: PROMPT },
           ],
         }],
@@ -102,14 +129,13 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Image refusée par le modèle (réessaie avec une capture plus claire)" }, 422);
     }
 
-    const textBlock = (data.content || []).find((b: { type: string }) => b.type === "text");
-    let trade: unknown = null;
-    try {
-      trade = JSON.parse(textBlock.text);
-    } catch (_e) {
-      return json({ error: "Lecture impossible", raw: textBlock?.text }, 502);
+    const block = (data.content || []).find(
+      (b: { type: string; name?: string }) => b.type === "tool_use" && b.name === "enregistrer_trade",
+    );
+    if (!block?.input) {
+      return json({ error: "Lecture impossible — capture trop floue ou sans données de trade" }, 502);
     }
-    return json({ trade });
+    return json({ trade: block.input });
   } catch (e) {
     return json({ error: String(e) }, 500);
   }

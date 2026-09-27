@@ -60,22 +60,22 @@ end $$;
 -- ÉTAPE 5 — Règles : chacun ne voit et ne touche QUE ses propres données
 -- ───────────────────────────────────────────────────────────────────────
 create policy "accounts_select_own" on public.accounts
-  for select to authenticated using (auth.uid() = owner_uuid);
+  for select to authenticated using ((select auth.uid()) = owner_uuid);
 create policy "accounts_insert_own" on public.accounts
-  for insert to authenticated with check (auth.uid() = owner_uuid);
+  for insert to authenticated with check ((select auth.uid()) = owner_uuid);
 create policy "accounts_update_own" on public.accounts
-  for update to authenticated using (auth.uid() = owner_uuid) with check (auth.uid() = owner_uuid);
+  for update to authenticated using ((select auth.uid()) = owner_uuid) with check ((select auth.uid()) = owner_uuid);
 create policy "accounts_delete_own" on public.accounts
-  for delete to authenticated using (auth.uid() = owner_uuid);
+  for delete to authenticated using ((select auth.uid()) = owner_uuid);
 
 create policy "trades_select_own" on public.trades
-  for select to authenticated using (auth.uid() = owner_uuid);
+  for select to authenticated using ((select auth.uid()) = owner_uuid);
 create policy "trades_insert_own" on public.trades
-  for insert to authenticated with check (auth.uid() = owner_uuid);
+  for insert to authenticated with check ((select auth.uid()) = owner_uuid);
 create policy "trades_update_own" on public.trades
-  for update to authenticated using (auth.uid() = owner_uuid) with check (auth.uid() = owner_uuid);
+  for update to authenticated using ((select auth.uid()) = owner_uuid) with check ((select auth.uid()) = owner_uuid);
 create policy "trades_delete_own" on public.trades
-  for delete to authenticated using (auth.uid() = owner_uuid);
+  for delete to authenticated using ((select auth.uid()) = owner_uuid);
 
 -- ───────────────────────────────────────────────────────────────────────
 -- ÉTAPE 6 — Vérification (à lire avant de considérer le travail terminé)
