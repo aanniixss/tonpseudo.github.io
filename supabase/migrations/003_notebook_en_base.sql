@@ -67,3 +67,10 @@ create policy nb_notes_delete on public.nb_notes for delete
 select 'nb_folders' as t, count(*) from public.nb_folders
 union all
 select 'nb_notes', count(*) from public.nb_notes;
+
+-- ═══════════════════════════════════════════════════════════════
+-- Garde-fou de risque : les limites que le trader se fixe,
+-- stockees par compte (JSON). Un compte prop firm et un compte
+-- perso n'ont pas les memes regles.
+-- ═══════════════════════════════════════════════════════════════
+alter table public.accounts add column if not exists rules text;

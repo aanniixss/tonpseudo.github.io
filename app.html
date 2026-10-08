@@ -688,6 +688,37 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .nb-editor{padding:20px 22px;overflow-y:auto;}
 .nb-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:14px;text-align:center;}
 .nb-title{width:100%;box-sizing:border-box;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--tp);background:transparent;margin-bottom:6px;}
+.gf-bar{margin-bottom:12px;}
+.gf-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.gf-t{font-size:12px;font-weight:700;letter-spacing:.3px;color:var(--tp);display:flex;align-items:center;gap:7px;}
+.gf-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:999px;}
+.gf-badge.ok{color:#0a8a5f;background:rgba(10,138,95,0.12);}
+.gf-badge.warn{color:#8a6500;background:rgba(245,158,11,0.16);}
+.gf-badge.stop{color:#b3342f;background:rgba(227,73,72,0.14);}
+.gf-badge.off{color:var(--td);background:rgba(30,35,51,0.06);}
+.gf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.gf-cell{padding:9px 11px;border-radius:9px;background:rgba(30,35,51,0.03);border:1px solid var(--bo);}
+.gf-lbl{font-size:9px;letter-spacing:.9px;text-transform:uppercase;color:var(--td);margin-bottom:4px;}
+.gf-val{font-size:15px;font-weight:700;color:var(--tp);line-height:1.15;}
+.gf-val small{font-size:10px;font-weight:500;color:var(--td);}
+.gf-jauge{height:4px;border-radius:999px;background:rgba(30,35,51,0.08);margin-top:6px;overflow:hidden;}
+.gf-jauge i{display:block;height:100%;border-radius:999px;transition:width .3s;}
+.gf-cell.ok .gf-jauge i{background:#0a8a5f;} .gf-cell.ok .gf-val{color:#0a8a5f;}
+.gf-cell.warn .gf-jauge i{background:#d97706;} .gf-cell.warn .gf-val{color:#a35c00;}
+.gf-cell.stop .gf-jauge i{background:#e34948;} .gf-cell.stop .gf-val{color:#b3342f;}
+.gf-msg{margin-top:10px;font-size:11px;line-height:1.5;padding:9px 11px;border-radius:9px;}
+.gf-msg.stop{color:#b3342f;background:rgba(227,73,72,0.09);border:1px solid rgba(227,73,72,0.28);}
+.gf-msg.warn{color:#8a6500;background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.3);}
+.gf-msg.ok{color:var(--td);background:rgba(10,138,95,0.06);border:1px solid rgba(10,138,95,0.2);}
+.gf-cta{border:1px dashed var(--bo);background:none;color:var(--bb);font-size:11px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;}
+.gf-cta:hover{background:rgba(37,99,235,0.07);}
+.gf-set{background:none;border:1px solid var(--bo);color:var(--td);font-size:10px;padding:4px 9px;border-radius:7px;cursor:pointer;letter-spacing:.5px;}
+.gf-set:hover{color:var(--tp);border-color:#9aa3b5;}
+.gf-rule{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bo);}
+.gf-rule:last-child{border-bottom:none;}
+.gf-rule .gf-rt{flex:1;font-size:12px;color:var(--tp);}
+.gf-rule .gf-rd{font-size:10px;color:var(--td);margin-top:2px;line-height:1.4;}
+.gf-rule input[type=number]{width:92px;flex:none;}
 .nb-sync-row{display:flex;align-items:center;gap:6px;margin:8px 0 4px;}
 .nb-sync{flex:1;font-size:10px;font-weight:600;color:var(--td);padding:4px 7px;border-radius:6px;background:rgba(30,35,51,0.04);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .nb-sync.ok{color:#0a8a5f;background:rgba(10,138,95,0.10);}
@@ -1109,6 +1140,9 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 </div>
 
 <div id="journal" class="sec" role="tabpanel" aria-label="Journal">
+
+  <!-- GARDE-FOU DE RISQUE -->
+  <div class="card gf-bar" id="gf-bar"></div>
 
   <!-- MONTH FILTER BAR -->
   <div class="card" style="margin-bottom:12px">
@@ -2154,6 +2188,47 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   </div>
 </div>
 
+<div class="mo" id="gfModal" role="dialog" aria-modal="true" aria-label="Garde-fou de risque">
+  <div class="mb" style="width:560px;max-width:95vw;max-height:88vh;overflow-y:auto">
+    <div class="mt">🛡 Garde-fou de risque</div>
+    <div style="font-size:11px;color:var(--td);text-align:center;margin-bottom:4px;line-height:1.5">Tes limites pour la journée. BAKOU te prévient avant d'enregistrer un trade qui les dépasse.</div>
+    <div style="font-size:10px;color:var(--ts);text-align:center;margin-bottom:16px;letter-spacing:1px" id="gf-modal-account">—</div>
+
+    <label style="display:flex;align-items:center;gap:9px;padding:11px;border-radius:9px;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.25);cursor:pointer;margin-bottom:6px">
+      <input type="checkbox" id="gf-on" style="width:16px;height:16px;flex:none;cursor:pointer">
+      <span style="font-size:12px;font-weight:700;color:var(--tp)">Activer le garde-fou</span>
+    </label>
+
+    <div class="gf-rule">
+      <div><div class="gf-rt">Perte max dans la journée ($)</div><div class="gf-rd">Au-delà, tu coupes. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-perte" step="10" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Nombre max de trades / jour</div><div class="gf-rd">Contre le sur-trading. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-nb" step="1" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Pertes d'affilée avant pause</div><div class="gf-rd">Après N pertes consécutives, tu t'arrêtes. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-suite" step="1" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Lot max par trade</div><div class="gf-rd">Empêche le lot de vengeance. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-lot" step="0.01" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Risque max par trade (%)</div><div class="gf-rd">En % du capital du compte. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-risque" step="0.1" min="0" placeholder="0">
+    </div>
+
+    <div id="gf-conseil" style="font-size:11px;line-height:1.55;color:var(--td);background:rgba(30,35,51,0.03);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;margin:14px 0 18px"></div>
+
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="gfSave()">✅ Enregistrer</button>
+      <button class="btn btn-g" onclick="gfCloseModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
 <div class="mo" id="capModal" role="dialog" aria-modal="true" aria-label="Définir le capital">
   <div class="mb">
     <div class="mt">⚙ Définir le Capital</div>
@@ -2463,7 +2538,8 @@ async function saveAccounts(){
   for(const acc of ACCOUNTS){
     await sb.from('accounts').upsert(Object.assign({
       id: acc.id, owner_id: OWNER_ID, name: acc.name,
-      capital: acc.capital, risk: acc.risk, color: acc.color
+      capital: acc.capital, risk: acc.risk, color: acc.color,
+      rules: acc.rules || null
     }, ownExtra()));
   }
 }
@@ -2479,7 +2555,7 @@ async function initAccounts(){
       // Préserve l'owner_id historique des comptes existants (le site principal legacy s'en sert)
       if(data[0].owner_id) OWNER_ID = data[0].owner_id;
       else if(AUTH_REQUIRED&&OWNER_UUID) OWNER_ID = derivedOwnerId();
-      ACCOUNTS = data.map(a=>({id:a.id, name:a.name, capital:a.capital||0, risk:a.risk||1, color:a.color||'#2563eb'}));
+      ACCOUNTS = data.map(a=>({id:a.id, name:a.name, capital:a.capital||0, risk:a.risk||1, color:a.color||'#2563eb', rules:a.rules||null}));
       localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS));
     } else {
       if(AUTH_REQUIRED&&OWNER_UUID) OWNER_ID = derivedOwnerId();
@@ -2651,7 +2727,7 @@ async function loadTrades(){
     // ses propres trades (user_id = compte actif). Évite qu'un compte vide vole les trades
     // d'un autre et réécrive les IDs (bug de bascule de compte).
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
-  renderTable(); updateDash(); buildHM();
+  renderTable(); updateDash(); buildHM(); gfRender();
   setTimeout(()=>{initCapChart();initPairChart();},100);
 }
 
@@ -2718,6 +2794,7 @@ function initSection(id){
   else if(id==='tradelog')setTimeout(buildTradeLog,100);
   else if(id==='report')setTimeout(buildReport,100);
   else if(id==='notebook')setTimeout(initNotebook,80);
+  if(id==='journal')setTimeout(gfRender,60);
 }
 function renderSousOnglets(g,idActif){
   const bar=document.getElementById('subnav'); if(!bar)return;
@@ -2930,6 +3007,7 @@ async function addTrade(){
   const tradeYear = GLOBAL_YEAR || now.getFullYear();
   const getPhoto=id=>{const img=document.querySelector('#'+id+'-prev img');return img?img.src:null;};
   const photoAv=getPhoto('av'),photoCo=getPhoto('co'),photoAp=getPhoto('ap');
+  if(!gfAutorise({lot:lot, risquePct:rsk, pnl:netAmt})) return;
   const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear,photo_av:photoAv,photo_co:photoCo,photo_ap:photoAp,...ownExtra()};
   let {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
   // Fallback : si les colonnes psych n'existent pas encore dans Supabase, on réessaie sans elles
@@ -2946,7 +3024,7 @@ async function addTrade(){
   }
   const savedTrade = Array.isArray(saved)?saved[0]:saved;
   if(savedTrade) T.push(savedTrade);
-  save();renderTable();updateDash();clearForm();
+  save();renderTable();updateDash();clearForm();gfRender();
   toast('✅ Trade sauvegardé !');
 }
 
@@ -4233,6 +4311,199 @@ function buildRepWinsLoss(){
     {label:'Perdants',data:[Math.round(avgL),Math.round(totL)],backgroundColor:'rgba(224,64,90,0.8)',borderRadius:4}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5b6478',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+' : $'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
+// ══════════ GARDE-FOU DE RISQUE ══════════
+// Les limites que le trader se fixe pour la journee. Elles sont stockees
+// par compte (colonne accounts.rules) : un compte prop firm et un compte
+// perso n'ont pas les memes regles.
+// Le garde-fou PREVIENT, il ne bloque pas definitivement : il faut pouvoir
+// saisir un trade passe ou rattraper un oubli. Mais on ne peut pas
+// l'ignorer sans le voir.
+var GF_DEFAUT={on:false,perteJour:0,nbTrades:0,pertesSuite:0,lotMax:0,risqueMax:0};
+
+function gfRegles(){
+  var r={};
+  for(var k in GF_DEFAUT) r[k]=GF_DEFAUT[k];
+  if(!ACTIVE_ACCOUNT) return r;
+  try{
+    var v=JSON.parse(ACTIVE_ACCOUNT.rules||'{}');
+    if(v&&typeof v==='object'){ for(var k2 in GF_DEFAUT) if(v[k2]!==undefined&&v[k2]!==null) r[k2]=v[k2]; }
+  }catch(e){}
+  r.on=!!r.on;
+  ['perteJour','nbTrades','pertesSuite','lotMax','risqueMax'].forEach(function(k3){ r[k3]=Math.max(0,parseFloat(r[k3])||0); });
+  return r;
+}
+
+// Jour local, pas UTC : la journee de trading de l'utilisateur, pas celle de Greenwich.
+function gfJour(d){
+  var x=(d instanceof Date)?d:new Date(d);
+  if(isNaN(x)) return '';
+  var p=function(n){ return (n<10?'0':'')+n; };
+  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
+}
+
+function gfEtat(){
+  var auj=gfJour(new Date()), pnl=0, nb=0;
+  var liste=(typeof T!=='undefined'&&T)?T:[];
+  for(var i=0;i<liste.length;i++){
+    if(gfJour(liste[i].created_at)!==auj) continue;
+    nb++; pnl+=parseFloat(liste[i].pnl_amt)||0;
+  }
+  // pertes d'affilee : on remonte l'historique complet depuis la fin
+  var tri=liste.slice().sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); });
+  var suite=0;
+  for(var j=tri.length-1;j>=0;j--){
+    if(tri[j].result==='LOSS') suite++;
+    else if(tri[j].result==='WIN') break;   // un BE ne casse pas la serie mais ne la prolonge pas
+  }
+  return {pnlJour:pnl, nbJour:nb, suite:suite};
+}
+
+// Ce que ce trade-la casserait. cand = {lot, risquePct, pnl}
+function gfInfractions(cand){
+  var r=gfRegles();
+  if(!r.on) return [];
+  var e=gfEtat(), out=[];
+  var A=function(v){ return '$'+Math.abs(Math.round(v)).toLocaleString(); };
+  if(r.perteJour>0 && -e.pnlJour>=r.perteJour)
+    out.push('Ta limite de perte du jour est atteinte : '+A(e.pnlJour)+' perdus sur '+A(r.perteJour)+' autorisés.');
+  if(r.nbTrades>0 && e.nbJour>=r.nbTrades)
+    out.push('Tu as déjà pris tes '+r.nbTrades+' trades du jour (celui-ci serait le '+(e.nbJour+1)+'ᵉ).');
+  if(r.pertesSuite>0 && e.suite>=r.pertesSuite)
+    out.push(e.suite+' pertes d\'affilée — ta règle dit pause à '+r.pertesSuite+'.');
+  if(r.lotMax>0 && cand && (parseFloat(cand.lot)||0)>r.lotMax)
+    out.push('Lot '+cand.lot+' au-dessus de ton maximum ('+r.lotMax+').');
+  if(r.risqueMax>0 && cand && (parseFloat(cand.risquePct)||0)>r.risqueMax)
+    out.push('Risque '+cand.risquePct+' % au-dessus de ton maximum ('+r.risqueMax+' %).');
+  return out;
+}
+
+// Appele avant l'enregistrement. true = on continue.
+function gfAutorise(cand){
+  var inf=gfInfractions(cand);
+  if(!inf.length) return true;
+  var msg='🛡 GARDE-FOU — ce trade casse '+(inf.length>1?'tes règles :':'ta règle :')+'\n\n';
+  for(var i=0;i<inf.length;i++) msg+='• '+inf[i]+'\n';
+  msg+='\nC\'est toi qui as fixé ces limites.\n\nEnregistrer quand même ?';
+  return confirm(msg);
+}
+
+function gfRender(){
+  var box=document.getElementById('gf-bar'); if(!box) return;
+  var r=gfRegles();
+  if(!r.on){
+    box.innerHTML='<div class="gf-head"><div class="gf-t">🛡 Garde-fou de risque <span class="gf-badge off">désactivé</span></div>'
+      +'<button class="gf-cta" onclick="gfOpenModal()">Fixer mes limites</button></div>'
+      +'<div class="gf-msg ok">Fixe une perte max par jour, un nombre de trades et un lot plafond. '
+      +'BAKOU te prévient avant d\'enregistrer un trade qui dépasse — c\'est le filet qui évite la journée à −2 700 $.</div>';
+    return;
+  }
+  var e=gfEtat();
+  var cells=[];
+  var jauge=function(part){ return '<div class="gf-jauge"><i style="width:'+Math.min(100,Math.max(0,Math.round(part*100)))+'%"></i></div>'; };
+  var ton=function(part){ return part>=1?'stop':(part>=0.7?'warn':'ok'); };
+  var A=function(v){ return (v<0?'−':'')+'$'+Math.abs(Math.round(v)).toLocaleString(); };
+  var pire=0;
+
+  if(r.perteJour>0){
+    var perdu=Math.max(0,-e.pnlJour), part=perdu/r.perteJour; pire=Math.max(pire,part);
+    cells.push('<div class="gf-cell '+ton(part)+'"><div class="gf-lbl">Perte du jour</div>'
+      +'<div class="gf-val">'+A(-perdu)+' <small>/ '+A(-r.perteJour)+'</small></div>'+jauge(part)+'</div>');
+  }
+  if(r.nbTrades>0){
+    var p2=e.nbJour/r.nbTrades; pire=Math.max(pire,p2);
+    cells.push('<div class="gf-cell '+ton(p2)+'"><div class="gf-lbl">Trades du jour</div>'
+      +'<div class="gf-val">'+e.nbJour+' <small>/ '+r.nbTrades+'</small></div>'+jauge(p2)+'</div>');
+  }
+  if(r.pertesSuite>0){
+    var p3=e.suite/r.pertesSuite; pire=Math.max(pire,p3);
+    cells.push('<div class="gf-cell '+ton(p3)+'"><div class="gf-lbl">Pertes d\'affilée</div>'
+      +'<div class="gf-val">'+e.suite+' <small>/ '+r.pertesSuite+'</small></div>'+jauge(p3)+'</div>');
+  }
+  if(r.lotMax>0) cells.push('<div class="gf-cell"><div class="gf-lbl">Lot plafond</div><div class="gf-val">'+r.lotMax+'</div></div>');
+  if(r.risqueMax>0) cells.push('<div class="gf-cell"><div class="gf-lbl">Risque plafond</div><div class="gf-val">'+r.risqueMax+' <small>%</small></div></div>');
+
+  var etat=pire>=1?'stop':(pire>=0.7?'warn':'ok');
+  var badge=pire>=1?'limite atteinte':(pire>=0.7?'attention':'dans tes règles');
+  var jourPnl=e.pnlJour;
+  var msg;
+  if(pire>=1) msg='<div class="gf-msg stop"><b>Stop pour aujourd\'hui.</b> Tu as touché une de tes limites. Ferme la plateforme — c\'est exactement pour ça que tu as mis ce garde-fou.</div>';
+  else if(pire>=0.7) msg='<div class="gf-msg warn"><b>Tu approches.</b> Plus que peu de marge avant ta limite. Le prochain trade doit être ton meilleur setup, pas un trade d\'ennui.</div>';
+  else if(!e.nbJour) msg='<div class="gf-msg ok">Aucun trade aujourd\'hui. Tes limites sont en place.</div>';
+  else msg='<div class="gf-msg ok">'+e.nbJour+' trade'+(e.nbJour>1?'s':'')+' aujourd\'hui · '+A(jourPnl)+'. Tu es dans tes règles.</div>';
+
+  box.innerHTML='<div class="gf-head"><div class="gf-t">🛡 Garde-fou de risque <span class="gf-badge '+etat+'">'+badge+'</span></div>'
+    +'<button class="gf-set" onclick="gfOpenModal()">⚙ Mes limites</button></div>'
+    +(cells.length?'<div class="gf-grid">'+cells.join('')+'</div>':'')
+    +msg;
+}
+
+function gfOpenModal(){
+  var r=gfRegles();
+  var set=function(id,v){ var e=document.getElementById(id); if(e)e.value=v||''; };
+  var on=document.getElementById('gf-on'); if(on)on.checked=r.on;
+  set('gf-perte',r.perteJour||''); set('gf-nb',r.nbTrades||''); set('gf-suite',r.pertesSuite||'');
+  set('gf-lot',r.lotMax||''); set('gf-risque',r.risqueMax||'');
+  var nom=document.getElementById('gf-modal-account'); if(nom)nom.textContent=ACTIVE_ACCOUNT?ACTIVE_ACCOUNT.name:'—';
+  var c=document.getElementById('gf-conseil'); if(c)c.innerHTML=gfConseil();
+  var m=document.getElementById('gfModal'); if(m)m.classList.add('show');
+}
+function gfCloseModal(){ var m=document.getElementById('gfModal'); if(m)m.classList.remove('show'); }
+
+// Suggestion chiffree a partir de son propre historique, pas d'une regle generique.
+function gfConseil(){
+  var liste=(typeof T!=='undefined'&&T)?T:[];
+  if(liste.length<10) return 'Pas encore assez de trades sur ce compte pour te suggérer des chiffres. Un point de départ classique : perte max = 2 à 3 % du capital, 3 trades par jour.';
+  var parJour={}, suiteMax=0, suite=0, lots=[];
+  var tri=liste.slice().sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); });
+  for(var i=0;i<tri.length;i++){
+    var k=gfJour(tri[i].created_at);
+    if(!parJour[k]) parJour[k]={pnl:0,nb:0};
+    parJour[k].pnl+=parseFloat(tri[i].pnl_amt)||0; parJour[k].nb++;
+    var l=parseFloat(tri[i].lot_size)||0; if(l>0)lots.push(l);
+    if(tri[i].result==='LOSS'){ suite++; if(suite>suiteMax)suiteMax=suite; }
+    else if(tri[i].result==='WIN') suite=0;
+  }
+  var jours=Object.keys(parJour);
+  var pire=0, nbMax=0, nbTot=0;
+  jours.forEach(function(k){ if(parJour[k].pnl<pire)pire=parJour[k].pnl; if(parJour[k].nb>nbMax)nbMax=parJour[k].nb; nbTot+=parJour[k].nb; });
+  lots.sort(function(a,b){ return a-b; });
+  var med=lots.length?lots[Math.floor(lots.length/2)]:0;
+  var sugPerte=CAP>0?Math.round(CAP*0.02/10)*10:Math.round(Math.abs(pire)/2/10)*10;
+  var moyNb=Math.max(1,Math.round(nbTot/jours.length));
+  var A=function(v){ return '$'+Math.abs(Math.round(v)).toLocaleString(); };
+  return '<b>Ce que dit ton historique ('+liste.length+' trades, '+jours.length+' jours) :</b><br>'
+    +'• Pire journée : <b>−'+A(pire)+'</b> · tu prends <b>'+moyNb+'</b> trade'+(moyNb>1?'s':'')+' par jour en moyenne, <b>'+nbMax+'</b> au maximum.<br>'
+    +'• Plus longue série de pertes : <b>'+suiteMax+'</b> · lot médian : <b>'+med+'</b>.<br>'
+    +'<b>Suggestion :</b> perte max <b>'+A(sugPerte)+'</b>'+(CAP>0?' (2 % de ton capital)':'')
+    +' · <b>'+(moyNb+1)+'</b> trades/jour · pause après <b>'+Math.max(2,Math.min(4,Math.ceil(suiteMax/2)))+'</b> pertes'
+    +(med>0?' · lot max <b>'+(Math.round(med*2*100)/100)+'</b>':'')+'.';
+}
+
+async function gfSave(){
+  if(!ACTIVE_ACCOUNT){ toast('❌ Aucun compte sélectionné'); return; }
+  var num=function(id){ var e=document.getElementById(id); return Math.max(0,parseFloat(e?e.value:0)||0); };
+  var on=document.getElementById('gf-on');
+  var r={on:!!(on&&on.checked), perteJour:num('gf-perte'), nbTrades:num('gf-nb'),
+         pertesSuite:num('gf-suite'), lotMax:num('gf-lot'), risqueMax:num('gf-risque')};
+  if(r.on && !r.perteJour && !r.nbTrades && !r.pertesSuite && !r.lotMax && !r.risqueMax){
+    toast('⚠ Remplis au moins une limite, sinon le garde-fou ne garde rien');
+    return;
+  }
+  ACTIVE_ACCOUNT.rules=JSON.stringify(r);
+  var i=ACCOUNTS.findIndex(function(a){ return a.id===ACTIVE_ACCOUNT.id; });
+  if(i>=0) ACCOUNTS[i].rules=ACTIVE_ACCOUNT.rules;
+  try{ localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS)); }catch(e){}
+  try{
+    var res=await sb.from('accounts').upsert(Object.assign({id:ACTIVE_ACCOUNT.id, owner_id:OWNER_ID,
+      name:ACTIVE_ACCOUNT.name, capital:ACTIVE_ACCOUNT.capital||CAP, risk:ACTIVE_ACCOUNT.risk||DRSK,
+      color:ACTIVE_ACCOUNT.color||'#2563eb', rules:ACTIVE_ACCOUNT.rules}, ownExtra()));
+    if(res&&res.error) console.warn('gfSave',res.error);
+  }catch(e){ console.warn('gfSave',e); }
+  gfCloseModal(); gfRender();
+  toast(r.on?'🛡 Garde-fou activé sur '+ACTIVE_ACCOUNT.name:'Garde-fou désactivé');
+}
+document.addEventListener('click',function(e){ if(e.target&&e.target.id==='gfModal') gfCloseModal(); });
+
 // ══════════ NOTEBOOK ══════════
 var NB_FOLDERS=[], NB_NOTES=[], NB_CUR=null, NB_FILTER={folderId:null,tag:null,q:''};
 var NB_TEMPLATES={
