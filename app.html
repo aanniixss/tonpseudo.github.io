@@ -696,6 +696,23 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .nb-editor{padding:20px 22px;overflow-y:auto;}
 .nb-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:14px;text-align:center;}
 .nb-title{width:100%;box-sizing:border-box;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--tp);background:transparent;margin-bottom:6px;}
+.ct-tab{width:100%;border-collapse:collapse;font-size:12px;}
+.ct-tab th{font-size:9px;letter-spacing:.9px;text-transform:uppercase;color:var(--td);text-align:right;padding:0 0 8px;font-weight:600;}
+.ct-tab th:first-child{text-align:left;}
+.ct-tab td{padding:8px 0;border-top:1px solid var(--bo);text-align:right;font-variant-numeric:tabular-nums;}
+.ct-tab td:first-child{text-align:left;font-weight:600;color:var(--tp);}
+.ct-bar{height:5px;border-radius:999px;background:rgba(30,35,51,0.08);margin-top:5px;overflow:hidden;min-width:60px;}
+.ct-bar i{display:block;height:100%;border-radius:999px;background:#e34948;}
+.ct-fait{font-size:12px;line-height:1.6;color:var(--ts);padding:10px 12px;border-radius:9px;background:rgba(30,35,51,0.03);border:1px solid var(--bo);}
+.ct-fait b{color:var(--tp);}
+.ct-fait.fort{background:rgba(227,73,72,0.07);border-color:rgba(227,73,72,0.26);}
+.ct-fait.bon{background:rgba(10,138,95,0.07);border-color:rgba(10,138,95,0.24);}
+.ct-flux{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;}
+.ct-etape{flex:1 1 150px;padding:13px 14px;border-radius:11px;border:1px solid var(--bo);background:rgba(30,35,51,0.03);}
+.ct-etape .e-l{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--td);}
+.ct-etape .e-v{font-size:25px;font-weight:800;margin-top:5px;font-variant-numeric:tabular-nums;line-height:1.1;}
+.ct-etape .e-s{font-size:11px;color:var(--ts);margin-top:3px;}
+.ct-fleche{display:flex;align-items:center;color:var(--td);font-size:18px;}
 .cp-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0 4px;}
 .cp-box{padding:11px 12px;border-radius:10px;background:rgba(30,35,51,0.03);border:1px solid var(--bo);text-align:center;}
 .cp-box.vedette{background:rgba(37,99,235,0.07);border-color:rgba(37,99,235,0.3);}
@@ -1653,6 +1670,35 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <div id="nb-body" class="nb-body" contenteditable="true" oninput="nbBodyChange()"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ══ OU PART TON ARGENT ══ -->
+<div id="couts" class="sec" role="tabpanel" aria-label="Tes coûts">
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">💸 Où part ton argent</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 12px">Entre ce que le marché te donne et ce qui reste sur ton compte, il y a les frais. Voilà combien.</div>
+    <div id="ct-hero"></div>
+  </div>
+
+  <div id="ct-kpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:12px"></div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">🗓 Tes frais mois par mois</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 10px">En barres : ce que tu as payé. La ligne : la part de ton brut que ça représente.</div>
+    <div style="position:relative;height:250px"><canvas id="ctMoisChart"></canvas></div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">💱 Ce que chaque paire te coûte</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 10px">Brut gagné, frais payés, et ce qu'il reste vraiment.</div>
+    <div id="ct-paires"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🔎 Ce que ça change pour toi</div>
+    <div id="ct-constats" style="display:grid;gap:8px"></div>
   </div>
 </div>
 
@@ -2829,7 +2875,7 @@ const GROUPES=[
   {cle:'journal',  titre:"Journal",       sous:"Saisir et retrouver tes trades",
    vues:[{id:'journal',nom:'Saisie'},{id:'tradelog',nom:'Historique détaillé'}]},
   {cle:'analyse',  titre:"Analyse",       sous:"Où est ton edge",
-   vues:[{id:'analyse',nom:'Statistiques'},{id:'bilan',nom:'Vue annuelle'},{id:'setups',nom:'Mois par mois'}]},
+   vues:[{id:'analyse',nom:'Statistiques'},{id:'bilan',nom:'Vue annuelle'},{id:'setups',nom:'Mois par mois'},{id:'couts',nom:'Tes coûts'}]},
   {cle:'report',   titre:"Rapports",      sous:"Bilans exportables",
    vues:[{id:'report',nom:'Rapports'}]},
   {cle:'notebook', titre:"Notebook",      sous:"Notes, plans et recaps",
@@ -2843,6 +2889,7 @@ function initSection(id){
   else if(id==='bilan')setTimeout(initBilan,100);
   else if(id==='analyse')setTimeout(initAnalyse,100);
   else if(id==='setups')setTimeout(initSetups,100);
+  else if(id==='couts')setTimeout(initCouts,100);
   else if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
   else if(id==='tradelog')setTimeout(buildTradeLog,100);
   else if(id==='report')setTimeout(buildReport,100);
@@ -4364,6 +4411,154 @@ function buildRepWinsLoss(){
     {label:'Perdants',data:[Math.round(avgL),Math.round(totL)],backgroundColor:'rgba(224,64,90,0.8)',borderRadius:4}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5b6478',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+' : $'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
+// ═══════════════════════════════════════════════════════════════════
+//  OU PART TON ARGENT — le cout reel du trading
+//
+//  ca_amt = ce que le marche a donne (brut), commission = ce que le
+//  broker a pris, pnl_amt = ce qui reste. L'ecran rend visible l'ecart
+//  entre les deux, paire par paire et mois par mois.
+//
+//  Daltonisme : le rouge des frais ne porte jamais l'information seul,
+//  chaque montant est ecrit et chaque barre est proportionnelle.
+// ═══════════════════════════════════════════════════════════════════
+function ctArgent(v){ return '$'+Math.abs(Math.round(parseFloat(v)||0)).toLocaleString('fr-FR'); }
+
+function ctCalc(S){
+  var brut=0, frais=0, net=0, n=S.length, avecFrais=0, manges=0, fraisSurPertes=0;
+  var parPaire={}, parMois=[];
+  for(var m=0;m<12;m++) parMois.push({brut:0,frais:0});
+  for(var i=0;i<S.length;i++){
+    var t=S[i];
+    var c=parseFloat(t.commission)||0;
+    var b=parseFloat(t.ca_amt)||0;
+    var p=parseFloat(t.pnl_amt)||0;
+    brut+=b; frais+=c; net+=p;
+    if(c>0) avecFrais++;
+    if(b>0 && p<=0) manges++;          // gagnant au marche, perdant apres frais
+    if(b<=0) fraisSurPertes+=c;        // frais payes sur des trades deja perdants
+    var k=t.pair||'—';
+    if(!parPaire[k]) parPaire[k]={pair:k,n:0,brut:0,frais:0,net:0};
+    parPaire[k].n++; parPaire[k].brut+=b; parPaire[k].frais+=c; parPaire[k].net+=p;
+    var mo=parseInt(t.trade_month);
+    if(mo>=0&&mo<12){ parMois[mo].brut+=b; parMois[mo].frais+=c; }
+  }
+  var paires=Object.keys(parPaire).map(function(k){ return parPaire[k]; })
+    .sort(function(a,b){ return b.frais-a.frais; });
+  return {n:n, brut:brut, frais:frais, net:net, avecFrais:avecFrais, manges:manges,
+          fraisSurPertes:fraisSurPertes, paires:paires, parMois:parMois,
+          partBrut: brut>0 ? frais/brut*100 : 0,
+          moyen: n ? frais/n : 0};
+}
+
+function initCouts(){
+  var TY=T.filter(function(t){ return parseInt(t.trade_year)===GLOBAL_YEAR; });
+  var hero=document.getElementById('ct-hero');
+  if(!hero) return;
+  var vider=function(){ ['ct-kpi','ct-paires','ct-constats'].forEach(function(id){ var e=document.getElementById(id); if(e)e.innerHTML=''; }); DC('ctMois'); };
+
+  if(!TY.length){
+    hero.innerHTML='<div style="padding:14px 0;color:var(--td);font-size:12px">Aucun trade en '+GLOBAL_YEAR+'.</div>';
+    vider(); return;
+  }
+  var C=ctCalc(TY);
+  if(C.frais<=0){
+    hero.innerHTML='<div style="padding:14px 0;color:var(--td);font-size:12px;line-height:1.6">'
+      +'Aucune commission renseignée sur tes '+C.n+' trades de '+GLOBAL_YEAR+'.<br>'
+      +'Remplis le champ « Commission » à la saisie (ou réimporte ton rapport MT5, qui la contient) pour voir ce que te coûte vraiment ton broker.</div>';
+    vider(); return;
+  }
+
+  // ── Le flux : brut → frais → net ──
+  hero.innerHTML='<div class="ct-flux">'
+    +'<div class="ct-etape"><div class="e-l">Le marché t\'a donné</div>'
+      +'<div class="e-v" style="color:'+(C.brut>=0?RS_VERT:RS_ROUGE)+'">'+(C.brut>=0?'+':'−')+ctArgent(C.brut)+'</div>'
+      +'<div class="e-s">brut, sur '+C.n+' trades</div></div>'
+    +'<div class="ct-fleche">−</div>'
+    +'<div class="ct-etape" style="background:rgba(227,73,72,0.06);border-color:rgba(227,73,72,0.25)">'
+      +'<div class="e-l">Le broker a pris</div>'
+      +'<div class="e-v" style="color:'+RS_ROUGE+'">'+ctArgent(C.frais)+'</div>'
+      +'<div class="e-s">'+C.partBrut.toFixed(1)+' % de ton brut</div></div>'
+    +'<div class="ct-fleche">=</div>'
+    +'<div class="ct-etape" style="background:rgba(37,99,235,0.06);border-color:rgba(37,99,235,0.25)">'
+      +'<div class="e-l">Il te reste</div>'
+      +'<div class="e-v" style="color:'+(C.net>=0?RS_VERT:RS_ROUGE)+'">'+(C.net>=0?'+':'−')+ctArgent(C.net)+'</div>'
+      +'<div class="e-s">net, c\'est ce qui compte</div></div>'
+    +'</div>';
+
+  // ── Les chiffres ──
+  var parTrade=C.moyen;
+  var gainMoyen=0, nGagnants=0;
+  TY.forEach(function(t){ var p=parseFloat(t.pnl_amt)||0; if(p>0){ gainMoyen+=p; nGagnants++; } });
+  gainMoyen=nGagnants?gainMoyen/nGagnants:0;
+  var enTrades=gainMoyen>0?C.frais/gainMoyen:0;
+
+  document.getElementById('ct-kpi').innerHTML=
+      rsTuile('Frais payés','−'+ctArgent(C.frais), C.avecFrais+' trades sur '+C.n+' en portent', RS_ROUGE)
+    + rsTuile('Part de ton brut', C.partBrut.toFixed(1)+' %', 'ce que le broker prend', C.partBrut>25?RS_ROUGE:'')
+    + rsTuile('Par trade','−'+ctArgent(parTrade), 'en moyenne, '+(C.n)+' trades')
+    + rsTuile('Soit', (enTrades>0?Math.round(enTrades):'—')+' trades', (gainMoyen>0?'gagnants à '+ctArgent(gainMoyen)+' juste pour les frais':'—'));
+
+  // ── Mois par mois : barres de frais + part du brut en ligne ──
+  DC('ctMois');
+  var ctx=document.getElementById('ctMoisChart');
+  if(ctx && typeof Chart!=='undefined'){
+    var fraisMois=C.parMois.map(function(m){ return Math.round(m.frais); });
+    var partMois=C.parMois.map(function(m){ return m.brut>0?parseFloat((m.frais/m.brut*100).toFixed(1)):null; });
+    CI['ctMois']=new Chart(ctx,{data:{labels:RS_MOIS,datasets:[
+      {type:'bar',label:'Frais payés ($)',data:fraisMois,backgroundColor:'rgba(227,73,72,0.75)',borderRadius:4,yAxisID:'y',order:2},
+      {type:'line',label:'Part de ton brut (%)',data:partMois,borderColor:RS_BLEU,backgroundColor:RS_BLEU,
+       borderWidth:2,pointRadius:3,tension:.25,spanGaps:true,yAxisID:'y2',order:1}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#5b6478',font:{size:11},boxWidth:12}},
+        tooltip:{callbacks:{label:function(c){ return c.dataset.yAxisID==='y2'
+            ? 'Part du brut : '+(c.raw===null?'—':c.raw+' %')
+            : 'Frais : $'+Number(c.raw).toLocaleString('fr-FR'); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},
+        y:{position:'left',grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:function(v){ return '$'+v.toLocaleString('fr-FR'); }}},
+        y2:{position:'right',grid:{display:false},ticks:{color:'#8a93a8',font:{size:10},callback:function(v){ return v+' %'; }}}}}});
+  }
+
+  // ── Par paire ──
+  var maxFrais=C.paires.length?C.paires[0].frais:0;
+  var lignes=C.paires.slice(0,14).map(function(p){
+    var part=p.brut>0?(p.frais/p.brut*100):null;
+    return '<tr><td>'+p.pair+'<div class="ct-bar"><i style="width:'+(maxFrais>0?Math.round(p.frais/maxFrais*100):0)+'%"></i></div></td>'
+      +'<td>'+p.n+'</td>'
+      +'<td style="color:'+(p.brut>=0?RS_VERT:RS_ROUGE)+'">'+(p.brut>=0?'+':'−')+ctArgent(p.brut)+'</td>'
+      +'<td style="color:'+RS_ROUGE+'">−'+ctArgent(p.frais)+'</td>'
+      +'<td style="color:var(--td)">'+(part===null?'—':part.toFixed(0)+' %')+'</td>'
+      +'<td style="font-weight:700;color:'+(p.net>=0?RS_VERT:RS_ROUGE)+'">'+(p.net>=0?'+':'−')+ctArgent(p.net)+'</td></tr>';
+  }).join('');
+  document.getElementById('ct-paires').innerHTML=
+    '<div style="overflow-x:auto"><table class="ct-tab"><thead><tr><th>Paire</th><th>Trades</th><th>Brut</th><th>Frais</th><th>Part</th><th>Net</th></tr></thead>'
+    +'<tbody>'+lignes+'</tbody></table></div>'
+    +(C.paires.length>14?'<div style="font-size:10px;color:var(--td);margin-top:8px">14 paires les plus coûteuses sur '+C.paires.length+'.</div>':'');
+
+  // ── Les constats ──
+  var faits=[];
+  if(C.partBrut>=20) faits.push('<div class="ct-fait fort">Sur '+GLOBAL_YEAR+', <b>'+C.partBrut.toFixed(1)+' %</b> de ce que le marché t\'a donné est parti en frais : <b>'+ctArgent(C.frais)+'</b>. Au-dessus de 20 %, le coût n\'est plus un détail — c\'est une ligne de ton P&L.</div>');
+  else if(C.partBrut>0) faits.push('<div class="ct-fait bon">Tes frais représentent <b>'+C.partBrut.toFixed(1)+' %</b> de ton brut. C\'est tenu.</div>');
+
+  if(C.manges>0) faits.push('<div class="ct-fait fort"><b>'+C.manges+' trade'+(C.manges>1?'s':'')+'</b> '+(C.manges>1?'étaient gagnants':'était gagnant')+' au marché et '+(C.manges>1?'sont repartis':'est reparti')+' en perte <b>uniquement à cause des frais</b>. Un stop un peu plus loin ou un objectif un peu plus haut '+(C.manges>1?'les auraient sauvés':'l\'aurait sauvé')+'.</div>');
+
+  if(C.fraisSurPertes>0) faits.push('<div class="ct-fait"><b>'+ctArgent(C.fraisSurPertes)+'</b> de frais ont été payés sur des trades déjà perdants. C\'est le prix des trades qu\'il ne fallait pas prendre.</div>');
+
+  var pire=C.paires[0];
+  if(pire && pire.frais>0){
+    var partPire=pire.brut>0?(pire.frais/pire.brut*100):null;
+    faits.push('<div class="ct-fait"><b>'+pire.pair+'</b> est ta paire la plus chère : <b>'+ctArgent(pire.frais)+'</b> de frais sur '+pire.n+' trades'
+      +(partPire!==null?', soit <b>'+partPire.toFixed(0)+' %</b> de ce qu\'elle t\'a rapporté brut':'')
+      +'. Net, elle te laisse <b>'+(pire.net>=0?'+':'−')+ctArgent(pire.net)+'</b>.</div>');
+  }
+  // une paire dont les frais depassent le gain brut
+  var noyees=C.paires.filter(function(p){ return p.brut>0 && p.frais>p.brut; });
+  if(noyees.length) faits.push('<div class="ct-fait fort">'+(noyees.length>1?'Ces paires te coûtent plus cher qu\'elles ne rapportent':'Cette paire te coûte plus cher qu\'elle ne rapporte')+' : <b>'+noyees.map(function(p){ return p.pair; }).join(', ')+'</b>. Les frais y dépassent le brut.</div>');
+
+  if(gainMoyen>0) faits.push('<div class="ct-fait">Tes frais de l\'année valent <b>'+Math.round(enTrades)+' trades gagnants</b> à '+ctArgent(gainMoyen)+'. C\'est le nombre de trades que tu prends juste pour payer le broker.</div>');
+
+  document.getElementById('ct-constats').innerHTML=faits.join('');
+}
+
 // ══════════ APPLICATION INSTALLABLE (PWA) ══════════
 // Sur Android/Chrome le navigateur previent qu'il peut installer l'app
 // (beforeinstallprompt) ; sur iOS il n'existe pas d'equivalent, il faut
