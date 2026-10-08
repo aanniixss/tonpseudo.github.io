@@ -7,6 +7,14 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BAKOU — Journal de trading</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#020f2f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BAKOU">
+<link rel="icon" href="./assets/icon-192.png">
+<link rel="apple-touch-icon" href="./assets/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -688,6 +696,70 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .nb-editor{padding:20px 22px;overflow-y:auto;}
 .nb-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:14px;text-align:center;}
 .nb-title{width:100%;box-sizing:border-box;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--tp);background:transparent;margin-bottom:6px;}
+.ct-tab{width:100%;border-collapse:collapse;font-size:12px;}
+.ct-tab th{font-size:9px;letter-spacing:.9px;text-transform:uppercase;color:var(--td);text-align:right;padding:0 0 8px;font-weight:600;}
+.ct-tab th:first-child{text-align:left;}
+.ct-tab td{padding:8px 0;border-top:1px solid var(--bo);text-align:right;font-variant-numeric:tabular-nums;}
+.ct-tab td:first-child{text-align:left;font-weight:600;color:var(--tp);}
+.ct-bar{height:5px;border-radius:999px;background:rgba(30,35,51,0.08);margin-top:5px;overflow:hidden;min-width:60px;}
+.ct-bar i{display:block;height:100%;border-radius:999px;background:#e34948;}
+.ct-fait{font-size:12px;line-height:1.6;color:var(--ts);padding:10px 12px;border-radius:9px;background:rgba(30,35,51,0.03);border:1px solid var(--bo);}
+.ct-fait b{color:var(--tp);}
+.ct-fait.fort{background:rgba(227,73,72,0.07);border-color:rgba(227,73,72,0.26);}
+.ct-fait.bon{background:rgba(10,138,95,0.07);border-color:rgba(10,138,95,0.24);}
+.ct-flux{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;}
+.ct-etape{flex:1 1 150px;padding:13px 14px;border-radius:11px;border:1px solid var(--bo);background:rgba(30,35,51,0.03);}
+.ct-etape .e-l{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--td);}
+.ct-etape .e-v{font-size:25px;font-weight:800;margin-top:5px;font-variant-numeric:tabular-nums;line-height:1.1;}
+.ct-etape .e-s{font-size:11px;color:var(--ts);margin-top:3px;}
+.ct-fleche{display:flex;align-items:center;color:var(--td);font-size:18px;}
+.cp-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0 4px;}
+.cp-box{padding:11px 12px;border-radius:10px;background:rgba(30,35,51,0.03);border:1px solid var(--bo);text-align:center;}
+.cp-box.vedette{background:rgba(37,99,235,0.07);border-color:rgba(37,99,235,0.3);}
+.cp-bl{font-size:9px;letter-spacing:.9px;text-transform:uppercase;color:var(--td);margin-bottom:5px;}
+.cp-bv{font-size:20px;font-weight:700;color:var(--tp);line-height:1.1;}
+.cp-box.vedette .cp-bv{color:var(--bb);font-size:26px;}
+.cp-bs{font-size:10px;color:var(--td);margin-top:3px;}
+.cp-note{font-size:10px;line-height:1.55;color:var(--td);margin-top:10px;}
+.cp-alerte{font-size:11px;line-height:1.5;padding:9px 11px;border-radius:9px;margin-top:10px;color:#b3342f;background:rgba(227,73,72,0.09);border:1px solid rgba(227,73,72,0.28);}
+.gf-bar{margin-bottom:12px;}
+.gf-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.gf-t{font-size:12px;font-weight:700;letter-spacing:.3px;color:var(--tp);display:flex;align-items:center;gap:7px;}
+.gf-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:999px;}
+.gf-badge.ok{color:#0a8a5f;background:rgba(10,138,95,0.12);}
+.gf-badge.warn{color:#8a6500;background:rgba(245,158,11,0.16);}
+.gf-badge.stop{color:#b3342f;background:rgba(227,73,72,0.14);}
+.gf-badge.off{color:var(--td);background:rgba(30,35,51,0.06);}
+.gf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.gf-cell{padding:9px 11px;border-radius:9px;background:rgba(30,35,51,0.03);border:1px solid var(--bo);}
+.gf-lbl{font-size:9px;letter-spacing:.9px;text-transform:uppercase;color:var(--td);margin-bottom:4px;}
+.gf-val{font-size:15px;font-weight:700;color:var(--tp);line-height:1.15;}
+.gf-val small{font-size:10px;font-weight:500;color:var(--td);}
+.gf-jauge{height:4px;border-radius:999px;background:rgba(30,35,51,0.08);margin-top:6px;overflow:hidden;}
+.gf-jauge i{display:block;height:100%;border-radius:999px;transition:width .3s;}
+.gf-cell.ok .gf-jauge i{background:#0a8a5f;} .gf-cell.ok .gf-val{color:#0a8a5f;}
+.gf-cell.warn .gf-jauge i{background:#d97706;} .gf-cell.warn .gf-val{color:#a35c00;}
+.gf-cell.stop .gf-jauge i{background:#e34948;} .gf-cell.stop .gf-val{color:#b3342f;}
+.gf-msg{margin-top:10px;font-size:11px;line-height:1.5;padding:9px 11px;border-radius:9px;}
+.gf-msg.stop{color:#b3342f;background:rgba(227,73,72,0.09);border:1px solid rgba(227,73,72,0.28);}
+.gf-msg.warn{color:#8a6500;background:rgba(245,158,11,0.10);border:1px solid rgba(245,158,11,0.3);}
+.gf-msg.ok{color:var(--td);background:rgba(10,138,95,0.06);border:1px solid rgba(10,138,95,0.2);}
+.gf-cta{border:1px dashed var(--bo);background:none;color:var(--bb);font-size:11px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;}
+.gf-cta:hover{background:rgba(37,99,235,0.07);}
+.gf-set{background:none;border:1px solid var(--bo);color:var(--td);font-size:10px;padding:4px 9px;border-radius:7px;cursor:pointer;letter-spacing:.5px;}
+.gf-set:hover{color:var(--tp);border-color:#9aa3b5;}
+.gf-rule{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bo);}
+.gf-rule:last-child{border-bottom:none;}
+.gf-rule .gf-rt{flex:1;font-size:12px;color:var(--tp);}
+.gf-rule .gf-rd{font-size:10px;color:var(--td);margin-top:2px;line-height:1.4;}
+.gf-rule input[type=number]{width:92px;flex:none;}
+.nb-sync-row{display:flex;align-items:center;gap:6px;margin:8px 0 4px;}
+.nb-sync{flex:1;font-size:10px;font-weight:600;color:var(--td);padding:4px 7px;border-radius:6px;background:rgba(30,35,51,0.04);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nb-sync.ok{color:#0a8a5f;background:rgba(10,138,95,0.10);}
+.nb-sync.warn{color:#8a6500;background:rgba(245,158,11,0.14);}
+.nb-sync.err{color:#b3342f;background:rgba(227,73,72,0.12);}
+.nb-sync-btn{border:1px solid var(--bo);background:#fff;color:var(--td);border-radius:6px;width:24px;height:24px;flex:none;cursor:pointer;font-size:12px;line-height:1;}
+.nb-sync-btn:hover{color:var(--tp);border-color:#9aa3b5;}
 .nb-meta{font-size:10px;color:var(--td);margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
 .nb-meta select{font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--bo);background:#fff;color:var(--tp);}
 .nb-templates{font-size:11px;color:var(--td);margin-bottom:12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
@@ -1103,6 +1175,9 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 
 <div id="journal" class="sec" role="tabpanel" aria-label="Journal">
 
+  <!-- GARDE-FOU DE RISQUE -->
+  <div class="card gf-bar" id="gf-bar"></div>
+
   <!-- MONTH FILTER BAR -->
   <div class="card" style="margin-bottom:12px">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
@@ -1114,6 +1189,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
         <button onclick="document.getElementById('mt5-import-input').click()" title="Importer l'historique depuis un rapport MetaTrader 5 (Historique → clic droit → Rapport)" style="padding:5px 10px;border-radius:7px;background:rgba(217,119,6,0.12);border:1px solid rgba(217,119,6,0.35);color:var(--gb);font-size:10px;cursor:pointer;letter-spacing:1px">⤒ MT5</button>
         <input type="file" id="mt5-import-input" style="display:none" onchange="importMT5(event)">
+        <button onclick="cpOpen()" title="Calculer le lot à prendre pour respecter ton risque" style="padding:5px 10px;border-radius:7px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.35);color:#4f46e5;font-size:10px;cursor:pointer;letter-spacing:1px">🧮 LOT</button>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(37,99,235,0.2);border:1px solid var(--be);color:var(--be);font-size:10px;cursor:pointer;letter-spacing:1px">TOUT</button>
@@ -1563,6 +1639,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   <div class="nb-wrap">
     <div class="nb-side">
       <button class="nb-addfolder" onclick="nbNewFolder()">📁 Nouveau dossier</button>
+      <div class="nb-sync-row"><span id="nb-sync" class="nb-sync">…</span><button class="nb-sync-btn" onclick="nbSyncNow()" title="Forcer l'enregistrement en base">⟳</button></div>
       <div class="nb-cap">Dossiers</div>
       <div id="nb-folders"></div>
       <div class="nb-cap">Tags</div>
@@ -1593,6 +1670,35 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <div id="nb-body" class="nb-body" contenteditable="true" oninput="nbBodyChange()"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ══ OU PART TON ARGENT ══ -->
+<div id="couts" class="sec" role="tabpanel" aria-label="Tes coûts">
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">💸 Où part ton argent</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 12px">Entre ce que le marché te donne et ce qui reste sur ton compte, il y a les frais. Voilà combien.</div>
+    <div id="ct-hero"></div>
+  </div>
+
+  <div id="ct-kpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:12px"></div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">🗓 Tes frais mois par mois</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 10px">En barres : ce que tu as payé. La ligne : la part de ton brut que ça représente.</div>
+    <div style="position:relative;height:250px"><canvas id="ctMoisChart"></canvas></div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">💱 Ce que chaque paire te coûte</div>
+    <div style="font-size:11px;color:var(--ts);margin:-4px 0 10px">Brut gagné, frais payés, et ce qu'il reste vraiment.</div>
+    <div id="ct-paires"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🔎 Ce que ça change pour toi</div>
+    <div id="ct-constats" style="display:grid;gap:8px"></div>
   </div>
 </div>
 
@@ -2127,6 +2233,14 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       </button>
     </div>
 
+    <div id="pwa-zone" style="display:none;margin-bottom:18px">
+      <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--td);margin-bottom:9px">Application</div>
+      <button class="btn" id="pwa-btn" style="width:100%;text-align:left;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.35);color:var(--bb)" onclick="pwaInstaller()">
+        <span style="text-transform:none;letter-spacing:.2px;font-size:13px">⬇ Installer BAKOU sur cet appareil</span>
+        <div id="pwa-sous" style="font-size:11px;color:var(--td);font-weight:400;margin-top:3px;text-transform:none;letter-spacing:0;line-height:1.45">Une icône sur ton écran d'accueil, plein écran, et l'app s'ouvre même sans réseau.</div>
+      </button>
+    </div>
+
     <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--td);margin-bottom:9px">Zone sensible</div>
     <button class="btn" style="width:100%;text-align:left;background:rgba(224,64,90,.07);border:1px solid rgba(224,64,90,.35);color:#c72c46" onclick="deleteMyAccount()">
       <span style="text-transform:none;letter-spacing:.2px;font-size:13px">🗑 Supprimer définitivement mon compte</span>
@@ -2142,6 +2256,74 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div style="display:flex;gap:10px;justify-content:center">
       <button class="btn btn-g" onclick="closeAcctModal()">Fermer</button>
       <button class="btn" style="background:rgba(224,64,90,.1);border:1px solid rgba(224,64,90,.3);color:#c72c46" onclick="closeAcctModal();doLogout()">⎋ Se déconnecter</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="cpModal" role="dialog" aria-modal="true" aria-label="Calculateur de position">
+  <div class="mb" style="width:560px;max-width:95vw;max-height:88vh;overflow-y:auto">
+    <div class="mt">🧮 Quel lot prendre ?</div>
+    <div style="font-size:11px;color:var(--td);text-align:center;margin-bottom:16px;line-height:1.5">Tu donnes ton stop, BAKOU te donne le lot qui respecte ton risque.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fld"><label>Paire</label><select id="cp-pair" onchange="cpPairChange()"></select></div>
+      <div class="fld"><label>Stop loss (pips)</label><input type="number" id="cp-sl" step="0.1" min="0" placeholder="ex: 25" oninput="cpCalc()"></div>
+      <div class="fld"><label>Risque (%)</label><input type="number" id="cp-rsk" step="0.1" min="0" placeholder="ex: 1" oninput="cpCalc()"></div>
+      <div class="fld"><label>R:R visé</label><input type="number" id="cp-rr" step="0.1" min="0" placeholder="ex: 2" oninput="cpCalc()"></div>
+    </div>
+    <div class="fld" style="margin-top:4px">
+      <label>Valeur d'un pip pour 1 lot ($)</label>
+      <input type="number" id="cp-pip" step="0.01" min="0" oninput="cpPipEdit()">
+    </div>
+    <div style="font-size:10px;color:var(--td);line-height:1.5;margin-top:5px">Pré-remplie selon la paire. Les paires qui ne se cotent pas en dollar (USDJPY, USDCHF, USDCAD…) bougent avec le taux de change : si ton broker affiche autre chose, corrige ici — BAKOU retient ta valeur pour cette paire.</div>
+
+    <div class="cp-out" id="cp-out"></div>
+    <div id="cp-detail"></div>
+
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+      <button class="btn btn-p" onclick="cpUtiliser()">↙ Utiliser ce lot dans le formulaire</button>
+      <button class="btn btn-g" onclick="cpClose()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="gfModal" role="dialog" aria-modal="true" aria-label="Garde-fou de risque">
+  <div class="mb" style="width:560px;max-width:95vw;max-height:88vh;overflow-y:auto">
+    <div class="mt">🛡 Garde-fou de risque</div>
+    <div style="font-size:11px;color:var(--td);text-align:center;margin-bottom:4px;line-height:1.5">Tes limites pour la journée. BAKOU te prévient avant d'enregistrer un trade qui les dépasse.</div>
+    <div style="font-size:10px;color:var(--ts);text-align:center;margin-bottom:16px;letter-spacing:1px" id="gf-modal-account">—</div>
+
+    <label style="display:flex;align-items:center;gap:9px;padding:11px;border-radius:9px;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.25);cursor:pointer;margin-bottom:6px">
+      <input type="checkbox" id="gf-on" style="width:16px;height:16px;flex:none;cursor:pointer">
+      <span style="font-size:12px;font-weight:700;color:var(--tp)">Activer le garde-fou</span>
+    </label>
+
+    <div class="gf-rule">
+      <div><div class="gf-rt">Perte max dans la journée ($)</div><div class="gf-rd">Au-delà, tu coupes. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-perte" step="10" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Nombre max de trades / jour</div><div class="gf-rd">Contre le sur-trading. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-nb" step="1" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Pertes d'affilée avant pause</div><div class="gf-rd">Après N pertes consécutives, tu t'arrêtes. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-suite" step="1" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Lot max par trade</div><div class="gf-rd">Empêche le lot de vengeance. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-lot" step="0.01" min="0" placeholder="0">
+    </div>
+    <div class="gf-rule">
+      <div><div class="gf-rt">Risque max par trade (%)</div><div class="gf-rd">En % du capital du compte. 0 = pas de limite.</div></div>
+      <input type="number" id="gf-risque" step="0.1" min="0" placeholder="0">
+    </div>
+
+    <div id="gf-conseil" style="font-size:11px;line-height:1.55;color:var(--td);background:rgba(30,35,51,0.03);border:1px solid var(--bo);border-radius:9px;padding:10px 12px;margin:14px 0 18px"></div>
+
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="gfSave()">✅ Enregistrer</button>
+      <button class="btn btn-g" onclick="gfCloseModal()">Annuler</button>
     </div>
   </div>
 </div>
@@ -2455,7 +2637,8 @@ async function saveAccounts(){
   for(const acc of ACCOUNTS){
     await sb.from('accounts').upsert(Object.assign({
       id: acc.id, owner_id: OWNER_ID, name: acc.name,
-      capital: acc.capital, risk: acc.risk, color: acc.color
+      capital: acc.capital, risk: acc.risk, color: acc.color,
+      rules: acc.rules || null
     }, ownExtra()));
   }
 }
@@ -2471,7 +2654,7 @@ async function initAccounts(){
       // Préserve l'owner_id historique des comptes existants (le site principal legacy s'en sert)
       if(data[0].owner_id) OWNER_ID = data[0].owner_id;
       else if(AUTH_REQUIRED&&OWNER_UUID) OWNER_ID = derivedOwnerId();
-      ACCOUNTS = data.map(a=>({id:a.id, name:a.name, capital:a.capital||0, risk:a.risk||1, color:a.color||'#2563eb'}));
+      ACCOUNTS = data.map(a=>({id:a.id, name:a.name, capital:a.capital||0, risk:a.risk||1, color:a.color||'#2563eb', rules:a.rules||null}));
       localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS));
     } else {
       if(AUTH_REQUIRED&&OWNER_UUID) OWNER_ID = derivedOwnerId();
@@ -2643,7 +2826,7 @@ async function loadTrades(){
     // ses propres trades (user_id = compte actif). Évite qu'un compte vide vole les trades
     // d'un autre et réécrive les IDs (bug de bascule de compte).
   } catch(e) { console.error('loadTrades exception:', e.message); T=[]; }
-  renderTable(); updateDash(); buildHM();
+  renderTable(); updateDash(); buildHM(); gfRender();
   setTimeout(()=>{initCapChart();initPairChart();},100);
 }
 
@@ -2692,7 +2875,7 @@ const GROUPES=[
   {cle:'journal',  titre:"Journal",       sous:"Saisir et retrouver tes trades",
    vues:[{id:'journal',nom:'Saisie'},{id:'tradelog',nom:'Historique détaillé'}]},
   {cle:'analyse',  titre:"Analyse",       sous:"Où est ton edge",
-   vues:[{id:'analyse',nom:'Statistiques'},{id:'bilan',nom:'Vue annuelle'},{id:'setups',nom:'Mois par mois'}]},
+   vues:[{id:'analyse',nom:'Statistiques'},{id:'bilan',nom:'Vue annuelle'},{id:'setups',nom:'Mois par mois'},{id:'couts',nom:'Tes coûts'}]},
   {cle:'report',   titre:"Rapports",      sous:"Bilans exportables",
    vues:[{id:'report',nom:'Rapports'}]},
   {cle:'notebook', titre:"Notebook",      sous:"Notes, plans et recaps",
@@ -2706,10 +2889,12 @@ function initSection(id){
   else if(id==='bilan')setTimeout(initBilan,100);
   else if(id==='analyse')setTimeout(initAnalyse,100);
   else if(id==='setups')setTimeout(initSetups,100);
+  else if(id==='couts')setTimeout(initCouts,100);
   else if(id==='dashboard')setTimeout(()=>{initCapChart();initPairChart();updateDash();buildHM();},100);
   else if(id==='tradelog')setTimeout(buildTradeLog,100);
   else if(id==='report')setTimeout(buildReport,100);
   else if(id==='notebook')setTimeout(initNotebook,80);
+  if(id==='journal')setTimeout(gfRender,60);
 }
 function renderSousOnglets(g,idActif){
   const bar=document.getElementById('subnav'); if(!bar)return;
@@ -2922,6 +3107,7 @@ async function addTrade(){
   const tradeYear = GLOBAL_YEAR || now.getFullYear();
   const getPhoto=id=>{const img=document.querySelector('#'+id+'-prev img');return img?img.src:null;};
   const photoAv=getPhoto('av'),photoCo=getPhoto('co'),photoAp=getPhoto('ap');
+  if(!gfAutorise({lot:lot, risquePct:rsk, pnl:netAmt})) return;
   const tradeData = {user_id:ACTIVE_ACCOUNT.id,pair,cat,day,sess,dir,cl,entry_time:en||null,exit_time:ex||null,duration:dur?dur.str:'—',duration_mins:dur?dur.mins:0,lot_size:lot,risk_pct:rsk,rr,result:res,risk_amt:rskAmt,ca_amt:caAmt,commission:comm,pnl_amt:netAmt,pnl_pct:pnlPct,notes,fonda:fon,strats:JSON.stringify(strats),confs:JSON.stringify(confs),pats:JSON.stringify(pats),psych_errors:JSON.stringify(psychErrors),psych_good:JSON.stringify(psychGood),star:STAR,trade_month:tradeMonth,trade_year:tradeYear,photo_av:photoAv,photo_co:photoCo,photo_ap:photoAp,...ownExtra()};
   let {data:saved, error} = await sb.from('trades').insert([tradeData]).select();
   // Fallback : si les colonnes psych n'existent pas encore dans Supabase, on réessaie sans elles
@@ -2938,7 +3124,7 @@ async function addTrade(){
   }
   const savedTrade = Array.isArray(saved)?saved[0]:saved;
   if(savedTrade) T.push(savedTrade);
-  save();renderTable();updateDash();clearForm();
+  save();renderTable();updateDash();clearForm();gfRender();
   toast('✅ Trade sauvegardé !');
 }
 
@@ -4225,6 +4411,553 @@ function buildRepWinsLoss(){
     {label:'Perdants',data:[Math.round(avgL),Math.round(totL)],backgroundColor:'rgba(224,64,90,0.8)',borderRadius:4}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5b6478',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+' : $'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
+// ═══════════════════════════════════════════════════════════════════
+//  OU PART TON ARGENT — le cout reel du trading
+//
+//  ca_amt = ce que le marche a donne (brut), commission = ce que le
+//  broker a pris, pnl_amt = ce qui reste. L'ecran rend visible l'ecart
+//  entre les deux, paire par paire et mois par mois.
+//
+//  Daltonisme : le rouge des frais ne porte jamais l'information seul,
+//  chaque montant est ecrit et chaque barre est proportionnelle.
+// ═══════════════════════════════════════════════════════════════════
+function ctArgent(v){ return '$'+Math.abs(Math.round(parseFloat(v)||0)).toLocaleString('fr-FR'); }
+
+function ctCalc(S){
+  var brut=0, frais=0, net=0, n=S.length, avecFrais=0, manges=0, fraisSurPertes=0;
+  var parPaire={}, parMois=[];
+  for(var m=0;m<12;m++) parMois.push({brut:0,frais:0});
+  for(var i=0;i<S.length;i++){
+    var t=S[i];
+    var c=parseFloat(t.commission)||0;
+    var b=parseFloat(t.ca_amt)||0;
+    var p=parseFloat(t.pnl_amt)||0;
+    brut+=b; frais+=c; net+=p;
+    if(c>0) avecFrais++;
+    if(b>0 && p<=0) manges++;          // gagnant au marche, perdant apres frais
+    if(b<=0) fraisSurPertes+=c;        // frais payes sur des trades deja perdants
+    var k=t.pair||'—';
+    if(!parPaire[k]) parPaire[k]={pair:k,n:0,brut:0,frais:0,net:0};
+    parPaire[k].n++; parPaire[k].brut+=b; parPaire[k].frais+=c; parPaire[k].net+=p;
+    var mo=parseInt(t.trade_month);
+    if(mo>=0&&mo<12){ parMois[mo].brut+=b; parMois[mo].frais+=c; }
+  }
+  var paires=Object.keys(parPaire).map(function(k){ return parPaire[k]; })
+    .sort(function(a,b){ return b.frais-a.frais; });
+  return {n:n, brut:brut, frais:frais, net:net, avecFrais:avecFrais, manges:manges,
+          fraisSurPertes:fraisSurPertes, paires:paires, parMois:parMois,
+          partBrut: brut>0 ? frais/brut*100 : 0,
+          moyen: n ? frais/n : 0};
+}
+
+function initCouts(){
+  var TY=T.filter(function(t){ return parseInt(t.trade_year)===GLOBAL_YEAR; });
+  var hero=document.getElementById('ct-hero');
+  if(!hero) return;
+  var vider=function(){ ['ct-kpi','ct-paires','ct-constats'].forEach(function(id){ var e=document.getElementById(id); if(e)e.innerHTML=''; }); DC('ctMois'); };
+
+  if(!TY.length){
+    hero.innerHTML='<div style="padding:14px 0;color:var(--td);font-size:12px">Aucun trade en '+GLOBAL_YEAR+'.</div>';
+    vider(); return;
+  }
+  var C=ctCalc(TY);
+  if(C.frais<=0){
+    hero.innerHTML='<div style="padding:14px 0;color:var(--td);font-size:12px;line-height:1.6">'
+      +'Aucune commission renseignée sur tes '+C.n+' trades de '+GLOBAL_YEAR+'.<br>'
+      +'Remplis le champ « Commission » à la saisie (ou réimporte ton rapport MT5, qui la contient) pour voir ce que te coûte vraiment ton broker.</div>';
+    vider(); return;
+  }
+
+  // ── Le flux : brut → frais → net ──
+  hero.innerHTML='<div class="ct-flux">'
+    +'<div class="ct-etape"><div class="e-l">Le marché t\'a donné</div>'
+      +'<div class="e-v" style="color:'+(C.brut>=0?RS_VERT:RS_ROUGE)+'">'+(C.brut>=0?'+':'−')+ctArgent(C.brut)+'</div>'
+      +'<div class="e-s">brut, sur '+C.n+' trades</div></div>'
+    +'<div class="ct-fleche">−</div>'
+    +'<div class="ct-etape" style="background:rgba(227,73,72,0.06);border-color:rgba(227,73,72,0.25)">'
+      +'<div class="e-l">Le broker a pris</div>'
+      +'<div class="e-v" style="color:'+RS_ROUGE+'">'+ctArgent(C.frais)+'</div>'
+      +'<div class="e-s">'+C.partBrut.toFixed(1)+' % de ton brut</div></div>'
+    +'<div class="ct-fleche">=</div>'
+    +'<div class="ct-etape" style="background:rgba(37,99,235,0.06);border-color:rgba(37,99,235,0.25)">'
+      +'<div class="e-l">Il te reste</div>'
+      +'<div class="e-v" style="color:'+(C.net>=0?RS_VERT:RS_ROUGE)+'">'+(C.net>=0?'+':'−')+ctArgent(C.net)+'</div>'
+      +'<div class="e-s">net, c\'est ce qui compte</div></div>'
+    +'</div>';
+
+  // ── Les chiffres ──
+  var parTrade=C.moyen;
+  var gainMoyen=0, nGagnants=0;
+  TY.forEach(function(t){ var p=parseFloat(t.pnl_amt)||0; if(p>0){ gainMoyen+=p; nGagnants++; } });
+  gainMoyen=nGagnants?gainMoyen/nGagnants:0;
+  var enTrades=gainMoyen>0?C.frais/gainMoyen:0;
+
+  document.getElementById('ct-kpi').innerHTML=
+      rsTuile('Frais payés','−'+ctArgent(C.frais), C.avecFrais+' trades sur '+C.n+' en portent', RS_ROUGE)
+    + rsTuile('Part de ton brut', C.partBrut.toFixed(1)+' %', 'ce que le broker prend', C.partBrut>25?RS_ROUGE:'')
+    + rsTuile('Par trade','−'+ctArgent(parTrade), 'en moyenne, '+(C.n)+' trades')
+    + rsTuile('Soit', (enTrades>0?Math.round(enTrades):'—')+' trades', (gainMoyen>0?'gagnants à '+ctArgent(gainMoyen)+' juste pour les frais':'—'));
+
+  // ── Mois par mois : barres de frais + part du brut en ligne ──
+  DC('ctMois');
+  var ctx=document.getElementById('ctMoisChart');
+  if(ctx && typeof Chart!=='undefined'){
+    var fraisMois=C.parMois.map(function(m){ return Math.round(m.frais); });
+    var partMois=C.parMois.map(function(m){ return m.brut>0?parseFloat((m.frais/m.brut*100).toFixed(1)):null; });
+    CI['ctMois']=new Chart(ctx,{data:{labels:RS_MOIS,datasets:[
+      {type:'bar',label:'Frais payés ($)',data:fraisMois,backgroundColor:'rgba(227,73,72,0.75)',borderRadius:4,yAxisID:'y',order:2},
+      {type:'line',label:'Part de ton brut (%)',data:partMois,borderColor:RS_BLEU,backgroundColor:RS_BLEU,
+       borderWidth:2,pointRadius:3,tension:.25,spanGaps:true,yAxisID:'y2',order:1}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#5b6478',font:{size:11},boxWidth:12}},
+        tooltip:{callbacks:{label:function(c){ return c.dataset.yAxisID==='y2'
+            ? 'Part du brut : '+(c.raw===null?'—':c.raw+' %')
+            : 'Frais : $'+Number(c.raw).toLocaleString('fr-FR'); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},
+        y:{position:'left',grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:function(v){ return '$'+v.toLocaleString('fr-FR'); }}},
+        y2:{position:'right',grid:{display:false},ticks:{color:'#8a93a8',font:{size:10},callback:function(v){ return v+' %'; }}}}}});
+  }
+
+  // ── Par paire ──
+  var maxFrais=C.paires.length?C.paires[0].frais:0;
+  var lignes=C.paires.slice(0,14).map(function(p){
+    var part=p.brut>0?(p.frais/p.brut*100):null;
+    return '<tr><td>'+p.pair+'<div class="ct-bar"><i style="width:'+(maxFrais>0?Math.round(p.frais/maxFrais*100):0)+'%"></i></div></td>'
+      +'<td>'+p.n+'</td>'
+      +'<td style="color:'+(p.brut>=0?RS_VERT:RS_ROUGE)+'">'+(p.brut>=0?'+':'−')+ctArgent(p.brut)+'</td>'
+      +'<td style="color:'+RS_ROUGE+'">−'+ctArgent(p.frais)+'</td>'
+      +'<td style="color:var(--td)">'+(part===null?'—':part.toFixed(0)+' %')+'</td>'
+      +'<td style="font-weight:700;color:'+(p.net>=0?RS_VERT:RS_ROUGE)+'">'+(p.net>=0?'+':'−')+ctArgent(p.net)+'</td></tr>';
+  }).join('');
+  document.getElementById('ct-paires').innerHTML=
+    '<div style="overflow-x:auto"><table class="ct-tab"><thead><tr><th>Paire</th><th>Trades</th><th>Brut</th><th>Frais</th><th>Part</th><th>Net</th></tr></thead>'
+    +'<tbody>'+lignes+'</tbody></table></div>'
+    +(C.paires.length>14?'<div style="font-size:10px;color:var(--td);margin-top:8px">14 paires les plus coûteuses sur '+C.paires.length+'.</div>':'');
+
+  // ── Les constats ──
+  var faits=[];
+  if(C.partBrut>=20) faits.push('<div class="ct-fait fort">Sur '+GLOBAL_YEAR+', <b>'+C.partBrut.toFixed(1)+' %</b> de ce que le marché t\'a donné est parti en frais : <b>'+ctArgent(C.frais)+'</b>. Au-dessus de 20 %, le coût n\'est plus un détail — c\'est une ligne de ton P&L.</div>');
+  else if(C.partBrut>0) faits.push('<div class="ct-fait bon">Tes frais représentent <b>'+C.partBrut.toFixed(1)+' %</b> de ton brut. C\'est tenu.</div>');
+
+  if(C.manges>0) faits.push('<div class="ct-fait fort"><b>'+C.manges+' trade'+(C.manges>1?'s':'')+'</b> '+(C.manges>1?'étaient gagnants':'était gagnant')+' au marché et '+(C.manges>1?'sont repartis':'est reparti')+' en perte <b>uniquement à cause des frais</b>. Un stop un peu plus loin ou un objectif un peu plus haut '+(C.manges>1?'les auraient sauvés':'l\'aurait sauvé')+'.</div>');
+
+  if(C.fraisSurPertes>0) faits.push('<div class="ct-fait"><b>'+ctArgent(C.fraisSurPertes)+'</b> de frais ont été payés sur des trades déjà perdants. C\'est le prix des trades qu\'il ne fallait pas prendre.</div>');
+
+  var pire=C.paires[0];
+  if(pire && pire.frais>0){
+    var partPire=pire.brut>0?(pire.frais/pire.brut*100):null;
+    faits.push('<div class="ct-fait"><b>'+pire.pair+'</b> est ta paire la plus chère : <b>'+ctArgent(pire.frais)+'</b> de frais sur '+pire.n+' trades'
+      +(partPire!==null?', soit <b>'+partPire.toFixed(0)+' %</b> de ce qu\'elle t\'a rapporté brut':'')
+      +'. Net, elle te laisse <b>'+(pire.net>=0?'+':'−')+ctArgent(pire.net)+'</b>.</div>');
+  }
+  // une paire dont les frais depassent le gain brut
+  var noyees=C.paires.filter(function(p){ return p.brut>0 && p.frais>p.brut; });
+  if(noyees.length) faits.push('<div class="ct-fait fort">'+(noyees.length>1?'Ces paires te coûtent plus cher qu\'elles ne rapportent':'Cette paire te coûte plus cher qu\'elle ne rapporte')+' : <b>'+noyees.map(function(p){ return p.pair; }).join(', ')+'</b>. Les frais y dépassent le brut.</div>');
+
+  if(gainMoyen>0) faits.push('<div class="ct-fait">Tes frais de l\'année valent <b>'+Math.round(enTrades)+' trades gagnants</b> à '+ctArgent(gainMoyen)+'. C\'est le nombre de trades que tu prends juste pour payer le broker.</div>');
+
+  document.getElementById('ct-constats').innerHTML=faits.join('');
+}
+
+// ══════════ APPLICATION INSTALLABLE (PWA) ══════════
+// Sur Android/Chrome le navigateur previent qu'il peut installer l'app
+// (beforeinstallprompt) ; sur iOS il n'existe pas d'equivalent, il faut
+// passer par Partager > Sur l'ecran d'accueil, donc on explique.
+var PWA_PROMPT=null;
+
+function pwaInstallee(){
+  try{
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone===true;
+  }catch(e){ return false; }
+}
+function pwaIOS(){
+  try{
+    var ua=navigator.userAgent||'';
+    return /iPad|iPhone|iPod/.test(ua)
+       || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); // iPad recent
+  }catch(e){ return false; }
+}
+function pwaMaj(){
+  var zone=document.getElementById('pwa-zone'), sous=document.getElementById('pwa-sous'), btn=document.getElementById('pwa-btn');
+  if(!zone) return;
+  if(pwaInstallee()){ zone.style.display='none'; return; }
+  if(PWA_PROMPT){
+    zone.style.display='block';
+    if(sous) sous.textContent="Une icône sur ton écran d'accueil, plein écran, et l'app s'ouvre même sans réseau.";
+    if(btn) btn.querySelector('span').textContent='⬇ Installer BAKOU sur cet appareil';
+    return;
+  }
+  if(pwaIOS()){
+    zone.style.display='block';
+    if(btn) btn.querySelector('span').textContent="📱 Ajouter BAKOU à l'écran d'accueil";
+    if(sous) sous.textContent="Sur iPhone : touche le bouton Partager en bas de Safari, puis « Sur l'écran d'accueil ».";
+    return;
+  }
+  zone.style.display='none';
+}
+function pwaInstaller(){
+  if(PWA_PROMPT){
+    PWA_PROMPT.prompt();
+    PWA_PROMPT.userChoice.then(function(c){
+      if(c&&c.outcome==='accepted') toast('✅ BAKOU installé — retrouve-le sur ton écran d\'accueil');
+      PWA_PROMPT=null; pwaMaj();
+    }).catch(function(){ PWA_PROMPT=null; pwaMaj(); });
+    return;
+  }
+  if(pwaIOS()){ toast("📱 Bouton Partager en bas de Safari → « Sur l'écran d'accueil »"); return; }
+  toast("Ton navigateur ne propose pas l'installation ici — essaie depuis Chrome sur Android");
+}
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); PWA_PROMPT=e; pwaMaj(); });
+window.addEventListener('appinstalled',function(){ PWA_PROMPT=null; pwaMaj(); toast('✅ BAKOU est installé'); });
+
+// Enregistrement du service worker. S'il echoue, l'app marche comme avant :
+// c'est un bonus, jamais une dependance.
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(e){ console.warn('service worker', e); });
+  });
+}
+
+// ══════════ CALCULATEUR DE POSITION ══════════
+// lot = risque en $ / (stop en pips x valeur du pip pour 1 lot)
+// La valeur du pip est exacte pour les paires cotees en dollar (10 $ pour
+// 1 lot standard) et depend du taux de change pour les autres. On
+// pre-remplit une valeur plausible, l'utilisateur peut la corriger et on
+// retient sa correction par paire.
+var CP_PIP_DEFAUT={
+  // cotees en USD : exact, 1 pip = 10 $ pour 1 lot de 100 000
+  EURUSD:10, GBPUSD:10, AUDUSD:10, NZDUSD:10,
+  // cotees dans l'autre devise : approximatif, varie avec le taux
+  USDJPY:6.7, USDCHF:11.3, USDCAD:7.3,
+  EURJPY:6.7, GBPJPY:6.7, AUDJPY:6.7, NZDJPY:6.7, CADJPY:6.7, CHFJPY:6.7,
+  EURGBP:12.7, EURCHF:11.3, EURAUD:6.5, EURCAD:7.3, EURNZD:5.8,
+  GBPCHF:11.3, GBPAUD:6.5, GBPCAD:7.3, GBPNZD:5.8,
+  AUDCHF:11.3, AUDCAD:7.3, AUDNZD:5.8,
+  NZDCHF:11.3, NZDCAD:7.3,
+  CADCHF:11.3,
+  // metaux : 1 lot = 100 oz, 1 pip = 0,10 $ de variation
+  XAUUSD:10, XAGUSD:50, XPTUSD:10,
+  // crypto et indices : 1 "pip" = 1 point, 1 lot = 1 unite
+  BTCUSD:1, ETHUSD:1, SOLUSD:1, XRPUSD:1, ADAUSD:1, DOGEUSD:1, BNBUSD:1
+};
+function cpLsKey(){ return lsKey('bakou_cp_pips'); }
+function cpPipsPerso(){ try{ return JSON.parse(localStorage.getItem(cpLsKey())||'{}')||{}; }catch(e){ return {}; } }
+function cpPipDe(paire){
+  var perso=cpPipsPerso();
+  if(perso[paire]>0) return perso[paire];
+  if(CP_PIP_DEFAUT[paire]>0) return CP_PIP_DEFAUT[paire];
+  return 10;
+}
+
+function cpOpen(){
+  var sel=document.getElementById('cp-pair'); if(!sel) return;
+  // toutes les paires connues de l'app, regroupees comme dans le formulaire
+  var h='';
+  var noms={major:'Majeures',minor:'Mineures',crypto:'Crypto',index:'Indices',metal:'Métaux'};
+  for(var cat in PAIRS){
+    h+='<optgroup label="'+(noms[cat]||cat)+'">';
+    PAIRS[cat].forEach(function(pr){ h+='<option value="'+pr+'">'+pr+'</option>'; });
+    h+='</optgroup>';
+  }
+  sel.innerHTML=h;
+  var dejaLa=document.getElementById('f-pair');
+  if(dejaLa && dejaLa.value) sel.value=dejaLa.value;
+  var rsk=document.getElementById('cp-rsk'); if(rsk && !rsk.value) rsk.value=DRSK||1;
+  var rr=document.getElementById('cp-rr');
+  if(rr && !rr.value){ var fr=document.getElementById('f-rr'); rr.value=(fr&&fr.value)||2; }
+  cpPairChange();
+  var m=document.getElementById('cpModal'); if(m)m.classList.add('show');
+}
+function cpClose(){ var m=document.getElementById('cpModal'); if(m)m.classList.remove('show'); }
+function cpPairChange(){
+  var sel=document.getElementById('cp-pair'), pip=document.getElementById('cp-pip');
+  if(sel&&pip) pip.value=cpPipDe(sel.value);
+  cpCalc();
+}
+function cpPipEdit(){
+  var sel=document.getElementById('cp-pair'), pip=document.getElementById('cp-pip');
+  if(sel&&pip){
+    var v=parseFloat(pip.value)||0;
+    var perso=cpPipsPerso();
+    if(v>0) perso[sel.value]=v; else delete perso[sel.value];
+    try{ localStorage.setItem(cpLsKey(),JSON.stringify(perso)); }catch(e){}
+  }
+  cpCalc();
+}
+
+function cpResultat(){
+  var g=function(id){ var e=document.getElementById(id); return parseFloat(e?e.value:0)||0; };
+  var sel=document.getElementById('cp-pair');
+  var paire=sel?sel.value:'';
+  var sl=g('cp-sl'), rskPct=g('cp-rsk'), rr=g('cp-rr'), valPip=g('cp-pip');
+  var cap=CAP||0;
+  var risque=cap>0?cap*rskPct/100:0;
+  var lot=(sl>0&&valPip>0&&risque>0)?risque/(sl*valPip):0;
+  return {paire:paire, sl:sl, rskPct:rskPct, rr:rr, valPip:valPip, cap:cap,
+          risque:risque, lot:lot, gain:rr>0?risque*rr:0};
+}
+
+function cpCalc(){
+  var out=document.getElementById('cp-out'), det=document.getElementById('cp-detail');
+  if(!out) return;
+  var r=cpResultat();
+  var A=function(v){ return '$'+Math.abs(Math.round(v)).toLocaleString(); };
+  if(!r.cap){
+    out.innerHTML='<div class="cp-box" style="grid-column:1/-1"><div class="cp-bl">Capital manquant</div><div class="cp-bs">Définis le capital de ce compte (⚙ en haut) pour que le calcul ait un sens.</div></div>';
+    if(det)det.innerHTML=''; return;
+  }
+  if(!r.lot){
+    out.innerHTML='<div class="cp-box" style="grid-column:1/-1"><div class="cp-bl">En attente</div>'
+      +'<div class="cp-bs">Remplis ton stop en pips et ton risque en %.</div></div>';
+    if(det)det.innerHTML=''; return;
+  }
+  var lotAff=r.lot>=1?(Math.round(r.lot*100)/100):(Math.round(r.lot*1000)/1000);
+  out.innerHTML=
+     '<div class="cp-box vedette"><div class="cp-bl">Lot à prendre</div><div class="cp-bv">'+lotAff+'</div>'
+    +'<div class="cp-bs">'+r.paire+' · SL '+r.sl+' pips</div></div>'
+    +'<div class="cp-box"><div class="cp-bl">Tu risques</div><div class="cp-bv">'+A(r.risque)+'</div>'
+    +'<div class="cp-bs">'+r.rskPct+' % de '+A(r.cap)+'</div></div>'
+    +(r.rr>0?'<div class="cp-box"><div class="cp-bl">Si le TP passe</div><div class="cp-bv" style="color:#0a8a5f">+'+A(r.gain)+'</div>'
+      +'<div class="cp-bs">R:R '+r.rr+' · TP à '+Math.round(r.sl*r.rr)+' pips</div></div>':'');
+
+  // mise en perspective avec son propre historique + le garde-fou
+  var bouts=[];
+  var liste=(typeof T!=='undefined'&&T)?T:[];
+  var sur=liste.filter(function(t){ return t.pair===r.paire && (parseFloat(t.lot_size)||0)>0; });
+  if(sur.length>=3){
+    var moy=sur.reduce(function(a,t){ return a+(parseFloat(t.lot_size)||0); },0)/sur.length;
+    bouts.push('Ton lot habituel sur '+r.paire+' : <b>'+(Math.round(moy*100)/100)+'</b> sur '+sur.length+' trades.');
+  }
+  bouts.push('1 pip sur ce lot = <b>'+('$'+(Math.round(r.lot*r.valPip*100)/100))+'</b>.');
+  var detHtml='<div class="cp-note">'+bouts.join(' ')+'</div>';
+
+  var reg=gfRegles();
+  var alertes=[];
+  if(reg.on && reg.lotMax>0 && r.lot>reg.lotMax)
+    alertes.push('Ce lot ('+lotAff+') dépasse ton plafond de '+reg.lotMax+'. Soit tu élargis ton stop, soit tu baisses ton risque.');
+  if(reg.on && reg.risqueMax>0 && r.rskPct>reg.risqueMax)
+    alertes.push('Un risque de '+r.rskPct+' % dépasse ton plafond de '+reg.risqueMax+' %.');
+  if(alertes.length) detHtml+='<div class="cp-alerte">🛡 '+alertes.join('<br>')+'</div>';
+  if(det) det.innerHTML=detHtml;
+}
+
+function cpUtiliser(){
+  var r=cpResultat();
+  if(!r.lot){ toast('Remplis ton stop et ton risque d\'abord'); return; }
+  var lotAff=r.lot>=1?(Math.round(r.lot*100)/100):(Math.round(r.lot*1000)/1000);
+  var set=function(id,v){ var e=document.getElementById(id); if(e){ e.value=v; } };
+  set('f-lot',lotAff);
+  if(r.rskPct>0) set('f-rsk',r.rskPct);
+  if(r.rr>0) set('f-rr',r.rr);
+  var fp=document.getElementById('f-pair');
+  if(fp && r.paire){
+    // la liste des paires depend de la categorie : on bascule si besoin
+    var cat=null;
+    for(var c in PAIRS) if(PAIRS[c].indexOf(r.paire)>=0){ cat=c; break; }
+    var fc=document.getElementById('f-cat');
+    if(cat && fc && fc.value!==cat){ fc.value=cat; if(typeof updatePairs==='function') updatePairs(); }
+    fp.value=r.paire;
+  }
+  if(typeof calcAll==='function') calcAll();
+  cpClose();
+  toast('🧮 Lot '+lotAff+' reporté dans le formulaire');
+}
+document.addEventListener('click',function(e){ if(e.target&&e.target.id==='cpModal') cpClose(); });
+
+// ══════════ GARDE-FOU DE RISQUE ══════════
+// Les limites que le trader se fixe pour la journee. Elles sont stockees
+// par compte (colonne accounts.rules) : un compte prop firm et un compte
+// perso n'ont pas les memes regles.
+// Le garde-fou PREVIENT, il ne bloque pas definitivement : il faut pouvoir
+// saisir un trade passe ou rattraper un oubli. Mais on ne peut pas
+// l'ignorer sans le voir.
+var GF_DEFAUT={on:false,perteJour:0,nbTrades:0,pertesSuite:0,lotMax:0,risqueMax:0};
+
+function gfRegles(){
+  var r={};
+  for(var k in GF_DEFAUT) r[k]=GF_DEFAUT[k];
+  if(!ACTIVE_ACCOUNT) return r;
+  try{
+    var v=JSON.parse(ACTIVE_ACCOUNT.rules||'{}');
+    if(v&&typeof v==='object'){ for(var k2 in GF_DEFAUT) if(v[k2]!==undefined&&v[k2]!==null) r[k2]=v[k2]; }
+  }catch(e){}
+  r.on=!!r.on;
+  ['perteJour','nbTrades','pertesSuite','lotMax','risqueMax'].forEach(function(k3){ r[k3]=Math.max(0,parseFloat(r[k3])||0); });
+  return r;
+}
+
+// Jour local, pas UTC : la journee de trading de l'utilisateur, pas celle de Greenwich.
+function gfJour(d){
+  var x=(d instanceof Date)?d:new Date(d);
+  if(isNaN(x)) return '';
+  var p=function(n){ return (n<10?'0':'')+n; };
+  return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate());
+}
+
+function gfEtat(){
+  var auj=gfJour(new Date()), pnl=0, nb=0;
+  var liste=(typeof T!=='undefined'&&T)?T:[];
+  for(var i=0;i<liste.length;i++){
+    if(gfJour(liste[i].created_at)!==auj) continue;
+    nb++; pnl+=parseFloat(liste[i].pnl_amt)||0;
+  }
+  // pertes d'affilee : on remonte l'historique complet depuis la fin
+  var tri=liste.slice().sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); });
+  var suite=0;
+  for(var j=tri.length-1;j>=0;j--){
+    if(tri[j].result==='LOSS') suite++;
+    else if(tri[j].result==='WIN') break;   // un BE ne casse pas la serie mais ne la prolonge pas
+  }
+  return {pnlJour:pnl, nbJour:nb, suite:suite};
+}
+
+// Ce que ce trade-la casserait. cand = {lot, risquePct, pnl}
+function gfInfractions(cand){
+  var r=gfRegles();
+  if(!r.on) return [];
+  var e=gfEtat(), out=[];
+  var A=function(v){ return '$'+Math.abs(Math.round(v)).toLocaleString(); };
+  if(r.perteJour>0 && -e.pnlJour>=r.perteJour)
+    out.push('Ta limite de perte du jour est atteinte : '+A(e.pnlJour)+' perdus sur '+A(r.perteJour)+' autorisés.');
+  if(r.nbTrades>0 && e.nbJour>=r.nbTrades)
+    out.push('Tu as déjà pris tes '+r.nbTrades+' trades du jour (celui-ci serait le '+(e.nbJour+1)+'ᵉ).');
+  if(r.pertesSuite>0 && e.suite>=r.pertesSuite)
+    out.push(e.suite+' pertes d\'affilée — ta règle dit pause à '+r.pertesSuite+'.');
+  if(r.lotMax>0 && cand && (parseFloat(cand.lot)||0)>r.lotMax)
+    out.push('Lot '+cand.lot+' au-dessus de ton maximum ('+r.lotMax+').');
+  if(r.risqueMax>0 && cand && (parseFloat(cand.risquePct)||0)>r.risqueMax)
+    out.push('Risque '+cand.risquePct+' % au-dessus de ton maximum ('+r.risqueMax+' %).');
+  return out;
+}
+
+// Appele avant l'enregistrement. true = on continue.
+function gfAutorise(cand){
+  var inf=gfInfractions(cand);
+  if(!inf.length) return true;
+  var msg='🛡 GARDE-FOU — ce trade casse '+(inf.length>1?'tes règles :':'ta règle :')+'\n\n';
+  for(var i=0;i<inf.length;i++) msg+='• '+inf[i]+'\n';
+  msg+='\nC\'est toi qui as fixé ces limites.\n\nEnregistrer quand même ?';
+  return confirm(msg);
+}
+
+function gfRender(){
+  var box=document.getElementById('gf-bar'); if(!box) return;
+  var r=gfRegles();
+  if(!r.on){
+    box.innerHTML='<div class="gf-head"><div class="gf-t">🛡 Garde-fou de risque <span class="gf-badge off">désactivé</span></div>'
+      +'<button class="gf-cta" onclick="gfOpenModal()">Fixer mes limites</button></div>'
+      +'<div class="gf-msg ok">Fixe une perte max par jour, un nombre de trades et un lot plafond. '
+      +'BAKOU te prévient avant d\'enregistrer un trade qui dépasse — c\'est le filet qui évite la journée à −2 700 $.</div>';
+    return;
+  }
+  var e=gfEtat();
+  var cells=[];
+  var jauge=function(part){ return '<div class="gf-jauge"><i style="width:'+Math.min(100,Math.max(0,Math.round(part*100)))+'%"></i></div>'; };
+  var ton=function(part){ return part>=1?'stop':(part>=0.7?'warn':'ok'); };
+  var A=function(v){ return (v<0?'−':'')+'$'+Math.abs(Math.round(v)).toLocaleString(); };
+  var pire=0;
+
+  if(r.perteJour>0){
+    var perdu=Math.max(0,-e.pnlJour), part=perdu/r.perteJour; pire=Math.max(pire,part);
+    cells.push('<div class="gf-cell '+ton(part)+'"><div class="gf-lbl">Perte du jour</div>'
+      +'<div class="gf-val">'+A(-perdu)+' <small>/ '+A(-r.perteJour)+'</small></div>'+jauge(part)+'</div>');
+  }
+  if(r.nbTrades>0){
+    var p2=e.nbJour/r.nbTrades; pire=Math.max(pire,p2);
+    cells.push('<div class="gf-cell '+ton(p2)+'"><div class="gf-lbl">Trades du jour</div>'
+      +'<div class="gf-val">'+e.nbJour+' <small>/ '+r.nbTrades+'</small></div>'+jauge(p2)+'</div>');
+  }
+  if(r.pertesSuite>0){
+    var p3=e.suite/r.pertesSuite; pire=Math.max(pire,p3);
+    cells.push('<div class="gf-cell '+ton(p3)+'"><div class="gf-lbl">Pertes d\'affilée</div>'
+      +'<div class="gf-val">'+e.suite+' <small>/ '+r.pertesSuite+'</small></div>'+jauge(p3)+'</div>');
+  }
+  if(r.lotMax>0) cells.push('<div class="gf-cell"><div class="gf-lbl">Lot plafond</div><div class="gf-val">'+r.lotMax+'</div></div>');
+  if(r.risqueMax>0) cells.push('<div class="gf-cell"><div class="gf-lbl">Risque plafond</div><div class="gf-val">'+r.risqueMax+' <small>%</small></div></div>');
+
+  var etat=pire>=1?'stop':(pire>=0.7?'warn':'ok');
+  var badge=pire>=1?'limite atteinte':(pire>=0.7?'attention':'dans tes règles');
+  var jourPnl=e.pnlJour;
+  var msg;
+  if(pire>=1) msg='<div class="gf-msg stop"><b>Stop pour aujourd\'hui.</b> Tu as touché une de tes limites. Ferme la plateforme — c\'est exactement pour ça que tu as mis ce garde-fou.</div>';
+  else if(pire>=0.7) msg='<div class="gf-msg warn"><b>Tu approches.</b> Plus que peu de marge avant ta limite. Le prochain trade doit être ton meilleur setup, pas un trade d\'ennui.</div>';
+  else if(!e.nbJour) msg='<div class="gf-msg ok">Aucun trade aujourd\'hui. Tes limites sont en place.</div>';
+  else msg='<div class="gf-msg ok">'+e.nbJour+' trade'+(e.nbJour>1?'s':'')+' aujourd\'hui · '+A(jourPnl)+'. Tu es dans tes règles.</div>';
+
+  box.innerHTML='<div class="gf-head"><div class="gf-t">🛡 Garde-fou de risque <span class="gf-badge '+etat+'">'+badge+'</span></div>'
+    +'<button class="gf-set" onclick="gfOpenModal()">⚙ Mes limites</button></div>'
+    +(cells.length?'<div class="gf-grid">'+cells.join('')+'</div>':'')
+    +msg;
+}
+
+function gfOpenModal(){
+  var r=gfRegles();
+  var set=function(id,v){ var e=document.getElementById(id); if(e)e.value=v||''; };
+  var on=document.getElementById('gf-on'); if(on)on.checked=r.on;
+  set('gf-perte',r.perteJour||''); set('gf-nb',r.nbTrades||''); set('gf-suite',r.pertesSuite||'');
+  set('gf-lot',r.lotMax||''); set('gf-risque',r.risqueMax||'');
+  var nom=document.getElementById('gf-modal-account'); if(nom)nom.textContent=ACTIVE_ACCOUNT?ACTIVE_ACCOUNT.name:'—';
+  var c=document.getElementById('gf-conseil'); if(c)c.innerHTML=gfConseil();
+  var m=document.getElementById('gfModal'); if(m)m.classList.add('show');
+}
+function gfCloseModal(){ var m=document.getElementById('gfModal'); if(m)m.classList.remove('show'); }
+
+// Suggestion chiffree a partir de son propre historique, pas d'une regle generique.
+function gfConseil(){
+  var liste=(typeof T!=='undefined'&&T)?T:[];
+  if(liste.length<10) return 'Pas encore assez de trades sur ce compte pour te suggérer des chiffres. Un point de départ classique : perte max = 2 à 3 % du capital, 3 trades par jour.';
+  var parJour={}, suiteMax=0, suite=0, lots=[];
+  var tri=liste.slice().sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); });
+  for(var i=0;i<tri.length;i++){
+    var k=gfJour(tri[i].created_at);
+    if(!parJour[k]) parJour[k]={pnl:0,nb:0};
+    parJour[k].pnl+=parseFloat(tri[i].pnl_amt)||0; parJour[k].nb++;
+    var l=parseFloat(tri[i].lot_size)||0; if(l>0)lots.push(l);
+    if(tri[i].result==='LOSS'){ suite++; if(suite>suiteMax)suiteMax=suite; }
+    else if(tri[i].result==='WIN') suite=0;
+  }
+  var jours=Object.keys(parJour);
+  var pire=0, nbMax=0, nbTot=0;
+  jours.forEach(function(k){ if(parJour[k].pnl<pire)pire=parJour[k].pnl; if(parJour[k].nb>nbMax)nbMax=parJour[k].nb; nbTot+=parJour[k].nb; });
+  lots.sort(function(a,b){ return a-b; });
+  var med=lots.length?lots[Math.floor(lots.length/2)]:0;
+  var sugPerte=CAP>0?Math.round(CAP*0.02/10)*10:Math.round(Math.abs(pire)/2/10)*10;
+  var moyNb=Math.max(1,Math.round(nbTot/jours.length));
+  var A=function(v){ return '$'+Math.abs(Math.round(v)).toLocaleString(); };
+  return '<b>Ce que dit ton historique ('+liste.length+' trades, '+jours.length+' jours) :</b><br>'
+    +'• Pire journée : <b>−'+A(pire)+'</b> · tu prends <b>'+moyNb+'</b> trade'+(moyNb>1?'s':'')+' par jour en moyenne, <b>'+nbMax+'</b> au maximum.<br>'
+    +'• Plus longue série de pertes : <b>'+suiteMax+'</b> · lot médian : <b>'+med+'</b>.<br>'
+    +'<b>Suggestion :</b> perte max <b>'+A(sugPerte)+'</b>'+(CAP>0?' (2 % de ton capital)':'')
+    +' · <b>'+(moyNb+1)+'</b> trades/jour · pause après <b>'+Math.max(2,Math.min(4,Math.ceil(suiteMax/2)))+'</b> pertes'
+    +(med>0?' · lot max <b>'+(Math.round(med*2*100)/100)+'</b>':'')+'.';
+}
+
+async function gfSave(){
+  if(!ACTIVE_ACCOUNT){ toast('❌ Aucun compte sélectionné'); return; }
+  var num=function(id){ var e=document.getElementById(id); return Math.max(0,parseFloat(e?e.value:0)||0); };
+  var on=document.getElementById('gf-on');
+  var r={on:!!(on&&on.checked), perteJour:num('gf-perte'), nbTrades:num('gf-nb'),
+         pertesSuite:num('gf-suite'), lotMax:num('gf-lot'), risqueMax:num('gf-risque')};
+  if(r.on && !r.perteJour && !r.nbTrades && !r.pertesSuite && !r.lotMax && !r.risqueMax){
+    toast('⚠ Remplis au moins une limite, sinon le garde-fou ne garde rien');
+    return;
+  }
+  ACTIVE_ACCOUNT.rules=JSON.stringify(r);
+  var i=ACCOUNTS.findIndex(function(a){ return a.id===ACTIVE_ACCOUNT.id; });
+  if(i>=0) ACCOUNTS[i].rules=ACTIVE_ACCOUNT.rules;
+  try{ localStorage.setItem(lsKey('tr_accounts_list'), JSON.stringify(ACCOUNTS)); }catch(e){}
+  try{
+    var res=await sb.from('accounts').upsert(Object.assign({id:ACTIVE_ACCOUNT.id, owner_id:OWNER_ID,
+      name:ACTIVE_ACCOUNT.name, capital:ACTIVE_ACCOUNT.capital||CAP, risk:ACTIVE_ACCOUNT.risk||DRSK,
+      color:ACTIVE_ACCOUNT.color||'#2563eb', rules:ACTIVE_ACCOUNT.rules}, ownExtra()));
+    if(res&&res.error) console.warn('gfSave',res.error);
+  }catch(e){ console.warn('gfSave',e); }
+  gfCloseModal(); gfRender();
+  toast(r.on?'🛡 Garde-fou activé sur '+ACTIVE_ACCOUNT.name:'Garde-fou désactivé');
+}
+document.addEventListener('click',function(e){ if(e.target&&e.target.id==='gfModal') gfCloseModal(); });
+
 // ══════════ NOTEBOOK ══════════
 var NB_FOLDERS=[], NB_NOTES=[], NB_CUR=null, NB_FILTER={folderId:null,tag:null,q:''};
 var NB_TEMPLATES={
@@ -4237,10 +4970,149 @@ function nbEscA(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 function nbLsF(){return lsKey('bakou_nb_folders');}
 function nbLsN(){return lsKey('bakou_nb_notes');}
 function nbDefaultFolders(){return [{id:'f_notes',name:'Notes de trade',color:'#3b82f6'},{id:'f_journal',name:'Journal quotidien',color:'#10b981'},{id:'f_plan',name:'Plan de trading',color:'#f59e0b'},{id:'f_recap',name:'Sessions Recap',color:'#ef4444'}];}
-function nbSave(){ try{ localStorage.setItem(nbLsF(),JSON.stringify(NB_FOLDERS)); localStorage.setItem(nbLsN(),JSON.stringify(NB_NOTES)); }catch(e){} }
-function nbLoad(){ try{ NB_FOLDERS=JSON.parse(localStorage.getItem(nbLsF())||'null')||nbDefaultFolders(); }catch(e){NB_FOLDERS=nbDefaultFolders();} try{ NB_NOTES=JSON.parse(localStorage.getItem(nbLsN())||'[]')||[]; }catch(e){NB_NOTES=[];} }
+function nbSaveLocal(){ try{ localStorage.setItem(nbLsF(),JSON.stringify(NB_FOLDERS)); localStorage.setItem(nbLsN(),JSON.stringify(NB_NOTES)); }catch(e){} }
+function nbLoadLocal(){ try{ NB_FOLDERS=JSON.parse(localStorage.getItem(nbLsF())||'null')||nbDefaultFolders(); }catch(e){NB_FOLDERS=nbDefaultFolders();} try{ NB_NOTES=JSON.parse(localStorage.getItem(nbLsN())||'[]')||[]; }catch(e){NB_NOTES=[];} }
+// nbSave garde le nom historique : cache local immediat + envoi en base differe.
+function nbSave(){ nbSaveLocal(); nbMarkDirty(NB_CUR); }
+function nbLoad(){ nbLoadLocal(); }
+
+// ══════════ NOTEBOOK — PERSISTANCE EN BASE ══════════
+// Les notes vivaient uniquement dans le localStorage : vider le cache du
+// navigateur les effacait, et rien ne se synchronisait entre le telephone et
+// le PC. Desormais le localStorage sert de cache hors ligne et la base
+// Supabase (tables nb_folders / nb_notes, RLS par owner_uuid) fait foi.
+var NB_SYNC_T=null, NB_DIRTY={}, NB_DIRTY_F=false, NB_SYNCING=false, NB_DB_OK=false;
+
+function nbDbPret(){ return !!(typeof sb!=='undefined' && sb && OWNER_UUID); }
+function nbSyncBadge(txt,cls){ var e=document.getElementById('nb-sync'); if(!e)return; e.textContent=txt; e.className='nb-sync '+(cls||''); }
+
+function nbRowNote(n){
+  return {id:n.id, owner_uuid:OWNER_UUID, folder_id:n.folderId||null,
+          title:n.title||'', html:n.html||'', tags:JSON.stringify(n.tags||[]),
+          created_at:new Date(n.created||Date.now()).toISOString(),
+          updated_at:new Date(n.updated||Date.now()).toISOString()};
+}
+function nbRowFolder(f){
+  return {id:f.id, owner_uuid:OWNER_UUID, name:f.name, color:f.color||'#3b82f6',
+          updated_at:new Date().toISOString()};
+}
+function nbNoteFromRow(r){
+  var tags=[]; try{ var v=JSON.parse(r.tags||'[]'); if(Array.isArray(v))tags=v; }catch(e){}
+  return {id:r.id, title:r.title||'', folderId:r.folder_id||null, tags:tags, html:r.html||'',
+          created:r.created_at?new Date(r.created_at).getTime():Date.now(),
+          updated:r.updated_at?new Date(r.updated_at).getTime():Date.now()};
+}
+
+function nbMarkDirty(id){ if(id)NB_DIRTY[id]=true; nbPlanSync(); }
+function nbMarkFoldersDirty(){ NB_DIRTY_F=true; nbPlanSync(); }
+function nbPlanSync(){
+  if(!nbDbPret()){ nbSyncBadge('sauvegarde locale',''); return; }
+  nbSyncBadge('• non enregistre','warn');
+  if(NB_SYNC_T)clearTimeout(NB_SYNC_T);
+  NB_SYNC_T=setTimeout(nbSyncNow,900);
+}
+
+async function nbSyncNow(){
+  if(!nbDbPret()||NB_SYNCING)return;
+  if(NB_SYNC_T){ clearTimeout(NB_SYNC_T); NB_SYNC_T=null; }
+  var ids=Object.keys(NB_DIRTY), fol=NB_DIRTY_F;
+  if(!ids.length && !fol) return;
+  NB_SYNCING=true; NB_DIRTY={}; NB_DIRTY_F=false;
+  nbSyncBadge('⏳ enregistrement…','');
+  var ko=false;
+  try{
+    if(fol && NB_FOLDERS.length){
+      var rf=await sb.from('nb_folders').upsert(NB_FOLDERS.map(nbRowFolder));
+      if(rf.error){ ko=true; console.warn('nb_folders',rf.error); }
+    }
+    var rows=[];
+    for(var i=0;i<ids.length;i++){ var n=NB_NOTES.find(function(x){return x.id===ids[i];}); if(n)rows.push(nbRowNote(n)); }
+    if(rows.length){
+      var rn=await sb.from('nb_notes').upsert(rows);
+      if(rn.error){ ko=true; console.warn('nb_notes',rn.error); }
+    }
+  }catch(e){ ko=true; console.warn('nb sync',e); }
+  NB_SYNCING=false;
+  if(ko){
+    for(var j=0;j<ids.length;j++) NB_DIRTY[ids[j]]=true;
+    if(fol) NB_DIRTY_F=true;
+    nbSyncBadge('⚠ hors ligne — garde en local','err');
+    NB_SYNC_T=setTimeout(nbSyncNow,8000);   // on retente tout seul
+    return;
+  }
+  if(Object.keys(NB_DIRTY).length||NB_DIRTY_F) nbPlanSync();
+  else nbSyncBadge('✓ enregistre','ok');
+}
+
+async function nbDbDelNote(id){
+  if(!nbDbPret())return;
+  try{ var r=await sb.from('nb_notes').delete().eq('id',id); if(r.error)console.warn('nb del note',r.error); }catch(e){ console.warn('nb del note',e); }
+}
+async function nbDbDelFolder(id){
+  if(!nbDbPret())return;
+  try{ var r=await sb.from('nb_folders').delete().eq('id',id); if(r.error)console.warn('nb del folder',r.error); }catch(e){ console.warn('nb del folder',e); }
+}
+
+// Fusion base <-> local : l'id fait foi, la version modifiee le plus
+// recemment gagne. Au premier passage la base est vide : tout le local
+// part en base (c'est la migration, aucune note n'est perdue).
+async function nbLoadDb(){
+  if(!nbDbPret()) return false;
+  try{
+    var rf=await sb.from('nb_folders').select('*').eq('owner_uuid',OWNER_UUID);
+    var rn=await sb.from('nb_notes').select('*').eq('owner_uuid',OWNER_UUID);
+    if(rf.error||rn.error){ console.warn('nb load',rf.error||rn.error); return false; }
+    NB_DB_OK=true;
+    var dbF=(rf.data||[]).map(function(r){ return {id:r.id,name:r.name,color:r.color||'#3b82f6'}; });
+    var dbN=(rn.data||[]).map(nbNoteFromRow);
+
+    var parId={}, idsDb={}, aPousser={};
+    NB_NOTES.forEach(function(n){ parId[n.id]=n; });
+    dbN.forEach(function(d){
+      idsDb[d.id]=true;
+      var loc=parId[d.id];
+      if(loc && (loc.updated||0)>(d.updated||0)) aPousser[loc.id]=true;  // le local est plus frais
+      else parId[d.id]=d;
+    });
+    NB_NOTES.forEach(function(n){ if(!idsDb[n.id]) aPousser[n.id]=true; });
+    NB_NOTES=Object.keys(parId).map(function(k){ return parId[k]; });
+
+    var fParId={}, idsDbF={}, pousserF=false;
+    NB_FOLDERS.forEach(function(f){ fParId[f.id]=f; });
+    dbF.forEach(function(d){ idsDbF[d.id]=true; fParId[d.id]=d; });
+    NB_FOLDERS.forEach(function(f){ if(!idsDbF[f.id]) pousserF=true; });
+    NB_FOLDERS=Object.keys(fParId).map(function(k){ return fParId[k]; });
+    if(!NB_FOLDERS.length){ NB_FOLDERS=nbDefaultFolders(); pousserF=true; }
+
+    nbSaveLocal();
+    Object.keys(aPousser).forEach(function(id){ NB_DIRTY[id]=true; });
+    if(pousserF) NB_DIRTY_F=true;
+    if(Object.keys(NB_DIRTY).length||NB_DIRTY_F) nbSyncNow();
+    else nbSyncBadge('✓ synchronise','ok');
+    return true;
+  }catch(e){ console.warn('nb load',e); return false; }
+}
+
+// Dernier filet : on pousse ce qui traine avant que l'onglet se ferme.
+try{
+  window.addEventListener('pagehide',function(){ nbSyncNow(); });
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') nbSyncNow(); });
+}catch(e){}
 function nbUID(){return 'n'+Date.now().toString(36)+Math.floor(Math.random()*1000);}
-function initNotebook(){ nbLoad(); nbRenderFolders(); nbRenderList(); if(NB_CUR&&NB_NOTES.some(n=>n.id===NB_CUR)) nbOpen(NB_CUR); else { const f=nbFiltered()[0]; if(f)nbOpen(f.id); else nbShowEmpty(); } }
+function nbRouvre(){
+  if(NB_CUR&&NB_NOTES.some(function(n){return n.id===NB_CUR;})) nbOpen(NB_CUR);
+  else { var f=nbFiltered()[0]; if(f)nbOpen(f.id); else nbShowEmpty(); }
+}
+function initNotebook(){
+  nbLoadLocal(); nbRenderFolders(); nbRenderList(); nbRouvre();   // affichage immediat depuis le cache
+  if(!nbDbPret()){ nbSyncBadge('sauvegarde locale',''); return; }
+  if(NB_DB_OK){ nbSyncBadge(Object.keys(NB_DIRTY).length||NB_DIRTY_F?'• non enregistre':'✓ synchronise',Object.keys(NB_DIRTY).length||NB_DIRTY_F?'warn':'ok'); return; }
+  nbSyncBadge('⏳ chargement…','');
+  nbLoadDb().then(function(ok){
+    if(!ok){ nbSyncBadge('⚠ hors ligne — garde en local','err'); return; }
+    nbRenderFolders(); nbRenderList(); nbRouvre();
+  });
+}
 function nbFiltered(){
   let arr=NB_NOTES.slice();
   if(NB_FILTER.folderId)arr=arr.filter(n=>n.folderId===NB_FILTER.folderId);
@@ -4266,9 +5138,9 @@ function nbRenderList(){
 function nbSelFolder(id){ NB_FILTER.folderId=id; NB_FILTER.tag=null; nbRenderFolders(); nbRenderList(); }
 function nbSelTag(t){ NB_FILTER.tag=(NB_FILTER.tag===t?null:t); NB_FILTER.folderId=null; nbRenderFolders(); nbRenderList(); }
 function nbSearch(v){ NB_FILTER.q=v; nbRenderList(); }
-function nbNewFolder(){ const name=prompt('Nom du dossier :'); if(!name)return; const colors=['#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#6366f1']; NB_FOLDERS.push({id:'f'+nbUID(),name:name.trim(),color:colors[NB_FOLDERS.length%colors.length]}); nbSave(); nbRenderFolders(); }
-function nbDelFolder(id){ if(!confirm('Supprimer ce dossier ? Les notes seront déplacées vers « Toutes les notes ».'))return; NB_FOLDERS=NB_FOLDERS.filter(f=>f.id!==id); NB_NOTES.forEach(n=>{ if(n.folderId===id)n.folderId=null; }); if(NB_FILTER.folderId===id)NB_FILTER.folderId=null; nbSave(); nbRenderFolders(); nbRenderList(); if(NB_CUR)nbRenderFolderSel(); }
-function nbNewNote(){ const n={id:nbUID(),title:'',folderId:NB_FILTER.folderId||null,tags:[],html:'',created:Date.now(),updated:Date.now()}; NB_NOTES.unshift(n); nbSave(); nbRenderFolders(); nbOpen(n.id); nbRenderList(); setTimeout(()=>{const t=document.getElementById('nb-title'); if(t)t.focus();},60); }
+function nbNewFolder(){ const name=prompt('Nom du dossier :'); if(!name)return; const colors=['#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#6366f1']; NB_FOLDERS.push({id:'f'+nbUID(),name:name.trim(),color:colors[NB_FOLDERS.length%colors.length]}); nbSaveLocal(); nbMarkFoldersDirty(); nbRenderFolders(); }
+function nbDelFolder(id){ if(!confirm('Supprimer ce dossier ? Les notes seront déplacées vers « Toutes les notes ».'))return; NB_FOLDERS=NB_FOLDERS.filter(f=>f.id!==id); NB_NOTES.forEach(n=>{ if(n.folderId===id){ n.folderId=null; n.updated=Date.now(); NB_DIRTY[n.id]=true; } }); if(NB_FILTER.folderId===id)NB_FILTER.folderId=null; nbSaveLocal(); nbDbDelFolder(id); nbPlanSync(); nbRenderFolders(); nbRenderList(); if(NB_CUR)nbRenderFolderSel(); }
+function nbNewNote(){ const n={id:nbUID(),title:'',folderId:NB_FILTER.folderId||null,tags:[],html:'',created:Date.now(),updated:Date.now()}; NB_NOTES.unshift(n); NB_CUR=n.id; nbSave(); nbRenderFolders(); nbOpen(n.id); nbRenderList(); setTimeout(()=>{const t=document.getElementById('nb-title'); if(t)t.focus();},60); }
 function nbShowEmpty(){ NB_CUR=null; const e=document.getElementById('nb-empty'),w=document.getElementById('nb-edit-wrap'); if(e)e.style.display='flex'; if(w)w.style.display='none'; }
 function nbCur(){ return NB_NOTES.find(x=>x.id===NB_CUR); }
 function nbOpen(id){ const n=NB_NOTES.find(x=>x.id===id); if(!n)return; NB_CUR=id; const e=document.getElementById('nb-empty'),w=document.getElementById('nb-edit-wrap'); if(e)e.style.display='none'; if(w)w.style.display='flex';
@@ -4285,7 +5157,7 @@ function nbCmd(c){ document.execCommand(c,false,null); const b=document.getEleme
 function nbFormat(tag){ document.execCommand('formatBlock',false,tag); nbBodyChange(); }
 function nbLink(){ const url=prompt('URL du lien :'); if(url){ document.execCommand('createLink',false,url); nbBodyChange(); } }
 function nbApplyTemplate(name){ const t=NB_TEMPLATES[name]; if(!t)return; const b=document.getElementById('nb-body'); if(!b)return; b.innerHTML=(b.innerHTML&&b.textContent.trim())?(b.innerHTML+t):t; nbBodyChange(); }
-function nbDelNote(){ if(!NB_CUR)return; if(!confirm('Supprimer définitivement cette note ?'))return; NB_NOTES=NB_NOTES.filter(n=>n.id!==NB_CUR); NB_CUR=null; nbSave(); nbRenderFolders(); nbRenderList(); nbShowEmpty(); }
+function nbDelNote(){ if(!NB_CUR)return; if(!confirm('Supprimer définitivement cette note ?'))return; const mort=NB_CUR; NB_NOTES=NB_NOTES.filter(n=>n.id!==mort); NB_CUR=null; delete NB_DIRTY[mort]; nbSaveLocal(); nbDbDelNote(mort); nbRenderFolders(); nbRenderList(); nbShowEmpty(); }
 function nbMoveFolder(fid){ const n=nbCur(); if(!n)return; n.folderId=fid||null; nbTouch(); nbSave(); nbRenderFolders(); nbRenderList(); }
 function nbRenderNoteTags(){ const n=nbCur(); const c=document.getElementById('nb-note-tags'); if(!c||!n)return; c.innerHTML=(n.tags||[]).map(t=>`<span class="nb-tagchip">${nbEsc(t)}<button onclick="nbRemoveTag('${nbEscA(t)}')" title="Retirer">✕</button></span>`).join('')+`<input class="nb-tag-input" placeholder="+ tag" onkeydown="if(event.key==='Enter'){event.preventDefault();nbAddTag(this.value);this.value='';}">`; }
 function nbAddTag(v){ v=(v||'').trim(); if(!v)return; const n=nbCur(); if(!n)return; if(!n.tags)n.tags=[]; if(n.tags.indexOf(v)<0)n.tags.push(v); nbTouch(); nbSave(); nbRenderNoteTags(); nbRenderFolders(); }
@@ -6344,6 +7216,7 @@ document.addEventListener('click',function(e){ if(e.target.id==='welcomeModal')w
 function openAcctModal(){
   const em=(CURRENT_SESSION&&CURRENT_SESSION.user&&CURRENT_SESSION.user.email)||'—';
   const el=document.getElementById('acct-email'); if(el)el.textContent=em;
+  pwaMaj();
   const m=document.getElementById('acctModal'); if(m)m.classList.add('show');
 }
 function closeAcctModal(){ const m=document.getElementById('acctModal'); if(m)m.classList.remove('show'); }
