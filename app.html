@@ -688,6 +688,15 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .nb-editor{padding:20px 22px;overflow-y:auto;}
 .nb-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:14px;text-align:center;}
 .nb-title{width:100%;box-sizing:border-box;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--tp);background:transparent;margin-bottom:6px;}
+.cp-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0 4px;}
+.cp-box{padding:11px 12px;border-radius:10px;background:rgba(30,35,51,0.03);border:1px solid var(--bo);text-align:center;}
+.cp-box.vedette{background:rgba(37,99,235,0.07);border-color:rgba(37,99,235,0.3);}
+.cp-bl{font-size:9px;letter-spacing:.9px;text-transform:uppercase;color:var(--td);margin-bottom:5px;}
+.cp-bv{font-size:20px;font-weight:700;color:var(--tp);line-height:1.1;}
+.cp-box.vedette .cp-bv{color:var(--bb);font-size:26px;}
+.cp-bs{font-size:10px;color:var(--td);margin-top:3px;}
+.cp-note{font-size:10px;line-height:1.55;color:var(--td);margin-top:10px;}
+.cp-alerte{font-size:11px;line-height:1.5;padding:9px 11px;border-radius:9px;margin-top:10px;color:#b3342f;background:rgba(227,73,72,0.09);border:1px solid rgba(227,73,72,0.28);}
 .gf-bar{margin-bottom:12px;}
 .gf-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
 .gf-t{font-size:12px;font-weight:700;letter-spacing:.3px;color:var(--tp);display:flex;align-items:center;gap:7px;}
@@ -1155,6 +1164,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
         <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="importCSV(event)">
         <button onclick="document.getElementById('mt5-import-input').click()" title="Importer l'historique depuis un rapport MetaTrader 5 (Historique → clic droit → Rapport)" style="padding:5px 10px;border-radius:7px;background:rgba(217,119,6,0.12);border:1px solid rgba(217,119,6,0.35);color:var(--gb);font-size:10px;cursor:pointer;letter-spacing:1px">⤒ MT5</button>
         <input type="file" id="mt5-import-input" style="display:none" onchange="importMT5(event)">
+        <button onclick="cpOpen()" title="Calculer le lot à prendre pour respecter ton risque" style="padding:5px 10px;border-radius:7px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.35);color:#4f46e5;font-size:10px;cursor:pointer;letter-spacing:1px">🧮 LOT</button>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap" id="journal-month-filter">
         <button onclick="filterJournalMonth(null,this)" class="mfbtn active" style="padding:4px 10px;border-radius:20px;background:rgba(37,99,235,0.2);border:1px solid var(--be);color:var(--be);font-size:10px;cursor:pointer;letter-spacing:1px">TOUT</button>
@@ -2184,6 +2194,33 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
     <div style="display:flex;gap:10px;justify-content:center">
       <button class="btn btn-g" onclick="closeAcctModal()">Fermer</button>
       <button class="btn" style="background:rgba(224,64,90,.1);border:1px solid rgba(224,64,90,.3);color:#c72c46" onclick="closeAcctModal();doLogout()">⎋ Se déconnecter</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="cpModal" role="dialog" aria-modal="true" aria-label="Calculateur de position">
+  <div class="mb" style="width:560px;max-width:95vw;max-height:88vh;overflow-y:auto">
+    <div class="mt">🧮 Quel lot prendre ?</div>
+    <div style="font-size:11px;color:var(--td);text-align:center;margin-bottom:16px;line-height:1.5">Tu donnes ton stop, BAKOU te donne le lot qui respecte ton risque.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fld"><label>Paire</label><select id="cp-pair" onchange="cpPairChange()"></select></div>
+      <div class="fld"><label>Stop loss (pips)</label><input type="number" id="cp-sl" step="0.1" min="0" placeholder="ex: 25" oninput="cpCalc()"></div>
+      <div class="fld"><label>Risque (%)</label><input type="number" id="cp-rsk" step="0.1" min="0" placeholder="ex: 1" oninput="cpCalc()"></div>
+      <div class="fld"><label>R:R visé</label><input type="number" id="cp-rr" step="0.1" min="0" placeholder="ex: 2" oninput="cpCalc()"></div>
+    </div>
+    <div class="fld" style="margin-top:4px">
+      <label>Valeur d'un pip pour 1 lot ($)</label>
+      <input type="number" id="cp-pip" step="0.01" min="0" oninput="cpPipEdit()">
+    </div>
+    <div style="font-size:10px;color:var(--td);line-height:1.5;margin-top:5px">Pré-remplie selon la paire. Les paires qui ne se cotent pas en dollar (USDJPY, USDCHF, USDCAD…) bougent avec le taux de change : si ton broker affiche autre chose, corrige ici — BAKOU retient ta valeur pour cette paire.</div>
+
+    <div class="cp-out" id="cp-out"></div>
+    <div id="cp-detail"></div>
+
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+      <button class="btn btn-p" onclick="cpUtiliser()">↙ Utiliser ce lot dans le formulaire</button>
+      <button class="btn btn-g" onclick="cpClose()">Fermer</button>
     </div>
   </div>
 </div>
@@ -4311,6 +4348,152 @@ function buildRepWinsLoss(){
     {label:'Perdants',data:[Math.round(avgL),Math.round(totL)],backgroundColor:'rgba(224,64,90,0.8)',borderRadius:4}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5b6478',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+' : $'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
+// ══════════ CALCULATEUR DE POSITION ══════════
+// lot = risque en $ / (stop en pips x valeur du pip pour 1 lot)
+// La valeur du pip est exacte pour les paires cotees en dollar (10 $ pour
+// 1 lot standard) et depend du taux de change pour les autres. On
+// pre-remplit une valeur plausible, l'utilisateur peut la corriger et on
+// retient sa correction par paire.
+var CP_PIP_DEFAUT={
+  // cotees en USD : exact, 1 pip = 10 $ pour 1 lot de 100 000
+  EURUSD:10, GBPUSD:10, AUDUSD:10, NZDUSD:10,
+  // cotees dans l'autre devise : approximatif, varie avec le taux
+  USDJPY:6.7, USDCHF:11.3, USDCAD:7.3,
+  EURJPY:6.7, GBPJPY:6.7, AUDJPY:6.7, NZDJPY:6.7, CADJPY:6.7, CHFJPY:6.7,
+  EURGBP:12.7, EURCHF:11.3, EURAUD:6.5, EURCAD:7.3, EURNZD:5.8,
+  GBPCHF:11.3, GBPAUD:6.5, GBPCAD:7.3, GBPNZD:5.8,
+  AUDCHF:11.3, AUDCAD:7.3, AUDNZD:5.8,
+  NZDCHF:11.3, NZDCAD:7.3,
+  CADCHF:11.3,
+  // metaux : 1 lot = 100 oz, 1 pip = 0,10 $ de variation
+  XAUUSD:10, XAGUSD:50, XPTUSD:10,
+  // crypto et indices : 1 "pip" = 1 point, 1 lot = 1 unite
+  BTCUSD:1, ETHUSD:1, SOLUSD:1, XRPUSD:1, ADAUSD:1, DOGEUSD:1, BNBUSD:1
+};
+function cpLsKey(){ return lsKey('bakou_cp_pips'); }
+function cpPipsPerso(){ try{ return JSON.parse(localStorage.getItem(cpLsKey())||'{}')||{}; }catch(e){ return {}; } }
+function cpPipDe(paire){
+  var perso=cpPipsPerso();
+  if(perso[paire]>0) return perso[paire];
+  if(CP_PIP_DEFAUT[paire]>0) return CP_PIP_DEFAUT[paire];
+  return 10;
+}
+
+function cpOpen(){
+  var sel=document.getElementById('cp-pair'); if(!sel) return;
+  // toutes les paires connues de l'app, regroupees comme dans le formulaire
+  var h='';
+  var noms={major:'Majeures',minor:'Mineures',crypto:'Crypto',index:'Indices',metal:'Métaux'};
+  for(var cat in PAIRS){
+    h+='<optgroup label="'+(noms[cat]||cat)+'">';
+    PAIRS[cat].forEach(function(pr){ h+='<option value="'+pr+'">'+pr+'</option>'; });
+    h+='</optgroup>';
+  }
+  sel.innerHTML=h;
+  var dejaLa=document.getElementById('f-pair');
+  if(dejaLa && dejaLa.value) sel.value=dejaLa.value;
+  var rsk=document.getElementById('cp-rsk'); if(rsk && !rsk.value) rsk.value=DRSK||1;
+  var rr=document.getElementById('cp-rr');
+  if(rr && !rr.value){ var fr=document.getElementById('f-rr'); rr.value=(fr&&fr.value)||2; }
+  cpPairChange();
+  var m=document.getElementById('cpModal'); if(m)m.classList.add('show');
+}
+function cpClose(){ var m=document.getElementById('cpModal'); if(m)m.classList.remove('show'); }
+function cpPairChange(){
+  var sel=document.getElementById('cp-pair'), pip=document.getElementById('cp-pip');
+  if(sel&&pip) pip.value=cpPipDe(sel.value);
+  cpCalc();
+}
+function cpPipEdit(){
+  var sel=document.getElementById('cp-pair'), pip=document.getElementById('cp-pip');
+  if(sel&&pip){
+    var v=parseFloat(pip.value)||0;
+    var perso=cpPipsPerso();
+    if(v>0) perso[sel.value]=v; else delete perso[sel.value];
+    try{ localStorage.setItem(cpLsKey(),JSON.stringify(perso)); }catch(e){}
+  }
+  cpCalc();
+}
+
+function cpResultat(){
+  var g=function(id){ var e=document.getElementById(id); return parseFloat(e?e.value:0)||0; };
+  var sel=document.getElementById('cp-pair');
+  var paire=sel?sel.value:'';
+  var sl=g('cp-sl'), rskPct=g('cp-rsk'), rr=g('cp-rr'), valPip=g('cp-pip');
+  var cap=CAP||0;
+  var risque=cap>0?cap*rskPct/100:0;
+  var lot=(sl>0&&valPip>0&&risque>0)?risque/(sl*valPip):0;
+  return {paire:paire, sl:sl, rskPct:rskPct, rr:rr, valPip:valPip, cap:cap,
+          risque:risque, lot:lot, gain:rr>0?risque*rr:0};
+}
+
+function cpCalc(){
+  var out=document.getElementById('cp-out'), det=document.getElementById('cp-detail');
+  if(!out) return;
+  var r=cpResultat();
+  var A=function(v){ return '$'+Math.abs(Math.round(v)).toLocaleString(); };
+  if(!r.cap){
+    out.innerHTML='<div class="cp-box" style="grid-column:1/-1"><div class="cp-bl">Capital manquant</div><div class="cp-bs">Définis le capital de ce compte (⚙ en haut) pour que le calcul ait un sens.</div></div>';
+    if(det)det.innerHTML=''; return;
+  }
+  if(!r.lot){
+    out.innerHTML='<div class="cp-box" style="grid-column:1/-1"><div class="cp-bl">En attente</div>'
+      +'<div class="cp-bs">Remplis ton stop en pips et ton risque en %.</div></div>';
+    if(det)det.innerHTML=''; return;
+  }
+  var lotAff=r.lot>=1?(Math.round(r.lot*100)/100):(Math.round(r.lot*1000)/1000);
+  out.innerHTML=
+     '<div class="cp-box vedette"><div class="cp-bl">Lot à prendre</div><div class="cp-bv">'+lotAff+'</div>'
+    +'<div class="cp-bs">'+r.paire+' · SL '+r.sl+' pips</div></div>'
+    +'<div class="cp-box"><div class="cp-bl">Tu risques</div><div class="cp-bv">'+A(r.risque)+'</div>'
+    +'<div class="cp-bs">'+r.rskPct+' % de '+A(r.cap)+'</div></div>'
+    +(r.rr>0?'<div class="cp-box"><div class="cp-bl">Si le TP passe</div><div class="cp-bv" style="color:#0a8a5f">+'+A(r.gain)+'</div>'
+      +'<div class="cp-bs">R:R '+r.rr+' · TP à '+Math.round(r.sl*r.rr)+' pips</div></div>':'');
+
+  // mise en perspective avec son propre historique + le garde-fou
+  var bouts=[];
+  var liste=(typeof T!=='undefined'&&T)?T:[];
+  var sur=liste.filter(function(t){ return t.pair===r.paire && (parseFloat(t.lot_size)||0)>0; });
+  if(sur.length>=3){
+    var moy=sur.reduce(function(a,t){ return a+(parseFloat(t.lot_size)||0); },0)/sur.length;
+    bouts.push('Ton lot habituel sur '+r.paire+' : <b>'+(Math.round(moy*100)/100)+'</b> sur '+sur.length+' trades.');
+  }
+  bouts.push('1 pip sur ce lot = <b>'+('$'+(Math.round(r.lot*r.valPip*100)/100))+'</b>.');
+  var detHtml='<div class="cp-note">'+bouts.join(' ')+'</div>';
+
+  var reg=gfRegles();
+  var alertes=[];
+  if(reg.on && reg.lotMax>0 && r.lot>reg.lotMax)
+    alertes.push('Ce lot ('+lotAff+') dépasse ton plafond de '+reg.lotMax+'. Soit tu élargis ton stop, soit tu baisses ton risque.');
+  if(reg.on && reg.risqueMax>0 && r.rskPct>reg.risqueMax)
+    alertes.push('Un risque de '+r.rskPct+' % dépasse ton plafond de '+reg.risqueMax+' %.');
+  if(alertes.length) detHtml+='<div class="cp-alerte">🛡 '+alertes.join('<br>')+'</div>';
+  if(det) det.innerHTML=detHtml;
+}
+
+function cpUtiliser(){
+  var r=cpResultat();
+  if(!r.lot){ toast('Remplis ton stop et ton risque d\'abord'); return; }
+  var lotAff=r.lot>=1?(Math.round(r.lot*100)/100):(Math.round(r.lot*1000)/1000);
+  var set=function(id,v){ var e=document.getElementById(id); if(e){ e.value=v; } };
+  set('f-lot',lotAff);
+  if(r.rskPct>0) set('f-rsk',r.rskPct);
+  if(r.rr>0) set('f-rr',r.rr);
+  var fp=document.getElementById('f-pair');
+  if(fp && r.paire){
+    // la liste des paires depend de la categorie : on bascule si besoin
+    var cat=null;
+    for(var c in PAIRS) if(PAIRS[c].indexOf(r.paire)>=0){ cat=c; break; }
+    var fc=document.getElementById('f-cat');
+    if(cat && fc && fc.value!==cat){ fc.value=cat; if(typeof updatePairs==='function') updatePairs(); }
+    fp.value=r.paire;
+  }
+  if(typeof calcAll==='function') calcAll();
+  cpClose();
+  toast('🧮 Lot '+lotAff+' reporté dans le formulaire');
+}
+document.addEventListener('click',function(e){ if(e.target&&e.target.id==='cpModal') cpClose(); });
+
 // ══════════ GARDE-FOU DE RISQUE ══════════
 // Les limites que le trader se fixe pour la journee. Elles sont stockees
 // par compte (colonne accounts.rules) : un compte prop firm et un compte
