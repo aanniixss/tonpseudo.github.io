@@ -7,6 +7,14 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BAKOU — Journal de trading</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#020f2f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BAKOU">
+<link rel="icon" href="./assets/icon-192.png">
+<link rel="apple-touch-icon" href="./assets/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -2179,6 +2187,14 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
       </button>
     </div>
 
+    <div id="pwa-zone" style="display:none;margin-bottom:18px">
+      <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--td);margin-bottom:9px">Application</div>
+      <button class="btn" id="pwa-btn" style="width:100%;text-align:left;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.35);color:var(--bb)" onclick="pwaInstaller()">
+        <span style="text-transform:none;letter-spacing:.2px;font-size:13px">⬇ Installer BAKOU sur cet appareil</span>
+        <div id="pwa-sous" style="font-size:11px;color:var(--td);font-weight:400;margin-top:3px;text-transform:none;letter-spacing:0;line-height:1.45">Une icône sur ton écran d'accueil, plein écran, et l'app s'ouvre même sans réseau.</div>
+      </button>
+    </div>
+
     <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--td);margin-bottom:9px">Zone sensible</div>
     <button class="btn" style="width:100%;text-align:left;background:rgba(224,64,90,.07);border:1px solid rgba(224,64,90,.35);color:#c72c46" onclick="deleteMyAccount()">
       <span style="text-transform:none;letter-spacing:.2px;font-size:13px">🗑 Supprimer définitivement mon compte</span>
@@ -4348,6 +4364,66 @@ function buildRepWinsLoss(){
     {label:'Perdants',data:[Math.round(avgL),Math.round(totL)],backgroundColor:'rgba(224,64,90,0.8)',borderRadius:4}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#5b6478',font:{size:11},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+' : $'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false},ticks:{color:'#5b6478',font:{size:10}}},y:{grid:{color:'rgba(30,35,51,0.06)'},ticks:{color:'#8a93a8',font:{size:10},callback:v=>'$'+v.toLocaleString()}}}}}); }
 }
+// ══════════ APPLICATION INSTALLABLE (PWA) ══════════
+// Sur Android/Chrome le navigateur previent qu'il peut installer l'app
+// (beforeinstallprompt) ; sur iOS il n'existe pas d'equivalent, il faut
+// passer par Partager > Sur l'ecran d'accueil, donc on explique.
+var PWA_PROMPT=null;
+
+function pwaInstallee(){
+  try{
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone===true;
+  }catch(e){ return false; }
+}
+function pwaIOS(){
+  try{
+    var ua=navigator.userAgent||'';
+    return /iPad|iPhone|iPod/.test(ua)
+       || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); // iPad recent
+  }catch(e){ return false; }
+}
+function pwaMaj(){
+  var zone=document.getElementById('pwa-zone'), sous=document.getElementById('pwa-sous'), btn=document.getElementById('pwa-btn');
+  if(!zone) return;
+  if(pwaInstallee()){ zone.style.display='none'; return; }
+  if(PWA_PROMPT){
+    zone.style.display='block';
+    if(sous) sous.textContent="Une icône sur ton écran d'accueil, plein écran, et l'app s'ouvre même sans réseau.";
+    if(btn) btn.querySelector('span').textContent='⬇ Installer BAKOU sur cet appareil';
+    return;
+  }
+  if(pwaIOS()){
+    zone.style.display='block';
+    if(btn) btn.querySelector('span').textContent="📱 Ajouter BAKOU à l'écran d'accueil";
+    if(sous) sous.textContent="Sur iPhone : touche le bouton Partager en bas de Safari, puis « Sur l'écran d'accueil ».";
+    return;
+  }
+  zone.style.display='none';
+}
+function pwaInstaller(){
+  if(PWA_PROMPT){
+    PWA_PROMPT.prompt();
+    PWA_PROMPT.userChoice.then(function(c){
+      if(c&&c.outcome==='accepted') toast('✅ BAKOU installé — retrouve-le sur ton écran d\'accueil');
+      PWA_PROMPT=null; pwaMaj();
+    }).catch(function(){ PWA_PROMPT=null; pwaMaj(); });
+    return;
+  }
+  if(pwaIOS()){ toast("📱 Bouton Partager en bas de Safari → « Sur l'écran d'accueil »"); return; }
+  toast("Ton navigateur ne propose pas l'installation ici — essaie depuis Chrome sur Android");
+}
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); PWA_PROMPT=e; pwaMaj(); });
+window.addEventListener('appinstalled',function(){ PWA_PROMPT=null; pwaMaj(); toast('✅ BAKOU est installé'); });
+
+// Enregistrement du service worker. S'il echoue, l'app marche comme avant :
+// c'est un bonus, jamais une dependance.
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(e){ console.warn('service worker', e); });
+  });
+}
+
 // ══════════ CALCULATEUR DE POSITION ══════════
 // lot = risque en $ / (stop en pips x valeur du pip pour 1 lot)
 // La valeur du pip est exacte pour les paires cotees en dollar (10 $ pour
@@ -6945,6 +7021,7 @@ document.addEventListener('click',function(e){ if(e.target.id==='welcomeModal')w
 function openAcctModal(){
   const em=(CURRENT_SESSION&&CURRENT_SESSION.user&&CURRENT_SESSION.user.email)||'—';
   const el=document.getElementById('acct-email'); if(el)el.textContent=em;
+  pwaMaj();
   const m=document.getElementById('acctModal'); if(m)m.classList.add('show');
 }
 function closeAcctModal(){ const m=document.getElementById('acctModal'); if(m)m.classList.remove('show'); }
