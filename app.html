@@ -688,6 +688,13 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
 .nb-editor{padding:20px 22px;overflow-y:auto;}
 .nb-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--td);font-size:14px;text-align:center;}
 .nb-title{width:100%;box-sizing:border-box;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--tp);background:transparent;margin-bottom:6px;}
+.nb-sync-row{display:flex;align-items:center;gap:6px;margin:8px 0 4px;}
+.nb-sync{flex:1;font-size:10px;font-weight:600;color:var(--td);padding:4px 7px;border-radius:6px;background:rgba(30,35,51,0.04);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nb-sync.ok{color:#0a8a5f;background:rgba(10,138,95,0.10);}
+.nb-sync.warn{color:#8a6500;background:rgba(245,158,11,0.14);}
+.nb-sync.err{color:#b3342f;background:rgba(227,73,72,0.12);}
+.nb-sync-btn{border:1px solid var(--bo);background:#fff;color:var(--td);border-radius:6px;width:24px;height:24px;flex:none;cursor:pointer;font-size:12px;line-height:1;}
+.nb-sync-btn:hover{color:var(--tp);border-color:#9aa3b5;}
 .nb-meta{font-size:10px;color:var(--td);margin-bottom:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
 .nb-meta select{font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid var(--bo);background:#fff;color:var(--tp);}
 .nb-templates{font-size:11px;color:var(--td);margin-bottom:12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
@@ -1563,6 +1570,7 @@ input,select,textarea{background:#fff !important;border:1px solid var(--bo) !imp
   <div class="nb-wrap">
     <div class="nb-side">
       <button class="nb-addfolder" onclick="nbNewFolder()">📁 Nouveau dossier</button>
+      <div class="nb-sync-row"><span id="nb-sync" class="nb-sync">…</span><button class="nb-sync-btn" onclick="nbSyncNow()" title="Forcer l'enregistrement en base">⟳</button></div>
       <div class="nb-cap">Dossiers</div>
       <div id="nb-folders"></div>
       <div class="nb-cap">Tags</div>
@@ -4237,10 +4245,149 @@ function nbEscA(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 function nbLsF(){return lsKey('bakou_nb_folders');}
 function nbLsN(){return lsKey('bakou_nb_notes');}
 function nbDefaultFolders(){return [{id:'f_notes',name:'Notes de trade',color:'#3b82f6'},{id:'f_journal',name:'Journal quotidien',color:'#10b981'},{id:'f_plan',name:'Plan de trading',color:'#f59e0b'},{id:'f_recap',name:'Sessions Recap',color:'#ef4444'}];}
-function nbSave(){ try{ localStorage.setItem(nbLsF(),JSON.stringify(NB_FOLDERS)); localStorage.setItem(nbLsN(),JSON.stringify(NB_NOTES)); }catch(e){} }
-function nbLoad(){ try{ NB_FOLDERS=JSON.parse(localStorage.getItem(nbLsF())||'null')||nbDefaultFolders(); }catch(e){NB_FOLDERS=nbDefaultFolders();} try{ NB_NOTES=JSON.parse(localStorage.getItem(nbLsN())||'[]')||[]; }catch(e){NB_NOTES=[];} }
+function nbSaveLocal(){ try{ localStorage.setItem(nbLsF(),JSON.stringify(NB_FOLDERS)); localStorage.setItem(nbLsN(),JSON.stringify(NB_NOTES)); }catch(e){} }
+function nbLoadLocal(){ try{ NB_FOLDERS=JSON.parse(localStorage.getItem(nbLsF())||'null')||nbDefaultFolders(); }catch(e){NB_FOLDERS=nbDefaultFolders();} try{ NB_NOTES=JSON.parse(localStorage.getItem(nbLsN())||'[]')||[]; }catch(e){NB_NOTES=[];} }
+// nbSave garde le nom historique : cache local immediat + envoi en base differe.
+function nbSave(){ nbSaveLocal(); nbMarkDirty(NB_CUR); }
+function nbLoad(){ nbLoadLocal(); }
+
+// ══════════ NOTEBOOK — PERSISTANCE EN BASE ══════════
+// Les notes vivaient uniquement dans le localStorage : vider le cache du
+// navigateur les effacait, et rien ne se synchronisait entre le telephone et
+// le PC. Desormais le localStorage sert de cache hors ligne et la base
+// Supabase (tables nb_folders / nb_notes, RLS par owner_uuid) fait foi.
+var NB_SYNC_T=null, NB_DIRTY={}, NB_DIRTY_F=false, NB_SYNCING=false, NB_DB_OK=false;
+
+function nbDbPret(){ return !!(typeof sb!=='undefined' && sb && OWNER_UUID); }
+function nbSyncBadge(txt,cls){ var e=document.getElementById('nb-sync'); if(!e)return; e.textContent=txt; e.className='nb-sync '+(cls||''); }
+
+function nbRowNote(n){
+  return {id:n.id, owner_uuid:OWNER_UUID, folder_id:n.folderId||null,
+          title:n.title||'', html:n.html||'', tags:JSON.stringify(n.tags||[]),
+          created_at:new Date(n.created||Date.now()).toISOString(),
+          updated_at:new Date(n.updated||Date.now()).toISOString()};
+}
+function nbRowFolder(f){
+  return {id:f.id, owner_uuid:OWNER_UUID, name:f.name, color:f.color||'#3b82f6',
+          updated_at:new Date().toISOString()};
+}
+function nbNoteFromRow(r){
+  var tags=[]; try{ var v=JSON.parse(r.tags||'[]'); if(Array.isArray(v))tags=v; }catch(e){}
+  return {id:r.id, title:r.title||'', folderId:r.folder_id||null, tags:tags, html:r.html||'',
+          created:r.created_at?new Date(r.created_at).getTime():Date.now(),
+          updated:r.updated_at?new Date(r.updated_at).getTime():Date.now()};
+}
+
+function nbMarkDirty(id){ if(id)NB_DIRTY[id]=true; nbPlanSync(); }
+function nbMarkFoldersDirty(){ NB_DIRTY_F=true; nbPlanSync(); }
+function nbPlanSync(){
+  if(!nbDbPret()){ nbSyncBadge('sauvegarde locale',''); return; }
+  nbSyncBadge('• non enregistre','warn');
+  if(NB_SYNC_T)clearTimeout(NB_SYNC_T);
+  NB_SYNC_T=setTimeout(nbSyncNow,900);
+}
+
+async function nbSyncNow(){
+  if(!nbDbPret()||NB_SYNCING)return;
+  if(NB_SYNC_T){ clearTimeout(NB_SYNC_T); NB_SYNC_T=null; }
+  var ids=Object.keys(NB_DIRTY), fol=NB_DIRTY_F;
+  if(!ids.length && !fol) return;
+  NB_SYNCING=true; NB_DIRTY={}; NB_DIRTY_F=false;
+  nbSyncBadge('⏳ enregistrement…','');
+  var ko=false;
+  try{
+    if(fol && NB_FOLDERS.length){
+      var rf=await sb.from('nb_folders').upsert(NB_FOLDERS.map(nbRowFolder));
+      if(rf.error){ ko=true; console.warn('nb_folders',rf.error); }
+    }
+    var rows=[];
+    for(var i=0;i<ids.length;i++){ var n=NB_NOTES.find(function(x){return x.id===ids[i];}); if(n)rows.push(nbRowNote(n)); }
+    if(rows.length){
+      var rn=await sb.from('nb_notes').upsert(rows);
+      if(rn.error){ ko=true; console.warn('nb_notes',rn.error); }
+    }
+  }catch(e){ ko=true; console.warn('nb sync',e); }
+  NB_SYNCING=false;
+  if(ko){
+    for(var j=0;j<ids.length;j++) NB_DIRTY[ids[j]]=true;
+    if(fol) NB_DIRTY_F=true;
+    nbSyncBadge('⚠ hors ligne — garde en local','err');
+    NB_SYNC_T=setTimeout(nbSyncNow,8000);   // on retente tout seul
+    return;
+  }
+  if(Object.keys(NB_DIRTY).length||NB_DIRTY_F) nbPlanSync();
+  else nbSyncBadge('✓ enregistre','ok');
+}
+
+async function nbDbDelNote(id){
+  if(!nbDbPret())return;
+  try{ var r=await sb.from('nb_notes').delete().eq('id',id); if(r.error)console.warn('nb del note',r.error); }catch(e){ console.warn('nb del note',e); }
+}
+async function nbDbDelFolder(id){
+  if(!nbDbPret())return;
+  try{ var r=await sb.from('nb_folders').delete().eq('id',id); if(r.error)console.warn('nb del folder',r.error); }catch(e){ console.warn('nb del folder',e); }
+}
+
+// Fusion base <-> local : l'id fait foi, la version modifiee le plus
+// recemment gagne. Au premier passage la base est vide : tout le local
+// part en base (c'est la migration, aucune note n'est perdue).
+async function nbLoadDb(){
+  if(!nbDbPret()) return false;
+  try{
+    var rf=await sb.from('nb_folders').select('*').eq('owner_uuid',OWNER_UUID);
+    var rn=await sb.from('nb_notes').select('*').eq('owner_uuid',OWNER_UUID);
+    if(rf.error||rn.error){ console.warn('nb load',rf.error||rn.error); return false; }
+    NB_DB_OK=true;
+    var dbF=(rf.data||[]).map(function(r){ return {id:r.id,name:r.name,color:r.color||'#3b82f6'}; });
+    var dbN=(rn.data||[]).map(nbNoteFromRow);
+
+    var parId={}, idsDb={}, aPousser={};
+    NB_NOTES.forEach(function(n){ parId[n.id]=n; });
+    dbN.forEach(function(d){
+      idsDb[d.id]=true;
+      var loc=parId[d.id];
+      if(loc && (loc.updated||0)>(d.updated||0)) aPousser[loc.id]=true;  // le local est plus frais
+      else parId[d.id]=d;
+    });
+    NB_NOTES.forEach(function(n){ if(!idsDb[n.id]) aPousser[n.id]=true; });
+    NB_NOTES=Object.keys(parId).map(function(k){ return parId[k]; });
+
+    var fParId={}, idsDbF={}, pousserF=false;
+    NB_FOLDERS.forEach(function(f){ fParId[f.id]=f; });
+    dbF.forEach(function(d){ idsDbF[d.id]=true; fParId[d.id]=d; });
+    NB_FOLDERS.forEach(function(f){ if(!idsDbF[f.id]) pousserF=true; });
+    NB_FOLDERS=Object.keys(fParId).map(function(k){ return fParId[k]; });
+    if(!NB_FOLDERS.length){ NB_FOLDERS=nbDefaultFolders(); pousserF=true; }
+
+    nbSaveLocal();
+    Object.keys(aPousser).forEach(function(id){ NB_DIRTY[id]=true; });
+    if(pousserF) NB_DIRTY_F=true;
+    if(Object.keys(NB_DIRTY).length||NB_DIRTY_F) nbSyncNow();
+    else nbSyncBadge('✓ synchronise','ok');
+    return true;
+  }catch(e){ console.warn('nb load',e); return false; }
+}
+
+// Dernier filet : on pousse ce qui traine avant que l'onglet se ferme.
+try{
+  window.addEventListener('pagehide',function(){ nbSyncNow(); });
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') nbSyncNow(); });
+}catch(e){}
 function nbUID(){return 'n'+Date.now().toString(36)+Math.floor(Math.random()*1000);}
-function initNotebook(){ nbLoad(); nbRenderFolders(); nbRenderList(); if(NB_CUR&&NB_NOTES.some(n=>n.id===NB_CUR)) nbOpen(NB_CUR); else { const f=nbFiltered()[0]; if(f)nbOpen(f.id); else nbShowEmpty(); } }
+function nbRouvre(){
+  if(NB_CUR&&NB_NOTES.some(function(n){return n.id===NB_CUR;})) nbOpen(NB_CUR);
+  else { var f=nbFiltered()[0]; if(f)nbOpen(f.id); else nbShowEmpty(); }
+}
+function initNotebook(){
+  nbLoadLocal(); nbRenderFolders(); nbRenderList(); nbRouvre();   // affichage immediat depuis le cache
+  if(!nbDbPret()){ nbSyncBadge('sauvegarde locale',''); return; }
+  if(NB_DB_OK){ nbSyncBadge(Object.keys(NB_DIRTY).length||NB_DIRTY_F?'• non enregistre':'✓ synchronise',Object.keys(NB_DIRTY).length||NB_DIRTY_F?'warn':'ok'); return; }
+  nbSyncBadge('⏳ chargement…','');
+  nbLoadDb().then(function(ok){
+    if(!ok){ nbSyncBadge('⚠ hors ligne — garde en local','err'); return; }
+    nbRenderFolders(); nbRenderList(); nbRouvre();
+  });
+}
 function nbFiltered(){
   let arr=NB_NOTES.slice();
   if(NB_FILTER.folderId)arr=arr.filter(n=>n.folderId===NB_FILTER.folderId);
@@ -4266,9 +4413,9 @@ function nbRenderList(){
 function nbSelFolder(id){ NB_FILTER.folderId=id; NB_FILTER.tag=null; nbRenderFolders(); nbRenderList(); }
 function nbSelTag(t){ NB_FILTER.tag=(NB_FILTER.tag===t?null:t); NB_FILTER.folderId=null; nbRenderFolders(); nbRenderList(); }
 function nbSearch(v){ NB_FILTER.q=v; nbRenderList(); }
-function nbNewFolder(){ const name=prompt('Nom du dossier :'); if(!name)return; const colors=['#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#6366f1']; NB_FOLDERS.push({id:'f'+nbUID(),name:name.trim(),color:colors[NB_FOLDERS.length%colors.length]}); nbSave(); nbRenderFolders(); }
-function nbDelFolder(id){ if(!confirm('Supprimer ce dossier ? Les notes seront déplacées vers « Toutes les notes ».'))return; NB_FOLDERS=NB_FOLDERS.filter(f=>f.id!==id); NB_NOTES.forEach(n=>{ if(n.folderId===id)n.folderId=null; }); if(NB_FILTER.folderId===id)NB_FILTER.folderId=null; nbSave(); nbRenderFolders(); nbRenderList(); if(NB_CUR)nbRenderFolderSel(); }
-function nbNewNote(){ const n={id:nbUID(),title:'',folderId:NB_FILTER.folderId||null,tags:[],html:'',created:Date.now(),updated:Date.now()}; NB_NOTES.unshift(n); nbSave(); nbRenderFolders(); nbOpen(n.id); nbRenderList(); setTimeout(()=>{const t=document.getElementById('nb-title'); if(t)t.focus();},60); }
+function nbNewFolder(){ const name=prompt('Nom du dossier :'); if(!name)return; const colors=['#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4','#ec4899','#6366f1']; NB_FOLDERS.push({id:'f'+nbUID(),name:name.trim(),color:colors[NB_FOLDERS.length%colors.length]}); nbSaveLocal(); nbMarkFoldersDirty(); nbRenderFolders(); }
+function nbDelFolder(id){ if(!confirm('Supprimer ce dossier ? Les notes seront déplacées vers « Toutes les notes ».'))return; NB_FOLDERS=NB_FOLDERS.filter(f=>f.id!==id); NB_NOTES.forEach(n=>{ if(n.folderId===id){ n.folderId=null; n.updated=Date.now(); NB_DIRTY[n.id]=true; } }); if(NB_FILTER.folderId===id)NB_FILTER.folderId=null; nbSaveLocal(); nbDbDelFolder(id); nbPlanSync(); nbRenderFolders(); nbRenderList(); if(NB_CUR)nbRenderFolderSel(); }
+function nbNewNote(){ const n={id:nbUID(),title:'',folderId:NB_FILTER.folderId||null,tags:[],html:'',created:Date.now(),updated:Date.now()}; NB_NOTES.unshift(n); NB_CUR=n.id; nbSave(); nbRenderFolders(); nbOpen(n.id); nbRenderList(); setTimeout(()=>{const t=document.getElementById('nb-title'); if(t)t.focus();},60); }
 function nbShowEmpty(){ NB_CUR=null; const e=document.getElementById('nb-empty'),w=document.getElementById('nb-edit-wrap'); if(e)e.style.display='flex'; if(w)w.style.display='none'; }
 function nbCur(){ return NB_NOTES.find(x=>x.id===NB_CUR); }
 function nbOpen(id){ const n=NB_NOTES.find(x=>x.id===id); if(!n)return; NB_CUR=id; const e=document.getElementById('nb-empty'),w=document.getElementById('nb-edit-wrap'); if(e)e.style.display='none'; if(w)w.style.display='flex';
@@ -4285,7 +4432,7 @@ function nbCmd(c){ document.execCommand(c,false,null); const b=document.getEleme
 function nbFormat(tag){ document.execCommand('formatBlock',false,tag); nbBodyChange(); }
 function nbLink(){ const url=prompt('URL du lien :'); if(url){ document.execCommand('createLink',false,url); nbBodyChange(); } }
 function nbApplyTemplate(name){ const t=NB_TEMPLATES[name]; if(!t)return; const b=document.getElementById('nb-body'); if(!b)return; b.innerHTML=(b.innerHTML&&b.textContent.trim())?(b.innerHTML+t):t; nbBodyChange(); }
-function nbDelNote(){ if(!NB_CUR)return; if(!confirm('Supprimer définitivement cette note ?'))return; NB_NOTES=NB_NOTES.filter(n=>n.id!==NB_CUR); NB_CUR=null; nbSave(); nbRenderFolders(); nbRenderList(); nbShowEmpty(); }
+function nbDelNote(){ if(!NB_CUR)return; if(!confirm('Supprimer définitivement cette note ?'))return; const mort=NB_CUR; NB_NOTES=NB_NOTES.filter(n=>n.id!==mort); NB_CUR=null; delete NB_DIRTY[mort]; nbSaveLocal(); nbDbDelNote(mort); nbRenderFolders(); nbRenderList(); nbShowEmpty(); }
 function nbMoveFolder(fid){ const n=nbCur(); if(!n)return; n.folderId=fid||null; nbTouch(); nbSave(); nbRenderFolders(); nbRenderList(); }
 function nbRenderNoteTags(){ const n=nbCur(); const c=document.getElementById('nb-note-tags'); if(!c||!n)return; c.innerHTML=(n.tags||[]).map(t=>`<span class="nb-tagchip">${nbEsc(t)}<button onclick="nbRemoveTag('${nbEscA(t)}')" title="Retirer">✕</button></span>`).join('')+`<input class="nb-tag-input" placeholder="+ tag" onkeydown="if(event.key==='Enter'){event.preventDefault();nbAddTag(this.value);this.value='';}">`; }
 function nbAddTag(v){ v=(v||'').trim(); if(!v)return; const n=nbCur(); if(!n)return; if(!n.tags)n.tags=[]; if(n.tags.indexOf(v)<0)n.tags.push(v); nbTouch(); nbSave(); nbRenderNoteTags(); nbRenderFolders(); }
