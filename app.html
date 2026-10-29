@@ -955,6 +955,22 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 .qa-tags .e.sel{border-color:#f87171;background:rgba(248,113,113,.16);color:#fecaca;}
 .qa-photo{display:block;margin-top:10px;padding:12px;text-align:center;border:1px dashed rgba(255,255,255,.2);border-radius:14px;font-size:13px;color:var(--ts);cursor:pointer;}
 .qa-photo.on{border-color:#34d399;color:#a7f3d0;}
+/* ════ Erreurs coûteuses + Stratégie ════ */
+.err-top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:12px;}
+.err-big{font-size:44px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;}
+.err-sub{font-size:12px;color:var(--ts);margin-top:3px;}
+.err-cmp{display:flex;gap:18px;}.err-cmp div{display:flex;flex-direction:column;text-align:right;}
+.err-cmp span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--td);}.err-cmp b{font-size:20px;font-variant-numeric:tabular-nums;}
+.err-list{margin-top:10px;}.err-note{font-size:10px;color:var(--td);margin-top:10px;line-height:1.5;}
+.st-hero{display:flex !important;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.st-nom{display:block;width:min(520px,100%);margin-top:6px;background:transparent !important;border:none !important;border-bottom:1px solid var(--bo) !important;border-radius:0 !important;font-size:26px;font-weight:800;padding:4px 0 !important;color:var(--tp) !important;box-shadow:none !important;}
+.st-card{margin-bottom:12px !important;}
+.st-card textarea{width:100%;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.6;font-family:inherit;resize:none;overflow:hidden;min-height:78px;}
+.st-ck{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.st-ck input[type=checkbox]{width:22px;height:22px;flex-shrink:0;accent-color:#3b82f6;}
+.st-ck-t{flex:1;border-radius:10px;padding:10px 12px;font-size:14px;}
+.st-ck button{width:34px;height:34px;border-radius:10px;border:1px solid var(--bo);background:rgba(255,255,255,.05);color:var(--td);cursor:pointer;}
+@media(max-width:700px){.err-big{font-size:36px;}.err-cmp{width:100%;justify-content:space-between;}.err-cmp div{text-align:left;}}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ CONNEXION — fond animé, carte vitrée ════ */
@@ -1050,6 +1066,7 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
       <button class="tab" role="tab" aria-selected="false" data-groupe="journal" data-title="Journal" data-sub="Saisir et retrouver tes trades" onclick="showGroupe('journal');rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="analyse" data-title="Analyse" data-sub="Où est ton edge" onclick="showGroupe('analyse');rdToggleSidebar(false)"><span class="ti">◈</span> Analyse</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="report" data-title="Rapports" data-sub="Bilans exportables" onclick="showGroupe('report');rdToggleSidebar(false)"><span class="ti">📑</span> Rapports</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="strategie" data-title="Stratégie" data-sub="Ta stratégie, écrite noir sur blanc" onclick="showGroupe('strategie');rdToggleSidebar(false)"><span class="ti">🧭</span> Stratégie</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="notebook" data-title="Notebook" data-sub="Notes, plans et recaps" onclick="showGroupe('notebook');rdToggleSidebar(false)"><span class="ti">📓</span> Notebook</button>
     </div>
     <div class="side-cap">Intelligence ✨</div>
@@ -1295,6 +1312,20 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
     <div style="font-size:10px;color:var(--td);margin-top:8px">Enregistré automatiquement dans ce navigateur, semaine par semaine.</div></div>
 </div>
 
+<div id="strategie" class="sec" role="tabpanel" aria-label="Stratégie">
+  <div class="card st-hero">
+    <div><div style="font-size:10px;letter-spacing:2px;color:var(--td);text-transform:uppercase">Ma stratégie</div>
+      <input id="st-nom" class="st-nom" placeholder="Donne-lui un nom" oninput="stSave('nom',this)"></div>
+    <div id="st-maj" style="font-size:11px;color:var(--td)"></div>
+  </div>
+  <div id="st-sections"></div>
+  <div class="card st-card"><div class="ct" style="justify-content:space-between"><span>✅ Checklist avant d'entrer</span><span id="st-score" style="font-size:14px;font-weight:800"></span></div>
+    <div style="font-size:11px;color:var(--td);margin:-4px 0 8px">Les cases servent à vérifier un trade avant de le prendre ; elles se décochent au rechargement.</div>
+    <div id="st-checks"></div>
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-g" onclick="stCheckAdd()">＋ Ajouter une condition</button><button class="btn btn-g" onclick="stCheckReset()">Tout décocher</button></div>
+  </div>
+</div>
+
 <div id="resume" class="sec" role="tabpanel" aria-label="Résumé">
 
   <div class="bk-slot"></div>
@@ -1309,6 +1340,8 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 
   <!-- ── LES 4 CHIFFRES QUI COMPTENT ── -->
   <div id="rs-kpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:12px"></div>
+
+  <div id="rs-err"></div>
 
   <!-- ── COURBE DE CAPITAL ── -->
   <div class="card" style="margin-bottom:12px">
@@ -2955,6 +2988,8 @@ const GROUPES=[
    vues:[{id:'analyse',nom:'Statistiques'},{id:'bilan',nom:'Vue annuelle'},{id:'setups',nom:'Mois par mois'}]},
   {cle:'report',   titre:"Rapports",      sous:"Bilans exportables",
    vues:[{id:'report',nom:'Rapports'}]},
+  {cle:'strategie',titre:"Stratégie",      sous:"Ta stratégie, écrite noir sur blanc",
+   vues:[{id:'strategie',nom:'Stratégie'}]},
   {cle:'notebook', titre:"Notebook",      sous:"Notes, plans et recaps",
    vues:[{id:'notebook',nom:'Notes'}]}
 ];
@@ -2971,6 +3006,7 @@ function initSection(id){
   else if(id==='tradelog')setTimeout(buildTradeLog,100);
   else if(id==='report')setTimeout(buildReport,100);
   else if(id==='notebook')setTimeout(initNotebook,80);
+  else if(id==='strategie')setTimeout(initStrategie,60);
 }
 function renderSousOnglets(g,idActif){
   const bar=document.getElementById('subnav'); if(!bar)return;
@@ -7042,7 +7078,7 @@ document.addEventListener('DOMContentLoaded',function(){
   var _g=saveGoals;
   saveGoals=function(){ var r=_g.apply(this,arguments); try{ rsObjectif(); }catch(e){} return r; };
   var _i=initResume;
-  initResume=function(){ var r=_i.apply(this,arguments); try{ rsPlanAlert(); rsObjectif(); bkBanner(); }catch(e){ console.warn('resume+',e); } return r; };
+  initResume=function(){ var r=_i.apply(this,arguments); try{ rsPlanAlert(); rsObjectif(); rsErreurs(); bkBanner(); }catch(e){ console.warn('resume+',e); } return r; };
   var _s=initSemaine;
   initSemaine=function(){ var r=_s.apply(this,arguments); try{ wkPlanInit(); wkPlan(); bkBanner(); }catch(e){ console.warn('semaine+',e); } return r; };
 });
@@ -7055,6 +7091,88 @@ function qaPhoto(inp){ var f=inp.files&&inp.files[0]; if(!f)return;
   var r=new FileReader(); r.onload=function(ev){ shrinkDataUrl(ev.target.result,1200,0.72).then(function(u){
     QA_PHOTO=u; var l=document.getElementById('qa-photo'); l.classList.add('on'); l.firstChild.textContent='✅ Capture ajoutée (touche pour changer)'; }); };
   r.readAsDataURL(f); }
+
+// ═════════════════════════════════════════════════════════════════
+//  CE QUE TES ERREURS T'ONT COÛTÉ — ta courbe réelle vs ta courbe « disciplinée »
+//  Un trade compte comme « erreur » dès qu'il porte au moins une étiquette
+//  d'erreur psychologique. Le calcul retire ces trades : il ne dit pas ce
+//  que tu aurais fait à la place, seulement ce qu'ils ont pesé.
+// ═════════════════════════════════════════════════════════════════
+function rsErreurs(){
+  var box=document.getElementById('rs-err'); if(!box)return;
+  DC('rsErr');
+  var TY=sortedByDate(T.filter(function(t){return parseInt(t.trade_year)===GLOBAL_YEAR;}));
+  if(TY.length<5){ box.innerHTML=''; return; }
+  var avec=TY.filter(function(t){return tagsOf(t,'psych_errors').length>0;});
+  var head='<div class="ct">🧠 Ce que tes erreurs t\'ont coûté</div>';
+  if(!avec.length){
+    box.innerHTML='<div class="card" style="margin-bottom:12px">'+head
+      +'<div style="font-size:13px;color:var(--ts);line-height:1.6">Aucun trade n\'est taggé « erreur » en '+GLOBAL_YEAR+'. Quand tu notes un trade, coche tes erreurs (impatience, pas de setup, lot augmenté…) : ici, tu verras exactement combien elles t\'ont coûté.</div></div>';
+    return; }
+  var net=function(a){return a.reduce(function(s,t){return s+(parseFloat(t.pnl_amt)||0);},0);};
+  var netErr=net(avec), cout=-netErr, propres=TY.filter(function(t){return tagsOf(t,'psych_errors').length===0;});
+  var coul=cout>0?RS_ROUGE:RS_VERT;
+  // par erreur
+  var par={}; avec.forEach(function(t){ var v=parseFloat(t.pnl_amt)||0;
+    tagsOf(t,'psych_errors').forEach(function(k){ (par[k]=par[k]||{n:0,c:0}); par[k].n++; par[k].c+=v; }); });
+  var lst=Object.keys(par).map(function(k){return {k:k,n:par[k].n,c:par[k].c};}).sort(function(a,b){return a.c-b.c;});
+  box.innerHTML='<div class="card" style="margin-bottom:12px">'+head
+   +'<div class="err-top"><div><div class="cu err-big" style="color:'+coul+'">'+(cout>0?'−':'+')+'$'+Math.abs(Math.round(cout)).toLocaleString('fr-FR')+'</div>'
+   +'<div class="err-sub">'+(cout>0?'perdus à cause de '+avec.length+' trade'+(avec.length>1?'s':'')+' avec erreur':'gagnés malgré '+avec.length+' trade'+(avec.length>1?'s':'')+' avec erreur')+' · sur '+TY.length+' trades</div></div>'
+   +'<div class="err-cmp"><div><span>Ton résultat réel</span><b>'+rsArgent(net(TY))+'</b></div><div><span>Version disciplinée</span><b style="color:'+(net(propres)>net(TY)?RS_VERT:'var(--tp)')+'">'+rsArgent(net(propres))+'</b></div></div></div>'
+   +'<div style="position:relative;height:220px"><canvas id="rsErrChart"></canvas></div>'
+   +'<div class="err-list">'+lst.map(function(e){ return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">× '+e.n+'</span>',rsArgent(e.c),e.c<0?RS_ROUGE:RS_VERT); }).join('')+'</div>'
+   +'<div class="err-note">Calcul simple : on retire les trades tagués « erreur » sans imaginer ce que tu aurais fait à la place. Plus tu tagues, plus il est juste.</div></div>';
+  var l=[], a=[], b=[], ra=CAP||0, rb=CAP||0;
+  TY.forEach(function(t){ var v=parseFloat(t.pnl_amt)||0, e=tagsOf(t,'psych_errors').length>0;
+    ra+=v; if(!e)rb+=v; l.push(tDate(t).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})); a.push(Math.round(ra)); b.push(Math.round(rb)); });
+  var cv=document.getElementById('rsErrChart');
+  if(cv) CI['rsErr']=new Chart(cv,{type:'line',data:{labels:l,datasets:[
+      {label:'Réel',data:a,borderColor:RS_BLEU,borderWidth:2,pointRadius:0,tension:.2,fill:false},
+      {label:'Sans les erreurs',data:b,borderColor:RS_VERT,borderWidth:2,borderDash:[6,4],pointRadius:0,tension:.2,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      scales:{x:{ticks:{maxTicksLimit:7}},y:{ticks:{callback:function(v){return '$'+v.toLocaleString('fr-FR');}}}}}});
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  STRATÉGIE — ta stratégie écrite, noir sur blanc
+// ═════════════════════════════════════════════════════════════════
+var ST_SECTIONS=[
+  ['principe','💡 Le principe','L\'idée de base : pourquoi cette stratégie a un avantage ?'],
+  ['marches','💱 Marchés et paires','Quelles paires, quels instruments ?'],
+  ['sessions','🕐 Sessions et horaires','Quand trader, et quand ne pas trader.'],
+  ['entree','🎯 Conditions d\'entrée','Ce qui doit être réuni pour entrer.'],
+  ['invalid','⛔ Quand NE PAS trader','Les situations où tu restes dehors.'],
+  ['stop','🛑 Stop loss','Où il se place, comment il se déplace (ou pas).'],
+  ['tp','💰 Prises de profit','Objectifs, sorties partielles, break even.'],
+  ['risque','⚖️ Gestion du risque','Risque par trade, par jour, taille de position.']
+];
+function stGet(){ try{ return JSON.parse(localStorage.getItem(lsKey('bk_strat'))||'null')||{}; }catch(e){ return {}; } }
+function stSet(o){ o.maj=Date.now(); try{ localStorage.setItem(lsKey('bk_strat'),JSON.stringify(o)); }catch(e){} stMaj(o); }
+function stSave(cle,el){ var o=stGet(); o[cle]=el.value; stSet(o); }
+function stMaj(o){ var e=document.getElementById('st-maj'); if(e)e.textContent=o.maj?('Modifiée le '+new Date(o.maj).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+' à '+new Date(o.maj).toTimeString().slice(0,5)):'Pas encore écrite'; }
+function stCheck(){ var o=stGet().check||[]; var all=document.querySelectorAll('#st-checks .st-ck input[type=checkbox]');
+  var ok=Array.prototype.filter.call(all,function(c){return c.checked;}).length;
+  var r=document.getElementById('st-score'); if(r){ r.textContent=all.length?(ok+' / '+all.length):''; r.style.color=(all.length&&ok===all.length)?RS_VERT:'var(--ts)'; } }
+function stRenderChecks(){
+  var o=stGet(), l=o.check||[], h='';
+  l.forEach(function(t,i){ h+='<div class="st-ck"><input type="checkbox" onchange="stCheck()" aria-label="Validé"><input class="st-ck-t" value="'+wkEsc(t).replace(/"/g,'&quot;')+'" oninput="stCheckEdit('+i+',this.value)" placeholder="Condition à valider"><button onclick="stCheckDel('+i+')" aria-label="Supprimer">✕</button></div>'; });
+  document.getElementById('st-checks').innerHTML=h||'<div style="font-size:12px;color:var(--td);padding:4px 0">Aucune condition pour l\'instant.</div>';
+  stCheck();
+}
+function stCheckEdit(i,v){ var o=stGet(); o.check=o.check||[]; o.check[i]=v; stSet(o); }
+function stCheckAdd(){ var o=stGet(); o.check=o.check||[]; o.check.push(''); stSet(o); stRenderChecks();
+  var f=document.querySelectorAll('#st-checks .st-ck-t'); if(f.length)f[f.length-1].focus(); }
+function stCheckDel(i){ var o=stGet(); o.check=(o.check||[]).filter(function(_,k){return k!==i;}); stSet(o); stRenderChecks(); }
+function stCheckReset(){ document.querySelectorAll('#st-checks input[type=checkbox]').forEach(function(c){c.checked=false;}); stCheck(); }
+function initStrategie(){
+  var o=stGet(), n=document.getElementById('st-nom'); if(n)n.value=o.nom||'';
+  var box=document.getElementById('st-sections');
+  box.innerHTML=ST_SECTIONS.map(function(s){
+    return '<div class="card st-card"><div class="ct">'+s[1]+'</div><textarea rows="3" placeholder="'+wkEsc(s[2])+'" oninput="stSave(\''+s[0]+'\',this);this.style.height=\'auto\';this.style.height=this.scrollHeight+\'px\'">'+wkEsc(o[s[0]]||'')+'</textarea></div>'; }).join('');
+  box.querySelectorAll('textarea').forEach(function(t){ t.style.height='auto'; t.style.height=Math.max(78,t.scrollHeight)+'px'; });
+  stRenderChecks(); stMaj(o);
+}
 document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
