@@ -869,6 +869,61 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
   .tz-card{min-height:104px;}
   .tz-big{font-size:25px;}
 }
+/* ════ Ma semaine, point du jour, ajout rapide ════ */
+.wk-navbar{display:flex !important;align-items:center;gap:12px;margin-bottom:12px;padding:12px 14px !important;}
+.wk-title{flex:1;text-align:center;}
+.wk-t1{font-size:18px;font-weight:800;color:var(--tp);letter-spacing:-.2px;}
+.wk-t2{font-size:12px;color:var(--ts);margin-top:2px;}
+.wk-now{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#93c5fd;background:rgba(59,130,246,.16);border:1px solid rgba(96,165,250,.35);border-radius:20px;padding:2px 8px;margin-left:6px;vertical-align:middle;}
+.wk-arr{width:40px;height:40px;border-radius:12px;border:1px solid var(--bo);background:rgba(255,255,255,.05);color:var(--tp);font-size:22px;cursor:pointer;line-height:1;}
+.wk-arr:disabled{opacity:.3;cursor:default;}
+.wk-today{padding:8px 12px !important;font-size:11px !important;}
+.wk-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;}
+.wk-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.wk-daygrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;}
+.wk-day{background:var(--card2);border:1px solid var(--bo);border-radius:12px;padding:10px 12px;}
+.wk-day.vide{opacity:.5;}
+.wk-dn{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--td);}
+.wk-dv{font-size:18px;font-weight:800;margin:3px 0;font-variant-numeric:tabular-nums;}
+.wk-ds{font-size:10px;color:var(--ts);}
+.wk-ul{margin:0;padding-left:18px;font-size:13px;line-height:1.8;color:var(--ts);}
+.wk-ul b{color:var(--tp);}
+.wk-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.wk-notes label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:600;color:var(--ts);}
+.wk-notes textarea{min-height:110px;border-radius:12px;padding:10px 12px;font-size:13px;font-family:inherit;resize:vertical;}
+@media(max-width:900px){.wk-kpis{grid-template-columns:repeat(2,1fr);}.wk-two,.wk-notes{grid-template-columns:1fr;}.wk-navbar .wk-today{display:none;}}
+.rs-ins-h{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--td);margin:0 0 8px 2px;}
+.rs-ins{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:14px;}
+.rs-in{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:14px;background:var(--card);border:1px solid var(--bo);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+.rs-in-i{font-size:22px;line-height:1;}
+.rs-in-l{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--td);}
+.rs-in-v{font-size:17px;font-weight:800;margin:2px 0;}
+.rs-in-t{font-size:11px;color:var(--ts);line-height:1.45;}
+@media(max-width:700px){.rs-ins{display:flex;overflow-x:auto;gap:10px;margin-right:-14px;padding-right:14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}.rs-ins::-webkit-scrollbar{display:none;}.rs-in{min-width:240px;scroll-snap-align:start;}}
+.qa-box{width:420px !important;max-width:94vw;padding:20px 20px 18px !important;}
+.qa-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.qa-back,.qa-x{width:36px;height:36px;border-radius:11px;border:1px solid var(--bo);background:rgba(255,255,255,.05);color:var(--tp);font-size:18px;cursor:pointer;}
+.qa-dots{display:flex;gap:7px;}.qa-dots i{width:26px;height:5px;border-radius:5px;background:rgba(255,255,255,.12);transition:background .25s;}.qa-dots i.on{background:#3b82f6;box-shadow:0 0 10px rgba(59,130,246,.7);}
+.qa-title{font-size:22px;font-weight:800;color:var(--tp);margin:2px 0 14px;letter-spacing:-.3px;}
+.qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px;}
+.qa-chip{padding:14px 8px;border-radius:14px;border:1px solid var(--bo);background:rgba(255,255,255,.05);color:var(--tp);font-size:14px;font-weight:700;letter-spacing:.3px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.qa-chip.sel{border-color:#3b82f6;background:rgba(59,130,246,.2);box-shadow:0 0 0 3px rgba(59,130,246,.18);}
+.qa-sel{width:100%;padding:13px;border-radius:14px;font-size:14px;margin-bottom:10px;}
+.qa-seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.qa-seg button{padding:13px;border-radius:14px;border:1px solid var(--bo);background:rgba(255,255,255,.05);color:var(--ts);font-size:14px;font-weight:700;cursor:pointer;}
+.qa-seg button.sel{color:#fff;border-color:#3b82f6;background:rgba(59,130,246,.25);}
+.qa-res{display:grid;gap:10px;}
+.qa-res button{display:flex;align-items:center;gap:14px;padding:20px 18px;border-radius:18px;border:1px solid var(--bo);background:rgba(255,255,255,.05);color:var(--tp);font-size:24px;cursor:pointer;text-align:left;}
+.qa-res button b{font-size:17px;}
+.qa-res .w.sel{border-color:#34d399;background:rgba(52,211,153,.16);box-shadow:0 0 0 3px rgba(52,211,153,.18);}
+.qa-res .l.sel{border-color:#f87171;background:rgba(248,113,113,.16);box-shadow:0 0 0 3px rgba(248,113,113,.18);}
+.qa-res .b.sel{border-color:#fbbf24;background:rgba(251,191,36,.14);}
+.qa-amt{width:100%;font-size:34px !important;font-weight:800;text-align:center;padding:18px 10px !important;border-radius:16px !important;margin-bottom:12px;font-variant-numeric:tabular-nums;}
+.qa-stars{display:flex;justify-content:center;gap:10px;margin-bottom:12px;}.qa-stars span{font-size:30px;color:rgba(255,255,255,.18);cursor:pointer;}.qa-stars span.on{color:#fbbf24;text-shadow:0 0 14px rgba(251,191,36,.6);}
+.qa-note{width:100%;border-radius:14px;padding:12px;font-size:14px;font-family:inherit;resize:none;}
+.qa-go{width:100%;margin-top:16px;padding:16px;border:none;border-radius:16px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 14px 30px -12px rgba(59,130,246,.9);}
+.qa-go:disabled{opacity:.4;box-shadow:none;}
+.qa-full{display:block;margin:12px auto 0;background:none;border:none;color:var(--td);font-size:12px;text-decoration:underline;cursor:pointer;}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ CONNEXION — fond animé, carte vitrée ════ */
@@ -959,6 +1014,7 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
     <div class="side-cap">Navigation</div>
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
       <button class="tab active" role="tab" aria-selected="true" data-groupe="resume" data-title="Résumé" data-sub="L'essentiel en un coup d'oeil" onclick="showGroupe('resume');rdToggleSidebar(false)"><span class="ti">📊</span> Résumé</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="semaine" data-title="Ma semaine" data-sub="Ta révision hebdomadaire" onclick="showGroupe('semaine');rdToggleSidebar(false)"><span class="ti">🗓</span> Ma semaine</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="dashboard" data-title="Tableau de bord" data-sub="Vue d'ensemble" onclick="showGroupe('dashboard');rdToggleSidebar(false)"><span class="ti">⬡</span> Tableau de bord</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="journal" data-title="Journal" data-sub="Saisir et retrouver tes trades" onclick="showGroupe('journal');rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="analyse" data-title="Analyse" data-sub="Où est ton edge" onclick="showGroupe('analyse');rdToggleSidebar(false)"><span class="ti">◈</span> Analyse</button>
@@ -1181,7 +1237,29 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 </div>
 
 <!-- ══ JOURNAL ══ -->
+<div id="semaine" class="sec" role="tabpanel" aria-label="Ma semaine">
+  <div class="card wk-navbar" id="wk-nav"></div>
+  <div class="card" style="margin-bottom:12px"><div id="wk-hero" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between"></div></div>
+  <div id="wk-kpi" class="wk-kpis"></div>
+  <div class="card" style="margin-bottom:12px" id="wk-days"></div>
+  <div class="wk-two" id="wk-pairs"></div>
+  <div class="wk-two" id="wk-psy"></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">📈 Courbe de la semaine</div><div style="position:relative;height:200px"><canvas id="wkEqChart"></canvas></div></div>
+  <div class="card" style="margin-bottom:12px" id="wk-insights"></div>
+  <div class="card" style="margin-bottom:12px" id="wk-trades"></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">🗓 Les 8 dernières semaines</div><div style="position:relative;height:180px"><canvas id="wkHistChart"></canvas></div></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">✍️ Ton bilan de la semaine</div>
+    <div class="wk-notes">
+      <label>Ce qui a bien marché<textarea id="wk-n-ok" oninput="wkNoteSave('ok',this)" placeholder="Mes bons trades, bons réflexes…"></textarea></label>
+      <label>Ce que je dois corriger<textarea id="wk-n-mal" oninput="wkNoteSave('mal',this)" placeholder="Mes erreurs, ce qui m'a coûté…"></textarea></label>
+      <label>Ma règle pour la semaine prochaine<textarea id="wk-n-regle" oninput="wkNoteSave('regle',this)" placeholder="Une seule règle à respecter à tout prix"></textarea></label>
+    </div>
+    <div style="font-size:10px;color:var(--td);margin-top:8px">Enregistré automatiquement dans ce navigateur, semaine par semaine.</div></div>
+</div>
+
 <div id="resume" class="sec" role="tabpanel" aria-label="Résumé">
+
+  <div id="rs-insights"></div>
 
   <!-- ── RESULTAT ── -->
   <div class="card" style="margin-bottom:12px">
@@ -2202,6 +2280,32 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 </div><!-- /app -->
 
 <!-- CAPITAL MODAL -->
+<!-- AJOUT RAPIDE -->
+<div class="mo" id="quickModal" role="dialog" aria-modal="true" aria-label="Ajout rapide">
+  <div class="mb qa-box">
+    <div class="qa-top"><button class="qa-back" id="qa-back" onclick="qaBack()" aria-label="Retour">‹</button>
+      <div class="qa-dots"><i id="qa-d1" class="on"></i><i id="qa-d2"></i><i id="qa-d3"></i></div>
+      <button class="qa-x" onclick="closeQuick()" aria-label="Fermer">✕</button></div>
+    <div class="qa-title" id="qa-title">Quelle paire ?</div>
+    <div id="qa-s1">
+      <div class="qa-grid" id="qa-pairs"></div>
+      <select id="qa-other" class="qa-sel" onchange="qaOther(this)"></select>
+      <div class="qa-seg" id="qa-dir"><button type="button" data-d="LONG" onclick="qaDir('LONG')">↑ Achat</button><button type="button" data-d="SHORT" onclick="qaDir('SHORT')">↓ Vente</button></div>
+    </div>
+    <div id="qa-s2" style="display:none"><div class="qa-res" id="qa-res">
+      <button type="button" data-r="WIN" class="w" onclick="qaRes('WIN')">✅<b>Gagné</b></button>
+      <button type="button" data-r="LOSS" class="l" onclick="qaRes('LOSS')">❌<b>Perdu</b></button>
+      <button type="button" data-r="BE" class="b" onclick="qaRes('BE')">◈<b>Break even</b></button></div></div>
+    <div id="qa-s3" style="display:none">
+      <input id="qa-amt" class="qa-amt" type="text" inputmode="decimal" placeholder="Montant en $" autocomplete="off">
+      <div class="qa-stars" id="qa-stars"><span onclick="qaStars(1)">★</span><span onclick="qaStars(2)">★</span><span onclick="qaStars(3)">★</span><span onclick="qaStars(4)">★</span><span onclick="qaStars(5)">★</span></div>
+      <textarea id="qa-note" class="qa-note" rows="2" placeholder="Note rapide (optionnel)"></textarea>
+    </div>
+    <button class="qa-go" id="qa-go" onclick="qaNext()">Suivant</button>
+    <button class="qa-full" onclick="qaFull()">Formulaire complet</button>
+  </div>
+</div>
+
 <!-- BIENVENUE / PREMIERS PAS -->
 <div class="mo" id="welcomeModal" role="dialog" aria-modal="true" aria-label="Bienvenue sur BAKOU">
   <div class="mb" style="width:500px">
@@ -2479,9 +2583,9 @@ function buildCoachReport(){
 <button class="fab" onclick="rdNewTrade()" title="Raccourci : N"><span class="fab-ic">＋</span> Nouveau Trade<span class="fab-k">N</span></button>
 <nav class="bnav" aria-label="Navigation mobile">
   <button data-g="resume" onclick="showGroupe('resume');rdToggleSidebar(false)"><i>📊</i><span>Résumé</span></button>
-  <button data-g="journal" onclick="showGroupe('journal');rdToggleSidebar(false)"><i>✦</i><span>Journal</span></button>
+  <button data-g="semaine" onclick="showGroupe('semaine');rdToggleSidebar(false)"><i>🗓</i><span>Semaine</span></button>
   <button class="bnav-plus" onclick="rdNewTrade()" aria-label="Nouveau trade"><b>＋</b></button>
-  <button data-g="analyse" onclick="showGroupe('analyse');rdToggleSidebar(false)"><i>◈</i><span>Analyse</span></button>
+  <button data-g="journal" onclick="showGroupe('journal');rdToggleSidebar(false)"><i>✦</i><span>Journal</span></button>
   <button data-g="menu" onclick="rdToggleSidebar()"><i>☰</i><span>Menu</span></button>
 </nav>
 
@@ -2508,7 +2612,8 @@ document.querySelectorAll('.side-nav .tab').forEach(function(t){
   });
 });
 // FAB : ouvre le Journal et défile vers le formulaire de saisie
-function rdNewTrade(){
+function rdNewTrade(full){
+  if(!full&&window.innerWidth<981){ openQuick(); return; }
   var j=document.querySelector('.side-nav .tab[data-title="Journal"]');
   if(j)j.click();
   setTimeout(function(){
@@ -2826,6 +2931,8 @@ setInterval(clk,1000);clk();
 const GROUPES=[
   {cle:'resume',   titre:"Résumé",          sous:"L'essentiel en un coup d'oeil",
    vues:[{id:'resume',nom:'Résumé'}]},
+  {cle:'semaine', titre:"Ma semaine",      sous:"Ta révision hebdomadaire",
+   vues:[{id:'semaine',nom:'Semaine'}]},
   {cle:'dashboard',titre:"Tableau de bord",sous:"Vue d'ensemble",
    vues:[{id:'dashboard',nom:"Vue d'ensemble"}]},
   {cle:'journal',  titre:"Journal",       sous:"Saisir et retrouver tes trades",
@@ -2842,6 +2949,7 @@ const DERNIERE_VUE={};   // on revient sur la derniere vue consultee dans chaque
 
 function initSection(id){
   if(id==='resume')setTimeout(initResume,100);
+  else if(id==='semaine')setTimeout(initSemaine,100);
   else if(id==='bilan')setTimeout(initBilan,100);
   else if(id==='analyse')setTimeout(initAnalyse,100);
   else if(id==='setups')setTimeout(initSetups,100);
@@ -3731,7 +3839,7 @@ function DC(id){if(CI[id]){CI[id].destroy();delete CI[id];}}
 //  l'information seuls ici : chaque barre est au-dessus ou en dessous
 //  de zero, et chaque montant est ecrit avec son signe.
 // ═══════════════════════════════════════════════════════════════════
-var RS_VERT='#0a8a5f', RS_ROUGE='#e34948', RS_BLEU='#2563eb';
+var RS_VERT='#34d399', RS_ROUGE='#f87171', RS_BLEU='#60a5fa';
 var RS_MOIS=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
 
 function rsArgent(v){ v=parseFloat(v)||0;
@@ -6503,6 +6611,334 @@ function keepSessionAlive(){
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') keepSessionAlive(); });
 window.addEventListener('focus',keepSessionAlive);
 window.addEventListener('online',keepSessionAlive);
+
+// ═════════════════════════════════════════════════════════════════
+//  MA SEMAINE — la révision hebdomadaire : tout sur une page
+// ═════════════════════════════════════════════════════════════════
+var WK_OFF=0;
+var WK_JOURS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+function wkDebut(off){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-((d.getDay()+6)%7)+off*7); return d; }
+function wkFin(off){ var d=wkDebut(off); d.setDate(d.getDate()+7); return d; }
+function wkTrades(off){ var a=wkDebut(off), b=wkFin(off);
+  return sortedByDate(T.filter(function(t){ var d=tDate(t); return d>=a && d<b; })); }
+function wkNumero(d){ var x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  var n=x.getUTCDay()||7; x.setUTCDate(x.getUTCDate()+4-n);
+  var y0=new Date(Date.UTC(x.getUTCFullYear(),0,1));
+  return {sem:Math.ceil(((x-y0)/86400000+1)/7), an:x.getUTCFullYear()}; }
+function wkCle(off){ var n=wkNumero(wkDebut(off)); return n.an+'-S'+(n.sem<10?'0':'')+n.sem; }
+function wkCourt(d){ return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}); }
+function wkNav(dir){ WK_OFF=Math.min(0,WK_OFF+dir); initSemaine(); }
+function wkAuj(){ WK_OFF=0; initSemaine(); }
+function wkSigne(v,dec){ v=parseFloat(v)||0; return (v<0?'−':'+')+Math.abs(v).toFixed(dec==null?1:dec); }
+function wkNoteSave(champ,el){ try{ localStorage.setItem(lsKey('wk_'+wkCle(WK_OFF)+'_'+champ),el.value); }catch(e){} }
+function wkNoteGet(champ){ try{ return localStorage.getItem(lsKey('wk_'+wkCle(WK_OFF)+'_'+champ))||''; }catch(e){ return ''; } }
+function wkEsc(x){ return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function initSemaine(){
+  var a=wkDebut(WK_OFF), z=new Date(wkFin(WK_OFF)); z.setDate(z.getDate()-1);
+  var num=wkNumero(a);
+  var S=wkTrades(WK_OFF), SP=wkTrades(WK_OFF-1);
+  var P=perf(S), PP=perf(SP);
+  var navEl=document.getElementById('wk-nav'); if(!navEl)return;
+  navEl.innerHTML=
+      '<button class="wk-arr" onclick="wkNav(-1)" aria-label="Semaine précédente">‹</button>'
+    + '<div class="wk-title"><div class="wk-t1">Semaine '+num.sem+(WK_OFF===0?' <span class="wk-now">en cours</span>':'')+'</div>'
+    + '<div class="wk-t2">'+wkCourt(a)+' → '+wkCourt(z)+' '+z.getFullYear()+'</div></div>'
+    + '<button class="wk-arr" onclick="wkNav(1)" aria-label="Semaine suivante"'+(WK_OFF===0?' disabled':'')+'>›</button>'
+    + (WK_OFF!==0?'<button class="btn btn-g wk-today" onclick="wkAuj()">Cette semaine</button>':'');
+
+  var hero=document.getElementById('wk-hero'), kpi=document.getElementById('wk-kpi');
+  var corps=['wk-days','wk-pairs','wk-psy','wk-trades','wk-insights'];
+  if(!S.length){
+    hero.innerHTML='<div style="padding:22px 4px;color:var(--td);font-size:13px;line-height:1.6">Aucun trade cette semaine.<br>'
+      +'<span style="font-size:12px">Utilise les flèches pour revoir une autre semaine, ou ajoute un trade.</span></div>';
+    kpi.innerHTML=''; corps.forEach(function(id){ var e=document.getElementById(id); if(e)e.innerHTML=''; });
+    ['wkDay','wkEq','wkHist'].forEach(DC);
+    wkBilan(); wkHistorique(); return;
+  }
+
+  // ── Résultat ───────────────────────────────────────────────
+  var pct=CAP>0?P.net/CAP*100:0, coul=P.net>=0?RS_VERT:RS_ROUGE;
+  var delta=P.net-PP.net;
+  var cmp=SP.length?('<span style="color:'+(delta>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(delta)+'</span> vs semaine précédente ('+rsArgent(PP.net)+')'):'Pas de trades la semaine précédente';
+  hero.innerHTML=
+      '<div><div style="font-size:10px;letter-spacing:2px;color:var(--td);text-transform:uppercase">Résultat net de la semaine</div>'
+    + '<div class="cu" style="font-size:44px;font-weight:800;line-height:1.1;color:'+coul+';font-variant-numeric:tabular-nums">'+rsArgent(P.net)+'</div>'
+    + '<div style="font-size:12px;color:var(--ts);margin-top:3px">'+wkSigne(pct,2)+' % du capital · '+P.n+' trade'+(P.n>1?'s':'')+'</div></div>'
+    + '<div style="text-align:right;font-size:12px;color:var(--ts)">'+cmp+'</div>';
+
+  // ── Chiffres clés ──────────────────────────────────────────
+  var pf=P.pfEtiq, bestT=null, worstT=null;
+  S.forEach(function(t){ var v=parseFloat(t.pnl_amt)||0;
+    if(!bestT||v>(parseFloat(bestT.pnl_amt)||0))bestT=t; if(!worstT||v<(parseFloat(worstT.pnl_amt)||0))worstT=t; });
+  var ser=perfSeries(S);
+  kpi.innerHTML=
+      rsTuile('Taux de réussite',P.wrDecides.toFixed(0)+' %',P.w+' gagnants · '+P.l+' perdants'+(P.be?' · '+P.be+' BE':''),null)
+    + rsTuile('Profit factor',pf===null?'—':(isFinite(pf)?pf.toFixed(2):'∞'),(pf!==null&&(!isFinite(pf)||pf>=1))?'Tu gagnes plus que tu ne perds':'Tu perds plus que tu ne gagnes',(pf!==null&&(!isFinite(pf)||pf>=1))?RS_VERT:RS_ROUGE)
+    + rsTuile('Total R',wkSigne(P.totalR,2)+' R',wkSigne(P.rMoyen,2)+' R par trade',P.totalR>=0?RS_VERT:RS_ROUGE)
+    + rsTuile('Par trade',rsArgent(P.esperance),'Espérance de la semaine',P.esperance>=0?RS_VERT:RS_ROUGE)
+    + rsTuile('Meilleur trade',rsArgent(bestT.pnl_amt),wkEsc(bestT.pair)+' · '+wkJourCourt(bestT),RS_VERT)
+    + rsTuile('Pire trade',rsArgent(worstT.pnl_amt),wkEsc(worstT.pair)+' · '+wkJourCourt(worstT),(parseFloat(worstT.pnl_amt)||0)<0?RS_ROUGE:null)
+    + rsTuile('Séries',ser.maxGains+' gains · '+ser.maxPertes+' pertes','Plus longues séries d\'affilée',null)
+    + rsTuile('Risque moyen',(mean(S.map(function(t){return parseFloat(t.risk_pct)||0;}))).toFixed(2)+' %','Cible : '+(DRSK||1)+' % par trade',null);
+
+  // ── Jour par jour ──────────────────────────────────────────
+  var jours=[]; for(var i=0;i<7;i++){ var d=new Date(a); d.setDate(a.getDate()+i);
+    var ts=S.filter(function(t){ return tDate(t).toDateString()===d.toDateString(); });
+    jours.push({d:d,ts:ts,P:perf(ts)}); }
+  var visibles=jours.filter(function(j,i){ return i<5||j.ts.length; });
+  document.getElementById('wk-days').innerHTML=
+    '<div class="ct">📅 Jour par jour</div>'
+    + '<div style="position:relative;height:200px;margin-bottom:12px"><canvas id="wkDayChart"></canvas></div>'
+    + '<div class="wk-daygrid">'+visibles.map(function(j){
+        var n=j.P.n, c=!n?'var(--td)':(j.P.net>=0?RS_VERT:RS_ROUGE);
+        return '<div class="wk-day'+(n?'':' vide')+'"><div class="wk-dn">'+WK_JOURS[j.d.getDay()].slice(0,3)+' '+j.d.getDate()+'</div>'
+          +'<div class="wk-dv" style="color:'+c+'">'+(n?rsArgent(j.P.net):'—')+'</div>'
+          +'<div class="wk-ds">'+(n?(n+' trade'+(n>1?'s':'')+' · '+j.P.w+'G '+j.P.l+'P'):'repos')+'</div></div>'; }).join('')+'</div>';
+  DC('wkDay');
+  var cv=document.getElementById('wkDayChart');
+  if(cv) CI['wkDay']=new Chart(cv,{type:'bar',data:{labels:visibles.map(function(j){return WK_JOURS[j.d.getDay()].slice(0,3);}),
+    datasets:[{data:visibles.map(function(j){return Math.round(j.P.net);}),borderRadius:6,
+      backgroundColor:visibles.map(function(j){return j.P.net>=0?'rgba(52,211,153,.75)':'rgba(248,113,113,.75)';})}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:function(v){return '$'+v.toLocaleString('fr-FR');}}},x:{grid:{display:false}}}}});
+
+  // ── Paires & sessions ──────────────────────────────────────
+  var lignes=function(cle,titre){
+    var g=grouperPar(S,cle).sort(function(x,y){return y.net-x.net;});
+    return '<div class="ct">'+titre+'</div>'+g.map(function(x){
+      return rsLigne(wkEsc(x.cle)+' <span style="color:var(--td)">· '+x.n+' trade'+(x.n>1?'s':'')+' · '+x.wrDecides.toFixed(0)+' %</span>',rsArgent(x.net),x.net>=0?RS_VERT:RS_ROUGE);}).join(''); };
+  document.getElementById('wk-pairs').innerHTML=
+    '<div class="card" style="margin:0">'+lignes('pair','💱 Par paire')+'</div>'
+   +'<div class="card" style="margin:0">'+lignes('sess','🕐 Par session')+'</div>';
+
+  // ── Psychologie & discipline ───────────────────────────────
+  var err={}, bon={};
+  S.forEach(function(t){ var v=parseFloat(t.pnl_amt)||0;
+    tagsOf(t,'psych_errors').forEach(function(k){ (err[k]=err[k]||{n:0,c:0}); err[k].n++; err[k].c+=v; });
+    tagsOf(t,'psych_good').forEach(function(k){ bon[k]=(bon[k]||0)+1; }); });
+  var errL=Object.keys(err).map(function(k){return {k:k,n:err[k].n,c:err[k].c};}).sort(function(x,y){return x.c-y.c;});
+  var bonL=Object.keys(bon).map(function(k){return {k:k,n:bon[k]};}).sort(function(x,y){return y.n-x.n;});
+  var rev=aRevengeFlags(S).length, disc=aDiscipline(S);
+  var sansNote=S.filter(function(t){return !((t.notes||'').trim().length||(parseInt(t.star)||0)>0);}).length;
+  var etoiles=S.filter(function(t){return (parseInt(t.star)||0)>0;}).map(function(t){return parseInt(t.star);});
+  document.getElementById('wk-psy').innerHTML=
+    '<div class="card" style="margin:0"><div class="ct">🧠 Discipline</div>'
+    + (disc?'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span class="cu" style="font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;color:'+(disc.score>=70?RS_VERT:(disc.score>=50?'#fbbf24':RS_ROUGE))+'">'+disc.score+'</span><span style="color:var(--td);font-size:12px">/ 100</span></div>':'')
+    + rsLigne('Trades « revenge » détectés',rev,rev?RS_ROUGE:RS_VERT)
+    + rsLigne('Trades sans note ni étoile',sansNote,sansNote?'#fbbf24':RS_VERT)
+    + rsLigne('Note moyenne du setup',etoiles.length?(mean(etoiles).toFixed(1)+' ★'):'—',null)
+    + (disc?disc.comps.map(function(c){return rsLigne(c.l,Math.round(c.v)+' %',null);}).join(''):'')+'</div>'
+   +'<div class="card" style="margin:0"><div class="ct">⚠️ Erreurs & bons réflexes</div>'
+    + (errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">× '+e.n+'</span>',rsArgent(e.c),e.c<0?RS_ROUGE:null);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée cette semaine.</div>')
+    + (bonL.length?'<div style="font-size:10px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin:12px 0 4px">Ce qui a bien marché</div>'
+        +bonL.map(function(b){return rsLigne(wkEsc(b.k),'× '+b.n,RS_VERT);}).join(''):'')+'</div>';
+
+  // ── Constats automatiques ──────────────────────────────────
+  var ins=[], j=visibles.filter(function(x){return x.P.n;});
+  if(j.length>1){ var bj=j.slice().sort(function(x,y){return y.P.net-x.P.net;}), pj=bj[bj.length-1], mj=bj[0];
+    ins.push('📈 Meilleur jour : <b>'+WK_JOURS[mj.d.getDay()]+'</b> ('+rsArgent(mj.P.net)+')');
+    if(pj.P.net<0)ins.push('📉 Pire jour : <b>'+WK_JOURS[pj.d.getDay()]+'</b> ('+rsArgent(pj.P.net)+')'); }
+  var moyJ=S.length/Math.max(1,j.length);
+  var surj=j.filter(function(x){return x.P.n>=Math.max(4,moyJ*1.8);});
+  if(surj.length)ins.push('⚡ Beaucoup de trades le <b>'+WK_JOURS[surj[0].d.getDay()]+'</b> ('+surj[0].P.n+') : attention au sur-trading.');
+  if(rev)ins.push('🔥 <b>'+rev+'</b> trade'+(rev>1?'s':'')+' « revenge » (ouvert dans les 30 min après une perte).');
+  if(errL.length&&errL[0].c<0)ins.push('🧠 L\'erreur la plus coûteuse : <b>'+wkEsc(errL[0].k)+'</b> ('+rsArgent(errL[0].c)+' sur '+errL[0].n+' trade'+(errL[0].n>1?'s':'')+').');
+  if(ser.maxPertes>=3)ins.push('⏸ Série de <b>'+ser.maxPertes+' pertes</b> : aurais-tu dû t\'arrêter après la 2ᵉ ?');
+  var rk=S.filter(function(t){return (parseFloat(t.risk_pct)||0)>(DRSK||1)*1.1;}).length;
+  if(rk)ins.push('🎯 <b>'+rk+'</b> trade'+(rk>1?'s':'')+' au-dessus de ton risque cible ('+(DRSK||1)+' %).');
+  if(sansNote)ins.push('📝 <b>'+sansNote+'</b> trade'+(sansNote>1?'s':'')+' sans note : note-les pendant que c\'est frais.');
+  if(PP.n&&P.wrDecides<PP.wrDecides-10)ins.push('↘ Ton taux de réussite baisse ('+P.wrDecides.toFixed(0)+' % contre '+PP.wrDecides.toFixed(0)+' %).');
+  document.getElementById('wk-insights').innerHTML=
+    '<div class="ct">💡 À retenir</div>'+(ins.length?'<ul class="wk-ul">'+ins.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>':'<div style="font-size:12px;color:var(--td)">Rien d\'anormal à signaler.</div>');
+
+  // ── Courbe de la semaine ───────────────────────────────────
+  var run=0, lab=['Début'], dat=[0];
+  S.forEach(function(t){ run+=parseFloat(t.pnl_amt)||0; lab.push(tDate(t).toLocaleDateString('fr-FR',{weekday:'short'})+' '+tDate(t).toTimeString().slice(0,5)); dat.push(Math.round(run)); });
+  DC('wkEq');
+  var ce=document.getElementById('wkEqChart');
+  if(ce) CI['wkEq']=new Chart(ce,{type:'line',data:{labels:lab,datasets:[{data:dat,borderColor:RS_BLEU,backgroundColor:'rgba(59,130,246,.12)',fill:true,tension:.25,borderWidth:2,pointRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return '$'+v.toLocaleString('fr-FR');}}}}}});
+
+  // ── Tous les trades ────────────────────────────────────────
+  document.getElementById('wk-trades').innerHTML=
+    '<div class="ct">🧾 Tous tes trades de la semaine</div><div style="overflow-x:auto"><table class="tbl" style="width:100%"><thead><tr>'
+    +'<th>Date</th><th>Paire</th><th>Sens</th><th>Résultat</th><th>R</th><th>P&amp;L</th><th>★</th><th>Erreurs</th></tr></thead><tbody>'
+    + S.map(function(t){ var v=parseFloat(t.pnl_amt)||0, r=computeActualR(t), d=tDate(t);
+        return '<tr style="cursor:pointer" onclick="openTradeDetail(\''+String(t.id).replace(/'/g,'')+'\')"><td>'+WK_JOURS[d.getDay()].slice(0,3)+' '+d.getDate()+' · '+d.toTimeString().slice(0,5)+'</td>'
+          +'<td><b>'+wkEsc(t.pair)+'</b></td><td>'+(t.dir==='SHORT'?'↓':'↑')+'</td>'
+          +'<td style="color:'+(t.result==='WIN'?RS_VERT:(t.result==='LOSS'?RS_ROUGE:'#fbbf24'))+'">'+wkEsc(t.result)+'</td>'
+          +'<td>'+wkSigne(r,2)+'</td><td style="color:'+(v>=0?RS_VERT:RS_ROUGE)+';font-weight:700">'+rsArgent(v)+'</td>'
+          +'<td>'+((parseInt(t.star)||0)||'—')+'</td><td style="white-space:normal;color:var(--td);font-size:11px">'+wkEsc(tagsOf(t,'psych_errors').join(', '))+'</td></tr>'; }).join('')
+    +'</tbody></table></div>';
+
+  wkHistorique(); wkBilan();
+}
+function wkJourCourt(t){ return WK_JOURS[tDate(t).getDay()].slice(0,3).toLowerCase()+'.'; }
+
+// 8 dernières semaines, la semaine affichée est mise en évidence
+function wkHistorique(){
+  var lab=[], dat=[], col=[];
+  for(var o=WK_OFF-7;o<=WK_OFF;o++){ if(o>0)continue;
+    var s=wkTrades(o), n=perf(s).net; lab.push('S'+wkNumero(wkDebut(o)).sem); dat.push(Math.round(n));
+    col.push(o===WK_OFF?(n>=0?'rgba(52,211,153,.95)':'rgba(248,113,113,.95)'):(n>=0?'rgba(52,211,153,.35)':'rgba(248,113,113,.35)')); }
+  DC('wkHist');
+  var c=document.getElementById('wkHistChart'); if(!c)return;
+  CI['wkHist']=new Chart(c,{type:'bar',data:{labels:lab,datasets:[{data:dat,backgroundColor:col,borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{ticks:{callback:function(v){return '$'+v.toLocaleString('fr-FR');}}}}}});
+}
+// Bilan écrit, enregistré dans le navigateur pour chaque semaine
+function wkBilan(){
+  [['ok','wk-n-ok'],['mal','wk-n-mal'],['regle','wk-n-regle']].forEach(function(p){
+    var e=document.getElementById(p[1]); if(e)e.value=wkNoteGet(p[0]); });
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  RÉSUMÉ — « Ton point du jour » : ce que disent tes chiffres
+// ═════════════════════════════════════════════════════════════════
+function rsInsights(){
+  var box=document.getElementById('rs-insights'); if(!box)return;
+  var TY=T.filter(function(t){return parseInt(t.trade_year)===GLOBAL_YEAR;});
+  if(TY.length<3){ box.innerHTML=''; return; }
+  var S=sortedByDate(TY), P=perf(S), out=[];
+  // Série en cours
+  var k=S.length-1, fin=S[k].result, n=0;
+  while(k>=0&&S[k].result===fin){ n++; k--; }
+  if(fin==='WIN'&&n>=2) out.push(['🔥','Série en cours',n+' gains d\'affilée','Reste sur ton plan, ne grossis pas le risque.',RS_VERT]);
+  else if(fin==='LOSS'&&n>=2) out.push(['⏸','Série en cours',n+' pertes d\'affilée','Une pause avant le prochain trade ?',RS_ROUGE]);
+  // Forme récente
+  if(S.length>=20){ var r=perf(S.slice(-20));
+    out.push(['📊','20 derniers trades',r.wrDecides.toFixed(0)+' % de réussite','Contre '+P.wrDecides.toFixed(0)+' % sur l\'année · '+rsArgent(r.net),r.wrDecides>=P.wrDecides?RS_VERT:RS_ROUGE]); }
+  // Pire jour / meilleure session / paire à éviter
+  var pire=function(cle,mot){ var g=grouperPar(S,cle).filter(function(x){return x.n>=5;}).sort(function(a,b){return a.net-b.net;});
+    if(g.length&&g[0].net<0)out.push(['⚠️',mot,wkEsc(g[0].cle),'Tu y perds '+rsArgent(g[0].net)+' sur '+g[0].n+' trades.',RS_ROUGE]); };
+  pire('day','Jour le plus coûteux'); pire('pair','Paire à surveiller');
+  var bs=grouperPar(S,'sess').filter(function(x){return x.n>=5;}).sort(function(a,b){return b.net-a.net;});
+  if(bs.length&&bs[0].net>0)out.push(['💎','Ta meilleure session',wkEsc(bs[0].cle),rsArgent(bs[0].net)+' sur '+bs[0].n+' trades ('+bs[0].wrDecides.toFixed(0)+' %).',RS_VERT]);
+  // Semaine en cours
+  var w=perf(wkTrades(0)), wp=perf(wkTrades(-1));
+  if(w.n)out.push(['📅','Cette semaine',rsArgent(w.net),w.n+' trade'+(w.n>1?'s':'')+(wp.n?' · semaine dernière '+rsArgent(wp.net):''),w.net>=0?RS_VERT:RS_ROUGE]);
+  box.innerHTML='<div class="rs-ins-h">Ton point du jour</div><div class="rs-ins">'+out.slice(0,5).map(function(x){
+    return '<div class="rs-in"><div class="rs-in-i">'+x[0]+'</div><div><div class="rs-in-l">'+x[1]+'</div>'
+      +'<div class="rs-in-v" style="color:'+x[4]+'">'+x[2]+'</div><div class="rs-in-t">'+x[3]+'</div></div></div>'; }).join('')+'</div>';
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  AJOUT RAPIDE (mobile) — 3 étapes : paire, résultat, montant
+// ═════════════════════════════════════════════════════════════════
+var QA={step:1,pair:'',dir:'LONG',res:'',busy:false};
+function qaPairesFavorites(){
+  var c={}; T.forEach(function(t){ if(t.pair)c[t.pair]=(c[t.pair]||0)+1; });
+  var l=Object.keys(c).sort(function(a,b){return c[b]-c[a];}).slice(0,8);
+  ['EURUSD','GBPUSD','XAUUSD','NAS100','USDJPY','BTCUSD'].forEach(function(p){ if(l.length<8&&l.indexOf(p)<0)l.push(p); });
+  return l;
+}
+function openQuick(){
+  QA={step:1,pair:'',dir:'LONG',res:'',busy:false};
+  var all=Object.keys(PC);
+  document.getElementById('qa-other').innerHTML='<option value="">Autre paire…</option>'+all.map(function(p){return '<option>'+p+'</option>';}).join('');
+  document.getElementById('qa-pairs').innerHTML=qaPairesFavorites().map(function(p){
+    return '<button type="button" class="qa-chip" data-p="'+p+'" onclick="qaPair(\''+p+'\')">'+p+'</button>'; }).join('');
+  ['qa-amt','qa-note'].forEach(function(id){ document.getElementById(id).value=''; });
+  qaStars(0); qaShow();
+  document.getElementById('quickModal').classList.add('show');
+}
+function closeQuick(){ document.getElementById('quickModal').classList.remove('show'); }
+function qaFull(){ closeQuick(); rdNewTrade(true); }
+function qaShow(){
+  for(var i=1;i<=3;i++){ document.getElementById('qa-s'+i).style.display=(QA.step===i)?'block':'none';
+    var d=document.getElementById('qa-d'+i); d.classList.toggle('on',i<=QA.step); }
+  document.getElementById('qa-back').style.visibility=QA.step>1?'visible':'hidden';
+  document.getElementById('qa-title').textContent=['Quelle paire ?','Comment ça s\'est fini ?','Combien ?'][QA.step-1];
+  document.querySelectorAll('#qa-pairs .qa-chip').forEach(function(b){ b.classList.toggle('sel',b.dataset.p===QA.pair); });
+  document.querySelectorAll('#qa-dir button').forEach(function(b){ b.classList.toggle('sel',b.dataset.d===QA.dir); });
+  document.querySelectorAll('#qa-res button').forEach(function(b){ b.classList.toggle('sel',b.dataset.r===QA.res); });
+  var go=document.getElementById('qa-go');
+  go.textContent=QA.step===3?'Enregistrer le trade':'Suivant';
+  go.disabled=(QA.step===1&&!QA.pair)||(QA.step===2&&!QA.res)||QA.busy;
+}
+function qaPair(p){ QA.pair=p; document.getElementById('qa-other').value=''; qaShow(); }
+function qaOther(sel){ if(sel.value){ QA.pair=sel.value; qaShow(); } }
+function qaDir(d){ QA.dir=d; qaShow(); }
+function qaRes(r){ QA.res=r; if(r==='BE')document.getElementById('qa-amt').value=''; qaShow(); }
+function qaBack(){ if(QA.step>1){ QA.step--; qaShow(); } }
+var QA_STAR=0;
+function qaStars(n){ QA_STAR=n; document.querySelectorAll('#qa-stars span').forEach(function(s,i){ s.classList.toggle('on',i<n); }); }
+async function qaNext(){
+  if(QA.step<3){ QA.step++; qaShow(); if(QA.step===3){ var a=document.getElementById('qa-amt'); if(QA.res!=='BE')setTimeout(function(){a.focus();},120); } return; }
+  if(QA.busy)return;
+  var raw=Math.abs(parseFloat(String(document.getElementById('qa-amt').value).replace(',','.')))||0;
+  if(QA.res!=='BE'&&!raw){ toast('Entre le montant du trade'); return; }
+  QA.busy=true; qaShow();
+  var avant=T.length;
+  try{
+    var now=new Date();
+    document.getElementById('f-cat').value=PC[QA.pair]||'major'; updatePairs();
+    document.getElementById('f-pair').value=QA.pair;
+    var jn=WK_JOURS[now.getDay()]; if(jn==='Samedi')jn='Vendredi'; if(jn==='Dimanche')jn='Lundi';
+    document.getElementById('f-day').value=jn;
+    document.getElementById('f-sess').value=_mt5Sess(now.getHours());
+    document.getElementById('f-dir').value=QA.dir;
+    document.getElementById('f-close').value=QA.res==='WIN'?'TP':(QA.res==='LOSS'?'SL':'BE');
+    document.getElementById('f-result').value=QA.res;
+    document.getElementById('f-ca').value=QA.res==='BE'?'0':String(QA.res==='LOSS'?-raw:raw);
+    document.getElementById('f-comm').value='';
+    document.getElementById('f-notes').value=document.getElementById('qa-note').value;
+    STAR=QA_STAR;
+    JOURNAL_MONTH_FILTER=null; GLOBAL_YEAR=now.getFullYear();
+    var yd=document.getElementById('global-year-display'); if(yd)yd.textContent=GLOBAL_YEAR;
+    await addTrade();
+  }catch(e){ console.error('ajout rapide',e); toast('❌ '+(e.message||e)); }
+  QA.busy=false;
+  if(T.length>avant){ closeQuick(); try{ initSection(DERNIERE_VUE[GROUPE_ACTIF]||GROUPE_ACTIF); }catch(e){} } else qaShow();
+}
+document.addEventListener('click',function(e){ if(e.target.id==='quickModal')closeQuick(); });
+
+// ═════════════════════════════════════════════════════════════════
+//  ANIMATION DES CHIFFRES — ils montent jusqu'à leur valeur
+// ═════════════════════════════════════════════════════════════════
+(function(){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var SEL='.tz-big,.b-bignum,.chip-v,.cu,.ak-v';
+  function parse(txt){
+    var m=txt.match(/\d[\d   ,.]*\d|\d/); if(!m)return null;
+    var raw=m[0], dm=raw.match(/[.,](\d{1,2})$/), dec=dm?dm[1].length:0;
+    var ent=dm?raw.slice(0,raw.length-dm[0].length):raw;
+    var sm=ent.match(/[   ,.]/), sep=sm?sm[0]:'';
+    var val=parseFloat(ent.replace(/[   ,.]/g,'')+(dec?'.'+dm[1]:''));
+    if(isNaN(val)||val===0)return null;
+    return {i:m.index,len:raw.length,val:val,dec:dec,sep:sep};
+  }
+  function fmt(v,dec,sep){
+    var s=v.toFixed(dec), p=s.split('.'), e=p[0];
+    if(sep)e=e.replace(/\B(?=(\d{3})+(?!\d))/g,sep);
+    return dec?e+'.'+p[1]:e;
+  }
+  function run(el){
+    if(el.__cu)return;
+    var txt=el.textContent, p=parse(txt);
+    if(!p||el.__cuLast===txt||el.children.length)return;
+    el.__cu=true; el.__cuLast=txt;
+    var t0=performance.now(), D=800;
+    (function tick(now){
+      var k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3);
+      el.textContent=txt.slice(0,p.i)+fmt(p.val*e,p.dec,p.sep)+txt.slice(p.i+p.len);
+      if(k<1)requestAnimationFrame(tick); else { el.textContent=txt; el.__cu=false; }
+    })(t0);
+  }
+  var pend=false;
+  new MutationObserver(function(muts){
+    if(pend)return; pend=true;
+    requestAnimationFrame(function(){ pend=false;
+      document.querySelectorAll(SEL).forEach(function(el){ if(el.offsetParent!==null)run(el); }); });
+  }).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
+
+// Insights du Résumé : s'ajoutent après chaque rendu
+document.addEventListener('DOMContentLoaded',function(){
+  var _ir=initResume;
+  initResume=function(){ var r=_ir.apply(this,arguments); try{ rsInsights(); }catch(e){ console.warn('insights',e); } return r; };
+});
 document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
