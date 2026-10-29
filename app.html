@@ -924,6 +924,37 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 .qa-go{width:100%;margin-top:16px;padding:16px;border:none;border-radius:16px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 14px 30px -12px rgba(59,130,246,.9);}
 .qa-go:disabled{opacity:.4;box-shadow:none;}
 .qa-full{display:block;margin:12px auto 0;background:none;border:none;color:var(--td);font-size:12px;text-decoration:underline;cursor:pointer;}
+/* ════ Plan, objectif, sauvegarde, ajout rapide (suite) ════ */
+.wk-plan-f{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:12px;margin-bottom:12px;}
+.wk-plan-f label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:600;color:var(--ts);}
+.wk-plan-f input{border-radius:12px;padding:11px 12px;font-size:14px;}
+.wk-pl-sum{margin-bottom:8px;}
+.wk-pl-j{font-size:12px;padding:8px 10px;border-radius:10px;margin-top:6px;color:var(--ts);border:1px solid var(--bo);background:var(--card2);}
+.wk-pl-j b{color:var(--tp);margin-right:6px;}
+.wk-pl-j.ko{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08);}
+.wk-pl-j.ok{border-color:rgba(52,211,153,.25);}
+@media(max-width:900px){.wk-plan-f{grid-template-columns:1fr;}}
+.rs-plan{display:flex;flex-direction:column;gap:3px;padding:13px 16px;border-radius:14px;margin-bottom:12px;font-size:13px;}
+.rs-plan span{font-size:12px;color:var(--ts);}
+.rs-plan.ko{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.45);color:#fecaca;animation:rsPulse 2.4s ease-in-out infinite;}
+.rs-plan.ok{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.28);color:#a7f3d0;}
+@keyframes rsPulse{50%{box-shadow:0 0 0 5px rgba(248,113,113,.12);}}
+.rs-goalcard{margin-bottom:12px !important;}
+.rs-goal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.rs-goal-ed,.rs-goal-cta{background:rgba(255,255,255,.05);border:1px solid var(--bo);color:#93c5fd;border-radius:11px;font-size:12px;font-weight:600;cursor:pointer;}
+.rs-goal-ed{padding:5px 11px;}
+.rs-goal-cta{width:100%;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;font-size:13px;}
+.rs-g{margin-top:10px;}.rs-g-t{display:flex;justify-content:space-between;font-size:12px;color:var(--ts);margin-bottom:5px;}
+.rs-g .dbar{height:7px;border-radius:7px;overflow:hidden;}.rs-g .dbar>div{height:100%;border-radius:7px;}
+.bk-ban{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:11px 14px;border-radius:14px;margin-bottom:12px;background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.35);font-size:12px;color:#fde68a;}
+.bk-ban button{background:#fbbf24;color:#1c1400;border:none;border-radius:10px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;}
+.qa-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--td);margin:4px 0 8px;}
+.qa-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+.qa-tags button{padding:9px 12px;border-radius:20px;border:1px solid var(--bo);background:rgba(255,255,255,.05);color:var(--ts);font-size:12px;font-weight:600;cursor:pointer;}
+.qa-tags .g.sel{border-color:#34d399;background:rgba(52,211,153,.16);color:#a7f3d0;}
+.qa-tags .e.sel{border-color:#f87171;background:rgba(248,113,113,.16);color:#fecaca;}
+.qa-photo{display:block;margin-top:10px;padding:12px;text-align:center;border:1px dashed rgba(255,255,255,.2);border-radius:14px;font-size:13px;color:var(--ts);cursor:pointer;}
+.qa-photo.on{border-color:#34d399;color:#a7f3d0;}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ CONNEXION — fond animé, carte vitrée ════ */
@@ -1023,10 +1054,9 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
     </div>
     <div class="side-cap">Intelligence ✨</div>
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
-      <button class="side-action accent" onclick="openCoach();rdToggleSidebar(false)"><span class="ti">✨</span> Coach IA — Résumé</button>
+      <button class="side-action accent" onclick="openCoach();rdToggleSidebar(false)"><span class="ti">✨</span> Bilan du coach</button>
       <button class="side-action" onclick="rdNewTrade();rdToggleSidebar(false)"><span class="ti">＋</span> Nouveau trade</button>
       <button class="side-action" onclick="downloadBilanPDF();rdToggleSidebar(false)"><span class="ti">📥</span> Télécharger le bilan PDF</button>
-      <button class="side-action" onclick="if(typeof exportAnnualPDF==='function')exportAnnualPDF();rdToggleSidebar(false)"><span class="ti">🖨️</span> Aperçu / Imprimer</button>
     </div>
     <div class="side-acc" id="side-account">
       <button class="side-acc-open" onclick="openAcctModal()" title="Mon compte et export" aria-label="Mon compte">
@@ -1052,7 +1082,6 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
         </div>
       </div>
       <div class="topbar-r">
-        <div class="badge">◈ LIVE</div>
         <button class="badge" id="logout-btn" onclick="doLogout()" style="display:none;cursor:pointer;background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:#f87171" title="Se déconnecter" aria-label="Se déconnecter">⎋ Déconnexion</button>
         <div class="badge" id="clockB" style="color:var(--cy);min-width:88px;text-align:center">--:--:--</div>
         <!-- GLOBAL YEAR SELECTOR -->
@@ -1238,8 +1267,17 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 
 <!-- ══ JOURNAL ══ -->
 <div id="semaine" class="sec" role="tabpanel" aria-label="Ma semaine">
+  <div class="bk-slot"></div>
   <div class="card wk-navbar" id="wk-nav"></div>
   <div class="card" style="margin-bottom:12px"><div id="wk-hero" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between"></div></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">📋 Mon plan de trading</div>
+    <div class="wk-plan-f">
+      <label>Trades max par jour<input id="pl-trades" inputmode="numeric" placeholder="ex : 3" oninput="planSave()"></label>
+      <label>Perte max par jour ($)<input id="pl-loss" inputmode="decimal" placeholder="ex : 1500" oninput="planSave()"></label>
+      <label>Paires autorisées<input id="pl-pairs" placeholder="EURUSD, XAUUSD (vide = toutes)" oninput="planSave()"></label>
+    </div>
+    <div id="wk-plan-res"></div>
+  </div>
   <div id="wk-kpi" class="wk-kpis"></div>
   <div class="card" style="margin-bottom:12px" id="wk-days"></div>
   <div class="wk-two" id="wk-pairs"></div>
@@ -1259,6 +1297,9 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 
 <div id="resume" class="sec" role="tabpanel" aria-label="Résumé">
 
+  <div class="bk-slot"></div>
+  <div id="rs-plan"></div>
+  <div id="rs-goal"></div>
   <div id="rs-insights"></div>
 
   <!-- ── RESULTAT ── -->
@@ -1630,7 +1671,6 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
     <button class="rep-tab" role="tab" onclick="showRepTab('rep-risk',this)">Risk</button>
     <button class="rep-tab" role="tab" onclick="showRepTab('rep-winsloss',this)">Wins vs Losses</button>
     <button class="rep-tab" role="tab" onclick="showRepTab('rep-compare',this)">Compare</button>
-    <button class="rep-tab" role="tab" onclick="showRepTab('rep-market',this)">Market Behavior</button>
     <button class="rep-tab" role="tab" onclick="showRepTab('rep-calendar',this)">Calendar</button>
   </div>
 
@@ -1734,14 +1774,6 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
           <tbody id="rep-cmp-tbody"></tbody>
         </table>
       </div>
-    </div>
-  </div>
-  <!-- ─ MARKET BEHAVIOR ─ -->
-  <div id="rep-market" class="rep-panel">
-    <div class="card" style="text-align:center;padding:40px 30px">
-      <div style="font-size:36px;margin-bottom:10px">🌐</div>
-      <div style="font-weight:700;font-size:15px;color:var(--tp);margin-bottom:8px">Market Behavior — bientôt</div>
-      <div style="font-size:13px;color:var(--ts);max-width:520px;margin:0 auto;line-height:1.6">Cet onglet croise tes trades avec le <b>comportement du marché</b> (mouvement du jour, gaps d'ouverture, type de journée). Il nécessite des <b>données de marché externes</b> (ex : indice de référence), qui ne sont pas encore connectées à BAKOU. On l'activera dès que la source de données sera branchée.</div>
     </div>
   </div>
   <!-- ─ CALENDAR ─ -->
@@ -2299,38 +2331,20 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
     <div id="qa-s3" style="display:none">
       <input id="qa-amt" class="qa-amt" type="text" inputmode="decimal" placeholder="Montant en $" autocomplete="off">
       <div class="qa-stars" id="qa-stars"><span onclick="qaStars(1)">★</span><span onclick="qaStars(2)">★</span><span onclick="qaStars(3)">★</span><span onclick="qaStars(4)">★</span><span onclick="qaStars(5)">★</span></div>
+      <div class="qa-lbl">Comment c'était ?</div>
+      <div class="qa-tags" id="qa-tags">
+        <button type="button" class="g" data-t="Discipliné" onclick="qaTag(this)">✅ Discipliné</button>
+        <button type="button" class="g" data-t="Patient" onclick="qaTag(this)">😌 Patient</button>
+        <button type="button" class="e" data-t="Impatience" onclick="qaTag(this)">⚡ Impatience</button>
+        <button type="button" class="e" data-t="Pas de setup" onclick="qaTag(this)">❓ Pas de setup</button>
+        <button type="button" class="e" data-t="Augmentation de lot" onclick="qaTag(this)">📈 Lot augmenté</button>
+        <button type="button" class="e" data-t="Peur" onclick="qaTag(this)">😨 Peur</button>
+      </div>
       <textarea id="qa-note" class="qa-note" rows="2" placeholder="Note rapide (optionnel)"></textarea>
+      <label class="qa-photo" id="qa-photo">📷 Ajouter une capture<input type="file" accept="image/*" onchange="qaPhoto(this)" style="display:none"></label>
     </div>
     <button class="qa-go" id="qa-go" onclick="qaNext()">Suivant</button>
     <button class="qa-full" onclick="qaFull()">Formulaire complet</button>
-  </div>
-</div>
-
-<!-- BIENVENUE / PREMIERS PAS -->
-<div class="mo" id="welcomeModal" role="dialog" aria-modal="true" aria-label="Bienvenue sur BAKOU">
-  <div class="mb" style="width:500px">
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="width:56px;height:56px;margin:0 auto 12px;border-radius:15px;overflow:hidden;box-shadow:0 10px 26px -10px rgba(37,99,235,.5)">
-        <img src="./assets/logo-bakou.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
-      </div>
-      <div style="font-size:20px;font-weight:800;color:var(--tp);letter-spacing:-.2px">Bienvenue sur BAKOU 👋</div>
-      <div style="font-size:13px;color:var(--ts);margin-top:6px;line-height:1.5">Trois minutes pour tout mettre en place.<br>Ensuite, chaque trade que tu notes travaille pour toi.</div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
-      <div class="wz-step"><div class="wz-n">1</div><div><div class="wz-t">Définis ton capital</div><div class="wz-d">Indispensable pour calculer ton risque, tes pourcentages et ta courbe de capital.</div></div></div>
-      <div class="wz-step"><div class="wz-n">2</div><div><div class="wz-t">Enregistre ton premier trade</div><div class="wz-d">Onglet Journal. Paire, session, résultat : 30 secondes suffisent.</div></div></div>
-      <div class="wz-step"><div class="wz-n">3</div><div><div class="wz-t">Regarde tes statistiques</div><div class="wz-d">Dès 10 à 20 trades, tes tendances se dessinent : où tu gagnes, ce qui te coûte.</div></div></div>
-    </div>
-
-    <div style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.28);border-radius:10px;padding:11px 13px;font-size:12px;color:var(--ts);line-height:1.55;margin-bottom:20px">
-      💡 <b style="color:var(--grb)">Le conseil qui change tout :</b> note tes trades <b>le jour même</b>, avec tes erreurs, même les mauvais. C'est en les taguant que BAKOU peut chiffrer ce qu'ils te coûtent.
-    </div>
-
-    <div style="display:flex;gap:10px;justify-content:center">
-      <button class="btn btn-p" onclick="wzStart()">🚀 Définir mon capital</button>
-      <button class="btn btn-g" onclick="wzClose()">Plus tard</button>
-    </div>
   </div>
 </div>
 
@@ -2508,7 +2522,7 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 <!-- COACH IA MODAL -->
 <div class="mo" id="coachModal" role="dialog" aria-modal="true" aria-label="Rapport coach IA">
   <div class="mb coach-mb">
-    <div class="mt" style="text-align:center">✨ Coach IA — Résumé de performance</div>
+    <div class="mt" style="text-align:center">✨ Bilan du coach</div>
     <div id="coach-body"></div>
     <div style="text-align:center;margin-top:18px">
       <button class="btn btn-g" onclick="document.getElementById('coachModal').classList.remove('show')">Fermer</button>
@@ -6835,6 +6849,8 @@ function qaPairesFavorites(){
 }
 function openQuick(){
   QA={step:1,pair:'',dir:'LONG',res:'',busy:false};
+  QA_TAGS=[]; QA_PHOTO=''; document.querySelectorAll('#qa-tags button').forEach(function(b){b.classList.remove('sel');});
+  var ph=document.getElementById('qa-photo'); if(ph){ ph.classList.remove('on'); ph.firstChild.textContent='📷 Ajouter une capture'; }
   var all=Object.keys(PC);
   document.getElementById('qa-other').innerHTML='<option value="">Autre paire…</option>'+all.map(function(p){return '<option>'+p+'</option>';}).join('');
   document.getElementById('qa-pairs').innerHTML=qaPairesFavorites().map(function(p){
@@ -6885,6 +6901,9 @@ async function qaNext(){
     document.getElementById('f-comm').value='';
     document.getElementById('f-notes').value=document.getElementById('qa-note').value;
     STAR=QA_STAR;
+    document.querySelectorAll('#perr-tags .tag.sel,#pgood-tags .tag.sel').forEach(function(t){t.classList.remove('sel');});
+    QA_TAGS.forEach(function(n){ document.querySelectorAll('#perr-tags .tag,#pgood-tags .tag').forEach(function(t){ if(t.textContent.trim()===n)t.classList.add('sel'); }); });
+    if(QA_PHOTO){ document.getElementById('av-prev').innerHTML='<img src="'+QA_PHOTO+'" style="max-width:100%;max-height:80px">'; }
     JOURNAL_MONTH_FILTER=null; GLOBAL_YEAR=now.getFullYear();
     var yd=document.getElementById('global-year-display'); if(yd)yd.textContent=GLOBAL_YEAR;
     await addTrade();
@@ -6939,6 +6958,103 @@ document.addEventListener('DOMContentLoaded',function(){
   var _ir=initResume;
   initResume=function(){ var r=_ir.apply(this,arguments); try{ rsInsights(); }catch(e){ console.warn('insights',e); } return r; };
 });
+
+// ═════════════════════════════════════════════════════════════════
+//  PLAN DE TRADING — tes 3 limites, vérifiées automatiquement
+// ═════════════════════════════════════════════════════════════════
+function planGet(){ try{ return JSON.parse(localStorage.getItem(lsKey('bk_plan'))||'null')||{}; }catch(e){ return {}; } }
+function planPaires(p){ return String(p.pairs||'').split(/[,;\s]+/).map(function(x){return x.trim().toUpperCase();}).filter(Boolean); }
+function planSave(){
+  var num=function(id){ var v=parseFloat(String(document.getElementById(id).value).replace(',','.')); return isNaN(v)||v<=0?null:v; };
+  try{ localStorage.setItem(lsKey('bk_plan'),JSON.stringify({maxTrades:num('pl-trades'),maxLoss:num('pl-loss'),pairs:document.getElementById('pl-pairs').value})); }catch(e){}
+  wkPlan(); rsPlanAlert();
+}
+// Les écarts au plan pour les trades d'une journée
+function planEcarts(ts,p){
+  var out=[], net=ts.reduce(function(s,t){return s+(parseFloat(t.pnl_amt)||0);},0), ok=planPaires(p);
+  if(p.maxTrades&&ts.length>p.maxTrades) out.push(ts.length+' trades (max '+p.maxTrades+')');
+  if(p.maxLoss&&net<=-p.maxLoss) out.push('perte de '+rsArgent(net).replace('+','')+' (max −$'+Math.round(p.maxLoss)+')');
+  if(ok.length){ var hors=ts.filter(function(t){return ok.indexOf(String(t.pair).toUpperCase())<0;});
+    if(hors.length) out.push(hors.length+' trade'+(hors.length>1?'s':'')+' hors paires autorisées ('+hors.map(function(t){return t.pair;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ')+')'); }
+  return out;
+}
+function wkPlanInit(){
+  var p=planGet(), set=function(id,v){ var e=document.getElementById(id); if(e)e.value=(v==null?'':v); };
+  set('pl-trades',p.maxTrades); set('pl-loss',p.maxLoss); set('pl-pairs',p.pairs);
+}
+function wkPlan(){
+  var box=document.getElementById('wk-plan-res'); if(!box)return;
+  var p=planGet(), actif=p.maxTrades||p.maxLoss||planPaires(p).length;
+  if(!actif){ box.innerHTML='<div style="font-size:12px;color:var(--td)">Fixe au moins une limite : l\'app vérifiera chaque jour si tu la respectes.</div>'; return; }
+  var a=wkDebut(WK_OFF), S=wkTrades(WK_OFF), jours=[], respectes=0, vus=0;
+  for(var i=0;i<7;i++){ var d=new Date(a); d.setDate(a.getDate()+i);
+    var ts=S.filter(function(t){return tDate(t).toDateString()===d.toDateString();});
+    if(!ts.length)continue; vus++;
+    var e=planEcarts(ts,p); if(!e.length)respectes++;
+    jours.push('<div class="wk-pl-j '+(e.length?'ko':'ok')+'"><b>'+WK_JOURS[d.getDay()].slice(0,3)+' '+d.getDate()+'</b> '+(e.length?'⛔ '+e.join(' · '):'✅ plan respecté')+'</div>'); }
+  box.innerHTML=(vus?'<div class="wk-pl-sum"><span class="cu" style="font-size:28px;font-weight:800;color:'+(respectes===vus?RS_VERT:(respectes>=vus/2?'#fbbf24':RS_ROUGE))+'">'+respectes+' / '+vus+'</span> <span style="color:var(--ts);font-size:12px">jours où tu as respecté ton plan</span></div>'+jours.join(''):'<div style="font-size:12px;color:var(--td)">Pas encore de trade cette semaine.</div>');
+}
+// Alerte du jour sur le Résumé
+function rsPlanAlert(){
+  var box=document.getElementById('rs-plan'); if(!box)return;
+  var p=planGet(), today=T.filter(function(t){return tDate(t).toDateString()===new Date().toDateString();});
+  if(!today.length||!(p.maxTrades||p.maxLoss||planPaires(p).length)){ box.innerHTML=''; return; }
+  var e=planEcarts(today,p), atteint=(p.maxTrades&&today.length===p.maxTrades);
+  if(!e.length&&!atteint){ box.innerHTML='<div class="rs-plan ok">✅ Plan respecté aujourd\'hui · '+today.length+' trade'+(today.length>1?'s':'')+'</div>'; return; }
+  box.innerHTML='<div class="rs-plan ko">🛑 <b>'+(e.length?'Plan dépassé aujourd\'hui':'Limite de trades atteinte')+'</b><span>'+(e.length?e.join(' · '):'Tu as pris tes '+p.maxTrades+' trades du jour. Arrête-toi là.')+'</span></div>';
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  OBJECTIF DU MOIS — visible dès le Résumé
+// ═════════════════════════════════════════════════════════════════
+function rsObjectif(){
+  var box=document.getElementById('rs-goal'); if(!box)return;
+  var now=new Date(); if(GLOBAL_YEAR!==now.getFullYear()){ box.innerHTML=''; return; }
+  var m=now.getMonth(), g=aGetGoals(m), ms=aMonthStats(m);
+  var vide=!g||(g.winRate==null&&g.totalR==null&&g.maxRiskPct==null&&g.netPnl==null);
+  var nom=ANA_MOIS[m];
+  if(vide){ box.innerHTML='<button class="rs-goal-cta" onclick="ANA_MONTH=null;openGoalModal()">🎯 Fixe ton objectif de '+nom+' <span>→</span></button>'; return; }
+  var ligne=function(lbl,val,cible,pct,txt){ pct=Math.max(0,Math.min(100,pct)); var done=pct>=100;
+    return '<div class="rs-g"><div class="rs-g-t"><span>'+lbl+'</span><b style="color:'+(done?RS_VERT:'var(--tp)')+'">'+val+' <span style="color:var(--td);font-weight:500">/ '+cible+'</span></b></div>'
+      +'<div class="dbar"><div style="width:'+pct.toFixed(0)+'%;background:'+(done?'var(--gr)':'linear-gradient(90deg,#2563eb,#60a5fa)')+';transition:width .9s cubic-bezier(.2,.8,.2,1)"></div></div></div>'; };
+  var l=[];
+  if(g.netPnl!=null){ var v=ms?ms.netPnl:0; l.push(ligne('Résultat net',rsArgent(v),'$'+Math.round(g.netPnl).toLocaleString('fr-FR'),g.netPnl>0?v/g.netPnl*100:0)); }
+  if(g.winRate!=null){ var w=ms&&ms.wr!==null?ms.wr:0; l.push(ligne('Taux de réussite',w.toFixed(0)+' %',g.winRate+' %',g.winRate>0?w/g.winRate*100:0)); }
+  if(g.totalR!=null){ var r=ms?ms.sumR:0; l.push(ligne('Total R',(r>=0?'+':'−')+Math.abs(r).toFixed(1)+' R',g.totalR+' R',g.totalR>0?r/g.totalR*100:0)); }
+  if(g.maxRiskPct!=null){ var nb=ms?ms.S.filter(function(t){return (parseFloat(t.risk_pct)||0)>g.maxRiskPct;}).length:0;
+    l.push('<div class="rs-g"><div class="rs-g-t"><span>Risque max '+g.maxRiskPct+' %</span><b style="color:'+(nb?RS_ROUGE:RS_VERT)+'">'+(nb?nb+' dépassement'+(nb>1?'s':''):'respecté')+'</b></div></div>'); }
+  box.innerHTML='<div class="card rs-goalcard"><div class="rs-goal-h"><div class="ct" style="margin:0">🎯 Objectif de '+nom+'</div><button class="rs-goal-ed" onclick="ANA_MONTH=null;openGoalModal()">Modifier</button></div>'+l.join('')+'</div>';
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  SAUVEGARDE — rappel quand ça fait plus d'une semaine
+// ═════════════════════════════════════════════════════════════════
+function bkBanner(){
+  var last=0; try{ last=parseInt(localStorage.getItem('bk_last'))||0; }catch(e){}
+  var jours=last?Math.floor((Date.now()-last)/86400000):null, html='';
+  if(T.length>0&&(last===0||jours>=7))
+    html='<div class="bk-ban"><span>💾 '+(last===0?'Tu n\'as encore jamais sauvegardé tes données.':'Dernière sauvegarde il y a <b>'+jours+' jours</b>.')+'</span><button onclick="exportAllDataJSON()">Sauvegarder maintenant</button></div>';
+  document.querySelectorAll('.bk-slot').forEach(function(e){ e.innerHTML=html; });
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var _e=exportAllDataJSON;
+  exportAllDataJSON=function(){ var r=_e.apply(this,arguments); try{ localStorage.setItem('bk_last',String(Date.now())); }catch(e){} bkBanner(); return r; };
+  var _g=saveGoals;
+  saveGoals=function(){ var r=_g.apply(this,arguments); try{ rsObjectif(); }catch(e){} return r; };
+  var _i=initResume;
+  initResume=function(){ var r=_i.apply(this,arguments); try{ rsPlanAlert(); rsObjectif(); bkBanner(); }catch(e){ console.warn('resume+',e); } return r; };
+  var _s=initSemaine;
+  initSemaine=function(){ var r=_s.apply(this,arguments); try{ wkPlanInit(); wkPlan(); bkBanner(); }catch(e){ console.warn('semaine+',e); } return r; };
+});
+
+// Ajout rapide : étiquettes de comportement + capture
+var QA_TAGS=[];
+function qaTag(b){ b.classList.toggle('sel'); QA_TAGS=Array.prototype.map.call(document.querySelectorAll('#qa-tags .sel'),function(x){return x.dataset.t;}); }
+var QA_PHOTO='';
+function qaPhoto(inp){ var f=inp.files&&inp.files[0]; if(!f)return;
+  var r=new FileReader(); r.onload=function(ev){ shrinkDataUrl(ev.target.result,1200,0.72).then(function(u){
+    QA_PHOTO=u; var l=document.getElementById('qa-photo'); l.classList.add('on'); l.firstChild.textContent='✅ Capture ajoutée (touche pour changer)'; }); };
+  r.readAsDataURL(f); }
 document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
