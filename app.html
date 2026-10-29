@@ -832,6 +832,43 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 .app [style*="color:#1d4ed8"],.mo [style*="color:#1d4ed8"]{color:#93c5fd !important;}
 .app [style*="background:#fff"],.mo [style*="background:#fff"]{background:rgba(255,255,255,.05) !important;}
 .app [style*="border:1px solid #e4e7ef"],.mo [style*="border:1px solid #e4e7ef"]{border-color:var(--bo) !important;}
+/* ════ PC : contenu centré, raccourci clavier ════ */
+@media(min-width:981px){
+  .main{max-width:1560px;margin-left:auto;margin-right:auto;}
+  .fab .fab-k{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-left:4px;border-radius:6px;background:rgba(255,255,255,.2);font-size:11px;font-weight:800;}
+  .bnav{display:none !important;}
+}
+/* ════ MOBILE : barre du bas, entête compacte, plein écran ════ */
+.bnav{display:none;}
+.fab .fab-k{display:none;}
+@media(min-width:981px){.fab .fab-k{display:inline-flex;}}
+@media(max-width:980px){
+  .fab{display:none !important;}
+  .menu-btn{display:none !important;}
+  .topbar{padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px !important;flex-wrap:nowrap !important;gap:8px;}
+  .topbar>div:first-child{min-width:0;flex:1 1 auto;overflow:hidden;}
+  .topbar .topbar-l{min-width:0;}
+  #global-year-display{min-width:34px !important;}
+  .tz-kpis .tz-card:last-child:nth-child(odd){grid-column:1/-1;}
+  .topbar-title{font-size:17px !important;font-weight:800;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .topbar-sub{font-size:9px !important;letter-spacing:1.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .topbar-r{flex-wrap:nowrap !important;gap:6px !important;margin-left:auto;flex-shrink:0;}
+  .topbar-r .badge,#logout-btn,.topbar-r>.btn{display:none !important;}
+  #account-label{max-width:52px !important;}
+  #account-menu{top:calc(env(safe-area-inset-top,0px) + 62px) !important;right:12px !important;}
+  .main{padding:14px 14px calc(104px + env(safe-area-inset-bottom,0px)) !important;}
+  .bnav{display:flex;position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:9000;align-items:center;justify-content:space-around;padding:8px 6px;border-radius:26px;background:rgba(10,15,30,.82);-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);border:1px solid rgba(255,255,255,.1);box-shadow:0 18px 44px -12px rgba(0,0,0,.85),0 0 0 1px rgba(96,165,250,.05) inset;}
+  .bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:#7e8aab;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:.2px;padding:4px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .2s;}
+  .bnav button i{font-style:normal;font-size:19px;line-height:1;filter:grayscale(1) brightness(1.3);transition:transform .2s,filter .2s;}
+  .bnav button.on{color:#93c5fd;}
+  .bnav button.on i{filter:none;transform:translateY(-2px);text-shadow:0 0 14px rgba(96,165,250,.8);}
+  .bnav .bnav-plus{flex:0 0 58px;}
+  .bnav .bnav-plus b{display:flex;align-items:center;justify-content:center;width:52px;height:52px;margin-top:-26px;border-radius:50%;font-size:26px;font-weight:400;color:#fff;background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 12px 28px -6px rgba(59,130,246,.9),0 0 0 5px rgba(6,9,19,.9);}
+  .bnav .bnav-plus:active b{transform:scale(.94);}
+  .sidebar{padding-top:calc(env(safe-area-inset-top,0px) + 12px);}
+  .tz-card{min-height:104px;}
+  .tz-big{font-size:25px;}
+}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ CONNEXION — fond animé, carte vitrée ════ */
@@ -2439,7 +2476,14 @@ function buildCoachReport(){
 </script>
 
 <!-- QUICK ACTION FAB -->
-<button class="fab" onclick="rdNewTrade()"><span class="fab-ic">＋</span> Nouveau Trade</button>
+<button class="fab" onclick="rdNewTrade()" title="Raccourci : N"><span class="fab-ic">＋</span> Nouveau Trade<span class="fab-k">N</span></button>
+<nav class="bnav" aria-label="Navigation mobile">
+  <button data-g="resume" onclick="showGroupe('resume');rdToggleSidebar(false)"><i>📊</i><span>Résumé</span></button>
+  <button data-g="journal" onclick="showGroupe('journal');rdToggleSidebar(false)"><i>✦</i><span>Journal</span></button>
+  <button class="bnav-plus" onclick="rdNewTrade()" aria-label="Nouveau trade"><b>＋</b></button>
+  <button data-g="analyse" onclick="showGroupe('analyse');rdToggleSidebar(false)"><i>◈</i><span>Analyse</span></button>
+  <button data-g="menu" onclick="rdToggleSidebar()"><i>☰</i><span>Menu</span></button>
+</nav>
 
 <!-- REDESIGN-ONLY HELPERS (le script principal n'est pas modifié) -->
 <script>
@@ -2472,6 +2516,23 @@ function rdNewTrade(){
     if(f)f.scrollIntoView({behavior:'smooth',block:'center'});
   },140);
 }
+
+// Barre du bas (mobile) : met en évidence le groupe actif
+document.addEventListener('DOMContentLoaded',function(){
+  var _sg=showGroupe;
+  showGroupe=function(cle){
+    var r=_sg.apply(this,arguments);
+    document.querySelectorAll('.bnav button[data-g]').forEach(function(b){b.classList.toggle('on',b.dataset.g===cle);});
+    return r;
+  };
+  document.addEventListener('keydown',function(e){
+    if(e.ctrlKey||e.metaKey||e.altKey||(e.key!=='n'&&e.key!=='N'))return;
+    var t=e.target,tag=(t&&t.tagName)||'';
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(t&&t.isContentEditable))return;
+    if(document.querySelector('.mo.show'))return;
+    e.preventDefault();rdNewTrade();
+  });
+});
 </script>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
