@@ -1057,6 +1057,7 @@ html.compact .rs-in{padding:9px 11px;}html.compact .mo-d{min-height:54px;}
   .td-big{font-size:40px;}
   .topbar{transition:transform .28s cubic-bezier(.2,.8,.2,1);}.topbar.hide{transform:translateY(-112%);}
 }
+.toast{pointer-events:none;}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ THEME CLAIR (interrupteur dans « Mon compte » et dans le menu) ════ */
@@ -6658,6 +6659,17 @@ function hideLogin(){const g=document.getElementById('login-gate');if(g)g.style.
 function lgMsg(type,html){const m=document.getElementById('lg-msg');if(!m)return;if(!type){m.className='lg2-msg';m.style.display='none';m.innerHTML='';return;}m.className='lg2-msg '+type;m.style.display='block';m.innerHTML=html;}
 function lgBusy(on,txt){const b=document.getElementById('lg-btn'),t=document.getElementById('lg-btn-txt');if(!b)return;b.disabled=!!on;b.classList.toggle('loading',!!on);if(t&&txt)t.textContent=txt;}
 function lgTogglePw(id,btn){const inp=document.getElementById(id);if(!inp)return;const show=inp.type==='password';inp.type=show?'text':'password';btn.textContent=show?'🙈':'👁';btn.setAttribute('aria-label',show?'Masquer le mot de passe':'Afficher le mot de passe');}
+// Traduit les erreurs Supabase (souvent en anglais) en messages clairs
+function lgErrFr(err){
+  const m=String((err&&err.message)||err||'').toLowerCase();
+  if(m.indexOf('failed to fetch')>=0||m.indexOf('networkerror')>=0||m.indexOf('load failed')>=0||m.indexOf('network request failed')>=0||m.indexOf('abort')>=0)
+    return '🔌 Impossible de joindre le serveur. Vérifie ta connexion internet et réessaie dans un instant.';
+  if(m.indexOf('invalid login credentials')>=0)return 'Email ou mot de passe incorrect.';
+  if(m.indexOf('email not confirmed')>=0)return 'Ton email n\'est pas encore confirmé — clique sur le lien reçu par email (regarde aussi tes spams), ';
+  if(m.indexOf('rate limit')>=0||m.indexOf('too many requests')>=0||m.indexOf('security purposes')>=0)return 'Trop de tentatives — patiente une minute puis réessaie.';
+  if(m.indexOf('is invalid')>=0||m.indexOf('invalid format')>=0||m.indexOf('unable to validate email')>=0)return 'Adresse email invalide — vérifie la saisie.';
+  return (err&&err.message)?('Erreur : '+err.message):'Erreur inconnue — réessaie.';
+}
 // Ping du serveur au chargement : si le backend est KO, on le dit clairement
 async function lgHealthCheck(){
   if(!sb)return;
