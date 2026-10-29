@@ -1007,6 +1007,19 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 .sec.active{animation:secIn .38s cubic-bezier(.2,.8,.2,1) both;}
 .sec.active>:nth-child(2){animation-delay:.03s;}.sec.active>:nth-child(3){animation-delay:.06s;}.sec.active>:nth-child(4){animation-delay:.09s;}.sec.active>:nth-child(5){animation-delay:.12s;}.sec.active>:nth-child(n+6){animation-delay:.15s;}
 @media(prefers-reduced-motion:reduce){.sec.active{animation:none !important;}}
+/* ════ Mon mois, prévu contre réalisé ════ */
+.mo-head,.mo-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.mo-head{margin-bottom:6px;}.mo-head i{font-style:normal;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--td);text-align:center;}
+.mo-d{min-height:68px;border-radius:12px;padding:7px 8px;background:var(--card2);border:1px solid var(--bo);display:flex;flex-direction:column;justify-content:space-between;}
+.mo-d span{font-size:11px;color:var(--ts);}.mo-d b{font-size:14px;font-weight:800;color:var(--tp);font-variant-numeric:tabular-nums;}.mo-d em{font-style:normal;font-size:9px;color:var(--ts);}
+.mo-x{visibility:hidden;}
+@media(max-width:700px){.mo-grid,.mo-head{gap:3px;}.mo-d{min-height:52px;padding:4px 4px;border-radius:8px;}.mo-d b{font-size:10px;}.mo-d em{display:none;}.mo-d span{font-size:9px;}}
+.ex-bar{display:flex;height:14px;border-radius:14px;overflow:hidden;gap:2px;margin-bottom:10px;}.ex-bar i{display:block;height:100%;}
+.ex-leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11px;color:var(--ts);margin-bottom:12px;}.ex-leg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;}.ex-leg b{color:var(--tp);}.ex-leg em{font-style:normal;color:var(--td);}
+.ex-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}.ex-tiles div{background:var(--card2);border:1px solid var(--bo);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
+.ex-tiles span{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--td);}.ex-tiles b{font-size:18px;font-variant-numeric:tabular-nums;}
+@media(max-width:700px){.ex-tiles{grid-template-columns:1fr 1fr;}}
+@media(max-width:900px){#mo-kpi{grid-template-columns:repeat(2,1fr) !important;}}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ THEME CLAIR (interrupteur dans « Mon compte » et dans le menu) ════ */
@@ -1153,6 +1166,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(37,
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
       <button class="tab active" role="tab" aria-selected="true" data-groupe="resume" data-title="Résumé" data-sub="L'essentiel en un coup d'oeil" onclick="showGroupe('resume');rdToggleSidebar(false)"><span class="ti">📊</span> Résumé</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="semaine" data-title="Ma semaine" data-sub="Ta révision hebdomadaire" onclick="showGroupe('semaine');rdToggleSidebar(false)"><span class="ti">🗓</span> Ma semaine</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="mois" data-title="Mon mois" data-sub="Ta révision mensuelle" onclick="showGroupe('mois');rdToggleSidebar(false)"><span class="ti">📅</span> Mon mois</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="dashboard" data-title="Tableau de bord" data-sub="Vue d'ensemble" onclick="showGroupe('dashboard');rdToggleSidebar(false)"><span class="ti">⬡</span> Tableau de bord</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="journal" data-title="Journal" data-sub="Saisir et retrouver tes trades" onclick="showGroupe('journal');rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
       <button class="tab" role="tab" aria-selected="false" data-groupe="analyse" data-title="Analyse" data-sub="Où est ton edge" onclick="showGroupe('analyse');rdToggleSidebar(false)"><span class="ti">◈</span> Analyse</button>
@@ -1375,6 +1389,27 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(37,
 </div>
 
 <!-- ══ JOURNAL ══ -->
+<div id="mois" class="sec" role="tabpanel" aria-label="Mon mois">
+  <div class="card wk-navbar" id="mo-nav"></div>
+  <div class="card" style="margin-bottom:12px"><div id="mo-hero" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between"></div></div>
+  <div id="mo-kpi" class="wk-kpis" style="grid-template-columns:repeat(4,1fr)"></div>
+  <div class="card" style="margin-bottom:12px" id="mo-goal"></div>
+  <div class="card" style="margin-bottom:12px" id="mo-cal"></div>
+  <div class="card" style="margin-bottom:12px" id="mo-weeks"></div>
+  <div class="wk-two" id="mo-pairs"></div>
+  <div class="wk-two" id="mo-psy"></div>
+  <div class="wk-two" id="mo-top"></div>
+  <div class="card" style="margin-bottom:12px" id="mo-ins"></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">📈 Les 12 derniers mois</div><div style="position:relative;height:180px"><canvas id="moHChart"></canvas></div></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">✍️ Ton bilan du mois</div>
+    <div class="wk-notes">
+      <label>Ce qui a bien marché<textarea id="mo-n-ok" oninput="moNoteSave('ok',this)" placeholder="Mes progrès, mes bons trades…"></textarea></label>
+      <label>Ce que je dois corriger<textarea id="mo-n-mal" oninput="moNoteSave('mal',this)" placeholder="Ce qui m'a coûté ce mois-ci…"></textarea></label>
+      <label>Mon cap pour le mois prochain<textarea id="mo-n-regle" oninput="moNoteSave('regle',this)" placeholder="L'objectif et la règle à tenir"></textarea></label>
+    </div>
+    <div style="font-size:10px;color:var(--td);margin-top:8px">Enregistré automatiquement dans ce navigateur, mois par mois.</div></div>
+</div>
+
 <div id="semaine" class="sec" role="tabpanel" aria-label="Ma semaine">
   <div class="bk-slot"></div>
   <div class="card wk-navbar" id="wk-nav"></div>
@@ -1434,6 +1469,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(37,
   <div id="rs-kpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:12px"></div>
 
   <div id="rs-err"></div>
+  <div id="rs-exec"></div>
   <div id="rs-year"></div>
 
   <!-- ── COURBE DE CAPITAL ── -->
@@ -3080,6 +3116,8 @@ const GROUPES=[
    vues:[{id:'resume',nom:'Résumé'}]},
   {cle:'semaine', titre:"Ma semaine",      sous:"Ta révision hebdomadaire",
    vues:[{id:'semaine',nom:'Semaine'}]},
+  {cle:'mois',    titre:"Mon mois",        sous:"Ta révision mensuelle",
+   vues:[{id:'mois',nom:'Mois'}]},
   {cle:'dashboard',titre:"Tableau de bord",sous:"Vue d'ensemble",
    vues:[{id:'dashboard',nom:"Vue d'ensemble"}]},
   {cle:'journal',  titre:"Journal",       sous:"Saisir et retrouver tes trades",
@@ -3099,6 +3137,7 @@ const DERNIERE_VUE={};   // on revient sur la derniere vue consultee dans chaque
 function initSection(id){
   if(id==='resume')setTimeout(initResume,100);
   else if(id==='semaine')setTimeout(initSemaine,100);
+  else if(id==='mois')setTimeout(initMois,100);
   else if(id==='bilan')setTimeout(initBilan,100);
   else if(id==='analyse')setTimeout(initAnalyse,100);
   else if(id==='setups')setTimeout(initSetups,100);
@@ -7351,6 +7390,159 @@ document.addEventListener('DOMContentLoaded',function(){
   var _i=initResume; initResume=function(){ var r=_i.apply(this,arguments); try{ rsAnnee(); setTimeout(yrCentre,60); heroEtat(); }catch(e){ console.warn('design',e); } return r; };
   var _s=initSemaine; initSemaine=function(){ var r=_s.apply(this,arguments); try{ heroEtat(); }catch(e){} return r; };
   applyTheme(document.documentElement.getAttribute('data-theme')==='light'?'light':'dark',false);
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  PRÉVU CONTRE RÉALISÉ — comment tu sors de tes trades
+//  Le mode de clôture (TP, SL, break even, manuel) dit si tu laisses
+//  courir tes gagnants ou si tu les coupes avant leur objectif.
+// ═════════════════════════════════════════════════════════════════
+function rsExecution(){
+  var box=document.getElementById('rs-exec'); if(!box)return;
+  var TY=T.filter(function(t){return parseInt(t.trade_year)===GLOBAL_YEAR;});
+  if(TY.length<8){ box.innerHTML=''; return; }
+  var cl=function(c){return TY.filter(function(t){return t.cl===c;});};
+  var tp=cl('TP'), sl=cl('SL'), be=cl('BE'), man=cl('MANUEL');
+  var win=function(a){return a.filter(function(t){return t.result==='WIN';});}, loss=function(a){return a.filter(function(t){return t.result==='LOSS';});};
+  var R=function(a){ return a.length?mean(a.map(computeActualR)):null; };
+  var mw=win(man), ml=loss(man), rTP=R(win(tp)), rMW=R(mw), rSL=R(loss(sl)), rML=R(ml);
+  var n=TY.length, seg=[['TP',tp.length,'#34d399'],['SL',sl.length,'#f87171'],['Break even',be.length,'#fbbf24'],['Manuel',man.length,'#60a5fa']];
+  var f1=function(v){return v===null?'—':(v>=0?'+':'−')+Math.abs(v).toFixed(2)+' R';};
+  var msg=[];
+  if(mw.length>=3&&rTP>0&&rMW!==null){
+    var cap=Math.max(0,rMW/rTP*100), risk=mean(mw.map(function(t){return parseFloat(t.risk_amt)||(CAP*(DRSK||1)/100);}));
+    if(cap<85){ var manque=(rTP-rMW)*mw.length*risk;
+      msg.push('✂️ Quand tu fermes un gagnant à la main, tu prends <b>'+cap.toFixed(0)+' %</b> de ce qu\'un TP rapporte ('+f1(rMW)+' contre '+f1(rTP)+'). Sur '+mw.length+' trades, ça représente environ <b>'+rsArgent(manque)+'</b> laissés sur la table.'); }
+    else msg.push('✅ Tes gagnants fermés à la main rapportent presque autant qu\'un TP ('+f1(rMW)+' contre '+f1(rTP)+') : tu sors au bon moment.'); }
+  if(ml.length>=3&&rSL!==null&&rML!==null){
+    msg.push(rML>rSL?'🛡️ Fermer une perte à la main te coûte '+f1(rML)+' contre '+f1(rSL)+' quand le stop est touché : bon réflexe.':'⚠️ Tes pertes fermées à la main coûtent '+f1(rML)+', plus que le stop ('+f1(rSL)+') : tu les laisses courir.'); }
+  if(man.length/n>=.3)msg.push('⚡ <b>'+(man.length/n*100).toFixed(0)+' %</b> de tes trades sont fermés à la main : le plan de sortie compte moins que ton ressenti.');
+  box.innerHTML='<div class="card" style="margin-bottom:12px"><div class="ct">🎯 Prévu contre réalisé</div>'
+    +'<div style="font-size:11px;color:var(--ts);margin:-4px 0 12px">Comment se terminent tes trades : à l\'objectif, au stop, ou à la main.</div>'
+    +'<div class="ex-bar">'+seg.map(function(s){ return s[1]?'<i style="width:'+(s[1]/n*100)+'%;background:'+s[2]+'" title="'+s[0]+' : '+s[1]+'"></i>':''; }).join('')+'</div>'
+    +'<div class="ex-leg">'+seg.map(function(s){ return '<span><i style="background:'+s[2]+'"></i>'+s[0]+' <b>'+s[1]+'</b> <em>'+(s[1]/n*100).toFixed(0)+' %</em></span>'; }).join('')+'</div>'
+    +'<div class="ex-tiles">'
+      +'<div><span>Gagnants au TP</span><b style="color:'+RS_VERT+'">'+f1(rTP)+'</b></div>'
+      +'<div><span>Gagnants à la main</span><b>'+f1(rMW)+'</b></div>'
+      +'<div><span>Pertes au stop</span><b style="color:'+RS_ROUGE+'">'+f1(rSL)+'</b></div>'
+      +'<div><span>Pertes à la main</span><b>'+f1(rML)+'</b></div></div>'
+    +(msg.length?'<ul class="wk-ul" style="margin-top:12px">'+msg.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>':'')+'</div>';
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  MON MOIS — la révision mensuelle
+// ═════════════════════════════════════════════════════════════════
+var MO_OFF=0, MO_NOMS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+function moDebut(off){ var d=new Date(); return new Date(d.getFullYear(),d.getMonth()+off,1); }
+function moTrades(off){ var a=moDebut(off), b=new Date(a.getFullYear(),a.getMonth()+1,1);
+  return sortedByDate(T.filter(function(t){ var d=tDate(t); return d>=a&&d<b; })); }
+function moCle(off){ var a=moDebut(off); return a.getFullYear()+'-'+(a.getMonth()+1); }
+function moNav(dir){ MO_OFF=Math.min(0,MO_OFF+dir); initMois(); }
+function moAuj(){ MO_OFF=0; initMois(); }
+function moNoteSave(c,el){ try{ localStorage.setItem(lsKey('mo_'+moCle(MO_OFF)+'_'+c),el.value); }catch(e){} }
+function moNoteGet(c){ try{ return localStorage.getItem(lsKey('mo_'+moCle(MO_OFF)+'_'+c))||''; }catch(e){ return ''; } }
+function moCompact(v){ var a=Math.abs(v); return (v<0?'−':'+')+(a>=1000?(a/1000).toFixed(a>=10000?0:1)+'k':Math.round(a)); }
+
+function initMois(){
+  var a=moDebut(MO_OFF), S=moTrades(MO_OFF), SP=moTrades(MO_OFF-1), P=perf(S), PP=perf(SP);
+  var navEl=document.getElementById('mo-nav'); if(!navEl)return;
+  navEl.innerHTML='<button class="wk-arr" onclick="moNav(-1)" aria-label="Mois précédent">‹</button>'
+    +'<div class="wk-title"><div class="wk-t1">'+MO_NOMS[a.getMonth()]+' '+a.getFullYear()+(MO_OFF===0?' <span class="wk-now">en cours</span>':'')+'</div>'
+    +'<div class="wk-t2">'+(S.length?S.length+' trade'+(S.length>1?'s':''):'aucun trade')+'</div></div>'
+    +'<button class="wk-arr" onclick="moNav(1)" aria-label="Mois suivant"'+(MO_OFF===0?' disabled':'')+'>›</button>'
+    +(MO_OFF!==0?'<button class="btn btn-g wk-today" onclick="moAuj()">Ce mois-ci</button>':'');
+  var ids=['mo-hero','mo-kpi','mo-goal','mo-cal','mo-weeks','mo-pairs','mo-psy','mo-ins','mo-top'];
+  if(!S.length){
+    document.getElementById('mo-hero').innerHTML='<div style="padding:22px 4px;color:var(--td);font-size:13px">Aucun trade ce mois-là.</div>';
+    ids.slice(1).forEach(function(id){ var e=document.getElementById(id); if(e)e.innerHTML=''; });
+    ['moW','moH'].forEach(DC); moHist(); moBilan(); return; }
+
+  var pct=CAP>0?P.net/CAP*100:0, coul=P.net>=0?RS_VERT:RS_ROUGE, delta=P.net-PP.net;
+  document.getElementById('mo-hero').innerHTML=
+      '<div><div style="font-size:10px;letter-spacing:2px;color:var(--td);text-transform:uppercase">Résultat net de '+MO_NOMS[a.getMonth()].toLowerCase()+'</div>'
+    +'<div class="cu" style="font-size:44px;font-weight:800;line-height:1.1;color:'+coul+';font-variant-numeric:tabular-nums">'+rsArgent(P.net)+'</div>'
+    +'<div style="font-size:12px;color:var(--ts);margin-top:3px">'+wkSigne(pct,2)+' % du capital · '+P.n+' trades</div></div>'
+    +'<div style="text-align:right;font-size:12px;color:var(--ts)">'+(SP.length?'<span style="color:'+(delta>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(delta)+'</span> vs '+MO_NOMS[moDebut(MO_OFF-1).getMonth()].toLowerCase()+' ('+rsArgent(PP.net)+')':'Pas de trades le mois précédent')+'</div>';
+
+  var pf=P.pfEtiq, cmp=function(v,pv,u){ return SP.length?(v-pv>=0?'+':'−')+Math.abs(v-pv).toFixed(u)+' vs mois précédent':'—'; };
+  document.getElementById('mo-kpi').innerHTML=
+      rsTuile('Taux de réussite',P.wrDecides.toFixed(0)+' %',cmp(P.wrDecides,PP.wrDecides,0).replace('vs','pts vs'),null)
+    + rsTuile('Profit factor',pf===null?'—':(isFinite(pf)?pf.toFixed(2):'∞'),(pf!==null&&(!isFinite(pf)||pf>=1))?'Tu gagnes plus que tu ne perds':'Tu perds plus que tu ne gagnes',(pf!==null&&(!isFinite(pf)||pf>=1))?RS_VERT:RS_ROUGE)
+    + rsTuile('Total R',wkSigne(P.totalR,2)+' R',wkSigne(P.rMoyen,2)+' R par trade',P.totalR>=0?RS_VERT:RS_ROUGE)
+    + rsTuile('Par trade',rsArgent(P.esperance),'Espérance du mois',P.esperance>=0?RS_VERT:RS_ROUGE);
+
+  // objectif de ce mois-là
+  var g=null; try{ g=JSON.parse(localStorage.getItem('tr_goals_'+(ACTIVE_ACCOUNT?ACTIVE_ACCOUNT.id:'default')+'_'+a.getFullYear()+'_'+a.getMonth())||'null'); }catch(e){}
+  var gl=[]; if(g){
+    var lg=function(l,v,c,p){ p=Math.max(0,Math.min(100,p)); return '<div class="rs-g"><div class="rs-g-t"><span>'+l+'</span><b style="color:'+(p>=100?RS_VERT:'var(--tp)')+'">'+v+' <span style="color:var(--td);font-weight:500">/ '+c+'</span></b></div><div class="dbar"><div style="width:'+p.toFixed(0)+'%;background:'+(p>=100?'var(--gr)':'linear-gradient(90deg,#2563eb,#60a5fa)')+'"></div></div></div>'; };
+    if(g.netPnl>0)gl.push(lg('Résultat net',rsArgent(P.net),'$'+Math.round(g.netPnl).toLocaleString('fr-FR'),P.net/g.netPnl*100));
+    if(g.winRate>0)gl.push(lg('Taux de réussite',P.wrDecides.toFixed(0)+' %',g.winRate+' %',P.wrDecides/g.winRate*100));
+    if(g.totalR>0)gl.push(lg('Total R',wkSigne(P.totalR,1)+' R',g.totalR+' R',P.totalR/g.totalR*100)); }
+  document.getElementById('mo-goal').innerHTML=gl.length?'<div class="ct">🎯 Objectif du mois</div>'+gl.join(''):'';
+  document.getElementById('mo-goal').style.display=gl.length?'block':'none';
+
+  // calendrier du mois
+  var nj=new Date(a.getFullYear(),a.getMonth()+1,0).getDate(), off=(a.getDay()+6)%7, par={};
+  S.forEach(function(t){ var d=tDate(t).getDate(); par[d]=par[d]||{n:0,v:0}; par[d].n++; par[d].v+=parseFloat(t.pnl_amt)||0; });
+  var mx=Math.max.apply(null,Object.keys(par).map(function(k){return Math.abs(par[k].v);}).concat([1])), cells='', i;
+  for(i=0;i<off;i++)cells+='<div class="mo-d mo-x"></div>';
+  for(i=1;i<=nj;i++){ var e=par[i], st='', txt='';
+    if(e){ var al=.18+.7*Math.min(1,Math.abs(e.v)/mx); st='background:rgba('+(e.v>=0?'52,211,153':'248,113,113')+','+al.toFixed(2)+')'; txt='<b>'+moCompact(e.v)+'</b><em>'+e.n+' trade'+(e.n>1?'s':'')+'</em>'; }
+    cells+='<div class="mo-d" style="'+st+'"><span>'+i+'</span>'+txt+'</div>'; }
+  document.getElementById('mo-cal').innerHTML='<div class="ct">📅 Jour par jour</div><div class="mo-head"><i>Lun</i><i>Mar</i><i>Mer</i><i>Jeu</i><i>Ven</i><i>Sam</i><i>Dim</i></div><div class="mo-grid">'+cells+'</div>';
+
+  // semaine par semaine
+  var sem={}; S.forEach(function(t){ var k=wkNumero(tDate(t)).sem; (sem[k]=sem[k]||[]).push(t); });
+  var sk=Object.keys(sem).sort(function(x,y){return x-y;});
+  document.getElementById('mo-weeks').innerHTML='<div class="ct">🗓 Semaine par semaine</div><div style="position:relative;height:170px"><canvas id="moWChart"></canvas></div>';
+  DC('moW'); var cw=document.getElementById('moWChart');
+  if(cw) CI['moW']=new Chart(cw,{type:'bar',data:{labels:sk.map(function(k){return 'S'+k;}),datasets:[{data:sk.map(function(k){return Math.round(perf(sem[k]).net);}),borderRadius:6,
+    backgroundColor:sk.map(function(k){return perf(sem[k]).net>=0?'rgba(52,211,153,.75)':'rgba(248,113,113,.75)';})}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{ticks:{callback:function(v){return '$'+v.toLocaleString('fr-FR');}}}}}});
+
+  // paires + sessions
+  var lignes=function(cle,titre){ var gr=grouperPar(S,cle).sort(function(x,y){return y.net-x.net;});
+    return '<div class="ct">'+titre+'</div>'+gr.map(function(x){ return rsLigne((cle==='sess'?sessChip(x.cle):'<span class="pb" style="'+pbs(x.cle)+'">'+wkEsc(x.cle)+'</span>')+' <span style="color:var(--td)">· '+x.n+' · '+x.wrDecides.toFixed(0)+' %</span>',rsArgent(x.net),x.net>=0?RS_VERT:RS_ROUGE); }).join(''); };
+  document.getElementById('mo-pairs').innerHTML='<div class="card" style="margin:0">'+lignes('pair','💱 Par paire')+'</div><div class="card" style="margin:0">'+lignes('sess','🕐 Par session')+'</div>';
+
+  // discipline + erreurs
+  var err={}; S.forEach(function(t){ var v=parseFloat(t.pnl_amt)||0; tagsOf(t,'psych_errors').forEach(function(k){ (err[k]=err[k]||{n:0,c:0}); err[k].n++; err[k].c+=v; }); });
+  var errL=Object.keys(err).map(function(k){return {k:k,n:err[k].n,c:err[k].c};}).sort(function(x,y){return x.c-y.c;});
+  var disc=aDiscipline(S), rev=aRevengeFlags(S).length, dp=aDiscipline(SP);
+  document.getElementById('mo-psy').innerHTML=
+    '<div class="card" style="margin:0"><div class="ct">🧠 Discipline</div>'
+    +(disc?'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span class="cu" style="font-size:40px;font-weight:800;color:'+(disc.score>=70?RS_VERT:(disc.score>=50?'#fbbf24':RS_ROUGE))+'">'+disc.score+'</span><span style="color:var(--td);font-size:12px">/ 100'+(dp?' · mois précédent '+dp.score:'')+'</span></div>':'')
+    +rsLigne('Trades « revenge »',rev,rev?RS_ROUGE:RS_VERT)+(disc?disc.comps.map(function(c){return rsLigne(c.l,Math.round(c.v)+' %',null);}).join(''):'')+'</div>'
+    +'<div class="card" style="margin:0"><div class="ct">⚠️ Erreurs du mois</div>'
+    +(errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">× '+e.n+'</span>',rsArgent(e.c),e.c<0?RS_ROUGE:null);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée ce mois-ci.</div>')+'</div>';
+
+  // meilleurs / pires trades
+  var tri=S.slice().sort(function(x,y){return (parseFloat(y.pnl_amt)||0)-(parseFloat(x.pnl_amt)||0);});
+  var ligne=function(t){ var v=parseFloat(t.pnl_amt)||0, d=tDate(t); return '<tr style="cursor:pointer" onclick="openTradeDetail(\''+String(t.id).replace(/\'/g,'')+'\')"><td>'+d.getDate()+' '+MO_NOMS[d.getMonth()].slice(0,3).toLowerCase()+'.</td><td><span class="pb" style="'+pbs(t.pair)+'">'+wkEsc(t.pair)+'</span></td><td>'+rpill(t.result)+'</td><td style="color:'+(v>=0?RS_VERT:RS_ROUGE)+';font-weight:700">'+rsArgent(v)+'</td></tr>'; };
+  document.getElementById('mo-top').innerHTML='<div class="card" style="margin:0"><div class="ct">🏆 Tes 5 meilleurs trades</div><table class="tbl" style="width:100%"><tbody>'+tri.slice(0,5).map(ligne).join('')+'</tbody></table></div>'
+    +'<div class="card" style="margin:0"><div class="ct">💥 Tes 5 pires trades</div><table class="tbl" style="width:100%"><tbody>'+tri.slice(-5).reverse().map(ligne).join('')+'</tbody></table></div>';
+
+  // constats
+  var ins=[], jr=Object.keys(par).map(function(k){return {j:+k,v:par[k].v,n:par[k].n};});
+  if(jr.length>2){ var bj=jr.slice().sort(function(x,y){return y.v-x.v;}); ins.push('📈 Meilleur jour : le <b>'+bj[0].j+'</b> ('+rsArgent(bj[0].v)+')'); if(bj[bj.length-1].v<0)ins.push('📉 Pire jour : le <b>'+bj[bj.length-1].j+'</b> ('+rsArgent(bj[bj.length-1].v)+')'); }
+  var verts=jr.filter(function(x){return x.v>=0;}).length; if(jr.length)ins.push('🗓 <b>'+verts+'</b> jour'+(verts>1?'s':'')+' gagnant'+(verts>1?'s':'')+' sur '+jr.length+' jours de trading.');
+  if(SP.length&&P.net<PP.net)ins.push('↘ Mois moins bon que le précédent ('+rsArgent(P.net)+' contre '+rsArgent(PP.net)+').');
+  if(SP.length&&P.net>=PP.net)ins.push('↗ Mois meilleur que le précédent ('+rsArgent(P.net)+' contre '+rsArgent(PP.net)+').');
+  if(errL.length&&errL[0].c<0)ins.push('🧠 Erreur la plus coûteuse : <b>'+wkEsc(errL[0].k)+'</b> ('+rsArgent(errL[0].c)+').');
+  if(rev)ins.push('🔥 <b>'+rev+'</b> trade'+(rev>1?'s':'')+' « revenge » ce mois-ci.');
+  document.getElementById('mo-ins').innerHTML='<div class="ct">💡 À retenir</div><ul class="wk-ul">'+ins.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
+  moHist(); moBilan();
+}
+function moHist(){
+  var lab=[], dat=[], col=[];
+  for(var o=MO_OFF-11;o<=MO_OFF;o++){ if(o>0)continue; var n=perf(moTrades(o)).net, m=moDebut(o).getMonth();
+    lab.push(RS_MOIS[m]); dat.push(Math.round(n)); col.push(o===MO_OFF?(n>=0?'rgba(52,211,153,.95)':'rgba(248,113,113,.95)'):(n>=0?'rgba(52,211,153,.35)':'rgba(248,113,113,.35)')); }
+  DC('moH'); var c=document.getElementById('moHChart'); if(!c)return;
+  CI['moH']=new Chart(c,{type:'bar',data:{labels:lab,datasets:[{data:dat,backgroundColor:col,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{ticks:{callback:function(v){return '$'+v.toLocaleString('fr-FR');}}}}}});
+}
+function moBilan(){ [['ok','mo-n-ok'],['mal','mo-n-mal'],['regle','mo-n-regle']].forEach(function(p){ var e=document.getElementById(p[1]); if(e)e.value=moNoteGet(p[0]); }); }
+document.addEventListener('DOMContentLoaded',function(){
+  var _i=initResume; initResume=function(){ var r=_i.apply(this,arguments); try{ rsExecution(); }catch(e){ console.warn('exec',e); } return r; };
 });
 document.addEventListener('DOMContentLoaded',boot);
 </script>
