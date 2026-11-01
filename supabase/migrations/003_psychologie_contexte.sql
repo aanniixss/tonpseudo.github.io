@@ -1,0 +1,11 @@
+-- ════════════════════════════════════════════════════════════════
+--  003 — Contexte psychologique d'un trade
+--  Ajoute une colonne texte (JSON) sur les trades :
+--    en : énergie avant le trade, 1 à 5
+--    hu : humeur, 1 (mal) à 3 (bien)
+--    ru : règles respectées, "o" ou "n"
+--    pr : 1 quand l'erreur principale a été confirmée
+--  Sans danger : colonne facultative, les règles RLS existantes s'appliquent.
+--  L'application fonctionne même si cette colonne n'existe pas encore.
+-- ════════════════════════════════════════════════════════════════
+alter table public.trades add column if not exists ctx text;
