@@ -1147,6 +1147,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .card[data-etat="ko"]::after{content:'Repère atteint' !important;color:#fde68a !important;background:rgba(251,191,36,.16) !important;}
 .wk-pl-j.ko{border-color:rgba(251,191,36,.4) !important;background:rgba(251,191,36,.08) !important;}
 .tj-verdict.low{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);color:#fde68a;}.tj-verdict.mid{background:rgba(var(--acr2),.12);border:1px solid rgba(var(--acr3),.4);color:var(--ac4);}
+.pa-card{margin-bottom:12px !important;}.pa-err{font-size:20px;font-weight:800;margin:2px 0 6px;color:var(--tp);}.pa-cands{display:flex;flex-direction:column;gap:8px;margin:10px 0;}.pa-cands button{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--bo);background:var(--card2,rgba(255,255,255,.04));color:var(--tp);font:inherit;cursor:pointer;text-align:left;}.pa-cands button:hover{border-color:var(--ac3);}.pa-cands em{font-style:normal;font-size:11px;color:var(--ts);}.pa-sel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bo);background:transparent;color:var(--ts);font:inherit;}.pa-win{text-align:center;padding:8px 4px;line-height:1.6;}.pa-w1{font-size:20px;font-weight:800;margin-bottom:6px;}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -1531,7 +1532,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
 <div id="details" class="sec" role="tabpanel" aria-label="Détails">
   <div class="card"><div class="ct">🔎 Pour aller plus loin</div><div class="psy-s" style="margin:-4px 0 12px">Tout le détail de tes chiffres, quand tu veux creuser. Rien de plus à faire ici : c'est une bibliothèque.</div>
     <div class="dt-grid">
-      <button onclick="showGroupe('progres','dashboard')"><i>⬡</i><b>Tableau de bord</b><span>Capital, courbe, chiffres clés</span></button>
+      <button onclick="showGroupe('progres','resume')"><i>⬡</i><b>Résumé de l'année</b><span>Résultat, courbe, mois, paires</span></button>
       <button onclick="showGroupe('progres','analyse')"><i>◈</i><b>Analyse</b><span>Paires, sessions, setups, métriques</span></button>
       <button onclick="showGroupe('progres','bilan')"><i>📆</i><b>Vue annuelle</b><span>Ton année, mois par mois</span></button>
       <button onclick="showGroupe('progres','setups')"><i>🗂</i><b>Mois par mois</b><span>Le détail de chaque mois</span></button>
@@ -3274,7 +3275,7 @@ setInterval(clk,1000);clk();
 // de sous-onglets. Les vues elles-memes n'ont pas bouge : seul le routage change.
 const GROUPES=[
   {cle:'progres',  titre:"Progrès",        sous:"Comment tu avances",
-   vues:[{id:'resume',nom:'Résumé'},{id:'semaine',nom:'Semaine'},{id:'mois',nom:'Mois'},{id:'psy',nom:'Psychologie'},{id:'details',nom:'Détails'}]},
+   vues:[{id:'dashboard',nom:'Tableau de bord'},{id:'semaine',nom:'Semaine'},{id:'mois',nom:'Mois'},{id:'psy',nom:'Psychologie'},{id:'details',nom:'Détails'}]},
   {cle:'today',    titre:"Aujourd'hui",    sous:"Ta feuille de route du jour",
    vues:[{id:'today',nom:"Aujourd'hui"}]},
   {cle:'resume',   titre:"Résumé",          sous:"L'essentiel en un coup d'oeil",
@@ -3637,13 +3638,13 @@ function renderTable(){
       <td style="font-variant-numeric:tabular-nums;font-size:10px;color:var(--reb)">${t.commission>0?'-$'+parseFloat(t.commission||0).toFixed(2):'—'}</td>
       <td class="${cls}" style="font-variant-numeric:tabular-nums;font-size:10px">${pnlStr}</td>
       <td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(37,99,235,0.1);color:var(--bb)">${t.cl}</span></td>
-      <td style="font-size:10px;color:var(--bb);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(JSON.parse(t.strats||'[]')).slice(0,2).join(', ')||'—'}</td>
-      <td style="font-size:10px;color:var(--cy);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(JSON.parse(t.confs||'[]')).slice(0,2).join(', ')||'—'}</td>
-      <td style="font-size:10px;color:var(--gb);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(JSON.parse(t.pats||'[]')).slice(0,2).join(', ')||'—'}</td>
+      <td style="font-size:10px;color:var(--bb);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(pjs(t.strats)).slice(0,2).join(', ')||'—'}</td>
+      <td style="font-size:10px;color:var(--cy);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(pjs(t.confs)).slice(0,2).join(', ')||'—'}</td>
+      <td style="font-size:10px;color:var(--gb);max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(pjs(t.pats)).slice(0,2).join(', ')||'—'}</td>
       <td style="color:var(--gb);font-size:10px">${t.star?'★'.repeat(t.star):'—'}</td>
       <td style="font-size:10px;color:var(--ts)">${t.fonda?t.fonda+'/5':'—'}</td>
-      <td style="font-size:10px">${(()=>{const e=JSON.parse(t.psych_errors||'[]');return e.length?`<span style="color:var(--reb)" title="${e.join(', ')}">⚠ ${e.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
-      <td style="font-size:10px">${(()=>{const g=JSON.parse(t.psych_good||'[]');return g.length?`<span style="color:var(--grb)" title="${g.join(', ')}">✅ ${g.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
+      <td style="font-size:10px">${(()=>{const e=pjs(t.psych_errors);return e.length?`<span style="color:var(--reb)" title="${e.join(', ')}">⚠ ${e.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
+      <td style="font-size:10px">${(()=>{const g=pjs(t.psych_good);return g.length?`<span style="color:var(--grb)" title="${g.join(', ')}">✅ ${g.length}</span>`:'<span style="color:var(--td)">—</span>';})()}</td>
       <td style="display:flex;gap:4px"><button onclick="openTradeDetail('${t.id}')" aria-label="Voir le trade" style="background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.2);color:var(--cy);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:10px">👁</button><button onclick="openEditTrade('${t.id}')" aria-label="Modifier le trade" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);color:var(--bb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:10px">✎</button><button onclick="delTrade('${t.id}')" aria-label="Supprimer le trade" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--reb);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:10px">✕</button></td>
     `;
     tb.appendChild(row);
@@ -3920,15 +3921,19 @@ async function _mt5DoImport(trades, replace){
     toast('✅ '+trades.length+' trades importés !');
   }catch(e){ console.error('importMT5 exception',e); toast('❌ Erreur import'); }
 }
+// Lecture sure d'un champ liste (strats, confs...) : une valeur abimee ne casse plus les ecrans.
+function pjs(v){ try{ var r=JSON.parse(v||'[]'); return Array.isArray(r)?r:[]; }catch(e){ return []; } }
+// Jour local (AAAA-MM-JJ) : meme jour partout (calendrier, journees, Sharpe).
+function dayKeyLocal(d){ d=(d instanceof Date)?d:new Date(d); if(isNaN(d))return ''; var m=d.getMonth()+1,j=d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(j<10?'0':'')+j; }
 // ── STATS ──
 function stats(){
   const TY=T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);
   const P=perf(TY);
   const tot=P.n,w=P.w,l=P.l,b=P.be;
-  const wr=tot>0?P.wrTous.toFixed(1):null;                 // BE au denominateur
+  const wr=P.decides>0?P.wrDecides.toFixed(1):null;          // BE exclus (ni gain ni perte)
   const tpnl=P.net;
   const tpnlPct=P.pctTotal;
-  const pf=P.perteL>0?P.pfEtiq.toFixed(2):null;            // fonde sur l'etiquette
+  const pf=(P.perteNeg>0&&isFinite(P.pfSigne))?P.pfSigne.toFixed(2):null;
   const avgRR=tot>0?P.rrMoyen.toFixed(1):null;
   let mx=0,cu=0;TY.forEach(t=>{if(t.result==='WIN'){cu++;mx=Math.max(mx,cu);}else cu=0;});
   const adm=P.dureeMoy;
@@ -3986,12 +3991,13 @@ function perf(S){
     gainW, perteL, gainAbsW, perteAbsL, gainPos, perteNeg,
     wrTous:    n?w/n*100:0,
     wrDecides: decides?w/decides*100:0,
-    pfEtiq:  pf(gainW,perteL),
-    pfAbs:   pf(gainAbsW,perteAbsL),
+    // Profit factor UNIQUE : somme des P&L positifs / somme des P&L negatifs.
+    pfEtiq:  pf(gainPos,perteNeg),
+    pfAbs:   pf(gainPos,perteNeg),
     pfSigne: pf(gainPos,perteNeg),
     gainMoy, perteMoy,
     ratioGainPerte: perteMoy>0 ? gainMoy/perteMoy : 0,
-    esperance: decides ? (w/decides)*gainMoy-(l/decides)*perteMoy : 0,
+    esperance: n ? net/n : 0,                 // P&L moyen reel par trade (BE inclus)
     dureeMoy: n?dureeTot/n:0,
     rrMoyen:  n?rrTot/n:0,
     rMoyen:   n?totalR/n:0
@@ -4081,12 +4087,12 @@ function buildCorePerfAndOptim(){
 
   // Setup (strats)
   const stratMap={};
-  withR.forEach(t=>{ (JSON.parse(t.strats||'[]')).forEach(s=>{ stratMap[s]=(stratMap[s]||0)+parseFloat(t.pnl_pct||0); }); });
+  withR.forEach(t=>{ (pjs(t.strats)).forEach(s=>{ stratMap[s]=(stratMap[s]||0)+parseFloat(t.pnl_pct||0); }); });
   renderBars('opt-strats', Object.entries(stratMap).map(([n,v])=>({n,v})));
 
   // Confluence (confs)
   const confMap={};
-  withR.forEach(t=>{ (JSON.parse(t.confs||'[]')).forEach(c=>{ confMap[c]=(confMap[c]||0)+parseFloat(t.pnl_pct||0); }); });
+  withR.forEach(t=>{ (pjs(t.confs)).forEach(c=>{ confMap[c]=(confMap[c]||0)+parseFloat(t.pnl_pct||0); }); });
   renderBars('opt-confs', Object.entries(confMap).map(([n,v])=>({n,v})));
 
   // Grade (star 1–5)
@@ -4146,7 +4152,8 @@ function updateDash(){
   const sm={'London':['lon','linear-gradient(90deg,var(--ba),var(--be))'],'New York':['ny','linear-gradient(90deg,var(--gr),var(--grb))'],'Tokyo / Asia':['tok','linear-gradient(90deg,var(--td),var(--ts))'],'Overlap Lon/NY':['ov','linear-gradient(90deg,var(--go),var(--gb))']};
   Object.entries(sm).forEach(([name,[key,bg]])=>{
     const st=T.filter(t=>t.sess===name&&parseInt(t.trade_year)===GLOBAL_YEAR),sw2=st.filter(t=>t.result==='WIN').length;
-    const wr2=st.length?(sw2/st.length*100).toFixed(0)+'%':'—';
+    const dec2=sw2+st.filter(t=>t.result==='LOSS').length;
+    const wr2=dec2?(sw2/dec2*100).toFixed(0)+'%':'—';
     const p2=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);
     document.getElementById('s-'+key+'-p').textContent=st.length?(p2>=0?'+':'-')+'$'+Math.abs(p2).toFixed(0):'—';
     document.getElementById('s-'+key+'-p').style.color=p2>0?'var(--grb)':p2<0?'var(--reb)':'var(--td)';
@@ -4319,7 +4326,7 @@ function initResume(){
   // ── Journees ────────────────────────────────────────────────────
   var jm={};
   TY.forEach(function(t){ if(!t.created_at)return;
-    var k=new Date(t.created_at).toISOString().slice(0,10);
+    var k=dayKeyLocal(t.created_at);
     jm[k]=(jm[k]||0)+(parseFloat(t.pnl_amt)||0); });
   var jk=Object.keys(jm).sort(), jv=jk.map(function(k){return jm[k];});
   var jg=jv.filter(function(v){return v>0;}).length, jp=jv.filter(function(v){return v<0;}).length;
@@ -4472,14 +4479,14 @@ function buildTradeLog(){
   const wins=P.wins, losses=P.losses, bes=P.bes, n=P.n;
   const pnl=P.net;
   const pf=P.pfAbs===null?'—':(P.pfAbs===Infinity?'∞':P.pfAbs);   // valeurs absolues
-  const wr=n?Math.round(P.wrTous*10)/10:0;                        // BE au denominateur
+  const wr=P.decides?Math.round(P.wrDecides*10)/10:0;             // BE exclus
   const avgWin=P.gainMoy, avgLoss=P.perteMoy;
   const awl=avgLoss>0?P.ratioGainPerte.toFixed(2):(avgWin>0?'∞':'—');
   const set=(id,v,col)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(col!==undefined)e.style.color=col;}};
   set('tl-pnl',n?(pnl>=0?'+':'-')+'$'+Math.abs(Math.round(pnl)).toLocaleString():'—',pnl>=0?'var(--grb)':'var(--reb)');
   set('tl-count',n);
   set('tl-pf',typeof pf==='number'?pf.toFixed(2):pf);
-  set('tl-wr',n?wr+'%':'—');
+  set('tl-wr',P.decides?wr+'%':'—');
   set('tl-w',wins.length);set('tl-be',bes.length);set('tl-l',losses.length);
   set('tl-awl',awl);
   set('tl-awl-s',n?'moy gain +$'+Math.round(avgWin)+' / perte -$'+Math.round(avgLoss):'—');
@@ -4499,7 +4506,7 @@ function buildTradeLog(){
     const roiv=parseFloat(t.pnl_pct);
     const roi=t.pnl_pct!=null&&!isNaN(roiv)?(roiv>=0?'+':'')+roiv.toFixed(2)+'%':'—';
     const dt=t.created_at?new Date(t.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'—';
-    const setups=(JSON.parse(t.strats||'[]')).slice(0,2).join(', ')||'—';
+    const setups=(pjs(t.strats)).slice(0,2).join(', ')||'—';
     const w=Math.min(Math.abs(r)/maxR*50,50);
     const bar=r>=0?`<i style="left:50%;width:${w}%;background:var(--grb)"></i>`:`<i style="left:${50-w}%;width:${w}%;background:var(--reb)"></i>`;
     html+=`<tr>
@@ -4568,7 +4575,7 @@ function buildReport(){
   ordered.forEach(t=>{ if(t.result==='WIN'){cw++;cl=0;} else if(t.result==='LOSS'){cl++;cw=0;} else {cw=0;cl=0;} mcw=Math.max(mcw,cw);mcl=Math.max(mcl,cl); });
   const avgHold=arr=>arr.length?arr.reduce((a,t)=>a+parseFloat(t.duration_mins||0),0)/arr.length:0;
   const dayMap={};
-  TS.forEach(t=>{ if(!t.created_at)return; const k=new Date(t.created_at).toISOString().slice(0,10); dayMap[k]=(dayMap[k]||0)+parseFloat(t.pnl_amt||0); });
+  TS.forEach(t=>{ if(!t.created_at)return; const k=dayKeyLocal(t.created_at); dayMap[k]=(dayMap[k]||0)+parseFloat(t.pnl_amt||0); });
   const dayKeys=Object.keys(dayMap).sort();
   const dayVals=dayKeys.map(k=>dayMap[k]);
   const winDays=dayVals.filter(v=>v>0).length, lossDays=dayVals.filter(v=>v<0).length, beDays=dayVals.filter(v=>v===0).length;
@@ -4584,7 +4591,7 @@ function buildReport(){
   // qui ne correspondait ni au P&L moyen ni a l'esperance affichee ailleurs.
   const decides=wins.length+losses.length;
   const wr=decides?wins.length/decides:0, lr=decides?losses.length/decides:0;
-  const expectancy=(wr*avgWin)-(lr*avgLoss);
+  const expectancy=n?total/n:0;
   const L=[
     ['Total P&L', n?(total>=0?'+':'')+repMoney(total):'—'],
     ['Volume total (lots)', n?lots.toFixed(2):'—'],
@@ -4644,9 +4651,9 @@ var REP_DIMS={
   pairs:{label:'paire',fn:t=>t.pair?[t.pair]:[]},
   cat:{label:'catégorie',fn:t=>t.cat?[t.cat]:[]},
   dir:{label:'direction',fn:t=>t.dir?[t.dir]:[]},
-  setups:{label:'setup',fn:t=>{try{return JSON.parse(t.strats||'[]');}catch(e){return [];}}},
-  confs:{label:'confluence',fn:t=>{try{return JSON.parse(t.confs||'[]');}catch(e){return [];}}},
-  mistakes:{label:'erreur',fn:t=>{try{return JSON.parse(t.psych_errors||'[]');}catch(e){return [];}}}
+  setups:{label:'setup',fn:t=>{try{return pjs(t.strats);}catch(e){return [];}}},
+  confs:{label:'confluence',fn:t=>{try{return pjs(t.confs);}catch(e){return [];}}},
+  mistakes:{label:'erreur',fn:t=>{try{return pjs(t.psych_errors);}catch(e){return [];}}}
 };
 var REP_DET_CUR='days';
 function showRepDetail(dim,btn){
@@ -4925,7 +4932,7 @@ function downloadBilanPDF(){
   const monthPnl={}; TS.forEach(t=>{const m=parseInt(t.trade_month);monthPnl[m]=(monthPnl[m]||0)+parseFloat(t.pnl_amt||0);});
   const mkeys=Object.keys(monthPnl); let best=null,worst=null; mkeys.forEach(m=>{if(best===null||monthPnl[m]>monthPnl[best])best=m;if(worst===null||monthPnl[m]<monthPnl[worst])worst=m;});
   const avgMonth=mkeys.length?net/mkeys.length:0;
-  const dayMap={}; TS.forEach(t=>{if(!t.created_at)return;const k=new Date(t.created_at).toISOString().slice(0,10);dayMap[k]=(dayMap[k]||0)+parseFloat(t.pnl_amt||0);});
+  const dayMap={}; TS.forEach(t=>{if(!t.created_at)return;const k=dayKeyLocal(t.created_at);dayMap[k]=(dayMap[k]||0)+parseFloat(t.pnl_amt||0);});
   const dv=Object.keys(dayMap).map(k=>dayMap[k]); const tradingDays=dv.length, winDays=dv.filter(v=>v>0).length, lossDays=dv.filter(v=>v<0).length;
   const ord=[...TS].sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
   let mcw=0,mcl=0,cw=0,cl=0; ord.forEach(t=>{if(t.result==='WIN'){cw++;cl=0;}else if(t.result==='LOSS'){cl++;cw=0;}else{cw=0;cl=0;}mcw=Math.max(mcw,cw);mcl=Math.max(mcl,cl);});
@@ -5119,13 +5126,13 @@ function initAnalyse(){
   }
   // Day chart
   const days=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
-  const dwr=days.map(d=>{const dt=T.filter(t=>t.day===d);return dt.length?parseFloat((dt.filter(t=>t.result==='WIN').length/dt.length*100).toFixed(1)):0;});
+  const dwr=days.map(d=>{const dt=T.filter(t=>t.day===d);const dd_=dt.filter(t=>t.result!=='BE').length;return dd_?parseFloat((dt.filter(t=>t.result==='WIN').length/dd_*100).toFixed(1)):0;});
   const c1=document.getElementById('dayChart');
   if(c1)CI['day']=new Chart(c1,{type:'bar',data:{labels:days,datasets:[{label:'Win Rate %',data:dwr,backgroundColor:dwr.map(v=>v>=70?'rgba(16,185,129,0.7)':v>=60?'rgba(37,99,235,0.7)':v>0?'rgba(245,158,11,0.7)':'rgba(30,35,51,0.08)'),borderRadius:7}]},options:{...CD,scales:{x:{grid:{color:CH_GRID},ticks:{color:CH_TICK,font:{family:'Inter'}}},y:{grid:{color:CH_GRID},min:0,max:100,ticks:{color:CH_TICK,font:{family:'Inter'},callback:v=>v+'%'}}}}});
   // Session radar
   const sc=['London','New York','Tokyo / Asia','Overlap Lon/NY'];
   const cols=['#2563eb','#10b981','#5b6478','#fbbf24'];
-  const sd=sc.map(s=>{const st=T.filter(t=>t.sess===s);const wr=st.length?st.filter(t=>t.result==='WIN').length/st.length*100:0;const vol=T.length?st.length/T.length*100:0;const p=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const rr=st.length?st.reduce((a,t)=>a+(t.rr||0),0)/st.length:0;const wp=st.filter(t=>t.result==='WIN').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const lp=Math.abs(st.filter(t=>t.result==='LOSS').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0));const pf=lp>0?Math.min(wp/lp*20,100):0;return[wr,vol,Math.min(Math.abs(p/Math.max(CAP,1))*500,100),rr*15,pf];});
+  const sd=sc.map(s=>{const st=T.filter(t=>t.sess===s);const dc_=st.filter(t=>t.result!=='BE').length;const wr=dc_?st.filter(t=>t.result==='WIN').length/dc_*100:0;const vol=T.length?st.length/T.length*100:0;const p=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const rr=st.length?st.reduce((a,t)=>a+(t.rr||0),0)/st.length:0;const wp=st.filter(t=>t.result==='WIN').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const lp=Math.abs(st.filter(t=>t.result==='LOSS').reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0));const pf=lp>0?Math.min(wp/lp*20,100):0;return[wr,vol,Math.min(Math.abs(p/Math.max(CAP,1))*500,100),rr*15,pf];});
   const c2=document.getElementById('sessChart');
   if(c2)CI['sess']=new Chart(c2,{type:'radar',data:{labels:['WR%','Volume','P&L','RRR','PF'],datasets:sc.map((s,i)=>({label:s,data:sd[i],borderColor:cols[i],backgroundColor:cols[i]+'1a',pointBackgroundColor:cols[i]}))},options:{responsive:true,plugins:{legend:{labels:{color:CH_TICK,font:{family:'Inter',size:10}}}},scales:{r:{angleLines:{color:'rgba(43,43,61,0.5)'},grid:{color:'rgba(43,43,61,0.5)'},pointLabels:{color:CH_TICK,font:{family:'Inter',size:10}},ticks:{display:false}}}}});
   // Close polar
@@ -5282,7 +5289,7 @@ function initBilan(){
   if(stb){
     const allStrats=new Map();
     T.forEach(t=>{
-      const strats=JSON.parse(t.strats||'[]');
+      const strats=pjs(t.strats);
       strats.forEach(s=>{
         if(!allStrats.has(s))allStrats.set(s,[]);
         allStrats.get(s).push(t);
@@ -5349,7 +5356,7 @@ function initPsychStats(){
   // ── Erreurs ──
   const errMap={};
   TY.forEach(t=>{
-    JSON.parse(t.psych_errors||'[]').forEach(e=>{
+    pjs(t.psych_errors).forEach(e=>{
       if(!errMap[e])errMap[e]={n:0,w:0,pnl:0};
       errMap[e].n++;
       if(t.result==='WIN')errMap[e].w++;
@@ -5384,7 +5391,7 @@ function initPsychStats(){
   // ── Bon mindset ──
   const goodMap={};
   TY.forEach(t=>{
-    JSON.parse(t.psych_good||'[]').forEach(g=>{
+    pjs(t.psych_good).forEach(g=>{
       if(!goodMap[g])goodMap[g]={n:0,w:0,pnl:0};
       goodMap[g].n++;
       if(t.result==='WIN')goodMap[g].w++;
@@ -5487,7 +5494,7 @@ function renderRBars(elId, mapObj){
 function renderErrCount(elId, trades){
   const el=document.getElementById(elId); if(!el) return;
   const m={};
-  trades.forEach(t=>{ let a; try{a=JSON.parse(t.psych_errors||'[]')}catch(e){a=[]} a.forEach(x=>{if(x){if(!m[x])m[x]={n:0,pct:0,amt:0}; m[x].n++; m[x].pct+=parseFloat(t.pnl_pct||0); m[x].amt+=parseFloat(t.pnl_amt||0);}}); });
+  trades.forEach(t=>{ let a; try{a=pjs(t.psych_errors)}catch(e){a=[]} a.forEach(x=>{if(x){if(!m[x])m[x]={n:0,pct:0,amt:0}; m[x].n++; m[x].pct+=parseFloat(t.pnl_pct||0); m[x].amt+=parseFloat(t.pnl_amt||0);}}); });
   const groups=Object.entries(m).sort((a,b)=>b[1].n-a[1].n);
   if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">Aucune erreur taguée</div>'; return; }
   const max=Math.max(...groups.map(g=>g[1].n),1);
@@ -5502,7 +5509,7 @@ function renderErrCount(elId, trades){
 function renderGoodFull(elId, trades){
   const el=document.getElementById(elId); if(!el) return;
   const m={};
-  trades.forEach(t=>{ let a; try{a=JSON.parse(t.psych_good||'[]')}catch(e){a=[]} a.forEach(x=>{if(x){if(!m[x])m[x]={n:0,pct:0,amt:0}; m[x].n++; m[x].pct+=parseFloat(t.pnl_pct||0); m[x].amt+=parseFloat(t.pnl_amt||0);}}); });
+  trades.forEach(t=>{ let a; try{a=pjs(t.psych_good)}catch(e){a=[]} a.forEach(x=>{if(x){if(!m[x])m[x]={n:0,pct:0,amt:0}; m[x].n++; m[x].pct+=parseFloat(t.pnl_pct||0); m[x].amt+=parseFloat(t.pnl_amt||0);}}); });
   const groups=Object.entries(m).sort((a,b)=>b[1].n-a[1].n);
   if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">Aucun bon comportement tagué</div>'; return; }
   const max=Math.max(...groups.map(g=>g[1].n),1);
@@ -5709,7 +5716,7 @@ function renderScope(mt, scope){
   const sc2=document.getElementById('md-strat-chart');
   if(sc2&&mt.length){
     const stratMap=new Map();
-    mt.forEach(t=>{JSON.parse(t.strats||'[]').forEach(s=>{if(!stratMap.has(s))stratMap.set(s,{n:0,pnl:0});const v=stratMap.get(s);v.n++;v.pnl+=parseFloat(t.pnl_amt||0);});});
+    mt.forEach(t=>{pjs(t.strats).forEach(s=>{if(!stratMap.has(s))stratMap.set(s,{n:0,pnl:0});const v=stratMap.get(s);v.n++;v.pnl+=parseFloat(t.pnl_amt||0);});});
     const top=[...stratMap.entries()].sort((a,b)=>b[1].n-a[1].n).slice(0,6);
     if(top.length){CI['md-strat']=new Chart(sc2,{type:'bar',data:{labels:top.map(e=>e[0]),datasets:[{label:'Trades',data:top.map(e=>e[1].n),backgroundColor:'rgba(37,99,235,0.7)',borderRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:CH_GRID},ticks:{color:CH_TICK,font:{size:8}}},y:{grid:{color:CH_GRID},ticks:{color:CH_TICK,font:{size:8},stepSize:1}}}}});}
   }
@@ -5763,7 +5770,7 @@ function renderScope(mt, scope){
     if(!mt.length){ttb.innerHTML='<tr><td colspan="12" style="text-align:center;padding:14px;color:var(--td)">Aucun trade ce mois</td></tr>';}
     else ttb.innerHTML=mt.map((t,i)=>{
       const cls=t.result==='WIN'?'win':t.result==='LOSS'?'loss':'be-r';
-      const strs=JSON.parse(t.strats||'[]');
+      const strs=pjs(t.strats);
       const ca=parseFloat(t.ca_amt||t.pnl_amt||0);
       const comm=parseFloat(t.commission||0);
       const net=parseFloat(t.pnl_amt||0);
@@ -5830,12 +5837,12 @@ function renderScope(mt, scope){
   const _sM={},_cM={},_gM={},_fM={},_eM={};
   _wR.forEach(t=>{
     const _pv=parseFloat(t.pnl_pct||0);
-    let a; try{a=JSON.parse(t.strats||'[]')}catch(e){a=[]} a.forEach(s=>{if(s)_sM[s]=(_sM[s]||0)+_pv;});
-    try{a=JSON.parse(t.confs||'[]')}catch(e){a=[]} a.forEach(c=>{if(c)_cM[c]=(_cM[c]||0)+_pv;});
-    try{a=JSON.parse(t.pats||'[]')}catch(e){a=[]} a.forEach(p=>{if(p)_cM[p]=(_cM[p]||0)+_pv;});
+    let a; try{a=pjs(t.strats)}catch(e){a=[]} a.forEach(s=>{if(s)_sM[s]=(_sM[s]||0)+_pv;});
+    try{a=pjs(t.confs)}catch(e){a=[]} a.forEach(c=>{if(c)_cM[c]=(_cM[c]||0)+_pv;});
+    try{a=pjs(t.pats)}catch(e){a=[]} a.forEach(p=>{if(p)_cM[p]=(_cM[p]||0)+_pv;});
     if(t.star>0){const k=t.star+'★'; _gM[k]=(_gM[k]||0)+_pv;}
     if(t.fonda){_fM[t.fonda]=(_fM[t.fonda]||0)+_pv;}
-    try{a=JSON.parse(t.psych_errors||'[]')}catch(e){a=[]} a.forEach(er=>{if(er)_eM[er]=(_eM[er]||0)+_pv;});
+    try{a=pjs(t.psych_errors)}catch(e){a=[]} a.forEach(er=>{if(er)_eM[er]=(_eM[er]||0)+_pv;});
   });
   renderRBars('md-opt-strats', _sM);
   renderRBars('md-opt-confs',  _cM);
@@ -5861,7 +5868,8 @@ function renderScope(mt, scope){
   // ── Pilot Performance (cercles, suit le scope) ──
   const _totalR=_wR.reduce((s,t)=>s+t.aR,0);
   const _net=mt.reduce((s,t)=>s+parseFloat(t.pnl_amt||0),0);
-  const _wrPct=mt.length?(mt.filter(t=>t.result==='WIN').length/mt.length*100):0;
+  const _dcd=mt.filter(t=>t.result!=='BE').length;
+  const _wrPct=_dcd?(mt.filter(t=>t.result==='WIN').length/_dcd*100):0;
   _st('md-pp-totalr', mt.length?((_totalR>=0?'+':'')+_totalR.toFixed(2)+'R'):'—');
   _st('md-pp-net', mt.length?((_net>=0?'+':'-')+'$'+Math.abs(Math.round(_net)).toLocaleString()):'—');
   _st('md-pp-trades', mt.length);
@@ -5901,8 +5909,8 @@ function openEditTrade(id){
   document.querySelectorAll('#edit-perr-tags .tag').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('#edit-pgood-tags .tag').forEach(el=>el.classList.remove('sel'));
   // Select saved psych errors
-  const savedErr=JSON.parse(t.psych_errors||'[]');
-  const savedGood=JSON.parse(t.psych_good||'[]');
+  const savedErr=pjs(t.psych_errors);
+  const savedGood=pjs(t.psych_good);
   document.querySelectorAll('#edit-perr-tags .tag').forEach(el=>{const k=savedErr.indexOf(el.textContent); if(k>=0){el.classList.add('sel');el.dataset.ord=String(k+1);}else el.dataset.ord='';});
   document.querySelectorAll('#edit-pgood-tags .tag').forEach(el=>{if(savedGood.includes(el.textContent))el.classList.add('sel');});
   // Stratégie / Confirmations / Patterns
@@ -6138,7 +6146,7 @@ function genReport(mt, titleMain, titleSub){
     const net=parseFloat(t.pnl_amt||0);
     const ca=parseFloat(t.ca_amt||t.pnl_amt||0);
     const comm=parseFloat(t.commission||0);
-    const strs=JSON.parse(t.strats||'[]');
+    const strs=pjs(t.strats);
     const cls=t.result==='WIN'?'win':t.result==='LOSS'?'loss':'be';
     return `<tr>
       <td style="color:#94a3b8">#${i+1}</td>
@@ -6172,17 +6180,17 @@ function genReport(mt, titleMain, titleSub){
 
   // Notes
   const notesWithTrades=mt.filter(t=>t.notes&&t.notes.trim());
-  const notesSection=notesWithTrades.length?`<div class="section"><div class="section-title">📝 Notes des Trades</div>${notesWithTrades.map((t,i)=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');return`<div style="margin-bottom:12px;padding:14px;background:#171722;border-radius:8px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;gap:14px;flex-wrap:wrap"><b style="color:#1e2333">${t.pair}</b><span style="color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'}">${t.result}</span><span style="font-variant-numeric:tabular-nums;color:${net>=0?'#10b981':'#ef4444'}">${net>=0?'+':'-'}$${Math.abs(net).toFixed(2)}</span><span>${t.duration||'—'}</span>${strs[0]?`<span style="color:#2563eb">${strs[0]}</span>`:''}</div><div style="font-size:11px;color:#cbd5e1;white-space:pre-line;line-height:1.6">Note ${i+1} : ${t.notes.trim()}</div></div>`}).join('')}</div>`:'';
+  const notesSection=notesWithTrades.length?`<div class="section"><div class="section-title">📝 Notes des Trades</div>${notesWithTrades.map((t,i)=>{const net=parseFloat(t.pnl_amt||0);const strs=pjs(t.strats);return`<div style="margin-bottom:12px;padding:14px;background:#171722;border-radius:8px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="font-size:10px;color:#94a3b8;margin-bottom:8px;display:flex;gap:14px;flex-wrap:wrap"><b style="color:#1e2333">${t.pair}</b><span style="color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'}">${t.result}</span><span style="font-variant-numeric:tabular-nums;color:${net>=0?'#10b981':'#ef4444'}">${net>=0?'+':'-'}$${Math.abs(net).toFixed(2)}</span><span>${t.duration||'—'}</span>${strs[0]?`<span style="color:#2563eb">${strs[0]}</span>`:''}</div><div style="font-size:11px;color:#cbd5e1;white-space:pre-line;line-height:1.6">Note ${i+1} : ${t.notes.trim()}</div></div>`}).join('')}</div>`:'';
 
   // Photos setups
   const tradesWithPhotos=mt.filter(t=>t.photo_av||t.photo_co||t.photo_ap);
-  const photosSection=tradesWithPhotos.length?`<div class="section"><div class="section-title">📊 Graphiques des Setups</div>${tradesWithPhotos.map(t=>{const net=parseFloat(t.pnl_amt||0);const strs=JSON.parse(t.strats||'[]');const pics=[{k:'photo_av',l:'Avant — Analyse'},{k:'photo_co',l:'En cours — Gestion'},{k:'photo_ap',l:'Après — Résultat'}].filter(p=>t[p.k]);return`<div style="margin-bottom:20px;padding:16px;background:#171722;border-radius:10px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><b style="color:#1e2333;font-size:13px">${t.pair}</b><span style="color:${t.dir==='LONG'?'#10b981':'#ef4444'};font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span><span style="background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${t.result}</span><span style="font-variant-numeric:tabular-nums;color:${net>=0?'#10b981':'#ef4444'};font-size:12px;font-weight:700">${net>=0?'+':'-'}$${Math.abs(net).toFixed(2)}</span><span style="color:#94a3b8;font-size:10px">${t.sess||''} · ${t.duration||''}</span>${strs[0]?`<span style="background:rgba(37,99,235,0.15);color:#2563eb;padding:2px 8px;border-radius:20px;font-size:10px">${strs[0]}</span>`:''}</div><div style="display:grid;grid-template-columns:repeat(${pics.length},1fr);gap:10px">${pics.map(p=>`<div><div style="font-size:10px;letter-spacing:1px;color:#64748b;text-transform:uppercase;margin-bottom:5px">${p.l}</div><img src="${t[p.k]}" style="width:100%;border-radius:6px;border:1px solid #2b2b3d;display:block"></div>`).join('')}</div></div>`;}).join('')}</div>`:'';
+  const photosSection=tradesWithPhotos.length?`<div class="section"><div class="section-title">📊 Graphiques des Setups</div>${tradesWithPhotos.map(t=>{const net=parseFloat(t.pnl_amt||0);const strs=pjs(t.strats);const pics=[{k:'photo_av',l:'Avant — Analyse'},{k:'photo_co',l:'En cours — Gestion'},{k:'photo_ap',l:'Après — Résultat'}].filter(p=>t[p.k]);return`<div style="margin-bottom:20px;padding:16px;background:#171722;border-radius:10px;border-left:4px solid ${net>=0?'#10b981':'#ef4444'}"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><b style="color:#1e2333;font-size:13px">${t.pair}</b><span style="color:${t.dir==='LONG'?'#10b981':'#ef4444'};font-size:11px">${t.dir==='LONG'?'↑ LONG':'↓ SHORT'}</span><span style="background:${t.result==='WIN'?'rgba(16,185,129,0.15)':t.result==='LOSS'?'rgba(239,68,68,0.15)':'rgba(245,158,11,0.15)'};color:${t.result==='WIN'?'#10b981':t.result==='LOSS'?'#ef4444':'#f59e0b'};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${t.result}</span><span style="font-variant-numeric:tabular-nums;color:${net>=0?'#10b981':'#ef4444'};font-size:12px;font-weight:700">${net>=0?'+':'-'}$${Math.abs(net).toFixed(2)}</span><span style="color:#94a3b8;font-size:10px">${t.sess||''} · ${t.duration||''}</span>${strs[0]?`<span style="background:rgba(37,99,235,0.15);color:#2563eb;padding:2px 8px;border-radius:20px;font-size:10px">${strs[0]}</span>`:''}</div><div style="display:grid;grid-template-columns:repeat(${pics.length},1fr);gap:10px">${pics.map(p=>`<div><div style="font-size:10px;letter-spacing:1px;color:#64748b;text-transform:uppercase;margin-bottom:5px">${p.l}</div><img src="${t[p.k]}" style="width:100%;border-radius:6px;border:1px solid #2b2b3d;display:block"></div>`).join('')}</div></div>`;}).join('')}</div>`:'';
 
   // Psychologie du mois
   const errMap={};const goodMap={};
   mt.forEach(t=>{
-    JSON.parse(t.psych_errors||'[]').forEach(e=>{if(!errMap[e])errMap[e]={n:0,w:0,pnl:0};errMap[e].n++;if(t.result==='WIN')errMap[e].w++;errMap[e].pnl+=parseFloat(t.pnl_amt||0);});
-    JSON.parse(t.psych_good||'[]').forEach(g=>{if(!goodMap[g])goodMap[g]={n:0,w:0,pnl:0};goodMap[g].n++;if(t.result==='WIN')goodMap[g].w++;goodMap[g].pnl+=parseFloat(t.pnl_amt||0);});
+    pjs(t.psych_errors).forEach(e=>{if(!errMap[e])errMap[e]={n:0,w:0,pnl:0};errMap[e].n++;if(t.result==='WIN')errMap[e].w++;errMap[e].pnl+=parseFloat(t.pnl_amt||0);});
+    pjs(t.psych_good).forEach(g=>{if(!goodMap[g])goodMap[g]={n:0,w:0,pnl:0};goodMap[g].n++;if(t.result==='WIN')goodMap[g].w++;goodMap[g].pnl+=parseFloat(t.pnl_amt||0);});
   });
   const errKeys=Object.keys(errMap).sort((a,b)=>errMap[b].n-errMap[a].n);
   const goodKeys=Object.keys(goodMap).sort((a,b)=>goodMap[b].n-goodMap[a].n);
@@ -6201,7 +6209,8 @@ function genReport(mt, titleMain, titleSub){
   const _totalR=_wR.reduce((s,t)=>s+t.aR,0);
   const _longs=mt.filter(t=>t.dir==='LONG').length,_shorts=mt.filter(t=>t.dir==='SHORT').length;
   const _avgRR=mt.length?mt.reduce((s,t)=>s+(parseFloat(t.rr)||0),0)/mt.length:0;
-  const _wrPct=mt.length?(mw/mt.length*100):0;
+  const _dcd=mt.filter(t=>t.result!=='BE').length;
+  const _wrPct=_dcd?(mw/_dcd*100):0;
   const coreCircles=[
     {l:'Total R', v:(_totalR>=0?'+':'')+_totalR.toFixed(2)+'R', c:_totalR>=0?'#10b981':'#ef4444'},
     {l:'Win Rate', v:_wrPct.toFixed(0)+'%', c:_wrPct>=60?'#10b981':_wrPct>=50?'#f59e0b':'#ef4444'},
@@ -6431,7 +6440,7 @@ function renderProMetrics(){
   let sharpe=null,nDays=0;
   if(CAP>0){
     const byDay={};
-    S.forEach(t=>{const d=tDate(t);if(isNaN(d))return;const k=d.toISOString().slice(0,10);byDay[k]=(byDay[k]||0)+(parseFloat(t.pnl_amt)||0);});
+    S.forEach(t=>{const d=tDate(t);if(isNaN(d))return;const k=dayKeyLocal(d);byDay[k]=(byDay[k]||0)+(parseFloat(t.pnl_amt)||0);});
     const rd=Object.values(byDay).map(p=>p/CAP);nDays=rd.length;
     if(rd.length>=5&&stdev(rd)>0)sharpe=mean(rd)/stdev(rd)*Math.sqrt(252);
   }
@@ -8232,7 +8241,9 @@ function tjRoute(){
   // 1. Le point d'attention du moment : l'erreur la plus fréquente sur les 20 derniers trades
   var cnt={}; l20.forEach(function(t){ var p=psyErrs(t)[0]; if(p)cnt[p]=(cnt[p]||0)+1; });
   var ks=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];});
-  if(ks.length){ var f=psyFam(ks[0]), r=(R[f.k]||'').trim(), b=psyBeh(T,'psych_errors').filter(function(x){return x.k===ks[0];})[0];
+  var pe=(typeof paEtat==='function')?paEtat():null;
+  if(pe&&!pe.ok){ top.push(['🎯','Ton plan : <b>'+wkEsc(pe.pa.actif)+'</b> — '+pe.cur+' trade'+(pe.cur>1?'s':'')+' d\'affilée sans cette erreur (objectif '+PA_OBJ+').'+((pe.pa.regle||'').trim()?' Ta règle : <b>« '+wkEsc(pe.pa.regle.trim())+' »</b>.':'')]); }
+  else if(ks.length){ var f=psyFam(ks[0]), r=(R[f.k]||'').trim(), b=psyBeh(T,'psych_errors').filter(function(x){return x.k===ks[0];})[0];
     top.push(['🎯','Ton point d\'attention : <b>'+wkEsc(ks[0])+'</b> ('+cnt[ks[0]]+' fois sur tes '+l20.length+' derniers trades).'+(r?' Ta règle : <b>« '+wkEsc(r)+' »</b>.':' Idée de règle : « '+wkEsc(f.r)+' » <button class="psy-use-i" onclick="psyUseRule(\''+f.k+'\');initToday()">Adopter</button>')]);
   } else if(l20.length>=5) top.push(['🌟','Aucune erreur notée sur tes derniers trades. Garde exactement le même rythme.']);
   // 2. Ta stratégie
@@ -8346,7 +8357,7 @@ function tjRituels(auj){
 }
 
 // ── Navigation : 4 espaces (Aujourd'hui, Trades, Progrès, Ma stratégie) ──
-var PROG_CACHEES=['dashboard','analyse','bilan','setups','report'];
+var PROG_CACHEES=['resume','analyse','bilan','setups','report'];
 document.addEventListener('DOMContentLoaded',function(){
   var _sg=showGroupe;
   showGroupe=function(cle,vue){
@@ -8359,6 +8370,74 @@ document.addEventListener('DOMContentLoaded',function(){
     if(g&&g.cle==='progres'&&PROG_CACHEES.indexOf(id)>=0){ document.querySelectorAll('#subnav .subtab').forEach(function(b){ b.classList.toggle('active',/Détails/.test(b.textContent)); }); } };
   var _nt=rdNewTrade;
   rdNewTrade=function(full){ if(!full&&window.innerWidth<981){ openQuick(); return; } showGroupe('journal'); setTimeout(function(){ var f=document.getElementById('f-cat'); if(f)f.scrollIntoView({behavior:'smooth',block:'center'}); },140); };
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  PLAN D'AMÉLIORATION — une seule erreur à la fois, jusqu'à la neutraliser
+//  Compteur = trades d'affilée (depuis le début du plan) sans cette erreur.
+// ═══════════════════════════════════════════════════════════════════
+var PA_OBJ=15;
+function paGet(){ try{ var o=JSON.parse(localStorage.getItem(lsKey('bk_pa'))||'null'); if(o&&typeof o==='object'){ o.fait=Array.isArray(o.fait)?o.fait:[]; return o; } }catch(e){} return {actif:null,regle:'',depuis:0,fait:[]}; }
+function paSet(o){ try{ localStorage.setItem(lsKey('bk_pa'),JSON.stringify(o)); }catch(e){} }
+function paRefresh(){ try{ if(typeof initToday==='function')initToday(); }catch(e){} try{ if(typeof initPsy==='function')initPsy(); }catch(e){} }
+// Calcule l'etat du plan courant a partir des trades.
+function paEtat(){
+  var pa=paGet(); if(!pa.actif)return null;
+  var S=sortedByDate(T).filter(function(t){ return tDate(t).getTime()>=pa.depuis; });
+  var cur=0,best=0,run=0,rech=0;
+  S.forEach(function(t){ if(psyErrs(t).indexOf(pa.actif)>=0){ rech++; run=0; } else { run++; if(run>best)best=run; } });
+  for(var i=S.length-1;i>=0&&psyErrs(S[i]).indexOf(pa.actif)<0;i--)cur++;
+  return {pa:pa,cur:cur,best:best,rech:rech,n:S.length,ok:cur>=PA_OBJ};
+}
+// Erreurs a proposer : les plus frequentes sur les 30 derniers trades, hors celles deja neutralisees.
+function paCandidats(){
+  var S=sortedByDate(T).slice(-30), pa=paGet(), done=pa.fait.map(function(f){return f.err;}), c={};
+  S.forEach(function(t){ var p=psyErrs(t)[0]; if(p&&done.indexOf(p)<0)c[p]=(c[p]||0)+1; });
+  return Object.keys(c).sort(function(a,b){return c[b]-c[a];}).slice(0,3).map(function(k){ return {k:k,n:c[k],tot:S.length}; });
+}
+function paChoisir(err){
+  var pa=paGet(); var f=psyFam(err), R=psyRegles();
+  pa.actif=err; pa.depuis=Date.now(); pa.regle=(R[f.k]||'').trim()||''; paSet(pa); paRefresh();
+  toast('🎯 Plan lancé : '+err);
+}
+function paChoisirSaisie(){ var el=document.getElementById('pa-autre'); if(el&&el.value)paChoisir(el.value); }
+function paRegleSave(el){ var pa=paGet(); pa.regle=el.value; paSet(pa); }
+function paAbandon(){ if(!confirm('Mettre ce plan de côté ? Tu pourras le reprendre plus tard.'))return; var pa=paGet(); pa.actif=null; paSet(pa); paRefresh(); }
+function paNeutralise(){
+  var e=paEtat(); if(!e||!e.ok)return;
+  var pa=e.pa; pa.fait.push({err:pa.actif,n:e.cur,date:Date.now()}); pa.actif=null; paSet(pa); paRefresh();
+}
+function paHTML(){
+  var e=paEtat(), pa=paGet(), H='<div class="card pa-card"><div class="tj-sl">🎯 Mon plan d\'amélioration</div>';
+  var histo=pa.fait.length?'<div class="psy-s" style="margin-top:10px">✅ Déjà neutralisé'+(pa.fait.length>1?'es':'e')+' : '+pa.fait.map(function(f){return '<b>'+wkEsc(f.err)+'</b>';}).join(' · ')+'</div>':'';
+  if(!e){
+    var c=paCandidats();
+    if(T.length<10)return H+'<div class="psy-s" style="line-height:1.6">Note tes trades avec leurs erreurs. Dès que tu auras une dizaine de trades, je te proposerai <b>une seule erreur à travailler</b>, la plus fréquente chez toi.</div>'+histo+'</div>';
+    H+='<div class="psy-s" style="line-height:1.6">Une seule erreur à la fois. Tu l\'élimines, puis on passe à la suivante. Voilà celles qui reviennent le plus sur tes derniers trades :</div><div class="pa-cands">';
+    H+=c.map(function(x){ return '<button type="button" onclick="paChoisir(\''+x.k.replace(/\'/g,"\\'")+'\')"><b>'+wkEsc(x.k)+'</b><em>'+x.n+' fois sur '+x.tot+' trades</em></button>'; }).join('');
+    if(!c.length)H+='<div class="psy-s">Aucune erreur notée récemment : bravo. Tu peux en choisir une toi-même ci-dessous.</div>';
+    H+='</div><select id="pa-autre" class="pa-sel" onchange="paChoisirSaisie()"><option value="">Ou choisis une autre erreur…</option>'+PSY_ALL.map(function(x){return '<option>'+wkEsc(x)+'</option>';}).join('')+'</select>';
+    return H+histo+'</div>';
+  }
+  var pct=Math.min(100,e.cur/PA_OBJ*100);
+  if(e.ok){
+    H+='<div class="pa-win"><div class="pa-w1">🏆 Erreur neutralisée !</div><div>Tu as fait <b>'+e.cur+' trades d\'affilée</b> sans « <b>'+wkEsc(e.pa.actif)+'</b> ». Ce comportement ne te contrôle plus.</div><button class="tj-cta" onclick="paNeutralise()">Passer à l\'erreur suivante</button></div>';
+    return H+histo+'</div>';
+  }
+  H+='<div class="pa-err">'+wkEsc(e.pa.actif)+'</div>'
+   +'<div class="tj-sr"><div class="cu tj-sn">'+e.cur+'</div><div class="tj-st2"><div>trade'+(e.cur>1?'s':'')+' d\'affilée sans cette erreur</div><em>Objectif : '+PA_OBJ+(e.best>e.cur?' · meilleur : '+e.best:'')+'</em></div></div>'
+   +'<div class="dbar" style="margin:6px 0 10px"><div style="width:'+pct+'%;background:var(--ac3)"></div></div>'
+   +'<div class="psy-sub" style="margin-top:2px">Ma règle (avec mes mots)</div>'
+   +'<textarea class="tj-lecon" rows="2" placeholder="Ex. : après une perte, j\'attends 30 minutes avant de reprendre." oninput="paRegleSave(this)">'+wkEsc(e.pa.regle||'')+'</textarea>'
+   +'<div class="psy-s" style="margin-top:8px;line-height:1.6">'+(e.n===0?'Le compteur démarre à ton prochain trade.':(e.rech?'Il y a eu '+e.rech+' rechute'+(e.rech>1?'s':'')+' depuis le début : c\'est normal, le compteur repart et tu gardes ton meilleur score.':'Aucune rechute depuis le début du plan. Continue.'))+'</div>'
+   +'<div style="margin-top:8px"><button class="psy-use-i" onclick="paAbandon()">Mettre ce plan de côté</button></div>';
+  return H+histo+'</div>';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var _it=window.initToday; window.initToday=initToday=function(){ _it.apply(this,arguments);
+    var s=document.querySelector('#tj-body .tj-serie'); if(s)s.insertAdjacentHTML('afterend',paHTML()); };
+  var _ip=window.initPsy; window.initPsy=initPsy=function(){ _ip.apply(this,arguments);
+    var r=document.getElementById('psy-body'); if(r)r.insertAdjacentHTML('afterbegin',paHTML().replace('class="card pa-card"','class="card pa-card" style="margin-bottom:12px"')); };
 });
 
 document.addEventListener('DOMContentLoaded',boot);
