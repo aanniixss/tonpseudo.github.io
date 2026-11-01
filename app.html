@@ -1092,6 +1092,17 @@ html.compact .rs-in{padding:9px 11px;}html.compact .mo-d{min-height:54px;}
 #qa-s4{max-height:56vh;overflow:auto;padding-right:2px;}
 html[data-theme="light"] .qa-row button.sel,html[data-theme="light"] .qa-fams button.sel{color:var(--ac-d);}
 @media(max-width:700px){.psy-fn{flex-basis:96px;}.psy-big{font-size:38px;}.psy-r{text-align:left;}.psy-ctx{grid-template-columns:1.4fr 1fr 38px 62px;gap:6px;font-size:11px;}}
+/* ════ Garde-fou, résumé psycho, étiquettes rangées ════ */
+.garde{padding:13px 16px;border-radius:14px;margin-bottom:12px;font-size:13px;line-height:1.6;color:var(--tp);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);}
+.garde.n2{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.45);}
+.garde-t{font-weight:800;margin-bottom:4px;font-size:13px;}.garde b{color:var(--tp);}
+#qa-garde .garde{margin:0 0 12px;font-size:12px;}
+.rules-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;font-size:11px;color:var(--td);}
+.rules-bar em{font-style:normal;padding:5px 10px;border-radius:20px;background:var(--card2);border:1px solid var(--bo);color:var(--ts);}
+.psy-next{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px dashed var(--bo);font-size:12px;color:var(--ts);line-height:1.6;}
+.psy-next b{color:var(--tp);}.psy-next button{margin-left:6px;padding:4px 10px;border-radius:20px;border:1px solid rgba(var(--acr3),.5);background:rgba(var(--acr),.15);color:var(--tp);font-size:11px;font-weight:700;cursor:pointer;}
+.tag-fam{margin-bottom:10px;}.tag-fam-h{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--td);margin-bottom:6px;}
+.tag-fam-b{display:flex;flex-wrap:wrap;gap:6px;}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ THEME CLAIR (interrupteur dans « Mon compte » et dans le menu) ════ */
@@ -1473,6 +1484,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
   <div class="card" style="margin-bottom:12px" id="mo-cal"></div>
   <div class="card" style="margin-bottom:12px" id="mo-weeks"></div>
   <div class="wk-two" id="mo-pairs"></div>
+  <div class="card" style="margin-bottom:12px" id="mo-psyx"></div>
   <div class="wk-two" id="mo-psy"></div>
   <div class="wk-two" id="mo-top"></div>
   <div class="card" style="margin-bottom:12px" id="mo-ins"></div>
@@ -1501,6 +1513,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
   <div id="wk-kpi" class="wk-kpis"></div>
   <div class="card" style="margin-bottom:12px" id="wk-days"></div>
   <div class="wk-two" id="wk-pairs"></div>
+  <div class="card" style="margin-bottom:12px" id="wk-psyx"></div>
   <div class="wk-two" id="wk-psy"></div>
   <div class="card" style="margin-bottom:12px"><div class="ct">📈 Courbe de la semaine</div><div style="position:relative;height:200px"><canvas id="wkEqChart"></canvas></div></div>
   <div class="card" style="margin-bottom:12px" id="wk-insights"></div>
@@ -1532,6 +1545,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
 <div id="resume" class="sec" role="tabpanel" aria-label="Résumé">
 
   <div class="bk-slot"></div>
+  <div id="rs-garde"></div>
   <div id="rs-plan"></div>
   <div id="rs-goal"></div>
   <div id="rs-insights"></div>
@@ -2562,6 +2576,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
     <div class="qa-top"><button class="qa-back" id="qa-back" onclick="qaBack()" aria-label="Retour">‹</button>
       <div class="qa-dots"><i id="qa-d1" class="on"></i><i id="qa-d2"></i><i id="qa-d3"></i><i id="qa-d4"></i></div>
       <button class="qa-x" onclick="closeQuick()" aria-label="Fermer">✕</button></div>
+    <div id="qa-garde"></div>
     <div class="qa-title" id="qa-title">Quelle paire ?</div>
     <div id="qa-s1">
       <div class="qa-grid" id="qa-pairs"></div>
@@ -7874,13 +7889,14 @@ function initPsy(){
    +'<div class="psy-s">'+st.avec.length+' trades sur '+TY.length+' · '+tend+'</div></div>'
    +'<div class="psy-r"><div class="psy-l">Résultat net de ces trades</div><div class="cu psy-mid" style="color:'+(st.net<0?RS_ROUGE:RS_VERT)+'">'+rsArgent(st.net)+'</div><div class="psy-s">chaque trade compté une seule fois</div></div></div>'
    +'<div style="position:relative;height:170px;margin-top:10px"><canvas id="psyTrChart"></canvas></div>'
-   +'<div class="psy-s" style="margin-top:6px">Part des trades avec une erreur, semaine par semaine. L\'objectif : que la courbe descende.</div></div>';
+   +'<div class="psy-s" style="margin-top:6px">Ligne : part des trades avec une erreur, semaine par semaine. Barres : leur résultat net. L\'objectif : que la ligne descende.</div></div>';
   // 2. Les 5 familles
   var fl=PSY_FAM.concat([{k:'autre',n:'Autre',i:'•',c:'#94a3b8',t:[]}]).filter(function(f){return st.fam[f.k];}).sort(function(a,b){return st.fam[a.k].c-st.fam[b.k].c;});
+  var cnt=function(a){ var m={}; a.forEach(function(x){ wkTrades(x.o).forEach(function(t){ var p=psyErrs(t)[0]; if(p){ var k=psyFam(p).k; m[k]=(m[k]||0)+1; } }); }); return m; }, fa=cnt(s4), fb=cnt(p4);
   var mx=Math.max.apply(null,fl.map(function(f){return Math.abs(st.fam[f.k].c);}).concat([1]));
   H+='<div class="card" style="margin-bottom:12px"><div class="ct">🧩 D\'où viennent tes erreurs</div><div class="psy-s" style="margin:-4px 0 10px">Regroupées en familles, avec l\'erreur principale de chaque trade.</div>'
    +fl.map(function(f){ var d=st.fam[f.k], tl=Object.keys(d.t).sort(function(a,b){return d.t[a].c-d.t[b].c;});
-     return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+d.n+' trade'+(d.n>1?'s':'')+'</em></span>'
+     return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+d.n+' trade'+(d.n>1?'s':'')+(function(){ var a=fa[f.k]||0, b=fb[f.k]||0; return (a||b)?' · '+(a<=b?'<span style="color:'+RS_VERT+'">▼ ':'<span style="color:'+RS_ROUGE+'">▲ ')+a+' vs '+b+'</span>':''; })()+'</em></span>'
        +'<span class="psy-fb"><i style="width:'+(Math.abs(d.c)/mx*100)+'%;background:'+f.c+'"></i></span><b style="color:'+(d.c<0?RS_ROUGE:RS_VERT)+'">'+rsArgent(d.c)+'</b></summary>'
        +tl.map(function(x){ return rsLigne(wkEsc(x)+' <span style="color:var(--td)">× '+d.t[x].n+'</span>',rsArgent(d.t[x].c),d.t[x].c<0?RS_ROUGE:RS_VERT); }).join('')+'</details>'; }).join('')+'</div>';
   // 3. Quand tu craques
@@ -7924,8 +7940,8 @@ function initPsy(){
   }
   root.innerHTML=H;
   var cv=document.getElementById('psyTrChart');
-  if(cv)CI['psyTr']=new Chart(cv,{type:'line',data:{labels:wk.map(function(w){return w.lab;}),datasets:[{data:wk.map(function(w){return w.rate===null?null:Math.round(w.rate);}),borderColor:RS_ROUGE,borderWidth:2.4,tension:.3,pointRadius:4,spanGaps:true,fill:true}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:function(v){return v+' %';}}},x:{grid:{display:false}}}}});
+  if(cv)CI['psyTr']=new Chart(cv,{type:'line',data:{labels:wk.map(function(w){return w.lab;}),datasets:[{type:'bar',label:'Coût',data:wk.map(function(w){return Math.round(w.net);}),yAxisID:'y1',backgroundColor:wk.map(function(w){return w.net<0?'rgba(248,113,113,.35)':'rgba(52,211,153,.35)';}),borderRadius:4},{label:'Trades avec erreur',data:wk.map(function(w){return w.rate===null?null:Math.round(w.rate);}),borderColor:RS_ROUGE,borderWidth:2.4,tension:.3,pointRadius:4,spanGaps:true,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:function(v){return v+' %';}}},y1:{position:'right',grid:{display:false},ticks:{callback:function(v){return '$'+v.toLocaleString('fr-FR');}}},x:{grid:{display:false}}}}});
 }
 function psySaveRule(k,el){ var r=psyRegles(); r[k]=el.value; try{ localStorage.setItem(lsKey('bk_regles'),JSON.stringify(r)); }catch(e){} }
 function psyUseRule(k){ var f=PSY_FAM.filter(function(x){return x.k===k;})[0]; psySaveRule(k,{value:f.r}); initPsy(); }
@@ -8008,6 +8024,77 @@ document.addEventListener('DOMContentLoaded',function(){
       var t=T.find(function(x){return String(x.id)===String(id);}), h=document.getElementById('tdm-hero'); if(!t||!h)return r;
       var o=h.querySelector('.td-psy'); if(o)o.remove(); h.insertAdjacentHTML('beforeend',psyDetailHTML(t)); }catch(e){ console.warn('td psy',e); } return r; };
   pmainRefresh();
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  PSYCHOLOGIE (suite) — garde-fou, résumé de période, étiquettes rangées
+// ═════════════════════════════════════════════════════════════════
+// Garde-fou : le contexte à risque MAINTENANT, avant d'ouvrir un trade
+function psyGarde(){
+  var now=new Date(), auj=sortedByDate(T.filter(function(t){return tDate(t).toDateString()===now.toDateString();}));
+  var out={lignes:[],niveau:0};
+  if(auj.length){
+    var last=auj[auj.length-1], gap=Math.round((now-tDate(last))/60000), serie=0;
+    for(var i=auj.length-1;i>=0&&auj[i].result==='LOSS';i--)serie++;
+    if(last.result==='LOSS'&&gap>=0&&gap<=90){
+      out.niveau=serie>=2?2:1;
+      out.lignes.push('Ta dernière perte date d\'il y a <b>'+(gap<2?'quelques minutes':gap+' min')+'</b>'+(serie>=2?' ('+serie+' pertes de suite)':'')+'.');
+      var TY=T.filter(function(t){return parseInt(t.trade_year)===GLOBAL_YEAR;}), auto=psyAuto(T), e=0, n=0, ee=0, nn=0;
+      TY.forEach(function(t){ var a=auto[t.id]; if(!a)return; var er=psyErrs(t).length>0; nn++; if(er)ee++; if(a.apres){ n++; if(er)e++; } });
+      if(n>=8&&nn)out.lignes.push('Dans ce contexte, tu fais une erreur <b>'+(e/n*100).toFixed(0)+' %</b> du temps (contre '+(ee/nn*100).toFixed(0)+' % en général).');
+    }
+    var pl=planGet(); if(pl.maxTrades&&auj.length>=pl.maxTrades){ out.niveau=Math.max(out.niveau,2); out.lignes.push('Tu as déjà pris <b>'+auj.length+' trade'+(auj.length>1?'s':'')+'</b> aujourd\'hui (limite : '+pl.maxTrades+').'); }
+  }
+  if(out.niveau){ var R=psyRegles(), r=R.emotion||R.risque||R.gestion||R.entree||R.etat;
+    out.lignes.push(r?'📏 Ta règle : <b>« '+wkEsc(r)+' »</b>':'💡 Pas de règle écrite : l\'onglet Psychologie t\'en propose.'); }
+  return out;
+}
+function psyGardeHTML(){ var g=psyGarde(); if(!g.niveau)return ''; return '<div class="garde n'+g.niveau+'"><div class="garde-t">🧘 Garde-fou · respire avant ce trade</div>'+g.lignes.map(function(x){return '<div>'+x+'</div>';}).join('')+'</div>'; }
+function psyGardeRender(){ var e=document.getElementById('rs-garde'); if(e)e.innerHTML=psyGardeHTML(); var q=document.getElementById('qa-garde'); if(q)q.innerHTML=psyGardeHTML(); }
+
+// Résumé de la psychologie d'une période (semaine ou mois)
+function psyPeriode(S,SP,quoi){
+  var n=S.length; if(n<3)return '<div class="psy-s">Pas assez de trades pour analyser la psychologie.</div>';
+  var st=psyStats(S), taux=st.avec.length/n*100, h='';
+  var tp=SP.length>=3?psyStats(SP).avec.length/SP.length*100:null;
+  h+='<div class="psy-top" style="align-items:center"><div><div class="psy-l">Trades avec une erreur</div><div class="cu psy-mid" style="color:'+(taux>50?RS_ROUGE:(taux>30?'#fbbf24':RS_VERT))+'">'+taux.toFixed(0)+' %</div>'
+    +'<div class="psy-s">'+(tp===null?'':((taux-tp<=0?'<span style="color:'+RS_VERT+'">▼ ':'<span style="color:'+RS_ROUGE+'">▲ ')+Math.abs(taux-tp).toFixed(0)+' pts</span> vs '+quoi+' précédent(e) ('+tp.toFixed(0)+' %)'))+'</div></div>';
+  var fl=Object.keys(st.fam).sort(function(a,b){return st.fam[a].c-st.fam[b].c;}), top=fl[0], f=top?PSY_FAM.filter(function(x){return x.k===top;})[0]:null;
+  if(f&&st.fam[top].c<0)h+='<div class="psy-r"><div class="psy-l">Famille la plus coûteuse</div><div style="font-size:16px;font-weight:800;color:var(--tp)">'+f.i+' '+f.n+'</div><div class="psy-s" style="color:'+RS_ROUGE+'">'+rsArgent(st.fam[top].c)+' · '+st.fam[top].n+' trade'+(st.fam[top].n>1?'s':'')+'</div></div>';
+  h+='</div>';
+  var ru=S.filter(function(t){return ctxOf(t).ru;}), ok=ru.filter(function(t){return ctxOf(t).ru==='o';}).length;
+  if(ru.length>=3)h+=rsLigne('📏 Règles respectées',ok+' / '+ru.length,ok/ru.length>=.7?RS_VERT:(ok/ru.length>=.4?'#fbbf24':RS_ROUGE));
+  var R=psyRegles();
+  if(f&&st.fam[top].c<0){ var r=R[top];
+    h+='<div class="psy-next">'+(r?'📏 Ta règle pour cette famille : <b>« '+wkEsc(r)+' »</b>':'💡 Aucune règle pour <b>'+f.n+'</b>. Suggestion : « '+wkEsc(f.r)+' » <button onclick="psyUseRule(\''+top+'\');initSection(DERNIERE_VUE[GROUPE_ACTIF]||GROUPE_ACTIF)">Adopter</button>')+'</div>'; }
+  return h;
+}
+function psyRulesBar(){
+  var R=psyRegles(), l=PSY_FAM.filter(function(f){return (R[f.k]||'').trim();});
+  if(!l.length)return '';
+  return '<div class="rules-bar"><span>📏 Mes règles</span>'+l.map(function(f){return '<em>'+f.i+' '+wkEsc(R[f.k])+'</em>';}).join('')+'</div>';
+}
+
+// Étiquettes d'erreur rangées par famille (sans rien changer aux données)
+function psyGroupTags(id){
+  var box=document.getElementById(id); if(!box||box.dataset.grouped)return;
+  var spans=Array.prototype.slice.call(box.querySelectorAll('.tag')); if(!spans.length)return;
+  var fams=PSY_FAM.concat([{k:'autre',n:'Autre',i:'•',t:[]}]), by={};
+  spans.forEach(function(sp){ var k=psyFam(sp.textContent.trim()).k; (by[k]=by[k]||[]).push(sp); });
+  box.innerHTML=''; box.dataset.grouped='1';
+  fams.forEach(function(f){ if(!by[f.k])return; var g=document.createElement('div'); g.className='tag-fam';
+    g.innerHTML='<div class="tag-fam-h">'+f.i+' '+f.n+'</div><div class="tag-fam-b"></div>';
+    by[f.k].forEach(function(sp){ g.lastChild.appendChild(sp); }); box.appendChild(g); });
+}
+document.addEventListener('DOMContentLoaded',function(){
+  psyGroupTags('perr-tags'); psyGroupTags('edit-perr-tags');
+  var _i=initResume; initResume=function(){ var r=_i.apply(this,arguments); try{ psyGardeRender(); }catch(e){ console.warn('garde',e); } return r; };
+  var _q=openQuick; openQuick=function(){ var r=_q.apply(this,arguments); try{ psyGardeRender(); }catch(e){} return r; };
+  var _s=initSemaine; initSemaine=function(){ var r=_s.apply(this,arguments); try{
+      var b=document.getElementById('wk-psyx'), a=wkTrades(WK_OFF), p=wkTrades(WK_OFF-1);
+      if(b)b.innerHTML='<div class="ct">🧠 Ta psychologie cette semaine</div>'+psyRulesBar()+psyPeriode(a,p,'la semaine'); }catch(e){ console.warn('wk psy',e); } return r; };
+  var _m=initMois; initMois=function(){ var r=_m.apply(this,arguments); try{
+      var b=document.getElementById('mo-psyx'); if(b)b.innerHTML='<div class="ct">🧠 Ta psychologie ce mois-ci</div>'+psyRulesBar()+psyPeriode(moTrades(MO_OFF),moTrades(MO_OFF-1),'le mois'); }catch(e){ console.warn('mo psy',e); } return r; };
 });
 document.addEventListener('DOMContentLoaded',boot);
 </script>
