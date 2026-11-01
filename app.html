@@ -1140,6 +1140,25 @@ html[data-theme="light"] .qa-row button.sel,html[data-theme="light"] .qa-fams bu
 .tj-rit button{padding:7px 12px;border-radius:20px;border:1px solid rgba(var(--acr3),.5);background:rgba(var(--acr),.15);color:var(--tp);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
 html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"] .tj-verdict.mid{color:#92400e;}html[data-theme="light"] .tj-verdict.bad{color:#9f1239;}
 @media(max-width:700px){.tj-h1{font-size:26px;}.tj-lim{grid-template-columns:90px 1fr 74px;}.tj-sth{display:none;}.tj-str{grid-template-columns:1fr 1fr;}.tj-str span:nth-child(3),.tj-str span:nth-child(4){grid-column:1/-1;}}
+/* ════ Ton plus doux, série propre, navigation simplifiée ════ */
+.garde,.garde.n2{background:rgba(var(--acr2),.1) !important;border-color:rgba(var(--acr3),.4) !important;}
+.rs-plan.ko{background:rgba(251,191,36,.1) !important;border-color:rgba(251,191,36,.4) !important;color:#fde68a !important;animation:none !important;}
+.card[data-etat="ko"]{box-shadow:0 0 70px -28px rgba(251,191,36,.5),var(--glow) !important;border-color:rgba(251,191,36,.4) !important;background-image:radial-gradient(520px 200px at 0 0,rgba(251,191,36,.1),transparent 70%) !important;}
+.card[data-etat="ko"]::after{content:'Repère atteint' !important;color:#fde68a !important;background:rgba(251,191,36,.16) !important;}
+.wk-pl-j.ko{border-color:rgba(251,191,36,.4) !important;background:rgba(251,191,36,.08) !important;}
+.tj-verdict.low{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);color:#fde68a;}.tj-verdict.mid{background:rgba(var(--acr2),.12);border:1px solid rgba(var(--acr3),.4);color:var(--ac4);}
+.tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
+.tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
+.tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
+.tj-dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;}.tj-dots i{width:15px;height:15px;border-radius:5px;background:rgba(251,191,36,.35);}.tj-dots i.ok{background:#34d399;box-shadow:0 0 8px rgba(52,211,153,.45);}
+.tj-nudge{padding:11px 14px;border-radius:14px;margin-bottom:12px;background:rgba(var(--acr2),.08);border:1px solid rgba(var(--acr3),.3);font-size:13px;color:var(--ts);line-height:1.6;}.tj-nudge b{color:var(--tp);}
+.tj-nudge button,.psy-use-i{margin-left:6px;padding:4px 11px;border-radius:20px;border:1px solid rgba(var(--acr3),.5);background:rgba(var(--acr),.15);color:var(--tp);font-size:12px;font-weight:700;cursor:pointer;}
+.tj-det{margin-bottom:12px !important;}.tj-det summary{cursor:pointer;list-style:none;font-size:13px;font-weight:700;color:var(--ac4);}.tj-det summary::-webkit-details-marker{display:none;}.tj-det summary::after{content:' ▾';color:var(--td);}.tj-det[open] summary{margin-bottom:10px;}
+.dt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+.dt-grid button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--bo);background:var(--card2);cursor:pointer;font-family:inherit;}
+.dt-grid button i{font-style:normal;font-size:20px;}.dt-grid button b{color:var(--tp);font-size:14px;}.dt-grid button span{color:var(--ts);font-size:12px;}
+.dt-grid button:hover{border-color:rgba(var(--acr3),.5);}
+@media(max-width:700px){.tj-sn{font-size:52px;}}
 @keyframes dkRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 @media(prefers-reduced-motion:reduce){.app-bg *,.card,.tz-card,.akpi,.kpi{animation:none !important;}}
 /* ════ THEME CLAIR (interrupteur dans « Mon compte » et dans le menu) ════ */
@@ -1285,18 +1304,15 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
     <div class="side-cap">Navigation</div>
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
       <button class="tab active" role="tab" aria-selected="true" data-groupe="today" data-title="Aujourd'hui" data-sub="Ta feuille de route du jour" onclick="showGroupe('today');rdToggleSidebar(false)"><span class="ti">☀️</span> Aujourd'hui</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="resume" data-title="Résumé" data-sub="L'essentiel en un coup d'oeil" onclick="showGroupe('resume');rdToggleSidebar(false)"><span class="ti">📊</span> Résumé</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="semaine" data-title="Ma semaine" data-sub="Ta révision hebdomadaire" onclick="showGroupe('semaine');rdToggleSidebar(false)"><span class="ti">🗓</span> Ma semaine</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="mois" data-title="Mon mois" data-sub="Ta révision mensuelle" onclick="showGroupe('mois');rdToggleSidebar(false)"><span class="ti">📅</span> Mon mois</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="psy" data-title="Psychologie" data-sub="Comprendre et corriger tes erreurs" onclick="showGroupe('psy');rdToggleSidebar(false)"><span class="ti">🧠</span> Psychologie</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="dashboard" data-title="Tableau de bord" data-sub="Vue d'ensemble" onclick="showGroupe('dashboard');rdToggleSidebar(false)"><span class="ti">⬡</span> Tableau de bord</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="journal" data-title="Journal" data-sub="Saisir et retrouver tes trades" onclick="showGroupe('journal');rdToggleSidebar(false)"><span class="ti">✦</span> Journal</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="analyse" data-title="Analyse" data-sub="Où est ton edge" onclick="showGroupe('analyse');rdToggleSidebar(false)"><span class="ti">◈</span> Analyse</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="report" data-title="Rapports" data-sub="Bilans exportables" onclick="showGroupe('report');rdToggleSidebar(false)"><span class="ti">📑</span> Rapports</button>
-      <button class="tab" role="tab" aria-selected="false" data-groupe="strategie" data-title="Stratégie" data-sub="Ta stratégie, écrite noir sur blanc" onclick="showGroupe('strategie');rdToggleSidebar(false)"><span class="ti">🧭</span> Stratégie</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="journal" data-title="Trades" data-sub="Noter et retrouver tes trades" onclick="showGroupe('journal');rdToggleSidebar(false)"><span class="ti">✦</span> Trades</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="progres" data-title="Progrès" data-sub="Comment tu avances" onclick="showGroupe('progres');rdToggleSidebar(false)"><span class="ti">📈</span> Progrès</button>
+      <button class="tab" role="tab" aria-selected="false" data-groupe="strategie" data-title="Ma stratégie" data-sub="Ta carte : conditions, règles, plan" onclick="showGroupe('strategie');rdToggleSidebar(false)"><span class="ti">🧭</span> Ma stratégie</button>
+    </div>
+    <div class="side-cap">Plus</div>
+    <div class="side-nav" role="tablist" aria-label="Plus">
       <button class="tab" role="tab" aria-selected="false" data-groupe="notebook" data-title="Notebook" data-sub="Notes, plans et recaps" onclick="showGroupe('notebook');rdToggleSidebar(false)"><span class="ti">📓</span> Notebook</button>
     </div>
-    <div class="side-cap">Intelligence ✨</div>
+    <div class="side-cap">Outils</div>
     <div class="side-nav" role="tablist" aria-label="Navigation principale">
       <button class="side-action accent" onclick="openCoach();rdToggleSidebar(false)"><span class="ti">✨</span> Bilan du coach</button>
       <button class="side-action" onclick="rdNewTrade();rdToggleSidebar(false)"><span class="ti">＋</span> Nouveau trade</button>
@@ -1512,6 +1528,20 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
 </div>
 
 <!-- ══ JOURNAL ══ -->
+<div id="details" class="sec" role="tabpanel" aria-label="Détails">
+  <div class="card"><div class="ct">🔎 Pour aller plus loin</div><div class="psy-s" style="margin:-4px 0 12px">Tout le détail de tes chiffres, quand tu veux creuser. Rien de plus à faire ici : c'est une bibliothèque.</div>
+    <div class="dt-grid">
+      <button onclick="showGroupe('progres','dashboard')"><i>⬡</i><b>Tableau de bord</b><span>Capital, courbe, chiffres clés</span></button>
+      <button onclick="showGroupe('progres','analyse')"><i>◈</i><b>Analyse</b><span>Paires, sessions, setups, métriques</span></button>
+      <button onclick="showGroupe('progres','bilan')"><i>📆</i><b>Vue annuelle</b><span>Ton année, mois par mois</span></button>
+      <button onclick="showGroupe('progres','setups')"><i>🗂</i><b>Mois par mois</b><span>Le détail de chaque mois</span></button>
+      <button onclick="showGroupe('progres','report')"><i>📑</i><b>Rapports</b><span>Bilans détaillés, comparaisons, calendrier</span></button>
+      <button onclick="openCoach()"><i>✨</i><b>Bilan du coach</b><span>Un résumé de ta performance</span></button>
+      <button onclick="downloadBilanPDF()"><i>📥</i><b>Bilan PDF</b><span>À garder ou à partager</span></button>
+    </div>
+  </div>
+</div>
+
 <div id="today" class="sec" role="tabpanel" aria-label="Aujourd'hui"><div id="tj-body"></div></div>
 
 <div id="psy" class="sec" role="tabpanel" aria-label="Psychologie"><div id="psy-body"></div></div>
@@ -2889,10 +2919,10 @@ function buildCoachReport(){
 <button class="fab" onclick="rdNewTrade()" title="Raccourci : N"><span class="fab-ic">＋</span> Nouveau Trade<span class="fab-k">N</span></button>
 <nav class="bnav" aria-label="Navigation mobile">
   <button data-g="today" onclick="showGroupe('today');rdToggleSidebar(false)"><i>☀️</i><span>Aujourd'hui</span></button>
-  <button data-g="semaine" onclick="showGroupe('semaine');rdToggleSidebar(false)"><i>🗓</i><span>Semaine</span></button>
+  <button data-g="progres" onclick="showGroupe('progres');rdToggleSidebar(false)"><i>📈</i><span>Progrès</span></button>
   <button class="bnav-plus" onclick="rdNewTrade()" aria-label="Nouveau trade"><b>＋</b></button>
-  <button data-g="journal" onclick="showGroupe('journal');rdToggleSidebar(false)"><i>✦</i><span>Journal</span></button>
-  <button data-g="menu" onclick="rdToggleSidebar()"><i>☰</i><span>Menu</span></button>
+  <button data-g="strategie" onclick="showGroupe('strategie');rdToggleSidebar(false)"><i>🧭</i><span>Stratégie</span></button>
+  <button data-g="menu" onclick="rdToggleSidebar()"><i>☰</i><span>Plus</span></button>
 </nav>
 
 <!-- REDESIGN-ONLY HELPERS (le script principal n'est pas modifié) -->
@@ -3243,6 +3273,8 @@ setInterval(clk,1000);clk();
 // Cinq sections. Celles qui regroupent plusieurs vues affichent une barre
 // de sous-onglets. Les vues elles-memes n'ont pas bouge : seul le routage change.
 const GROUPES=[
+  {cle:'progres',  titre:"Progrès",        sous:"Comment tu avances",
+   vues:[{id:'resume',nom:'Résumé'},{id:'semaine',nom:'Semaine'},{id:'mois',nom:'Mois'},{id:'psy',nom:'Psychologie'},{id:'details',nom:'Détails'}]},
   {cle:'today',    titre:"Aujourd'hui",    sous:"Ta feuille de route du jour",
    vues:[{id:'today',nom:"Aujourd'hui"}]},
   {cle:'resume',   titre:"Résumé",          sous:"L'essentiel en un coup d'oeil",
@@ -3255,7 +3287,7 @@ const GROUPES=[
    vues:[{id:'psy',nom:'Psychologie'}]},
   {cle:'dashboard',titre:"Tableau de bord",sous:"Vue d'ensemble",
    vues:[{id:'dashboard',nom:"Vue d'ensemble"}]},
-  {cle:'journal',  titre:"Journal",       sous:"Saisir et retrouver tes trades",
+  {cle:'journal',  titre:"Trades",        sous:"Noter et retrouver tes trades",
    vues:[{id:'journal',nom:'Saisie'},{id:'tradelog',nom:'Historique détaillé'}]},
   {cle:'analyse',  titre:"Analyse",       sous:"Où est ton edge",
    vues:[{id:'analyse',nom:'Statistiques'},{id:'bilan',nom:'Vue annuelle'},{id:'setups',nom:'Mois par mois'}]},
@@ -7316,7 +7348,7 @@ function wkPlan(){
     var ts=S.filter(function(t){return tDate(t).toDateString()===d.toDateString();});
     if(!ts.length)continue; vus++;
     var e=planEcarts(ts,p); if(!e.length)respectes++;
-    jours.push('<div class="wk-pl-j '+(e.length?'ko':'ok')+'"><b>'+WK_JOURS[d.getDay()].slice(0,3)+' '+d.getDate()+'</b> '+(e.length?'⛔ '+e.join(' · '):'✅ plan respecté')+'</div>'); }
+    jours.push('<div class="wk-pl-j '+(e.length?'ko':'ok')+'"><b>'+WK_JOURS[d.getDay()].slice(0,3)+' '+d.getDate()+'</b> '+(e.length?'À ajuster : '+e.join(' · '):'✅ plan respecté')+'</div>'); }
   box.innerHTML=(vus?'<div class="wk-pl-sum"><span class="cu" style="font-size:28px;font-weight:800;color:'+(respectes===vus?RS_VERT:(respectes>=vus/2?'#fbbf24':RS_ROUGE))+'">'+respectes+' / '+vus+'</span> <span style="color:var(--ts);font-size:12px">jours où tu as respecté ton plan</span></div>'+jours.join(''):'<div style="font-size:12px;color:var(--td)">Pas encore de trade cette semaine.</div>');
 }
 // Alerte du jour sur le Résumé
@@ -7326,7 +7358,7 @@ function rsPlanAlert(){
   if(!today.length||!(p.maxTrades||p.maxLoss||planPaires(p).length)){ box.innerHTML=''; return; }
   var e=planEcarts(today,p), atteint=(p.maxTrades&&today.length===p.maxTrades);
   if(!e.length&&!atteint){ box.innerHTML='<div class="rs-plan ok">✅ Plan respecté aujourd\'hui · '+today.length+' trade'+(today.length>1?'s':'')+'</div>'; return; }
-  box.innerHTML='<div class="rs-plan ko">🛑 <b>'+(e.length?'Plan dépassé aujourd\'hui':'Limite de trades atteinte')+'</b><span>'+(e.length?e.join(' · '):'Tu as pris tes '+p.maxTrades+' trades du jour. Arrête-toi là.')+'</span></div>';
+  box.innerHTML='<div class="rs-plan ko">🧘 <b>'+(e.length?'Ton repère du jour est atteint':'Limite de trades atteinte')+'</b><span>'+(e.length?e.join(' · '):'Tu as pris tes '+p.maxTrades+' trades du jour : un bon moment pour faire une pause.')+'</span></div>';
 }
 
 // ═════════════════════════════════════════════════════════════════
@@ -7776,7 +7808,7 @@ function bkCelebrate(){
 }
 // Glisser à gauche ou à droite pour changer d'onglet (téléphone)
 (function(){
-  var ORDRE=['today','resume','semaine','mois','psy','dashboard','journal','analyse','report','strategie','notebook'], x0=0,y0=0,t0=0,ok=false;
+  var ORDRE=['today','journal','progres','strategie'], x0=0,y0=0,t0=0,ok=false;
   function defile(e){ for(var n=e;n&&n!==document.body;n=n.parentElement){ var o=getComputedStyle(n).overflowX; if((o==='auto'||o==='scroll')&&n.scrollWidth>n.clientWidth+4)return true; } return false; }
   document.addEventListener('touchstart',function(e){ var t=e.touches[0]; x0=t.clientX; y0=t.clientY; t0=Date.now();
     ok=innerWidth<981&&!document.querySelector('.mo.show')&&!/INPUT|TEXTAREA|SELECT|CANVAS/.test(e.target.tagName)&&!e.target.isContentEditable&&!defile(e.target); },{passive:true});
@@ -7990,7 +8022,7 @@ function psyGarde(){
     out.lignes.push(r?'📏 Ta règle : <b>« '+wkEsc(r)+' »</b>':'💡 Pas de règle écrite : l\'onglet Psychologie t\'en propose.'); }
   return out;
 }
-function psyGardeHTML(){ var g=psyGarde(); if(!g.niveau)return ''; return '<div class="garde n'+g.niveau+'"><div class="garde-t">🧘 Garde-fou · respire avant ce trade</div>'+g.lignes.map(function(x){return '<div>'+x+'</div>';}).join('')+'</div>'; }
+function psyGardeHTML(){ var g=psyGarde(); if(!g.niveau)return ''; return '<div class="garde n'+g.niveau+'"><div class="garde-t">🧘 Petite pause</div>'+g.lignes.map(function(x){return '<div>'+x+'</div>';}).join('')+'</div>'; }
 function psyGardeRender(){ var e=document.getElementById('rs-garde'); if(e)e.innerHTML=psyGardeHTML(); var q=document.getElementById('qa-garde'); if(q)q.innerHTML=psyGardeHTML(); }
 
 function psyRulesBar(){
@@ -8155,8 +8187,8 @@ function rsErreurs(){
 }
 
 // ═════════════════════════════════════════════════════════════════
-//  AUJOURD'HUI — le cockpit : il te dit quoi faire, quoi ne pas faire,
-//  puis il analyse ta journée. C'est l'écran d'ouverture de l'app.
+//  AUJOURD'HUI — ta feuille de route. Un écran calme : ta série de
+//  trades propres, 3 priorités, ta journée, puis un bilan bienveillant.
 // ═════════════════════════════════════════════════════════════════
 function tjKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
 function tjCiGet(){ try{ return JSON.parse(localStorage.getItem(lsKey('bk_ci_'+tjKey()))||'null'); }catch(e){ return null; } }
@@ -8172,46 +8204,58 @@ function tjGroup(all,fn){
 }
 function tjPhrase(x,base){ return x.n+' trades, <b>'+x.w+'</b> gagné'+(x.w>1?'s':'')+', <b>'+x.l+'</b> perdu'+(x.l>1?'s':'')+' ('+x.wr.toFixed(0)+' % contre '+base.toFixed(0)+' % en moyenne)'; }
 
-// Ce que tu dois faire / ne pas faire aujourd'hui, d'après tes propres chiffres
-function tjConsignes(){
+// ── Trade « propre » : aucune erreur notée, stratégie et règles respectées ──
+function tjPropre(t){ var c=ctxOf(t); return psyErrs(t).length===0&&c.sg!=='n'&&c.ru!=='n'; }
+function tjSerie(){
+  var S=sortedByDate(T), cur=0, best=0, run=0, i;
+  for(i=S.length-1;i>=0&&tjPropre(S[i]);i--)cur++;
+  S.forEach(function(t){ if(tjPropre(t)){ run++; if(run>best)best=run; } else run=0; });
+  var l20=S.slice(-20), p20=l20.filter(tjPropre).length, pr=S.slice(-40,-20), pp=pr.filter(tjPropre).length;
+  return {cur:cur,best:best,l20:l20,p20:p20,rate:l20.length?p20/l20.length*100:null,prev:pr.length>=10?pp/pr.length*100:null,n:S.length};
+}
+function tjSerieHTML(){
+  var s=tjSerie(); if(s.n<3)return '<div class="card tj-serie"><div class="tj-sl">Ta série de trades propres</div><div class="psy-s" style="line-height:1.6">Un trade est « propre » quand tu respectes ta stratégie, tes règles et que tu n\'as noté aucune erreur. Note quelques trades : ta série démarre ici.</div></div>';
+  var msg=s.cur===0?'Ton prochain trade propre démarre une nouvelle série.':(s.cur>=s.best&&s.cur>=3?'🏆 C\'est ton record, bravo !':'Continue : encore <b>'+(s.best-s.cur+1)+'</b> pour battre ton record ('+s.best+').');
+  var tr=(s.prev===null||s.rate===null)?'':' · '+((s.rate-s.prev)>=0?'<span style="color:'+RS_VERT+'">▲ +':'<span style="color:var(--ts)">▼ ')+Math.abs(s.rate-s.prev).toFixed(0)+' pts</span> vs les 20 précédents';
+  return '<div class="card tj-serie"><div class="tj-sl">Ta série de trades propres</div>'
+   +'<div class="tj-sr"><div class="cu tj-sn">'+s.cur+'</div><div class="tj-st2"><div>trade'+(s.cur>1?'s':'')+' propre'+(s.cur>1?'s':'')+' d\'affilée</div><em>Record : '+s.best+'</em></div></div>'
+   +'<div class="tj-dots">'+s.l20.map(function(t){ return '<i class="'+(tjPropre(t)?'ok':'')+'" title="'+(tjPropre(t)?'Trade propre':'À ajuster')+'"></i>'; }).join('')+'</div>'
+   +'<div class="psy-s" style="margin-top:8px">'+msg+'</div>'
+   +'<div class="psy-s">Sur tes '+s.l20.length+' derniers trades : <b>'+s.p20+'</b> propres ('+s.rate.toFixed(0)+' %)'+tr+'</div></div>';
+}
+
+// ── Feuille de route : 3 priorités maximum, formulées comme des invitations ──
+function tjRoute(){
   var now=new Date(), jour=now.getDay(), JN=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
-  var W=psyWL(T), base=W.wr, ci=tjCiGet()||{}, pl=planGet(), R=psyRegles(), st=stGet();
-  var faire=[], eviter=[];
-  // règles
-  PSY_FAM.forEach(function(f){ if((R[f.k]||'').trim())faire.push([f.i,'<b>'+wkEsc(R[f.k])+'</b>']); });
-  // stratégie
+  var W=psyWL(T), base=W.wr, ci=tjCiGet()||{}, pl=planGet(), R=psyRegles(), st=stGet(), S=sortedByDate(T), l20=S.slice(-20);
+  var top=[], doux=[];
+  // 1. Le point d'attention du moment : l'erreur la plus fréquente sur les 20 derniers trades
+  var cnt={}; l20.forEach(function(t){ var p=psyErrs(t)[0]; if(p)cnt[p]=(cnt[p]||0)+1; });
+  var ks=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];});
+  if(ks.length){ var f=psyFam(ks[0]), r=(R[f.k]||'').trim(), b=psyBeh(T,'psych_errors').filter(function(x){return x.k===ks[0];})[0];
+    top.push(['🎯','Ton point d\'attention : <b>'+wkEsc(ks[0])+'</b> ('+cnt[ks[0]]+' fois sur tes '+l20.length+' derniers trades).'+(r?' Ta règle : <b>« '+wkEsc(r)+' »</b>.':' Idée de règle : « '+wkEsc(f.r)+' » <button class="psy-use-i" onclick="psyUseRule(\''+f.k+'\');initToday()">Adopter</button>')]);
+  } else if(l20.length>=5) top.push(['🌟','Aucune erreur notée sur tes derniers trades. Garde exactement le même rythme.']);
+  // 2. Ta stratégie
   var chk=(st.check||[]).filter(function(x){return (x||'').trim();});
-  if(chk.length)faire.push(['📐','Avant chaque entrée, vérifie tes <b>'+chk.length+' conditions</b> : '+chk.map(wkEsc).join(' · ')]);
-  else if(!(st.principe||'').trim())faire.push(['📐','Ta stratégie n\'est pas encore écrite : remplis l\'onglet <b>Stratégie</b>, je la ferai respecter ici.']);
-  // plan
-  var lim=[]; if(pl.maxTrades)lim.push('<b>'+pl.maxTrades+'</b> trades maximum'); if(pl.maxLoss)lim.push('arrêt à <b>−$'+Math.round(pl.maxLoss)+'</b> de perte'); 
-  if(lim.length)faire.push(['🛑','Ton plan du jour : '+lim.join(', ')+'.']);
-  var ok=planPaires(pl); if(ok.length)faire.push(['💱','Reste sur tes paires : <b>'+ok.join(', ')+'</b>.']);
+  if(chk.length)top.push(['📐','Avant chaque entrée, passe tes <b>'+chk.length+' conditions</b> en revue : '+chk.map(wkEsc).join(' · ')]);
+  else top.push(['📐','Ta stratégie t\'attend dans l\'onglet <b>Ma stratégie</b> : écris-la une fois, elle te guidera ici chaque jour.']);
+  // 3. Ton rythme du jour
+  var lim=[]; if(pl.maxTrades)lim.push('jusqu\'à <b>'+pl.maxTrades+' trades</b>'); if(pl.maxLoss)lim.push('une pause si la journée atteint <b>−$'+Math.round(pl.maxLoss)+'</b>');
+  if(ci.en&&ci.en<=2)top.push(['🔋','Énergie à <b>'+ci.en+'/5</b> : une journée plus légère t\'aidera (moins de trades, taille réduite).']);
+  else if(lim.length)top.push(['🛑','Ton repère du jour : '+lim.join(', ')+'.']);
+  else top.push(['🛑','Tu peux fixer un repère de trades par jour dans <b>Ma semaine</b> : il apparaîtra ici.']);
+  // Petits conseils tirés de tes chiffres
   if(base!==null&&T.length>=20){
-    // meilleur moment
     var ses=tjGroup(T,function(t){return t.sess;}).filter(function(x){return x.n>=8&&x.wr!==null;}).sort(function(a,b){return b.wr-a.wr;});
-    if(ses.length&&ses[0].wr>=base+10)faire.push(['🕐','Ta meilleure session : <b>'+wkEsc(ses[0].k)+'</b> — '+tjPhrase(ses[0],base)+'.']);
-    var par=tjGroup(T,function(t){return t.pair;}).filter(function(x){return x.n>=8&&x.wr!==null;}).sort(function(a,b){return b.wr-a.wr;});
-    if(par.length&&par[0].wr>=base+10&&!ok.length)faire.push(['💎','Ta meilleure paire : <b>'+wkEsc(par[0].k)+'</b> — '+tjPhrase(par[0],base)+'.']);
-    // jour de la semaine
+    if(ses.length&&ses[0].wr>=base+10)doux.push(['🕐','Ta session la plus à l\'aise : <b>'+wkEsc(ses[0].k)+'</b> — '+tjPhrase(ses[0],base)+'.']);
     var jr=tjGroup(T,function(t){return tDate(t).getDay();}).filter(function(x){return x.n>=8&&x.wr!==null;}), moi=jr.filter(function(x){return +x.k===jour;})[0];
-    if(moi&&moi.wr<=base-10)eviter.push(['📅','Aujourd\'hui c\'est <b>'+JN[jour]+'</b> : '+tjPhrase(moi,base)+'. Sois très sélectif.']);
-    else if(moi&&moi.wr>=base+10)faire.push(['📅','Le <b>'+JN[jour]+'</b>, tu réussis bien : '+tjPhrase(moi,base)+'.']);
+    if(moi&&moi.wr<=base-10)doux.push(['📅','Le <b>'+JN[jour]+'</b> est plus délicat pour toi : '+tjPhrase(moi,base)+'. Un peu plus de sélectivité peut t\'aider.']);
+    else if(moi&&moi.wr>=base+10)doux.push(['📅','Le <b>'+JN[jour]+'</b>, tu réussis bien : '+tjPhrase(moi,base)+'.']);
     var pire=ses.filter(function(x){return x.wr<=base-10;}).sort(function(a,b){return a.wr-b.wr;})[0];
-    if(pire)eviter.push(['🌙','Évite la session <b>'+wkEsc(pire.k)+'</b> : '+tjPhrase(pire,base)+'.']);
-    // erreurs qui font le plus perdre
-    psyBeh(T,'psych_errors').filter(function(x){return x.n>=5&&x.wr!==null&&x.wr<=base-5;}).sort(function(a,b){return b.n-a.n;}).slice(0,2).forEach(function(x){
-      eviter.push(['⚠️','Évite <b>'+wkEsc(x.k)+'</b> : '+tjPhrase(x,base)+'.']); });
-    // bons comportements
-    psyBeh(T,'psych_good').filter(function(x){return x.n>=5&&x.wr!==null&&x.wr>=base+5;}).sort(function(a,b){return b.wr-a.wr;}).slice(0,1).forEach(function(x){
-      faire.push(['✅','Reste <b>'+wkEsc(x.k)+'</b> : '+tjPhrase(x,base)+'.']); });
+    if(pire&&doux.length<2)doux.push(['🌙','La session <b>'+wkEsc(pire.k)+'</b> te réussit moins : '+tjPhrase(pire,base)+'.']);
   }
-  // état du jour
-  if(ci.en&&ci.en<=2)eviter.unshift(['🔋','Énergie basse aujourd\'hui (<b>'+ci.en+'/5</b>) : n\'ouvre pas de trade, ou prends la taille minimale.']);
-  if(ci.hu===1)eviter.unshift(['😟','Humeur basse : pas de trade pour « se refaire ». Si tu perds, tu t\'arrêtes.']);
-  // dernier contexte : après une perte
-  var g=psyGarde(); if(g.niveau)eviter.unshift(['🧘','Tu viens de perdre : '+g.lignes[0].replace(/<\/?b>/g,'')+' Respire avant le prochain trade.']);
-  return {faire:faire,eviter:eviter};
+  var g=psyGarde(); if(g.niveau)doux.unshift(['🧘','Tu viens de perdre un trade : '+g.lignes[0].replace(/<\/?b>/g,'')+' Une petite pause avant le prochain peut faire du bien.']);
+  return {top:top.slice(0,3),doux:doux.slice(0,2)};
 }
 
 function initToday(){
@@ -8219,77 +8263,75 @@ function initToday(){
   var now=new Date(), h=now.getHours(), hello=h<12?'Bonjour':(h<18?'Bon après-midi':'Bonsoir');
   var auj=tjAuj(), pl=planGet(), ci=tjCiGet()||{}, WA=psyWL(auj), net=auj.reduce(function(s,t){return s+pnlOf(t);},0);
   var jour=now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  var H='';
-  // 1. Entête + check-in
   var row=function(k,items){ return '<div class="qa-row tj-row">'+items.map(function(it){ return '<button type="button" class="'+(ci[k]===it[0]?'sel':'')+'" onclick="tjCiSet(\''+k+'\','+it[0]+')">'+it[1]+'</button>'; }).join('')+'</div>'; };
-  H+='<div class="card tj-hero"><div class="tj-h1">'+hello+' 👋</div><div class="tj-date">'+jour+'</div>'
-   +'<div class="tj-state">'+(auj.length?'<b>'+auj.length+'</b> trade'+(auj.length>1?'s':'')+' aujourd\'hui · <b class="gw">'+WA.w+'</b> gagné'+(WA.w>1?'s':'')+' · <b class="gl">'+WA.l+'</b> perdu'+(WA.l>1?'s':'')+' · résultat du jour <b style="color:'+(net>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(net)+'</b>':'Pas encore de trade aujourd\'hui. Lis ta feuille de route, puis trade.')+'</div>'
+  var H='<div class="card tj-hero"><div class="tj-h1">'+hello+' 👋</div><div class="tj-date">'+jour+'</div>'
+   +'<div class="tj-state">'+(auj.length?'<b>'+auj.length+'</b> trade'+(auj.length>1?'s':'')+' noté'+(auj.length>1?'s':'')+' aujourd\'hui · <b class="gw">'+WA.w+'</b> gagné'+(WA.w>1?'s':'')+' · <b class="gl">'+WA.l+'</b> perdu'+(WA.l>1?'s':''):'Pas encore de trade aujourd\'hui. Lis ta feuille de route, puis trade sereinement.')+'</div>'
    +'<div class="tj-ci"><div class="qa-lbl">⚡ Comment tu te sens aujourd\'hui ?</div>'+row('en',[[1,'1 · épuisé'],[2,'2'],[3,'3'],[4,'4'],[5,'5 · au top']])+row('hu',[[1,'😟 Mal'],[2,'😐 Neutre'],[3,'🙂 Bien']])+'</div>'
    +'<button class="tj-cta" onclick="rdNewTrade()">＋ Noter un trade</button></div>';
-  // 2. Garde-fou
+  // journal à jour (doux)
+  var dernier=T.length?sortedByDate(T)[T.length-1]:null;
+  if(dernier&&!auj.length){ var j=Math.floor((now-tDate(dernier))/86400000);
+    if(j>=2)H+='<div class="tj-nudge">📝 Ton dernier trade noté date de <b>'+j+' jours</b>. S\'il y en a eu d\'autres, note-les pour garder ton suivi à jour. <button onclick="rdNewTrade()">Noter</button></div>'; }
+  H+=tjSerieHTML();
   H+='<div id="tj-garde">'+psyGardeHTML()+'</div>';
-  // 3. À faire / à ne pas faire
-  var C=tjConsignes(), li=function(a,c){ return a.length?a.map(function(x){ return '<div class="tj-li '+c+'"><span>'+x[0]+'</span><div>'+x[1]+'</div></div>'; }).join(''):'<div class="psy-s">Rien de particulier pour l\'instant : continue de noter tes trades, la feuille de route se précise avec tes chiffres.</div>'; };
-  H+='<div class="wk-two"><div class="card" style="margin:0"><div class="ct">✅ Aujourd\'hui, tu dois</div>'+li(C.faire,'ok')+'</div><div class="card" style="margin:0"><div class="ct">⛔ Aujourd\'hui, tu ne dois pas</div>'+li(C.eviter,'ko')+'</div></div>';
-  // 4. Suivi en direct
+  // feuille de route
+  var C=tjRoute(), li=function(a){ return a.map(function(x){ return '<div class="tj-li"><span>'+x[0]+'</span><div>'+x[1]+'</div></div>'; }).join(''); };
+  H+='<div class="card" style="margin-bottom:12px"><div class="ct">🧭 Ta feuille de route du jour</div>'+li(C.top)
+   +(C.doux.length?'<div class="psy-sub">Pour rester dans ton jeu</div>'+li(C.doux):'')+'</div>';
+  // journée en direct (repères doux)
   var lim=[];
-  if(pl.maxTrades)lim.push(['Trades pris',auj.length,pl.maxTrades,auj.length>pl.maxTrades?RS_ROUGE:(auj.length===pl.maxTrades?'#fbbf24':RS_VERT),String(auj.length)+' / '+pl.maxTrades]);
-  if(pl.maxLoss){ var perte=Math.max(0,-net); lim.push(['Perte du jour',perte,pl.maxLoss,perte>=pl.maxLoss?RS_ROUGE:(perte>=pl.maxLoss*.6?'#fbbf24':RS_VERT),'$'+Math.round(perte)+' / $'+Math.round(pl.maxLoss)]); }
-  H+='<div class="card" style="margin-top:12px"><div class="ct">📟 Ta journée en direct</div>'
-   +(lim.length?lim.map(function(x){ return '<div class="tj-lim"><span>'+x[0]+'</span><div class="dbar"><div style="width:'+Math.min(100,x[2]?x[1]/x[2]*100:0)+'%;background:'+x[3]+'"></div></div><b>'+x[4]+'</b></div>'; }).join(''):'<div class="psy-s">Fixe tes limites (trades max, perte max) dans <a href="#" onclick="showGroupe(\'semaine\');return false" style="color:var(--ac3)">Ma semaine</a> : elles s\'afficheront ici.</div>')
-   +(auj.length?'<div style="overflow-x:auto;margin-top:10px"><table class="tbl" style="width:100%"><tbody>'+auj.map(function(t){ var d=tDate(t), c=ctxOf(t); return '<tr style="cursor:pointer" onclick="openTradeDetail(\''+String(t.id).replace(/\'/g,'')+'\')"><td>'+d.toTimeString().slice(0,5)+'</td><td><span class="pb" style="'+pbs(t.pair)+'">'+wkEsc(t.pair)+'</span></td><td>'+rpill(t.result)+'</td><td>'+(c.sg==='o'?'📐 conforme':(c.sg==='n'?'📐 hors stratégie':'<span style="color:var(--td)">📐 ?</span>'))+'</td><td style="color:var(--td);font-size:11px;white-space:normal">'+wkEsc(psyErrs(t).join(', '))+'</td></tr>'; }).join('')+'</tbody></table></div>':'')+'</div>';
-  // 5. Bilan du jour
-  H+='<div class="card" style="margin-top:12px"><div class="ct">🧾 Bilan du jour</div>'+tjBilan(auj,pl)+'</div>';
-  // 6. Suivi de la stratégie
-  H+='<div class="card" style="margin-top:12px"><div class="ct">📐 Respect de ta stratégie</div>'+tjStrat(auj)+'</div>';
-  // 7. Rituels
-  H+='<div class="card" style="margin-top:12px"><div class="ct">🗓 Ta routine</div>'+tjRituels(auj)+'</div>';
+  if(pl.maxTrades){ var r=pl.maxTrades-auj.length; lim.push(['Trades',auj.length,pl.maxTrades,r>0?'var(--ac3)':'#fbbf24',auj.length+' / '+pl.maxTrades+(r>0?' · il t\'en reste '+r:' · repère atteint')]); }
+  if(pl.maxLoss){ var perte=Math.max(0,-net); lim.push(['Journée',perte,pl.maxLoss,perte>=pl.maxLoss?'#fbbf24':'var(--ac3)',perte>=pl.maxLoss?'repère atteint':'dans ton repère']); }
+  if(auj.length||lim.length)H+='<div class="card" style="margin-bottom:12px"><div class="ct">📟 Ta journée</div>'
+   +lim.map(function(x){ return '<div class="tj-lim"><span>'+x[0]+'</span><div class="dbar"><div style="width:'+Math.min(100,x[2]?x[1]/x[2]*100:0)+'%;background:'+x[3]+'"></div></div><b>'+x[4]+'</b></div>'; }).join('')
+   +(lim.some(function(x){return x[3]==='#fbbf24';})?'<div class="psy-s" style="margin-top:6px">Tu as atteint ton repère : c\'est un bon moment pour faire une pause et décider calmement de la suite.</div>':'')
+   +(auj.length?'<div style="overflow-x:auto;margin-top:10px"><table class="tbl" style="width:100%"><tbody>'+auj.map(function(t){ var d=tDate(t), c=ctxOf(t); return '<tr style="cursor:pointer" onclick="openTradeDetail(\''+String(t.id).replace(/\'/g,'')+'\')"><td>'+d.toTimeString().slice(0,5)+'</td><td><span class="pb" style="'+pbs(t.pair)+'">'+wkEsc(t.pair)+'</span></td><td>'+rpill(t.result)+'</td><td>'+(tjPropre(t)?'✨ propre':'<span style="color:var(--ts)">à ajuster</span>')+'</td><td style="color:var(--td);font-size:11px;white-space:normal">'+wkEsc(psyErrs(t).join(', '))+'</td></tr>'; }).join('')+'</tbody></table></div>':'')+'</div>';
+  H+='<div class="card" style="margin-bottom:12px"><div class="ct">🌙 Ton bilan du jour</div>'+tjBilan(auj,pl)+'</div>';
+  H+='<details class="card tj-det"><summary>📐 Ta stratégie, jour après jour</summary>'+tjStrat(auj)+'</details>';
+  H+='<details class="card tj-det"><summary>🗓 Ta routine</summary>'+tjRituels(auj)+'</details>';
   root.innerHTML=H;
 }
 
 function tjBilan(auj,pl){
-  if(!auj.length)return '<div class="psy-s" style="line-height:1.6">Aucun trade aujourd\'hui. Ne pas trader est aussi une décision : si c\'était voulu (ton plan, ton énergie, pas de setup), c\'est une bonne journée.</div>'+tjLecon();
-  var W=psyWL(auj), net=auj.reduce(function(s,t){return s+pnlOf(t);},0), ec=planEcarts(auj,pl);
+  if(!auj.length)return '<div class="psy-s" style="line-height:1.6">Pas de trade aujourd\'hui. Ne pas trader est aussi une décision : si c\'était voulu, c\'est une bonne journée.</div>'+tjLecon();
+  var W=psyWL(auj), net=auj.reduce(function(s,t){return s+pnlOf(t);},0), ec=planEcarts(auj,pl), pro=auj.filter(tjPropre).length;
   var sg=auj.filter(function(t){return ctxOf(t).sg;}), sgN=sg.filter(function(t){return ctxOf(t).sg==='n';}).length;
   var ru=auj.filter(function(t){return ctxOf(t).ru;}), ruN=ru.filter(function(t){return ctxOf(t).ru==='n';}).length;
   var errs={}, errN=0; auj.forEach(function(t){ var e=psyErrs(t); if(e.length)errN++; e.forEach(function(x){ var y=(errs[x]=errs[x]||{n:0,w:0,l:0}); y.n++; if(t.result==='WIN')y.w++; else if(t.result==='LOSS')y.l++; }); });
-  var lines=[];
-  lines.push(['📊','<b>'+auj.length+'</b> trade'+(auj.length>1?'s':'')+' : '+psyGP(W)+' · résultat du jour <b style="color:'+(net>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(net)+'</b>']);
-  var pla=(pl.maxTrades||pl.maxLoss||planPaires(pl).length);
-  lines.push(pla?(ec.length?['⛔','Hors plan : '+ec.join(' · ')]:['✅','Plan respecté (limites et paires).']):['💡','Aucune limite fixée : définis ton plan dans Ma semaine.']);
-  lines.push(sg.length?(sgN?['⛔','<b>'+sgN+'</b> trade'+(sgN>1?'s':'')+' sur '+sg.length+' hors de ta stratégie.']:['✅','Tous tes trades respectent ta stratégie.']):['💡','Pas d\'info « stratégie respectée ? » : réponds-y à chaque trade pour suivre ta discipline.']);
-  if(ru.length)lines.push(ruN?['⛔','Règles non respectées sur <b>'+ruN+'</b> trade'+(ruN>1?'s':'')+'.']:['✅','Règles respectées sur tous les trades.']);
-  lines.push(errN?['⚠️','Erreurs notées sur <b>'+errN+'</b> trade'+(errN>1?'s':'')+' : '+Object.keys(errs).map(function(k){ var y=errs[k]; return wkEsc(k)+' ('+y.n+' : '+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'; }).join(' · ')]:['✅','Aucune erreur notée.']);
+  var bien=[];
+  if(pro)bien.push('<b>'+pro+'</b> trade'+(pro>1?'s':'')+' propre'+(pro>1?'s':'')+' sur '+auj.length);
+  if((pl.maxTrades||pl.maxLoss||planPaires(pl).length)&&!ec.length)bien.push('tu es resté dans ton plan');
+  if(sg.length&&!sgN)bien.push('tous tes trades suivent ta stratégie');
+  if(ru.length&&!ruN)bien.push('tes règles ont été respectées');
+  if(!errN)bien.push('aucune erreur notée');
+  bien.push('tu as noté ta journée : ton suivi est à jour');
   var propre=!ec.length&&!sgN&&!ruN&&!errN, verdict;
-  if(propre)verdict=['good','Journée propre','Plan, stratégie et règles respectés'+(W.l>W.w?' : une journée perdante peut arriver, ce qui compte c\'est le process. Reproduis-la demain.':'. Reproduis exactement la même chose demain.')];
-  else if(ec.length)verdict=['bad','Journée hors plan','Tu es sorti de tes limites. C\'est le point n°1 à corriger demain.'];
-  else verdict=['mid','Journée à corriger','Le plan est tenu, mais il y a des écarts à resserrer.'];
-  var demain=[], R=psyRegles();
-  if(ec.length)demain.push('Respecte tes limites : '+ec.join(' · ')+'.');
-  if(sgN)demain.push('Avant chaque entrée, coche tes conditions de stratégie. Pas de condition, pas de trade.');
-  var top=Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;})[0];
-  if(top){ var f=psyFam(top), r=R[f.k]; demain.push(r?'Applique ta règle « '+wkEsc(r)+' » ('+f.n+').':'Pour « '+wkEsc(top)+' » ('+f.n+'), écris-toi une règle dans l\'onglet Psychologie.'); }
-  if(!propre&&!demain.length)demain.push('Note tes trades avec leur contexte pour que je puisse mieux t\'orienter.');
-  if(propre)demain.push('Rien à corriger : même plan, même discipline.');
+  if(propre)verdict=['good','Belle journée propre 🌟','Tu as tenu ton plan, ta stratégie et tes règles. Reproduis la même chose demain.'];
+  else if(pro>=Math.ceil(auj.length/2))verdict=['mid','Bonne journée, un point à ajuster','La base est solide : il y a juste une chose à resserrer.'];
+  else verdict=['low','Une journée riche en enseignements','C\'est comme ça qu\'on progresse : une seule chose à retenir pour demain.'];
+  var R=psyRegles(), top=Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;})[0], demain;
+  if(ec.length)demain='Garder tes repères : '+ec.join(' · ')+'.';
+  else if(sgN)demain='Avant chaque entrée, passe tes conditions de stratégie en revue. Pas de condition, pas de trade.';
+  else if(top){ var f=psyFam(top), r=(R[f.k]||'').trim(); demain=r?'Ta règle : « '+wkEsc(r)+' ».':'Pour « '+wkEsc(top)+' », choisis une règle simple dans l\'onglet Psychologie.'; }
+  else demain='Rien à corriger : même plan, même sérénité.';
   return '<div class="tj-verdict '+verdict[0]+'"><b>'+verdict[1]+'</b><span>'+verdict[2]+'</span></div>'
-   +lines.map(function(x){ return '<div class="tj-li"><span>'+x[0]+'</span><div>'+x[1]+'</div></div>'; }).join('')
-   +'<div class="psy-sub">Pour demain</div>'+demain.map(function(x){ return '<div class="tj-li"><span>👉</span><div>'+x+'</div></div>'; }).join('')+tjLecon();
+   +'<div class="psy-sub">Ce qui a bien marché</div>'+bien.map(function(x){ return '<div class="tj-li"><span>✅</span><div>'+x.charAt(0).toUpperCase()+x.slice(1)+'</div></div>'; }).join('')
+   +'<div class="psy-sub">À ajuster demain (une seule chose)</div><div class="tj-li"><span>👉</span><div>'+demain+'</div></div>'
+   +'<div class="psy-s" style="margin-top:10px">En chiffres : '+psyGP(W)+' · résultat du jour '+rsArgent(net)+(errN?' · erreurs notées : '+Object.keys(errs).map(function(k){ var y=errs[k]; return wkEsc(k)+' ('+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'; }).join(', '):'')+'</div>'
+   +tjLecon();
 }
 function tjLecon(){ return '<div class="psy-sub">Ta leçon du jour</div><textarea class="tj-lecon" rows="2" placeholder="Une phrase : ce que tu retiens d\'aujourd\'hui." oninput="tjLeconSave(this)">'+wkEsc(tjLeconGet())+'</textarea>'; }
 
-// Respect de la stratégie : aujourd'hui, semaine, mois, année
 function tjStrat(auj){
   var base=psyWL(T).wr, per=[['Aujourd\'hui',auj],['Cette semaine',wkTrades(0)],['Ce mois-ci',moTrades(0)],['Cette année',T.filter(function(t){return parseInt(t.trade_year)===new Date().getFullYear();})]];
   var any=T.some(function(t){return ctxOf(t).sg;});
-  if(!any)return '<div class="psy-s" style="line-height:1.6">Pour suivre ta stratégie, réponds à « trade conforme à ma stratégie ? » (dernière étape de l\'ajout rapide). Ici, tu verras ton taux de respect et ce que valent tes trades <b>dans</b> et <b>hors</b> stratégie, par jour, semaine, mois et année.</div>';
+  if(!any)return '<div class="psy-s" style="line-height:1.6;padding-top:8px">Pour suivre ta stratégie, réponds à « trade conforme à ma stratégie ? » (dernière étape de l\'ajout rapide). Tu verras ici ton taux de respect et ce que valent tes trades <b>dans</b> et <b>hors</b> stratégie, par jour, semaine, mois et année.</div>';
   var cell=function(a){ if(!a.length)return '<span class="psy-s">—</span>'; var w=psyWL(a); return '<b>'+a.length+'</b> trade'+(a.length>1?'s':'')+' · '+psyGP(w)+' · '+psyWRtxt(w.wr,base); };
   return '<div class="tj-st"><div class="tj-sth"><span></span><span>Conformes</span><span>Dans la stratégie</span><span>Hors stratégie</span></div>'
    +per.map(function(p){ var a=p[1].filter(function(t){return ctxOf(t).sg;}), o=a.filter(function(t){return ctxOf(t).sg==='o';}), n=a.filter(function(t){return ctxOf(t).sg==='n';});
      var pct=a.length?o.length/a.length*100:null;
-     return '<div class="tj-str"><span class="tj-sp">'+p[0]+'</span><span>'+(pct===null?'<span class="psy-s">—</span>':'<b style="color:'+(pct>=80?RS_VERT:(pct>=50?'#fbbf24':RS_ROUGE))+'">'+pct.toFixed(0)+' %</b> <em>'+o.length+'/'+a.length+'</em>')+'</span><span>'+cell(o)+'</span><span>'+cell(n)+'</span></div>'; }).join('')+'</div>';
+     return '<div class="tj-str"><span class="tj-sp">'+p[0]+'</span><span>'+(pct===null?'<span class="psy-s">—</span>':'<b style="color:'+(pct>=80?RS_VERT:'var(--tp)')+'">'+pct.toFixed(0)+' %</b> <em>'+o.length+'/'+a.length+'</em>')+'</span><span>'+cell(o)+'</span><span>'+cell(n)+'</span></div>'; }).join('')+'</div>';
 }
-
-// Routine : jour, semaine, mois, année
 function tjRituels(auj){
   var d=new Date(), dow=d.getDay(), jm=d.getDate(), mois=d.getMonth(), ci=tjCiGet(), T1=[];
   var note=function(k){ try{ return (localStorage.getItem(lsKey(k))||'').trim().length>0; }catch(e){ return false; } };
@@ -8297,11 +8339,28 @@ function tjRituels(auj){
   T1.push(['📋','Relis ta feuille de route et ta stratégie',tjFlag('plan'),['tjFlagSet(\'plan\')','C\'est lu']]);
   T1.push(['✍️','Pendant la journée : note chaque trade tout de suite',auj.length>0,['rdNewTrade()','Noter un trade']]);
   T1.push(['🌙','Soir : écris ta leçon du jour',tjLeconGet().trim().length>0,null]);
-  if(dow===0||dow===1||dow===5)T1.push(['🗓','Bilan de la semaine',note('wk_'+wkCle(0)+'_ok')||note('wk_'+wkCle(-1)+'_ok'),['showGroupe(\'semaine\')','Ouvrir Ma semaine']]);
-  if(jm>=27||jm<=2)T1.push(['📅','Bilan du mois',note('mo_'+moCle(0)+'_ok')||note('mo_'+moCle(-1)+'_ok'),['showGroupe(\'mois\')','Ouvrir Mon mois']]);
-  if((mois===11&&jm>=20)||(mois===0&&jm<=7))T1.push(['🏁','Bilan de l\'année',false,['showGroupe(\'resume\')','Ouvrir le Résumé']]);
+  if(dow===0||dow===1||dow===5)T1.push(['🗓','Bilan de la semaine',note('wk_'+wkCle(0)+'_ok')||note('wk_'+wkCle(-1)+'_ok'),['showGroupe(\'semaine\')','Ouvrir']]);
+  if(jm>=27||jm<=2)T1.push(['📅','Bilan du mois',note('mo_'+moCle(0)+'_ok')||note('mo_'+moCle(-1)+'_ok'),['showGroupe(\'mois\')','Ouvrir']]);
+  if((mois===11&&jm>=20)||(mois===0&&jm<=7))T1.push(['🏁','Bilan de l\'année',false,['showGroupe(\'resume\')','Ouvrir']]);
   return T1.map(function(x){ return '<div class="tj-rit'+(x[2]?' done':'')+'"><span class="tj-ck">'+(x[2]?'✓':'')+'</span><span>'+x[0]+'</span><div>'+x[1]+'</div>'+(!x[2]&&x[3]?'<button onclick="'+x[3][0]+'">'+x[3][1]+'</button>':'')+'</div>'; }).join('');
 }
+
+// ── Navigation : 4 espaces (Aujourd'hui, Trades, Progrès, Ma stratégie) ──
+var PROG_CACHEES=['dashboard','analyse','bilan','setups','report'];
+document.addEventListener('DOMContentLoaded',function(){
+  var _sg=showGroupe;
+  showGroupe=function(cle,vue){
+    var L=['resume','semaine','mois','psy','dashboard','analyse','report'];
+    if(L.indexOf(cle)>=0)return _sg('progres',vue||cle);
+    return _sg(cle,vue);
+  };
+  var _rs=renderSousOnglets;
+  renderSousOnglets=function(g,id){ _rs.apply(this,arguments);
+    if(g&&g.cle==='progres'&&PROG_CACHEES.indexOf(id)>=0){ document.querySelectorAll('#subnav .subtab').forEach(function(b){ b.classList.toggle('active',/Détails/.test(b.textContent)); }); } };
+  var _nt=rdNewTrade;
+  rdNewTrade=function(full){ if(!full&&window.innerWidth<981){ openQuick(); return; } showGroupe('journal'); setTimeout(function(){ var f=document.getElementById('f-cat'); if(f)f.scrollIntoView({behavior:'smooth',block:'center'}); },140); };
+});
+
 document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
