@@ -1154,6 +1154,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .err-row{display:grid;grid-template-columns:1.4fr 1fr 64px 1.4fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bo);}.err-row.sub{padding:6px 0 6px 12px;}.err-row b{font-size:13px;color:var(--tp);text-align:right;font-variant-numeric:tabular-nums;}.err-row>span{font-size:11.5px;color:var(--ts);}.err-n{font-size:14px;color:var(--tp);margin-left:auto;min-width:28px;text-align:right;}.psy-fam summary .psy-fn{flex:1.4;min-width:0;}.psy-fam summary .psy-cb{flex:1;min-width:60px;}@media(max-width:560px){.err-row{grid-template-columns:1fr 64px;}.err-row .psy-cb{grid-column:1/-1;order:3;}.err-row>span{grid-column:1/-1;order:4;}}
 .rp-top{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;border-radius:11px;border:1px solid rgba(var(--acr3),.5);background:rgba(var(--acr3),.14);color:var(--tp);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;}.rp-top:hover{background:rgba(var(--acr3),.25);}.wk-navbar .rp-top{margin-left:auto;}.rp-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px 14px;border-radius:14px;border:1px solid var(--bo);background:var(--card);}.rp-topbar span{font-weight:700;color:var(--tp);font-size:13px;}
 .jo-dg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:6px;}.jo-d{border-left:3px solid var(--ac3);padding:4px 10px;min-width:0;}.jo-d b{display:block;font-size:20px;font-weight:800;color:var(--tp);}.jo-d span{display:block;font-size:11.5px;color:var(--tp);font-weight:600;}.jo-d em{font-style:normal;font-size:11px;color:var(--ts);}@media(max-width:560px){.jo-dg{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.st-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bo);}.st-rn{font-size:12.5px;color:var(--tp);min-width:0;}.st-rn em{display:block;font-style:normal;font-size:11px;color:var(--ts);}.st-rv{display:flex;gap:12px;font-size:12.5px;font-weight:700;white-space:nowrap;}.tj-formule{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(var(--acr3),.1);border:1px solid rgba(var(--acr3),.25);font-size:12.5px;line-height:1.55;color:var(--tp);}.tj-nfp{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);font-size:13px;color:var(--tp);}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -1904,7 +1905,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
         <span class="tag pgood" onclick="toggleTag(this)">Analyse avant entrée</span>
         <span class="tag pgood" onclick="toggleTag(this)">Aucune pression</span>
       </div>
-      <div id="f-pmain-wrap" class="fld" style="display:none;margin-top:10px"><label>★ Erreur principale (celle qui reçoit le coût)</label><select id="f-pmain" onchange="pmainSet(this)"></select></div>
+      <div id="f-pmain-wrap" class="fld" style="display:none;margin-top:10px"><label>★ Erreur principale (celle qui classe le trade)</label><select id="f-pmain" onchange="pmainSet(this)"></select></div>
       <div class="fg" style="margin-top:12px">
         <div class="fld"><label>⚡ Énergie avant le trade</label><select id="f-ctx-en"><option value="">—</option><option value="1">1 · épuisé</option><option value="2">2 · fatigué</option><option value="3">3 · correct</option><option value="4">4 · en forme</option><option value="5">5 · au top</option></select></div>
         <div class="fld"><label>🙂 Humeur</label><select id="f-ctx-hu"><option value="">—</option><option value="1">😟 Mal</option><option value="2">😐 Neutre</option><option value="3">🙂 Bien</option></select></div>
@@ -7457,6 +7458,10 @@ function qaPhoto(inp){ var f=inp.files&&inp.files[0]; if(!f)return;
 // ═════════════════════════════════════════════════════════════════
 var ST_SECTIONS=[
   ['principe','💡 Le principe','L\'idée de base : pourquoi cette stratégie a un avantage ?'],
+  ['analyse','📊 Analyse technique','Les outils que tu utilises.'],
+  ['psycho','🧠 Mon mental','Tes principes psychologiques.'],
+  ['formule','🔑 Ma formule','Ta formule de la réussite.'],
+  ['fonda','📰 Fondamental','Tes règles sur les annonces.'],
   ['marches','💱 Marchés et paires','Quelles paires, quels instruments ?'],
   ['sessions','🕐 Sessions et horaires','Quand trader, et quand ne pas trader.'],
   ['entree','🎯 Conditions d\'entrée','Ce qui doit être réuni pour entrer.'],
@@ -7874,14 +7879,14 @@ document.addEventListener('DOMContentLoaded',function(){
 //  s'additionnent donc sans compter deux fois le même trade.
 // ═════════════════════════════════════════════════════════════════
 var PSY_FAM=[
-  {k:'entree',n:'Entrée',i:'🎯',c:'#60a5fa',t:['FOMO','Pas de setup','Trading sans plan','Entrée tardive','Contre la tendance','Mauvais timing','Biais de confirmation'],r:'Je n\'entre jamais sans mes conditions cochées (voir Stratégie).'},
-  {k:'risque',n:'Risque',i:'⚖️',c:'#fbbf24',t:['Augmentation de lot','Double mise','Overtrading','Gourmandise'],r:'Maximum 3 trades par jour, toujours avec mon risque habituel.'},
+  {k:'entree',n:'Entrée',i:'🎯',c:'#60a5fa',t:['Précipitation (prix pas saturé)','Analyse floue','Trade pendant NFP / IPC','FOMO','Pas de setup','Trading sans plan','Entrée tardive','Contre la tendance','Mauvais timing','Biais de confirmation'],r:'Je n\'entre jamais sans mes conditions cochées (voir Stratégie).'},
+  {k:'risque',n:'Risque',i:'⚖️',c:'#fbbf24',t:['Risque pris en étant en bénéfice','Augmentation de lot','Double mise','Overtrading','Gourmandise'],r:'Maximum 3 trades par jour, toujours avec mon risque habituel.'},
   {k:'gestion',n:'Gestion du trade',i:'🛠',c:'#a78bfa',t:['Over-managing','Sortie prématurée','Refus de couper la perte','Déplacer le SL'],r:'Une fois entré, je ne touche plus à mon stop.'},
-  {k:'emotion',n:'Émotion',i:'😤',c:'#f87171',t:['Peur','Peur de perdre','Revenge Trading','Excitation','Trading émotionnel','Impatience'],r:'Après 2 pertes de suite, je ferme la plateforme pendant 1 heure.'},
-  {k:'etat',n:'Discipline & état',i:'🧠',c:'#34d399',t:['Pas concentré','Manque de discipline'],r:'Pas de trade si mon énergie est à 2 ou moins.'}
+  {k:'emotion',n:'Émotion',i:'😤',c:'#f87171',t:['Perfectionnisme','Attaché à l\'argent','Peur','Peur de perdre','Revenge Trading','Excitation','Trading émotionnel','Impatience'],r:'Après 2 pertes de suite, je ferme la plateforme pendant 1 heure.'},
+  {k:'etat',n:'Discipline & état',i:'🧠',c:'#34d399',t:['Pas concentré','Manque de discipline','Track record pas à jour'],r:'Pas de trade si mon énergie est à 2 ou moins.'}
 ];
 var PSY_ALL=[]; PSY_FAM.forEach(function(f){ f.t.forEach(function(x){PSY_ALL.push(x);}); });
-var PSY_GOOD=['Discipliné','Patient','Respect du plan','SL respecté','Calme','Confiant'];
+var PSY_GOOD=['Patient','Prix laissé saturer','Analyse MTF faite','Détaché de l\'argent','Processus suivi','Discipliné','Respect du plan','SL respecté','Calme','Confiant'];
 var PSY_ALIAS={'SL déplacé':'Déplacer le SL','Revenge':'Revenge Trading','Pas de plan':'Trading sans plan','Lot augmenté':'Augmentation de lot'};
 function psyFam(tag){ tag=PSY_ALIAS[tag]||tag; for(var i=0;i<PSY_FAM.length;i++)if(PSY_FAM[i].t.indexOf(tag)>=0)return PSY_FAM[i]; return {k:'autre',n:'Autre',i:'•',c:'#94a3b8',t:[],r:''}; }
 function psyErrs(t){ return tagsOf(t,'psych_errors'); }
@@ -8671,6 +8676,8 @@ function rpStop(D){
   D.errs.forEach(function(x){
     out.push(['<b>'+wkEsc(x.k)+'</b> <span style="color:#64748b;font-weight:400">· '+wkEsc(psyFam(x.k).n)+'</span>', x.n+' fois · '+Math.round(x.n/D.n*100)+' % des trades']); });
   if(D.hors.n)out.push(['<b>Trader hors de ma stratégie</b>', D.hors.n+' fois · '+Math.round(D.hors.n/D.n*100)+' % des trades']);
+  var CL=(typeof stChecklist==='function')?stChecklist():[], CS=D.S.filter(function(t){return ckOf(t)!==null;});
+  if(CL.length&&CS.length){ var inc=CS.filter(function(t){ var c=ckOf(t); return !CL.every(function(x){return c.indexOf(x)>=0;}); }); if(inc.length)out.push(['<b>Entrer sans ma checklist complète</b>', inc.length+' fois · '+Math.round(inc.length/D.n*100)+' % des trades']); }
   if(D.risk.length)out.push(['<b>Risquer plus de '+tjRisquePlan()+' % par trade</b>', D.risk.length+' trade'+(D.risk.length>1?'s':'')+' au-dessus du plan']);
   D.paires.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Forcer '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
   D.sess.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Trader en session '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
@@ -8778,6 +8785,19 @@ function rpHTML(type,titre,S,notes,S0,lab0){
    +'</div><div class="rp-2c" style="margin-top:12px"><div><div class="rp-sub" style="margin-top:0">Répartition des résultats en R</div>'
    +D.rDist.map(function(x){ return '<div class="rp-dist"><span>'+x.k+'</span><div class="rp-bar"><i style="width:'+Math.round(x.n/bar*100)+'%;background:#2563eb"></i></div><b>'+x.n+'</b></div>'; }).join('')
    +'</div><div><div class="rp-sub" style="margin-top:0">Sorties</div>'+rpMini(D.sorties,'Sortie')+'</div></div></div>';
+  // Ma stratégie : checklist
+  var CL=(typeof stChecklist==='function')?stChecklist():[], CS=D.S.filter(function(t){return ckOf(t)!==null;});
+  if(CL.length&&CS.length){
+    var full=CS.filter(function(t){ var c=ckOf(t); return CL.every(function(x){return c.indexOf(x)>=0;}); }), part=CS.filter(function(t){return full.indexOf(t)<0;}), Wf=psyWL(full), Wp=psyWL(part);
+    H+=sec('Ma stratégie')+'<div class="rp-kg" style="grid-template-columns:repeat(3,1fr)">'
+     +K('Checklist complète',CS.length?Math.round(full.length/CS.length*100)+' %':'—',full.length+' / '+CS.length+' trades')
+     +K('Win rate checklist complète',rpPct(Wf.wr),rpN(Wf.w,'gagné')+' · '+rpN(Wf.l,'perdu'),'#059669')
+     +K('Win rate checklist incomplète',rpPct(Wp.wr),rpN(Wp.w,'gagné')+' · '+rpN(Wp.l,'perdu'),'#dc2626')+'</div>'
+     +'<table class="rp-t rp-mini" style="margin-top:12px"><thead><tr><th>Condition</th><th class="c">Réunie</th><th class="c">Win rate si réunie</th><th class="c">Win rate sinon</th></tr></thead><tbody>'
+     +CL.map(function(x){ var o=CS.filter(function(t){return ckOf(t).indexOf(x)>=0;}), n=CS.filter(function(t){return ckOf(t).indexOf(x)<0;});
+        return '<tr><td style="white-space:normal"><b>'+wkEsc(x)+'</b></td><td class="c">'+o.length+' / '+CS.length+'</td><td class="c" style="color:#059669">'+rpPct(psyWL(o).wr)+'</td><td class="c" style="color:#dc2626">'+rpPct(psyWL(n).wr)+'</td></tr>'; }).join('')
+     +'</tbody></table></div>';
+  }
   // Psychologie
   var disc=function(l,a,b){ return '<div class="rp-d"><b>'+(b?Math.round(a/b*100)+' %':'—')+'</b><span>'+l+'</span><em>'+(b?a+' / '+b:'non renseigné')+'</em></div>'; };
   H+=sec('Psychologie')+'<div class="rp-dg">'
@@ -8879,6 +8899,7 @@ function blAnneePDF(){
 
 // ═══ Avant de trader : ta stratégie et tes repères, en haut d'Aujourd'hui ═══
 function tjAvantHTML(){
+  try{ stInitDefaut(); }catch(e){}
   var st=stGet(), pl=planGet(), chk=(st.check||[]).filter(function(x){return (x||'').trim();});
   var rep=['Risque : <b>'+tjRisquePlan()+' %</b> par trade'];
   if(pl.maxTrades)rep.push('<b>'+pl.maxTrades+'</b> trades max');
@@ -8891,7 +8912,13 @@ function tjAvantHTML(){
     if((st.principe||'').trim())H+='<div class="psy-s" style="line-height:1.6;margin-bottom:6px">'+wkEsc(st.principe)+'</div>';
     if(chk.length)H+='<div class="psy-sub" style="margin-top:6px">Avant chaque entrée</div>'+chk.map(function(c){ return '<div class="tj-li"><span>☐</span><div>'+wkEsc(c)+'</div></div>'; }).join('')+'<div class="psy-s" style="margin-top:4px">Pas toutes les conditions : pas de trade.</div>';
   }
-  H+='<div class="psy-s" style="margin-top:10px">Mes repères : '+rep.join(' · ')+'</div></details>';
+  H+='<div class="psy-s" style="margin-top:10px">Mes repères : '+rep.join(' · ')+'</div>';
+  if(stNFP())H+='<div class="tj-nfp">📰 <b>Aujourd\'hui c\'est NFP.</b> Ta règle : tu ne trades pas l\'annonce, le spread t\'a toujours fait perdre.</div>';
+  else H+='<div class="psy-s" style="margin-top:6px">📰 Vérifie le calendrier : pas de trade pendant le NFP ni l\'IPC.</div>';
+  var ps=String(st.psycho||'').split('\n').map(function(x){return x.replace(/^[•\-\s]+/,'').trim();}).filter(Boolean);
+  if(ps.length){ var j=Math.floor(Date.now()/86400000)%ps.length; H+='<div class="psy-sub" style="margin-top:12px">🧠 Mon mental du jour</div><div class="psy-s" style="line-height:1.6;color:var(--tp)">'+wkEsc(ps[j])+'</div>'; }
+  if((st.formule||'').trim())H+='<div class="tj-formule">🔑 <b>Ma formule :</b> '+wkEsc(st.formule)+'</div>';
+  H+='</details>';
   return H;
 }
 document.addEventListener('DOMContentLoaded',function(){
@@ -8967,6 +8994,66 @@ function initJour(){
 }
 document.addEventListener('DOMContentLoaded',function(){
   var _is=window.initSection; window.initSection=initSection=function(id){ if(id==='jour')return setTimeout(initJour,80); return _is.apply(this,arguments); };
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  MA STRATÉGIE (Anis) : contenu par défaut, checklist suivie trade par trade
+// ═══════════════════════════════════════════════════════════════════
+var ST_DEFAUT={
+  nom:'Ma stratégie BAKOU',
+  principe:'Analyser en multi time frame et laisser le prix respirer : voir plus large, surtout en D1 et en H4. Le but : comprendre ce que le prix va faire, sentir sa direction et aller avec. Le price action et l\'analyse technique font tout : comprendre le graphe, puis faire les probabilités. Ne pas compliquer, pas de flou. Acheter au plus bas, vendre au plus haut. Toujours analyser, toujours rester à jour avec le track record.',
+  analyse:'• Tracer les supports et résistances\n• Suivre les patterns de continuation et de retournement\n• Fibonacci\n• Trendlines et leurs cassures',
+  entree:'Laisser le prix saturer la zone, puis entrer. Ne pas se précipiter pour prendre le trade. Acheter en bas de la zone, vendre en haut.',
+  invalid:'• Analyse floue : si je ne comprends pas ce que fait le graphe, je ne trade pas\n• Jours de NFP et d\'IPC : je ne trade pas (j\'ai toujours perdu à cause du spread)\n• Je ne risque pas quand je suis en bénéfice',
+  psycho:'• La patience, c\'est la clé\n• Ne pas être attaché à l\'argent ni au graphe\n• Pas de stress : gagner ne me fait ni chaud ni froid, c\'est un jeu\n• Perdre ne me fait rien : on récupère toujours (j\'ai déjà récupéré une perte de 9 000 €)\n• L\'échec fait partie du jeu : pas de réussite sans échec, pas de lumière sans obscurité\n• La perfection n\'existe pas : c\'est elle qui a le plus abîmé mon trading\n• Suivre le processus, travailler juste et correctement\n• Rester consistant',
+  formule:'Travail + discipline + patience + ne pas être affecté par l\'argent ni attaché au trading + toujours réfléchir + ne pas avoir peur + ne pas perfectionner + ne pas être gourmand + faire confiance en Allah, en moi et au plan que j\'ai mis = réussite à 100 %',
+  fonda:'• Ne pas trop regarder le fondamental\n• Ne pas trader l\'IPC ni le NFP',
+  check:['Analyse multi time frame faite (D1 et H4)','Direction claire : je vais avec le prix','Supports et résistances tracés','Pattern de continuation ou de retournement identifié','Confirmation : Fibonacci, trendline ou cassure','J\'achète en bas / je vends en haut de la zone','Le prix a saturé la zone : je ne me précipite pas','Aucun flou : je comprends ce que fait le graphe','Pas de NFP ni d\'IPC aujourd\'hui']
+};
+function stInitDefaut(){ var o=stGet(); var vide=!(o.principe||'').trim()&&!(o.check||[]).some(function(x){return (x||'').trim();});
+  if(vide){ var n=Object.assign({},ST_DEFAUT,{nom:o.nom||ST_DEFAUT.nom}); n.check=ST_DEFAUT.check.slice(); stSet(n); } }
+// NFP = 1er vendredi du mois
+function stNFP(d){ d=d||new Date(); return d.getDay()===5&&d.getDate()<=7; }
+// Checklist cochée sur un trade (textes des conditions réunies)
+function ckOf(t){ var c=ctxOf(t); return Array.isArray(c.ck)?c.ck:null; }
+function stChecklist(){ return (stGet().check||[]).filter(function(x){return (x||'').trim();}); }
+// Statistiques par condition (les conditions ne sont pas des erreurs : gagnés / perdus ont un sens)
+function stStatsHTML(){
+  var L=stChecklist(), S=T.filter(function(t){return ckOf(t)!==null;});
+  if(!L.length)return '';
+  var h='<div class="card st-card"><div class="ct">📊 Ta checklist en chiffres</div>';
+  if(S.length<3)return h+'<div class="psy-s" style="line-height:1.6">Coche ta checklist à chaque trade (dernière étape de l\'ajout rapide). Après quelques trades, tu verras ici, condition par condition, ce que valent tes trades quand elle est réunie ou pas.</div></div>';
+  var full=S.filter(function(t){ var c=ckOf(t); return L.every(function(x){return c.indexOf(x)>=0;}); }), part=S.filter(function(t){return full.indexOf(t)<0;});
+  var Wf=psyWL(full), Wp=psyWL(part);
+  h+='<div class="psy-cmp wide" style="margin-bottom:10px"><div><span>Checklist complète · '+full.length+' trades</span><b style="color:'+RS_VERT+'">'+(Wf.wr===null?'—':Wf.wr.toFixed(0)+' %')+'</b><em>'+psyGP(Wf)+'</em></div><div><span>Checklist incomplète · '+part.length+' trades</span><b style="color:'+RS_ROUGE+'">'+(Wp.wr===null?'—':Wp.wr.toFixed(0)+' %')+'</b><em>'+psyGP(Wp)+'</em></div></div>';
+  h+='<div class="psy-s" style="margin-bottom:6px">Pour chaque condition : win rate quand elle est réunie, et quand elle ne l\'est pas.</div>';
+  h+=L.map(function(x){ var oui=S.filter(function(t){return ckOf(t).indexOf(x)>=0;}), non=S.filter(function(t){return ckOf(t).indexOf(x)<0;}), Wo=psyWL(oui), Wn=psyWL(non);
+    return '<div class="st-row"><div class="st-rn">'+wkEsc(x)+'<em>réunie sur '+oui.length+' / '+S.length+' trades</em></div><div class="st-rv"><span>✅ '+(Wo.wr===null?'—':Wo.wr.toFixed(0)+' %')+'</span><span>❌ '+(Wn.wr===null?'—':Wn.wr.toFixed(0)+' %')+'</span></div></div>'; }).join('');
+  return h+'</div>';
+}
+// Ajout rapide : cocher la checklist du trade
+function qaCk(i){ var L=stChecklist(), x=L[i]; QA_P.ck=QA_P.ck||[]; var k=QA_P.ck.indexOf(x); if(k>=0)QA_P.ck.splice(k,1); else QA_P.ck.push(x);
+  if(L.length&&L.every(function(y){return QA_P.ck.indexOf(y)>=0;}))QA_P.sg='o'; qaPsyRender(); }
+function qaCkHTML(){ var L=stChecklist(); if(!L.length)return ''; QA_P.ck=QA_P.ck||[];
+  return '<div class="qa-lbl">✅ Ma checklist sur ce trade ('+QA_P.ck.filter(function(x){return L.indexOf(x)>=0;}).length+' / '+L.length+')</div><div class="qa-tags">'+L.map(function(x,i){ var on=QA_P.ck.indexOf(x)>=0; return '<button type="button" class="g '+(on?'sel':'')+'" onclick="qaCk('+i+')">'+(on?'✓ ':'')+wkEsc(x)+'</button>'; }).join('')+'</div>'; }
+// Formulaire complet : cases de la checklist
+function fCkRender(){ var box=document.getElementById('f-ctx-ck'); if(!box)return; var L=stChecklist();
+  box.innerHTML=L.length?'<label>✅ Ma checklist sur ce trade</label><div class="tags">'+L.map(function(x){ return '<span class="tag pgood fck" onclick="this.classList.toggle(\'sel\')">'+wkEsc(x)+'</span>'; }).join('')+'</div>':''; }
+function fCkGet(){ var a=[]; document.querySelectorAll('#f-ctx-ck .fck.sel').forEach(function(e){ a.push(e.textContent); }); return a; }
+document.addEventListener('DOMContentLoaded',function(){
+  // Ajoute au formulaire les étiquettes d'erreurs et de bons réflexes qui manquent
+  var pe=document.getElementById('perr-tags'), pg=document.getElementById('pgood-tags');
+  var have=function(box){ return [].map.call(box.querySelectorAll('.tag'),function(e){return e.textContent.trim();}); };
+  if(pe){ var h1=have(pe); PSY_ALL.forEach(function(x){ if(h1.indexOf(x)<0)pe.insertAdjacentHTML('beforeend','<span class="tag perr" onclick="toggleTag(this)">'+wkEsc(x)+'</span>'); }); }
+  if(pg){ var h2=have(pg); PSY_GOOD.forEach(function(x){ if(h2.indexOf(x)<0)pg.insertAdjacentHTML('beforeend','<span class="tag pgood" onclick="toggleTag(this)">'+wkEsc(x)+'</span>'); }); }
+  var sg=document.getElementById('f-ctx-sg'); if(sg&&sg.closest('.fg'))sg.closest('.fg').insertAdjacentHTML('afterend','<div class="fld" id="f-ctx-ck" style="margin-top:10px"></div>');
+  var _is=window.initStrategie; window.initStrategie=initStrategie=function(){ stInitDefaut(); _is.apply(this,arguments); var b=document.getElementById('st-stats'); if(b)b.remove(); var c=document.getElementById('st-checks'); if(c&&c.closest('.card'))c.closest('.card').insertAdjacentHTML('afterend','<div id="st-stats">'+stStatsHTML()+'</div>'); };
+  var _ps=window.qaPsyRender; window.qaPsyRender=qaPsyRender=function(){ _ps.apply(this,arguments); var el=document.getElementById('qa-s4'); if(!el)return; var lbl=[].filter.call(el.querySelectorAll('.qa-lbl'),function(x){return /conforme à ma stratégie/.test(x.textContent);})[0]; if(lbl)lbl.insertAdjacentHTML('beforebegin',qaCkHTML()); };
+  var _rs=window.qaPsyReset; window.qaPsyReset=qaPsyReset=function(){ if(window.QA_P)QA_P.ck=[]; return _rs.apply(this,arguments); };
+  var _pc=window.psyCtxFromForm; window.psyCtxFromForm=psyCtxFromForm=function(nErr){ var s=_pc.apply(this,arguments), o=s?JSON.parse(s):{}, ck=fCkGet(); if(ck.length)o.ck=ck; return Object.keys(o).length?JSON.stringify(o):''; };
+  var _pr=window.psyResetForm; window.psyResetForm=psyResetForm=function(){ _pr.apply(this,arguments); document.querySelectorAll('#f-ctx-ck .fck').forEach(function(e){e.classList.remove('sel');}); };
+  var _qa=window.qaPsyApply; window.qaPsyApply=qaPsyApply=function(){ _qa.apply(this,arguments); fCkRender(); var ck=(window.QA_P&&QA_P.ck)||[]; document.querySelectorAll('#f-ctx-ck .fck').forEach(function(e){ if(ck.indexOf(e.textContent)>=0)e.classList.add('sel'); }); };
+  setTimeout(function(){ try{ stInitDefaut(); fCkRender(); }catch(e){} },1500);
 });
 
 document.addEventListener('DOMContentLoaded',boot);
