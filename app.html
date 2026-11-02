@@ -5075,7 +5075,9 @@ function __yt(){return T.filter(t=>parseInt(t.trade_year)===GLOBAL_YEAR);}
 function initAnalyse(){
   DC('day');DC('sess');DC('close');DC('hour');
   renderAnalyticsPro();
-  const T=__yt();
+  const T=anaScope(), TY_=__yt();
+  const V=t=>tradeVal(t), FV=v=>aFmtVal(v,true), UL=unitLabel();
+  try{ const th=document.querySelector('#pair-tbody'); const tr=th&&th.closest('table').querySelector('thead tr'); if(tr&&tr.lastElementChild)tr.lastElementChild.textContent='Résultat ('+UL+')'; }catch(e){}
   // Pair table
   const tb=document.getElementById('pair-tbody');
   const ap=[...new Set(T.map(t=>t.pair))];
@@ -5084,14 +5086,14 @@ function initAnalyse(){
     tb.innerHTML='';
     ap.forEach(p=>{
       const pt=T.filter(t=>t.pair===p),pw=pt.filter(t=>t.result==='WIN').length,pl=pt.filter(t=>t.result==='LOSS').length;
-      const pwr=(pw/pt.length*100).toFixed(1);
+      const pwr=(pw+pl)?(pw/(pw+pl)*100).toFixed(1):'0.0';
       const wp2=pt.filter(t=>t.result==='WIN').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0);
       const lp2=Math.abs(pt.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0));
       const ppf=lp2>0?(wp2/lp2).toFixed(2):'∞';
       const prr=(pt.reduce((s,t)=>s+(t.rr||0),0)/pt.length).toFixed(1);
-      const ppnl=pt.reduce((s,t)=>s+(parseFloat(t.pnl_amt||0)),0).toFixed(0);
+      const ppnl=pt.reduce((s,t)=>s+V(t),0);
       const bc=pbc(p);
-      tb.innerHTML+=`<tr><td><span class="pb ${bc}" style="${pbs(p)}">${p}</span></td><td style="font-size:10px;color:var(--ts)">${PC[p]||'—'}</td><td>${pt.length}</td><td class="win">${pw}</td><td class="loss">${pl}</td><td class="${parseFloat(pwr)>=60?'win':parseFloat(pwr)>=50?'be-r':'loss'}">${pwr}%</td><td>${ppf}</td><td>${prr}</td><td class="${ppnl>=0?'win':'loss'}">${ppnl>=0?'+':'-'}$${Math.abs(ppnl)}</td></tr>`;
+      tb.innerHTML+=`<tr><td><span class="pb ${bc}" style="${pbs(p)}">${p}</span></td><td style="font-size:10px;color:var(--ts)">${PC[p]||'—'}</td><td>${pt.length}</td><td class="win">${pw}</td><td class="loss">${pl}</td><td class="${parseFloat(pwr)>=60?'win':parseFloat(pwr)>=50?'be-r':'loss'}">${pwr}%</td><td>${ppf}</td><td>${prr}</td><td class="${ppnl>=0?'win':'loss'}">${FV(ppnl)}</td></tr>`;
     });
   }
   // Cross table
@@ -5102,10 +5104,10 @@ function initAnalyse(){
     let h=`<thead><tr><th>Session</th>${ap.map(p=>`<th>${p}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
     sess.forEach(s=>{
       const st=T.filter(t=>t.sess===s);if(!st.length)return;
-      const tot=st.reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);
+      const tot=st.reduce((a,t)=>a+V(t),0);
       h+=`<tr><td style="color:var(--bb);font-weight:700;font-size:10px">${s}</td>`;
-      ap.forEach(p=>{const v=st.filter(t=>t.pair===p).reduce((a,t)=>a+(parseFloat(t.pnl_amt||0)),0);const c=st.filter(t=>t.pair===p).length;h+=`<td class="${c?v>=0?'win':'loss':''}" style="${!c?'color:var(--td)':''};font-size:10px">${c?(v>=0?'+':'-')+'$'+Math.abs(v).toFixed(0):'—'}</td>`;});
-      h+=`<td class="${tot>=0?'win':'loss'}" style="font-size:10px">${tot>=0?'+':'-'}$${Math.abs(tot).toFixed(0)}</td></tr>`;
+      ap.forEach(p=>{const v=st.filter(t=>t.pair===p).reduce((a,t)=>a+V(t),0);const c=st.filter(t=>t.pair===p).length;h+=`<td class="${c?v>=0?'win':'loss':''}" style="${!c?'color:var(--td)':''};font-size:10px">${c?FV(v):'—'}</td>`;});
+      h+=`<td class="${tot>=0?'win':'loss'}" style="font-size:10px">${FV(tot)}</td></tr>`;
     });
     ct.innerHTML=h+'</tbody>';
   }
@@ -5117,20 +5119,20 @@ function initAnalyse(){
     const FM=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
     const sum=(arr,k)=>arr.reduce((a,t)=>a+parseFloat(t[k]||0),0);
     const cell=(amt,pct,bold)=>`<td class="${amt>=0?'win':'loss'}" style="font-size:10px;white-space:nowrap${bold?';font-weight:700':''}">${amt>=0?'+':'-'}$${Math.abs(amt).toFixed(0)}<div style="font-size:10px;color:var(--ts);font-weight:500">${pct>=0?'+':''}${pct.toFixed(1)}%</div></td>`;
-    const mwd=[...Array(12).keys()].filter(m=>T.some(t=>parseInt(t.trade_month)===m));
+    const mwd=[...Array(12).keys()].filter(m=>TY_.some(t=>parseInt(t.trade_month)===m));
     if(!mwd.length){
       mst.innerHTML='<tbody><tr><td style="text-align:center;padding:16px;color:var(--td)">Aucun trade cette année</td></tr></tbody>';
     }else{
       let h=`<thead><tr><th>Mois</th>${SESS.map(s=>`<th>${SLBL[s]}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
       mwd.forEach(m=>{
-        const mt=T.filter(t=>parseInt(t.trade_month)===m);
+        const mt=TY_.filter(t=>parseInt(t.trade_month)===m);
         h+=`<tr><td style="color:var(--bb);font-weight:700;font-size:10px;white-space:nowrap">${FM[m]}</td>`;
         SESS.forEach(s=>{const st=mt.filter(t=>t.sess===s);h+=st.length?cell(sum(st,'pnl_amt'),sum(st,'pnl_pct')):'<td style="color:var(--td)">—</td>';});
         h+=cell(sum(mt,'pnl_amt'),sum(mt,'pnl_pct'),true)+'</tr>';
       });
       h+='<tr style="border-top:2px solid var(--bo)"><td style="color:var(--gb);font-weight:700;font-size:10px">TOTAL</td>';
-      SESS.forEach(s=>{const st=T.filter(t=>t.sess===s);h+=st.length?cell(sum(st,'pnl_amt'),sum(st,'pnl_pct'),true):'<td style="color:var(--td)">—</td>';});
-      h+=cell(sum(T,'pnl_amt'),sum(T,'pnl_pct'),true)+'</tr>';
+      SESS.forEach(s=>{const st=TY_.filter(t=>t.sess===s);h+=st.length?cell(sum(st,'pnl_amt'),sum(st,'pnl_pct'),true):'<td style="color:var(--td)">—</td>';});
+      h+=cell(sum(TY_,'pnl_amt'),sum(TY_,'pnl_pct'),true)+'</tr>';
       mst.innerHTML=h+'</tbody>';
     }
   }
@@ -5151,14 +5153,14 @@ function initAnalyse(){
 
   // ── Performance par heure (depuis entry_time) ──
   const hourMap={};
-  T.forEach(t=>{ if(t.entry_time){ const h=parseInt(String(t.entry_time).split(':')[0]); if(!isNaN(h)){ if(!hourMap[h])hourMap[h]={pnl:0,n:0,w:0}; hourMap[h].pnl+=parseFloat(t.pnl_amt||0); hourMap[h].n++; if(t.result==='WIN')hourMap[h].w++; } } });
+  T.forEach(t=>{ if(t.entry_time){ const h=parseInt(String(t.entry_time).split(':')[0]); if(!isNaN(h)){ if(!hourMap[h])hourMap[h]={pnl:0,n:0,w:0}; hourMap[h].pnl+=V(t); hourMap[h].n++; if(t.result==='WIN')hourMap[h].w++; } } });
   const hourKeys=Object.keys(hourMap).map(Number).sort((a,b)=>a-b);
   const ch=document.getElementById('hourChart');
   if(ch && hourKeys.length){
     const hLabels=hourKeys.map(h=>String(h).padStart(2,'0')+'h');
-    const hData=hourKeys.map(h=>parseFloat(hourMap[h].pnl.toFixed(0)));
+    const hData=hourKeys.map(h=>parseFloat(hourMap[h].pnl.toFixed(UL==='$'?0:2)));
     const hMeta=hourKeys.map(h=>hourMap[h]);
-    CI['hour']=new Chart(ch,{type:'bar',data:{labels:hLabels,datasets:[{label:'P&L $',data:hData,backgroundColor:hData.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{afterLabel:(c)=>{const m=hMeta[c.dataIndex];const wr=m.n?Math.round(m.w/m.n*100):0;return m.n+' trade'+(m.n>1?'s':'')+' · WR '+wr+'%';}}}},scales:{x:{grid:{color:CH_GRID},ticks:{color:CH_TICK,font:{family:'Inter'}}},y:{grid:{color:CH_GRID},ticks:{color:CH_TICK,font:{family:'Inter'},callback:v=>(v<0?'-':'+')+'$'+Math.abs(v)}}}}});
+    CI['hour']=new Chart(ch,{type:'bar',data:{labels:hLabels,datasets:[{label:'Résultat ('+UL+')',data:hData,backgroundColor:hData.map(v=>v>=0?'rgba(16,185,129,0.7)':'rgba(239,68,68,0.7)'),borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{afterLabel:(c)=>{const m=hMeta[c.dataIndex];const wr=m.n?Math.round(m.w/m.n*100):0;return m.n+' trade'+(m.n>1?'s':'')+' · WR '+wr+'%';}}}},scales:{x:{grid:{color:CH_GRID},ticks:{color:CH_TICK,font:{family:'Inter'}}},y:{grid:{color:CH_GRID},ticks:{color:CH_TICK,font:{family:'Inter'},callback:v=>FV(v)}}}}});
   }
 
   // ── Durée gagnants vs perdants (coupes-tu tes pertes ?) ──
@@ -6360,7 +6362,7 @@ const ANA_SESS=['London','New York','Tokyo / Asia','Overlap Lon/NY'];
 const ANA_JOURS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
 
 function anaScope(){const S=__yt();return ANA_MONTH===null?S:S.filter(t=>parseInt(t.trade_month)===ANA_MONTH);}
-function anaMonthChanged(v){ANA_MONTH=(v===''?null:parseInt(v));renderAnalyticsPro();}
+function anaMonthChanged(v){ANA_MONTH=(v===''?null:parseInt(v));initAnalyse();}
 function showAnaPanel(id,el){
   document.querySelectorAll('#analyse .ana-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('#analyse .ana-pill').forEach(p=>{p.classList.remove('active');p.setAttribute('aria-selected','false');});
@@ -6387,7 +6389,7 @@ function unitClamp(){
   const m=T.map(t=>Math.abs(parseFloat(t.pnl_amt)||0)).filter(x=>x>0).sort((a,b)=>a-b);
   return m.length?m[Math.floor(m.length/2)]:100;
 }
-function setAnaUnit(u){ANA_UNIT=u;try{localStorage.setItem('tr_ana_unit',u);}catch(e){}renderAnalyticsPro();}
+function setAnaUnit(u){ANA_UNIT=u;try{localStorage.setItem('tr_ana_unit',u);}catch(e){}initAnalyse();}
 function syncUnitUI(){
   const map={'R':'unit-R','%':'unit-pct','$':'unit-usd'};
   Object.keys(map).forEach(u=>{const b=document.getElementById(map[u]);if(b)b.classList.toggle('active',ANA_UNIT===u);});
