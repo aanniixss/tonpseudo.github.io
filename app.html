@@ -1020,7 +1020,7 @@ select option,.fld select option{background:#0d1426 !important;color:var(--tp) !
 .ex-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}.ex-tiles div{background:var(--card2);border:1px solid var(--bo);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
 .ex-tiles span{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--td);}.ex-tiles b{font-size:18px;font-variant-numeric:tabular-nums;}
 @media(max-width:700px){.ex-tiles{grid-template-columns:1fr 1fr;}}
-@media(max-width:900px){#mo-kpi{grid-template-columns:repeat(2,1fr) !important;}}
+@media(max-width:900px){#mo-kpi,#jo-kpi{grid-template-columns:repeat(2,1fr) !important;}}
 /* ════ Apparence : accent, discret, compact ════ */
 .side-look{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 8px;}
 .side-look button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border-radius:12px;border:1px solid var(--bo);background:rgba(255,255,255,.04);color:#aab2c8;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;}
@@ -1153,6 +1153,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .tj-avant{margin-bottom:12px !important;}.tj-avant summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--tp);list-style:none;}.tj-avant summary::-webkit-details-marker{display:none;}.tj-av-n{font-size:17px;font-weight:800;color:var(--tp);margin:10px 0 4px;}
 .err-row{display:grid;grid-template-columns:1.4fr 1fr 64px 1.4fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bo);}.err-row.sub{padding:6px 0 6px 12px;}.err-row b{font-size:13px;color:var(--tp);text-align:right;font-variant-numeric:tabular-nums;}.err-row>span{font-size:11.5px;color:var(--ts);}.err-n{font-size:14px;color:var(--tp);margin-left:auto;min-width:28px;text-align:right;}.psy-fam summary .psy-fn{flex:1.4;min-width:0;}.psy-fam summary .psy-cb{flex:1;min-width:60px;}@media(max-width:560px){.err-row{grid-template-columns:1fr 64px;}.err-row .psy-cb{grid-column:1/-1;order:3;}.err-row>span{grid-column:1/-1;order:4;}}
 .rp-top{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;border-radius:11px;border:1px solid rgba(var(--acr3),.5);background:rgba(var(--acr3),.14);color:var(--tp);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;}.rp-top:hover{background:rgba(var(--acr3),.25);}.wk-navbar .rp-top{margin-left:auto;}.rp-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px 14px;border-radius:14px;border:1px solid var(--bo);background:var(--card);}.rp-topbar span{font-weight:700;color:var(--tp);font-size:13px;}
+.jo-dg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:6px;}.jo-d{border-left:3px solid var(--ac3);padding:4px 10px;min-width:0;}.jo-d b{display:block;font-size:20px;font-weight:800;color:var(--tp);}.jo-d span{display:block;font-size:11.5px;color:var(--tp);font-weight:600;}.jo-d em{font-style:normal;font-size:11px;color:var(--ts);}@media(max-width:560px){.jo-dg{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -1551,6 +1552,22 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
 <div id="today" class="sec" role="tabpanel" aria-label="Aujourd'hui"><div id="tj-body"></div></div>
 
 <div id="psy" class="sec" role="tabpanel" aria-label="Psychologie"><div id="psy-body"></div></div>
+
+<div id="jour" class="sec" role="tabpanel" aria-label="Ma journée">
+  <div class="card wk-navbar" id="jo-nav"></div>
+  <div class="card" style="margin-bottom:12px"><div id="jo-hero" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between"></div></div>
+  <div id="jo-kpi" class="wk-kpis" style="grid-template-columns:repeat(4,1fr)"></div>
+  <div class="card" style="margin-bottom:12px" id="jo-trades"></div>
+  <div class="wk-two" id="jo-pairs"></div>
+  <div class="card" style="margin-bottom:12px" id="jo-psy"></div>
+  <div class="wk-two" id="jo-stop"></div>
+  <div class="card" style="margin-bottom:12px"><div class="ct">✍️ Ton bilan de la journée</div>
+    <div class="wk-notes">
+      <label>Demain, je ne refais pas<textarea id="jo-n-dem" oninput="joNote('demain',this)" placeholder="Ex. : reprendre un trade juste après une perte"></textarea></label>
+      <label>Ma leçon du jour<textarea id="jo-n-lec" oninput="joNote('lecon',this)" placeholder="Une phrase : ce que je retiens de cette journée"></textarea></label>
+    </div>
+    <div style="font-size:10px;color:var(--td);margin-top:8px">Enregistré automatiquement, journée par journée. Ta phrase « demain je ne refais pas » est rappelée le lendemain matin dans Aujourd'hui.</div></div>
+</div>
 
 <div id="mois" class="sec" role="tabpanel" aria-label="Mon mois">
   <div class="card wk-navbar" id="mo-nav"></div>
@@ -3280,7 +3297,7 @@ setInterval(clk,1000);clk();
 // de sous-onglets. Les vues elles-memes n'ont pas bouge : seul le routage change.
 const GROUPES=[
   {cle:'progres',  titre:"Progrès",        sous:"Comment tu avances",
-   vues:[{id:'dashboard',nom:'Tableau de bord'},{id:'semaine',nom:'Semaine'},{id:'mois',nom:'Mois'},{id:'psy',nom:'Psychologie'},{id:'details',nom:'Détails'}]},
+   vues:[{id:'dashboard',nom:'Tableau de bord'},{id:'jour',nom:'Jour'},{id:'semaine',nom:'Semaine'},{id:'mois',nom:'Mois'},{id:'psy',nom:'Psychologie'},{id:'details',nom:'Détails'}]},
   {cle:'today',    titre:"Aujourd'hui",    sous:"Ta feuille de route du jour",
    vues:[{id:'today',nom:"Aujourd'hui"}]},
   {cle:'resume',   titre:"Résumé",          sous:"L'essentiel en un coup d'oeil",
@@ -8412,7 +8429,7 @@ var PROG_CACHEES=['resume','analyse','bilan','setups','report'];
 document.addEventListener('DOMContentLoaded',function(){
   var _sg=showGroupe;
   showGroupe=function(cle,vue){
-    var L=['resume','semaine','mois','psy','dashboard','analyse','report'];
+    var L=['resume','jour','semaine','mois','psy','dashboard','analyse','report'];
     if(L.indexOf(cle)>=0)return _sg('progres',vue||cle);
     return _sg(cle,vue);
   };
@@ -8509,7 +8526,7 @@ function tjJours(){
 }
 function tjTradesDu(d){ var k=d.toDateString(); return sortedByDate(T.filter(function(t){ return tDate(t).toDateString()===k; })); }
 function tjBiNav(dir){ var n=tjJours().length; TJ_BI=Math.max(0,Math.min(n-1,TJ_BI+dir)); var c=document.getElementById('tj-bilan'); if(c){ c.outerHTML=tjBilanCard(); } }
-function tjOuvrirJour(ds){ var J=tjJours(), i=J.findIndex(function(d){return d.toDateString()===ds;}); TJ_BI=i<0?0:i; showGroupe('today'); setTimeout(function(){ var c=document.getElementById('tj-bilan'); if(c)c.scrollIntoView({behavior:'smooth',block:'start'}); },150); }
+function tjOuvrirJour(ds){ var J=tjJours(), i=J.findIndex(function(d){return d.toDateString()===ds;}); JO_I=i<0?0:i; showGroupe('progres','jour'); return; TJ_BI=i<0?0:i; showGroupe('today'); setTimeout(function(){ var c=document.getElementById('tj-bilan'); if(c)c.scrollIntoView({behavior:'smooth',block:'start'}); },150); }
 function tjNomJour(d){ var a=new Date(); a.setHours(12,0,0,0); var diff=Math.round((a-d)/86400000);
   if(diff===0)return 'Aujourd\'hui'; if(diff===1)return 'Hier';
   var s=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); return s.charAt(0).toUpperCase()+s.slice(1); }
@@ -8559,7 +8576,7 @@ function rpBtnTop(id,fn,lbl){ var el=document.getElementById(id); if(!el)return;
 function blSemaine(){
   rpBtnTop('wk-nav','blSemainePDF','Rapport PDF');
   var el=document.getElementById('wk-days'); if(!el)return; var old=document.getElementById('wk-bilans'); if(old)old.remove();
-  var a=wkDebut(WK_OFF), H='<div class="card" id="wk-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans de la semaine</div><div class="psy-s" style="margin:-4px 0 10px">Chaque journée, avec ses erreurs et ce que tu t\'es promis. Touche une journée pour rouvrir son bilan complet.</div>'+blAgg(wkTrades(WK_OFF),'cette semaine')+'<button class="tj-pdf" style="margin:8px 0 2px" onclick="blSemainePDF()">📄 Rapport de la semaine en PDF</button>';
+  var a=wkDebut(WK_OFF), H='<div class="card" id="wk-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans de la semaine</div><div class="psy-s" style="margin:-4px 0 10px">Chaque journée, avec ses erreurs et ce que tu t\'es promis. Touche une journée pour ouvrir sa revue complète (onglet Jour).</div>'+blAgg(wkTrades(WK_OFF),'cette semaine')+'<button class="tj-pdf" style="margin:8px 0 2px" onclick="blSemainePDF()">📄 Rapport de la semaine en PDF</button>';
   for(var i=0;i<7;i++){ var d=new Date(a); d.setDate(d.getDate()+i); d.setHours(0,0,0,0); if(d>new Date())break; d.setHours(12,0,0,0);
     var S=tjTradesDu(d), k=tjKeyOf(d); if(!S.length&&(d.getDay()===0||d.getDay()===6))continue;
     H+=blLigne(tjNomJour(d),S,[['📌',tjDemainGet(k)],['💡',tjLeconOf(k)]],S.length?'tjOuvrirJour(\''+d.toDateString()+'\')':''); }
@@ -8880,6 +8897,76 @@ function tjAvantHTML(){
 document.addEventListener('DOMContentLoaded',function(){
   var _it=window.initToday; window.initToday=initToday=function(){ _it.apply(this,arguments);
     var h=document.querySelector('#tj-body .tj-hero'); if(h)h.insertAdjacentHTML('afterend',tjAvantHTML()); };
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  PROGRÈS → JOUR : la revue d'une journée, au même format que Semaine et Mois
+// ═══════════════════════════════════════════════════════════════════
+var JO_I=0;
+function joJour(){ var J=tjJours(); if(JO_I>=J.length)JO_I=0; return J[JO_I]; }
+function joNav(dir){ var n=tjJours().length; JO_I=Math.max(0,Math.min(n-1,JO_I+dir)); initJour(); }
+function joAuj(){ JO_I=0; initJour(); }
+function joPDF(){ var d=joJour(), J=tjJours(), dp=J[JO_I+1], k=tjKeyOf(d);
+  var date=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  rpPDF('Bilan de la journée',date.charAt(0).toUpperCase()+date.slice(1),tjTradesDu(d),[['Demain, je ne refais pas',tjDemainGet(k)],['Ma leçon du jour',tjLeconOf(k)]],'BAKOU-bilan-'+dayKeyLocal(d)+'.pdf',dp?tjTradesDu(dp):null,dp?'la journée précédente ('+dp.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+')':'');
+}
+function joNote(champ,el){ try{ localStorage.setItem(lsKey('bk_'+champ+'_'+tjKeyOf(joJour())),el.value); }catch(e){} }
+function initJour(){
+  var nav=document.getElementById('jo-nav'); if(!nav)return;
+  var J=tjJours(), d=joJour(), S=tjTradesDu(d), dp=J[JO_I+1], SP=dp?tjTradesDu(dp):[], P=perf(S), PP=perf(SP), k=tjKeyOf(d);
+  var nom=tjNomJour(d), long=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  nav.innerHTML='<button class="wk-arr" onclick="joNav(1)" aria-label="Journée précédente"'+(JO_I>=J.length-1?' disabled':'')+'>‹</button>'
+    +'<div class="wk-title"><div class="wk-t1">'+(nom==='Aujourd\'hui'||nom==='Hier'?nom:long.charAt(0).toUpperCase()+long.slice(1))+(JO_I===0?' <span class="wk-now">en cours</span>':'')+'</div>'
+    +'<div class="wk-t2">'+(nom==='Aujourd\'hui'||nom==='Hier'?long+' · ':'')+(S.length?S.length+' trade'+(S.length>1?'s':''):'aucun trade')+'</div></div>'
+    +'<button class="wk-arr" onclick="joNav(-1)" aria-label="Journée suivante"'+(JO_I===0?' disabled':'')+'>›</button>'
+    +(JO_I!==0?'<button class="btn btn-g wk-today" onclick="joAuj()">Aujourd\'hui</button>':'')
+    +'<button class="rp-top" onclick="joPDF()">📄 Rapport PDF</button>';
+  var dem=document.getElementById('jo-n-dem'), lec=document.getElementById('jo-n-lec');
+  if(dem)dem.value=tjDemainGet(k); if(lec)lec.value=tjLeconOf(k);
+  var ids=['jo-kpi','jo-trades','jo-pairs','jo-psy','jo-stop'];
+  if(!S.length){
+    document.getElementById('jo-hero').innerHTML=vide('Aucun trade ce jour-là','Utilise les flèches pour revoir une autre journée, ou note un trade.',false);
+    ids.forEach(function(id){ var e=document.getElementById(id); if(e)e.innerHTML=''; }); return; }
+  var pct=CAP>0?P.net/CAP*100:0, coul=P.net>=0?RS_VERT:RS_ROUGE, delta=P.net-PP.net;
+  document.getElementById('jo-hero').innerHTML=
+      '<div><div style="font-size:10px;letter-spacing:2px;color:var(--td);text-transform:uppercase">Résultat net de la journée</div>'
+    +'<div class="cu" style="font-size:44px;font-weight:800;line-height:1.1;color:'+coul+';font-variant-numeric:tabular-nums">'+rsArgent(P.net)+'</div>'
+    +'<div style="font-size:12px;color:var(--ts);margin-top:3px">'+wkSigne(pct,2)+' % du capital · '+P.n+' trade'+(P.n>1?'s':'')+' · '+P.w+' gagné'+(P.w>1?'s':'')+' · '+P.l+' perdu'+(P.l>1?'s':'')+(P.be?' · '+P.be+' BE':'')+'</div></div>'
+    +'<div style="text-align:right;font-size:12px;color:var(--ts)">'+(SP.length?'<span style="color:'+(delta>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(delta)+'</span> vs '+tjNomJour(dp).toLowerCase()+' ('+rsArgent(PP.net)+')':'Pas de journée précédente')+'</div>';
+  var pf=P.pfEtiq, cmp=function(v,pv,u,suf){ return (SP.length&&PP.decides)?(v-pv>=0?'+':'−')+Math.abs(v-pv).toFixed(u)+suf+' vs jour précédent':'—'; };
+  document.getElementById('jo-kpi').innerHTML=
+      rsTuile('Win rate',P.decides?P.wrDecides.toFixed(0)+' %':'—',P.decides?cmp(P.wrDecides,PP.wrDecides,0,' pts'):'que des break-even',null)
+    + rsTuile('Profit factor',pf===null?'—':(isFinite(pf)?pf.toFixed(2):'∞'),(pf!==null&&(!isFinite(pf)||pf>=1))?'Tu gagnes plus que tu ne perds':'Tu perds plus que tu ne gagnes',(pf!==null&&(!isFinite(pf)||pf>=1))?RS_VERT:RS_ROUGE)
+    + rsTuile('Total R',wkSigne(P.totalR,2)+' R',wkSigne(P.rMoyen,2)+' R par trade',P.totalR>=0?RS_VERT:RS_ROUGE)
+    + rsTuile('Par trade',rsArgent(P.esperance),'Moyenne de la journée',P.esperance>=0?RS_VERT:RS_ROUGE);
+  // trades
+  document.getElementById('jo-trades').innerHTML='<div class="ct">🧾 Les trades de la journée</div><div style="overflow-x:auto"><table class="tbl" style="width:100%"><thead><tr>'
+    +'<th>Heure</th><th>Paire</th><th>Sens</th><th>Session</th><th>Résultat</th><th>R</th><th>P&amp;L</th><th>Stratégie</th><th>Erreurs</th></tr></thead><tbody>'
+    +S.map(function(t){ var v=pnlOf(t), r=computeActualR(t), c=ctxOf(t);
+      return '<tr style="cursor:pointer" onclick="openTradeDetail(\''+String(t.id).replace(/'/g,'')+'\')"><td>'+(t.entry_time||tDate(t).toTimeString().slice(0,5))+'</td>'
+        +'<td><span class="pb" style="'+pbs(t.pair)+'">'+wkEsc(t.pair)+'</span></td><td>'+(t.dir==='SHORT'||t.dir==='SELL'?'↓':'↑')+'</td><td style="font-size:11px;color:var(--ts)">'+wkEsc(t.sess||'—')+'</td>'
+        +'<td>'+rpill(t.result)+'</td><td>'+wkSigne(r,2)+'</td><td style="color:'+(v>=0?RS_VERT:RS_ROUGE)+';font-weight:700">'+rsArgent(v)+'</td>'
+        +'<td style="font-size:11px">'+(c.sg==='o'?'✅':(c.sg==='n'?'❌':'—'))+'</td><td style="white-space:normal;color:var(--td);font-size:11px">'+wkEsc(psyErrs(t).join(', ')||'—')+'</td></tr>'; }).join('')
+    +'</tbody></table></div>';
+  // paires & sessions
+  var lignes=function(cle,titre){ var g=grouperPar(S,cle).sort(function(x,y){return y.net-x.net;});
+    return '<div class="ct">'+titre+'</div>'+g.map(function(x){ return rsLigne((cle==='sess'?sessChip(x.cle):'<span class="pb" style="'+pbs(x.cle)+'">'+wkEsc(x.cle)+'</span>')+' <span style="color:var(--td)">· '+x.n+' trade'+(x.n>1?'s':'')+(x.decides?' · '+x.wrDecides.toFixed(0)+' %':'')+'</span>',rsArgent(x.net),x.net>=0?RS_VERT:RS_ROUGE); }).join(''); };
+  document.getElementById('jo-pairs').innerHTML='<div class="card" style="margin:0">'+lignes('pair','💱 Par paire')+'</div><div class="card" style="margin:0">'+lignes('sess','🕐 Par session')+'</div>';
+  // psychologie & discipline
+  var D=rpData(S), E=errCompte(S), EP=errCompte(SP);
+  var disc=function(l,a,b){ return '<div class="jo-d"><b>'+(b?Math.round(a/b*100)+' %':'—')+'</b><span>'+l+'</span><em>'+(b?a+' / '+b:'non renseigné')+'</em></div>'; };
+  document.getElementById('jo-psy').innerHTML='<div class="ct">🧠 Psychologie et discipline</div><div class="jo-dg">'
+    +disc('Trades propres',D.pro,D.n)+disc('Stratégie respectée',D.sgO,D.sg)+disc('Règles respectées',D.ruO,D.ru)
+    +'<div class="jo-d"><b style="color:'+(D.risk.length?RS_ROUGE:RS_VERT)+'">'+D.risk.length+'</b><span>Trade'+(D.risk.length>1?'s':'')+' au-dessus du risque</span><em>plan : '+tjRisquePlan()+' % par trade</em></div></div>'
+    +'<div class="psy-sub">Erreurs de la journée</div>'+(E.length?E.map(function(x){ var y=EP.filter(function(z){return z.k===x.k;})[0]; return errRow(x,E[0].n,SP.length?(y?y.n:0):undefined); }).join(''):'<div class="psy-s">Aucune erreur notée. 👍</div>')
+    +(D.bons.length?'<div class="psy-sub">Bons réflexes</div>'+D.bons.map(function(x){ return rsLigne(wkEsc(x.k),x.n+' trade'+(x.n>1?'s':''),RS_VERT); }).join(''):'');
+  // à arrêter / à garder
+  var st=rpStop(D), ga=rpGarde(D), li=function(a,ic,cl){ return a.map(function(x){ return '<div class="tj-li"><span style="color:'+cl+'">'+ic+'</span><div>'+x[0]+'<div class="psy-s">'+x[1]+'</div></div></div>'; }).join(''); };
+  document.getElementById('jo-stop').innerHTML='<div class="card" style="margin:0"><div class="ct">✋ Ce que je dois arrêter</div>'+(st.length?li(st,'✕',RS_ROUGE):'<div class="psy-s">Rien à arrêter ce jour-là.</div>')+'</div>'
+    +'<div class="card" style="margin:0"><div class="ct">✅ Ce que je garde</div>'+(ga.length?li(ga,'✓',RS_VERT):'<div class="psy-s">—</div>')+'</div>';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var _is=window.initSection; window.initSection=initSection=function(id){ if(id==='jour')return setTimeout(initJour,80); return _is.apply(this,arguments); };
 });
 
 document.addEventListener('DOMContentLoaded',boot);
