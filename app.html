@@ -1151,6 +1151,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .bl-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}.bl-nav{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--tp);}.bl-nav button{width:30px;height:30px;border-radius:9px;border:1px solid var(--bo);background:transparent;color:var(--tp);font-size:16px;cursor:pointer;}.bl-nav button:disabled{opacity:.3;cursor:default;}.tj-promesse{margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(var(--acr3),.12);border:1px solid rgba(var(--acr3),.3);font-size:13px;line-height:1.5;color:var(--tp);}.bl-row{display:flex;justify-content:space-between;gap:12px;padding:11px 12px;border-radius:12px;border:1px solid var(--bo);border-left-width:4px;margin-top:8px;}.bl-row[role=button]{cursor:pointer;}.bl-row[role=button]:hover{background:rgba(255,255,255,.03);}.bl-row.good{border-left-color:#34d399;}.bl-row.mid{border-left-color:#fbbf24;}.bl-row.low{border-left-color:#fb923c;}.bl-row.vide{opacity:.5;border-left-color:var(--bo);}.bl-l{min-width:0;}.bl-t{font-weight:700;font-size:13px;color:var(--tp);}.bl-s{font-size:11.5px;color:var(--ts);margin-top:2px;}.bl-e{font-size:11.5px;color:#fbbf24;margin-top:3px;}.bl-e.ok{color:#34d399;}.bl-x{font-size:11.5px;color:var(--ts);margin-top:3px;line-height:1.4;}.bl-v{font-weight:800;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums;}.bl-agg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px;}.bl-agg>div{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--bo);}.bl-agg>div>b{display:block;font-size:13px;color:var(--tp);line-height:1.35;}@media(max-width:560px){.bl-agg{grid-template-columns:1fr;}.bl-agg>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}.bl-agg span{text-align:right;}}.bl-agg span{font-size:11px;color:var(--ts);}
 .bq-h{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:13px;font-weight:800;color:var(--tp);}.bq-h span{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(var(--acr3),.2);color:var(--ac3);font-size:11px;}.bq-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}.bq-kpi>div{min-width:0;padding:9px;border-radius:12px;border:1px solid var(--bo);background:rgba(255,255,255,.03);}.bq-kpi>div>b{display:block;font-size:13px;color:var(--tp);line-height:1.35;}.bq-kpi span{font-size:11px;color:var(--ts);}@media(max-width:560px){.bq-kpi{grid-template-columns:repeat(2,minmax(0,1fr));}}.tj-pdf{display:block;width:100%;margin-top:14px;padding:11px;border-radius:12px;border:1px solid rgba(var(--acr3),.4);background:rgba(var(--acr3),.1);color:var(--tp);font:inherit;font-weight:700;cursor:pointer;}.tj-pdf:hover{background:rgba(var(--acr3),.2);}
 .tj-avant{margin-bottom:12px !important;}.tj-avant summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--tp);list-style:none;}.tj-avant summary::-webkit-details-marker{display:none;}.tj-av-n{font-size:17px;font-weight:800;color:var(--tp);margin:10px 0 4px;}
+.err-row{display:grid;grid-template-columns:1.4fr 1fr 64px 1.4fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bo);}.err-row.sub{padding:6px 0 6px 12px;}.err-row b{font-size:13px;color:var(--tp);text-align:right;font-variant-numeric:tabular-nums;}.err-row>span{font-size:11.5px;color:var(--ts);}.err-n{font-size:14px;color:var(--tp);margin-left:auto;min-width:28px;text-align:right;}.psy-fam summary .psy-fn{flex:1.4;min-width:0;}.psy-fam summary .psy-cb{flex:1;min-width:60px;}@media(max-width:560px){.err-row{grid-template-columns:1fr 64px;}.err-row .psy-cb{grid-column:1/-1;order:3;}.err-row>span{grid-column:1/-1;order:4;}}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -2898,7 +2899,7 @@ function buildCoachReport(){
     if(wd[1].net<0&&wd[0]!==bd[0]) R.push('📅 Tu perds le plus le <b>'+wd[0]+'</b> ('+fmt(wd[1].net)+'). Évite-le ou réduis ta taille.');}
   if(bySess.length){var ws=bySess[bySess.length-1];if(ws[1].net<0) R.push('🕐 La session <b>'+ws[0]+'</b> te coûte ('+fmt(ws[1].net)+'). Sois beaucoup plus sélectif dessus.');}
   if(byPair.length){var wpr=byPair[byPair.length-1];if(wpr[1].net<0&&wpr[1].n>=2) R.push('💱 <b>'+wpr[0]+'</b> est négatif ('+fmt(wpr[1].net)+' sur '+wpr[1].n+' trades). À surveiller de près.');}
-  if(errFreq.length) R.push('⚠ Erreur la plus fréquente : <b>'+errFreq[0][0]+'</b> ('+errFreq[0][1].n+' trades, dont '+errFreq[0][1].w+' gagnés). <b>Priorité n°1</b>.');
+  if(errFreq.length) R.push('⚠ Erreur la plus fréquente : <b>'+errFreq[0][0]+'</b> ('+errFreq[0][1].n+' fois). <b>Priorité n°1</b>.');
   if(setArr.length&&setArr[0][1].net>0) R.push('⬢ Ton setup le plus rentable : <b>'+setArr[0][0]+'</b> ('+fmt(setArr[0][1].net)+'). Fais-en ta spécialité.');
   if(pf!==null&&pf<1) R.push('📐 Profit factor < 1 ('+pf.toFixed(2)+') : vise des RR plus grands ou coupe tes pertes plus tôt.');
   if(!R.length) R.push('Tes indicateurs sont sains. Garde le cap 💪');
@@ -4958,7 +4959,7 @@ function downloadBilanPDF(){
   const tbl=(head,rows)=>`<table style="width:100%;border-collapse:collapse"><thead><tr>${head.map(h=>`<th ${th}>${h}</th>`).join('')}</tr></thead><tbody style="[TD]">${rows}</tbody></table>`.replace('[TD]','');
   const psychAgg=field=>{const m={};TS.forEach(t=>{let a;try{a=JSON.parse(t[field]||'[]');}catch(e){a=[];}a.forEach(x=>{if(!x)return;if(!m[x])m[x]={n:0,amt:0,w:0,l:0};m[x].n++;m[x].amt+=parseFloat(t.pnl_amt||0);if(t.result==='WIN')m[x].w++;else if(t.result==='LOSS')m[x].l++;});});return m;};
   const errG=psychAgg('psych_errors'), goodG=psychAgg('psych_good');
-  const psychRows=(g,mode)=>{const keys=Object.keys(g).sort((a,b)=>g[b].n-g[a].n);return keys.map(k=>`<tr><td>${k}</td><td>${g[k].n}</td><td>${(g[k].n/n*100).toFixed(0)}%</td><td style="text-align:right">${g[k].w} gagné${g[k].w>1?'s':''} · ${g[k].l} perdu${g[k].l>1?'s':''}</td></tr>`).join('')||'<tr><td colspan="4" style="color:#8a93a8">Aucune donnée taguée</td></tr>';};
+  const psychRows=(g,mode)=>{const keys=Object.keys(g).sort((a,b)=>g[b].n-g[a].n);return keys.map(k=>`<tr><td>${k}</td><td>${g[k].n}</td><td>${(g[k].n/n*100).toFixed(0)}%</td><td style="text-align:right">${mode==='err'?psyFam(k).n:(g[k].w+' gagné'+(g[k].w>1?'s':'')+' · '+g[k].l+' perdu'+(g[k].l>1?'s':''))}</td></tr>`).join('')||'<tr><td colspan="4" style="color:#8a93a8">Aucune donnée taguée</td></tr>';};
   const psychByMonth=field=>MN3.map((mn,m)=>{const mt=TS.filter(t=>parseInt(t.trade_month)===m);const em={};mt.forEach(t=>{let a;try{a=JSON.parse(t[field]||'[]');}catch(e){a=[];}a.forEach(x=>{if(!x)return;if(!em[x])em[x]={n:0,amt:0,w:0,l:0};em[x].n++;em[x].amt+=parseFloat(t.pnl_amt||0);if(t.result==='WIN')em[x].w++;else if(t.result==='LOSS')em[x].l++;});});const keys=Object.keys(em);if(!keys.length)return '';const tot=keys.reduce((a,k)=>a+em[k].n,0);const list=keys.sort((a,b)=>em[b].n-em[a].n).map(k=>`${k} <span style="color:#8a93a8">(${em[k].n}× · ${em[k].w}G ${em[k].l}P)</span>`).join(' &nbsp;·&nbsp; ');return `<tr><td style="white-space:nowrap;vertical-align:top"><b>${mn}</b></td><td style="text-align:right;white-space:nowrap;vertical-align:top">${tot}</td><td style="font-size:10px;vertical-align:top;line-height:1.7">${list}</td></tr>`;}).filter(Boolean).join('');
   const errByMonth=psychByMonth('psych_errors'), goodByMonth=psychByMonth('psych_good');
   const R=document.createElement('div'); R.id='bilan-pdf-root';
@@ -5032,7 +5033,7 @@ function downloadBilanPDF(){
     </div>
     <div style="border-top:2px solid #c72c46;padding-top:14px;margin-bottom:12px"><div style="font-weight:800;font-size:16px;color:#c72c46">🧠 Psychologie — ce qui te fait perdre &amp; ce qui te fait gagner</div><div style="font-size:10px;color:#8a93a8">Pour chaque comportement : le nombre de trades, combien ont été gagnés et combien perdus. Un trade avec plusieurs étiquettes compte pour chacune.</div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:18px">
-      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#c72c46">⚠ Erreurs psychologiques (les plus fréquentes)</div>${tbl(['Erreur','Nb','% trades','Gagnés · Perdus'],psychRows(errG,'freq'))}</div>
+      <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#c72c46">⚠ Erreurs psychologiques (les plus fréquentes)</div>${tbl(['Erreur','Nb','% trades','Famille'],psychRows(errG,'err'))}</div>
       <div><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#0a8a5f">✅ Bonne psychologie</div>${tbl(['Comportement','Nb','% trades','Gagnés · Perdus'],psychRows(goodG,'freq'))}</div>
     </div>
     <div style="margin-bottom:20px"><div style="font-weight:700;font-size:13px;margin-bottom:8px;color:#c72c46">⚠ Erreurs psychologiques — mois par mois ${yr}</div>${tbl(['Mois','Nb','Détail des erreurs (nb × · gagnés G / perdus P)'],errByMonth||'<tr><td colspan="3" style="color:#8a93a8;padding:10px">Aucune erreur psychologique taguée cette année 👏</td></tr>')}</div>
@@ -5656,6 +5657,7 @@ function renderTagTable(elId, stats, color, forceRed){
   el.innerHTML=stats.map(([tag,v])=>{
     const wr=v.n?Math.round(v.w/v.n*100):0;
     const col=forceRed?'var(--reb)':(v.pnl>=0?'var(--grb)':'var(--reb)');
+    if(forceRed) return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--card2);border-left:3px solid ${color};margin-bottom:5px"><div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--tp);font-weight:600">${tag}</div><div style="font-size:10px;color:var(--td);margin-top:1px">${psyFam(tag).n}</div></div><div style="font-size:11px;font-weight:700;color:var(--reb)">${v.n} fois</div></div>`;
     return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--card2);border-left:3px solid ${color};margin-bottom:5px">`
       +`<div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--tp);font-weight:600">${tag}</div>`
       +`<div style="font-size:10px;color:var(--td);margin-top:1px">${v.n}× · ${v.w}W/${v.l}L · WR ${wr}%</div></div>`
@@ -6631,11 +6633,11 @@ function renderPsych(){
     const avgR0=mean(base.map(tradeR)),avgPnl0=mean(base.map(t=>parseFloat(t.pnl_amt)||0));
     const tags={};
     S.forEach(t=>tagsOf(t,'psych_errors').forEach(er=>{(tags[er]=tags[er]||[]).push(t);}));
-    const rows=Object.entries(tags).map(([tag,list])=>{const st=aCellStats(list);const wN=list.filter(t=>t.result==='WIN').length,lN=list.filter(t=>t.result==='LOSS').length;return{tag,st,dR:st.avgR-avgR0,wN,lN};}).sort((a,b)=>b.st.n-a.st.n);
+    const rows=Object.entries(tags).map(([tag,list])=>({tag,n:list.length,pct:list.length/S.length*100,fam:psyFam(tag).n})).sort((a,b)=>b.n-a.n);
     if(!rows.length)eEl.innerHTML='<div style="padding:14px;color:var(--td);text-align:center">Aucune erreur taguée — tague tes erreurs psychologiques dans le journal pour débloquer cette analyse 🧠</div>';
-    else eEl.innerHTML='<table class="tbl" style="min-width:560px"><thead><tr><th>Erreur</th><th>N</th><th>WR%</th><th>R moyen</th><th>ΔR vs sans erreur</th><th>Gagnés · Perdus</th></tr></thead><tbody>'+
-      rows.map(r=>'<tr><td>'+r.tag+'</td><td>'+r.st.n+'</td><td>'+(r.st.wr===null?'—':r.st.wr.toFixed(0)+'%')+'</td><td class="'+aCls(r.st.avgR)+'">'+aFmtR(r.st.avgR,true)+'</td><td class="'+aCls(r.dR)+'">'+aFmtR(r.dR,true)+'</td><td>'+r.wN+' gagné'+(r.wN>1?'s':'')+' · '+r.lN+' perdu'+(r.lN>1?'s':'')+'</td></tr>').join('')+
-      '</tbody></table><div style="font-size:10px;color:var(--td);margin-top:7px">Pour chaque erreur : combien de trades, combien gagnés et combien perdus. Un trade avec plusieurs erreurs compte pour chacune.</div>';
+    else eEl.innerHTML='<table class="tbl" style="min-width:420px"><thead><tr><th>Erreur</th><th>Famille</th><th>Nombre de fois</th><th>% des trades</th></tr></thead><tbody>'+
+      rows.map(r=>'<tr><td>'+r.tag+'</td><td>'+r.fam+'</td><td>'+r.n+'</td><td>'+r.pct.toFixed(0)+' %</td></tr>').join('')+
+      '</tbody></table><div style="font-size:10px;color:var(--td);margin-top:7px">Chaque erreur est comptée, que le trade soit gagnant ou perdant.</div>';
   }
   // Bonnes habitudes
   if(gEl){
@@ -7113,7 +7115,7 @@ function initSemaine(){
     + rsLigne('Note moyenne du setup',etoiles.length?(mean(etoiles).toFixed(1)+' ★'):'—',null)
     + (disc?disc.comps.map(function(c){return rsLigne(c.l,Math.round(c.v)+' %',null);}).join(''):'')+'</div>'
    +'<div class="card" style="margin:0"><div class="ct">⚠️ Erreurs & bons réflexes</div>'
-    + (errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">× '+e.n+'</span>',e.w+' gagné'+(e.w>1?'s':'')+' · '+e.l+' perdu'+(e.l>1?'s':''),e.l>e.w?RS_ROUGE:null);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée cette semaine.</div>')
+    + (errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">· '+wkEsc(psyFam(e.k).n)+'</span>',e.n+' fois',RS_ROUGE);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée cette semaine.</div>')
     + (bonL.length?'<div style="font-size:10px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin:12px 0 4px">Ce qui a bien marché</div>'
         +bonL.map(function(b){return rsLigne(wkEsc(b.k),'× '+b.n,RS_VERT);}).join(''):'')+'</div>';
 
@@ -7126,7 +7128,7 @@ function initSemaine(){
   var surj=j.filter(function(x){return x.P.n>=Math.max(4,moyJ*1.8);});
   if(surj.length)ins.push('⚡ Beaucoup de trades le <b>'+WK_JOURS[surj[0].d.getDay()]+'</b> ('+surj[0].P.n+') : attention au sur-trading.');
   if(rev)ins.push('🔥 <b>'+rev+'</b> trade'+(rev>1?'s':'')+' « revenge » (ouvert dans les 30 min après une perte).');
-  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' trade'+(errL[0].n>1?'s':'')+' : '+errL[0].w+' gagné'+(errL[0].w>1?'s':'')+', '+errL[0].l+' perdu'+(errL[0].l>1?'s':'')+').');
+  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' fois).');
   if(ser.maxPertes>=3)ins.push('⏸ Série de <b>'+ser.maxPertes+' pertes</b> : aurais-tu dû t\'arrêter après la 2ᵉ ?');
   var rk=S.filter(function(t){return (parseFloat(t.risk_pct)||0)>(DRSK||1)*1.1;}).length;
   if(rk)ins.push('🎯 <b>'+rk+'</b> trade'+(rk>1?'s':'')+' au-dessus de ton risque cible ('+(DRSK||1)+' %).');
@@ -7672,7 +7674,7 @@ function initMois(){
     +(disc?'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span class="cu" style="font-size:40px;font-weight:800;color:'+(disc.score>=70?RS_VERT:(disc.score>=50?'#fbbf24':RS_ROUGE))+'">'+disc.score+'</span><span style="color:var(--td);font-size:12px">/ 100'+(dp?' · mois précédent '+dp.score:'')+'</span></div>':'')
     +rsLigne('Trades « revenge »',rev,rev?RS_ROUGE:RS_VERT)+(disc?disc.comps.map(function(c){return rsLigne(c.l,Math.round(c.v)+' %',null);}).join(''):'')+'</div>'
     +'<div class="card" style="margin:0"><div class="ct">⚠️ Erreurs du mois</div>'
-    +(errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">× '+e.n+'</span>',e.w+' gagné'+(e.w>1?'s':'')+' · '+e.l+' perdu'+(e.l>1?'s':''),e.l>e.w?RS_ROUGE:null);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée ce mois-ci.</div>')+'</div>';
+    +(errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">· '+wkEsc(psyFam(e.k).n)+'</span>',e.n+' fois',RS_ROUGE);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée ce mois-ci.</div>')+'</div>';
 
   // meilleurs / pires trades
   var tri=S.slice().sort(function(x,y){return (parseFloat(y.pnl_amt)||0)-(parseFloat(x.pnl_amt)||0);});
@@ -7686,7 +7688,7 @@ function initMois(){
   var verts=jr.filter(function(x){return x.v>=0;}).length; if(jr.length)ins.push('🗓 <b>'+verts+'</b> jour'+(verts>1?'s':'')+' gagnant'+(verts>1?'s':'')+' sur '+jr.length+' jours de trading.');
   if(SP.length&&P.net<PP.net)ins.push('↘ Mois moins bon que le précédent ('+rsArgent(P.net)+' contre '+rsArgent(PP.net)+').');
   if(SP.length&&P.net>=PP.net)ins.push('↗ Mois meilleur que le précédent ('+rsArgent(P.net)+' contre '+rsArgent(PP.net)+').');
-  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' trade'+(errL[0].n>1?'s':'')+' : '+errL[0].w+' gagné'+(errL[0].w>1?'s':'')+', '+errL[0].l+' perdu'+(errL[0].l>1?'s':'')+').');
+  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' fois).');
   if(rev)ins.push('🔥 <b>'+rev+'</b> trade'+(rev>1?'s':'')+' « revenge » ce mois-ci.');
   document.getElementById('mo-ins').innerHTML='<div class="ct">💡 À retenir</div><ul class="wk-ul">'+ins.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
   moHist(); moBilan();
@@ -7862,7 +7864,8 @@ var PSY_FAM=[
 ];
 var PSY_ALL=[]; PSY_FAM.forEach(function(f){ f.t.forEach(function(x){PSY_ALL.push(x);}); });
 var PSY_GOOD=['Discipliné','Patient','Respect du plan','SL respecté','Calme','Confiant'];
-function psyFam(tag){ for(var i=0;i<PSY_FAM.length;i++)if(PSY_FAM[i].t.indexOf(tag)>=0)return PSY_FAM[i]; return {k:'autre',n:'Autre',i:'•',c:'#94a3b8',t:[],r:''}; }
+var PSY_ALIAS={'SL déplacé':'Déplacer le SL','Revenge':'Revenge Trading','Pas de plan':'Trading sans plan','Lot augmenté':'Augmentation de lot'};
+function psyFam(tag){ tag=PSY_ALIAS[tag]||tag; for(var i=0;i<PSY_FAM.length;i++)if(PSY_FAM[i].t.indexOf(tag)>=0)return PSY_FAM[i]; return {k:'autre',n:'Autre',i:'•',c:'#94a3b8',t:[],r:''}; }
 function psyErrs(t){ return tagsOf(t,'psych_errors'); }
 function ctxOf(t){ try{ var o=JSON.parse(t.ctx||'{}'); return (o&&typeof o==='object')?o:{}; }catch(e){ return {}; } }
 function pnlOf(t){ return parseFloat(t.pnl_amt)||0; }
@@ -8070,6 +8073,13 @@ function psyBeh(S,field){
   var m={}; S.forEach(function(t){ tagsOf(t,field).forEach(function(k){ var x=(m[k]=m[k]||{k:k,n:0,w:0,l:0,b:0}); x.n++; if(t.result==='WIN')x.w++; else if(t.result==='LOSS')x.l++; else x.b++; }); });
   return Object.keys(m).map(function(k){ var x=m[k]; x.wr=(x.w+x.l)?x.w/(x.w+x.l)*100:null; return x; });
 }
+// Erreurs psychologiques : on compte seulement (combien de fois, % des trades). Jamais de gains associés.
+function errCompte(S){ var m={}; S.forEach(function(t){ psyErrs(t).forEach(function(k){ m[k]=(m[k]||0)+1; }); });
+  return Object.keys(m).map(function(k){ return {k:k,n:m[k],pct:S.length?m[k]/S.length*100:0,f:psyFam(k)}; }).sort(function(a,b){return b.n-a.n;}); }
+function errFamCompte(S){ var m={}; S.forEach(function(t){ psyErrs(t).forEach(function(k){ var f=psyFam(k); var x=(m[f.k]=m[f.k]||{f:f,n:0,t:{}}); x.n++; x.t[k]=(x.t[k]||0)+1; }); });
+  return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return b.n-a.n;}); }
+function errTend(a,b){ if(b==null)return ''; if(a===b)return '<span style="color:var(--ts)">= stable</span>'; return a<b?'<span style="color:'+RS_VERT+'">▼ '+(b-a)+' de moins</span>':'<span style="color:'+RS_ROUGE+'">▲ '+(a-b)+' de plus</span>'; }
+function errRow(x,max,prev){ return '<div class="err-row"><div class="beh-n">'+wkEsc(x.k)+'<em>'+x.f.i+' '+wkEsc(x.f.n)+'</em></div><div class="psy-cb"><i style="width:'+Math.min(100,x.n/Math.max(1,max)*100)+'%;background:'+RS_ROUGE+'"></i></div><b>'+x.n+' fois</b><span>'+x.pct.toFixed(0)+' % des trades'+(prev!==undefined?' · '+errTend(x.n,prev):'')+'</span></div>'; }
 function psyBar(w,l,b){ var n=(w+l+b)||1; return '<div class="wl-bar"><i class="w" style="width:'+(w/n*100)+'%"></i><i class="b" style="width:'+(b/n*100)+'%"></i><i class="l" style="width:'+(l/n*100)+'%"></i></div>'; }
 function psyWRtxt(wr,base){ if(wr===null)return '—'; var c=(base!=null&&wr>=base+10)?RS_VERT:((base!=null&&wr<=base-10)?RS_ROUGE:'var(--tp)'); return '<b style="color:'+c+'">'+wr.toFixed(0)+' %</b>'; }
 function psyGP(x){ return '<b class="gw">'+x.w+'</b> gagné'+(x.w>1?'s':'')+' · <b class="gl">'+x.l+'</b> perdu'+(x.l>1?'s':''); }
@@ -8090,29 +8100,32 @@ function initPsy(){
   // 1. Où tu en es
   H+='<div class="card" style="margin-bottom:12px"><div class="psy-top"><div><div class="psy-l">Trades avec une erreur</div><div class="cu psy-big" style="color:'+(taux>50?RS_ROUGE:(taux>30?'#fbbf24':RS_VERT))+'">'+taux.toFixed(0)+' %</div>'
    +'<div class="psy-s">'+st.avec.length+' trades sur '+TY.length+' · '+tend+'</div></div>'
-   +'<div class="psy-cmp"><div><span>Sans erreur</span><b style="color:'+RS_VERT+'">'+(WS.wr===null?'—':WS.wr.toFixed(0)+' %')+'</b><em>'+psyGP(WS)+'</em></div>'
-   +'<div><span>Avec erreur</span><b style="color:'+RS_ROUGE+'">'+(WA.wr===null?'—':WA.wr.toFixed(0)+' %')+'</b><em>'+psyGP(WA)+'</em></div></div></div>'
-   +'<div class="psy-s" style="margin-top:2px">Taux de réussite = trades gagnés sur trades gagnés + perdus.</div>'
+   +'<div class="psy-cmp"><div><span>Trades sans erreur</span><b style="color:'+RS_VERT+'">'+sans.length+'</b><em>sur '+TY.length+' trades</em></div>'
+   +'<div><span>Erreurs notées</span><b style="color:'+RS_ROUGE+'">'+errCompte(TY).reduce(function(a,x){return a+x.n;},0)+'</b><em>au total sur l\'année</em></div></div></div>'
+   +'<div class="psy-s" style="margin-top:2px">Une erreur est une erreur, même sur un trade gagnant : elle est comptée ici.</div>'
    +'<div style="position:relative;height:170px;margin-top:10px"><canvas id="psyTrChart"></canvas></div>'
    +'<div class="psy-s" style="margin-top:6px">Part des trades avec une erreur, semaine par semaine. L\'objectif : que la courbe descende.</div></div>';
   // 2. Ce qui te fait perdre, ce qui te fait gagner
-  var errB=psyBeh(TY,'psych_errors').sort(function(a,b){return b.n-a.n;}), goodB=psyBeh(TY,'psych_good').sort(function(a,b){return b.n-a.n;});
+  var errB=errCompte(TY), goodB=psyBeh(TY,'psych_good').sort(function(a,b){return b.n-a.n;});
+  var e4=errCompte([].concat.apply([],s4.map(function(x){return wkTrades(x.o);}))), e4p=errCompte([].concat.apply([],p4.map(function(x){return wkTrades(x.o);})));
+  var prevN=function(k,arr){ var y=arr.filter(function(z){return z.k===k;})[0]; return y?y.n:0; };
   var beh=function(x){ var low=x.n<5; return '<div class="beh'+(low?' low':'')+'"><div class="beh-n">'+wkEsc(x.k)+'<em>'+x.n+' trade'+(x.n>1?'s':'')+(low?' · peu de données':'')+'</em></div>'+psyBar(x.w,x.l,x.b)+'<div class="beh-g">'+psyGP(x)+'</div><div class="beh-p">'+psyWRtxt(x.wr,base)+'</div></div>'; };
   var pt=[]; 
-  errB.filter(function(x){return x.n>=5&&x.wr!==null;}).sort(function(a,b){return a.wr-b.wr;}).slice(0,2).forEach(function(x){ if(x.wr<base-5)pt.push('⚠ <b>'+wkEsc(x.k)+'</b> : '+x.n+' trades, <b>'+x.w+'</b> gagné'+(x.w>1?'s':'')+', <b>'+x.l+'</b> perdu'+(x.l>1?'s':'')+' ('+x.wr.toFixed(0)+' % de réussite contre '+base.toFixed(0)+' % en moyenne).'); });
+  if(errB.length)pt.push('⚠ Ton erreur la plus fréquente : <b>'+wkEsc(errB[0].k)+'</b>, '+errB[0].n+' fois ('+errB[0].pct.toFixed(0)+' % de tes trades).');
   goodB.filter(function(x){return x.n>=5&&x.wr!==null;}).sort(function(a,b){return b.wr-a.wr;}).slice(0,2).forEach(function(x){ if(x.wr>base+5)pt.push('✅ <b>'+wkEsc(x.k)+'</b> : '+x.n+' trades, <b>'+x.w+'</b> gagné'+(x.w>1?'s':'')+', <b>'+x.l+'</b> perdu'+(x.l>1?'s':'')+' ('+x.wr.toFixed(0)+' % de réussite contre '+base.toFixed(0)+' % en moyenne).'); });
-  H+='<div class="card" style="margin-bottom:12px"><div class="ct">📊 Ce qui te fait perdre, ce qui te fait gagner</div><div class="psy-s" style="margin:-4px 0 10px;line-height:1.6">Pour chaque comportement noté : combien de trades, combien gagnés, combien perdus. Ta moyenne : <b>'+(base===null?'—':base.toFixed(0))+' %</b> de réussite. Un trade qui porte plusieurs étiquettes compte pour chacune.</div>'
+  H+='<div class="card" style="margin-bottom:12px"><div class="ct">📊 Tes erreurs et tes bons réflexes</div><div class="psy-s" style="margin:-4px 0 10px;line-height:1.6">Chaque erreur est comptée, que le trade soit gagnant ou perdant. Tendance = 4 dernières semaines comparées aux 4 précédentes. Bons réflexes : ta moyenne est de <b>'+(base===null?'—':base.toFixed(0))+' %</b> de réussite. Un trade qui porte plusieurs étiquettes compte pour chacune.</div>'
    +(pt.length?'<ul class="wk-ul" style="margin-bottom:12px">'+pt.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>':'')
-   +'<div class="psy-sub" style="margin-top:4px">⚠ Quand tu fais cette erreur</div>'+(errB.length?errB.map(beh).join(''):'<div class="psy-s">Aucune erreur notée.</div>')
+   +'<div class="psy-sub" style="margin-top:4px">⚠ Tes erreurs</div>'+(errB.length?errB.map(function(x){ var a=prevN(x.k,e4), b=prevN(x.k,e4p); return errRow(x,errB[0].n,undefined).replace('</span></div>',' · 4 sem. : '+errTend(a,b)+'</span></div>'); }).join(''):'<div class="psy-s">Aucune erreur notée.</div>')
    +'<div class="psy-sub">✅ Quand tu fais ceci</div>'+(goodB.length?goodB.map(beh).join(''):'<div class="psy-s">Aucun bon comportement noté. Pense à les cocher : ils servent de repère.</div>')+'</div>';
   // 3. Les 5 familles
   var fl=PSY_FAM.concat([{k:'autre',n:'Autre',i:'•',c:'#94a3b8',t:[]}]).filter(function(f){return st.fam[f.k];}).sort(function(a,b){return st.fam[b.k].n-st.fam[a.k].n;});
-  var cnt=function(a){ var m={}; a.forEach(function(x){ wkTrades(x.o).forEach(function(t){ var p=psyErrs(t)[0]; if(p){ var k=psyFam(p).k; m[k]=(m[k]||0)+1; } }); }); return m; }, fa=cnt(s4), fb=cnt(p4);
-  H+='<div class="card" style="margin-bottom:12px"><div class="ct">🧩 D\'où viennent tes erreurs</div><div class="psy-s" style="margin:-4px 0 10px">Regroupées en familles, selon l\'erreur principale de chaque trade (un trade = une famille).</div>'
-   +fl.map(function(f){ var d=st.fam[f.k], tl=Object.keys(d.t).sort(function(a,b){return d.t[b].n-d.t[a].n;}), wr=(d.w+d.l)?d.w/(d.w+d.l)*100:null;
-     return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+d.n+' trade'+(d.n>1?'s':'')+(function(){ var a=fa[f.k]||0, b=fb[f.k]||0; return (a||b)?' · '+(a<=b?'<span style="color:'+RS_VERT+'">▼ ':'<span style="color:'+RS_ROUGE+'">▲ ')+a+' vs '+b+'</span>':''; })()+'</em></span>'
-       +psyBar(d.w,d.l,d.b||0)+'<span class="psy-fg">'+psyGP(d)+'</span><span class="beh-p">'+psyWRtxt(wr,base)+'</span></summary>'
-       +tl.map(function(x){ var y=d.t[x], w2=(y.w+y.l)?y.w/(y.w+y.l)*100:null; return '<div class="beh" style="grid-template-columns:1.3fr 1fr 1.4fr 54px"><div class="beh-n">'+wkEsc(x)+'<em>'+y.n+' trade'+(y.n>1?'s':'')+'</em></div>'+psyBar(y.w,y.l,y.b||0)+'<div class="beh-g">'+psyGP(y)+'</div><div class="beh-p">'+psyWRtxt(w2,base)+'</div></div>'; }).join('')+'</details>'; }).join('')+'</div>';
+  var cnt=function(a){ var m={}; a.forEach(function(x){ wkTrades(x.o).forEach(function(t){ psyErrs(t).forEach(function(p){ var k=psyFam(p).k; m[k]=(m[k]||0)+1; }); }); }); return m; }, fa=cnt(s4), fb=cnt(p4);
+  var totE=errCompte(TY).reduce(function(a,x){return a+x.n;},0)||1, famC=errFamCompte(TY);
+  H+='<div class="card" style="margin-bottom:12px"><div class="ct">🧩 Tes familles d\'erreurs</div><div class="psy-s" style="margin:-4px 0 10px">Tes erreurs regroupées en 5 familles : Entrée, Risque, Gestion du trade, Émotion, Discipline & état. Touche une famille pour voir le détail.</div>'
+   +famC.map(function(c){ var f=c.f, tl=Object.keys(c.t).sort(function(a,b){return c.t[b]-c.t[a];}), a=fa[f.k]||0, b=fb[f.k]||0;
+     return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+c.n+' erreur'+(c.n>1?'s':'')+' · '+Math.round(c.n/totE*100)+' % de tes erreurs'+((a||b)?' · 4 sem. : '+errTend(a,b):'')+'</em></span>'
+       +'<div class="psy-cb"><i style="width:'+Math.round(c.n/famC[0].n*100)+'%;background:'+f.c+'"></i></div><b class="err-n">'+c.n+'</b></summary>'
+       +tl.map(function(x){ return '<div class="err-row sub"><div class="beh-n">'+wkEsc(x)+'</div><div class="psy-cb"><i style="width:'+Math.round(c.t[x]/c.n*100)+'%;background:'+f.c+'"></i></div><b>'+c.t[x]+' fois</b><span>'+Math.round(c.t[x]/TY.length*100)+' % des trades</span></div>'; }).join('')+'</details>'; }).join('')+'</div>';
   // 4. Quand tu craques
   var auto=psyAuto(T), bk={};
   TY.forEach(function(t){ var a=auto[t.id]; if(!a)return; var e=psyErrs(t).length>0;
@@ -8165,9 +8178,10 @@ function psyPeriode(S,SP,quoi){
   var sans=S.filter(function(t){return psyErrs(t).length===0;}), wa=psyWL(st.avec), ws=psyWL(sans);
   h+='<div class="psy-top" style="align-items:center"><div><div class="psy-l">Trades avec une erreur</div><div class="cu psy-mid" style="color:'+(taux>50?RS_ROUGE:(taux>30?'#fbbf24':RS_VERT))+'">'+taux.toFixed(0)+' %</div>'
     +'<div class="psy-s">'+(tp===null?'':((taux-tp<=0?'<span style="color:'+RS_VERT+'">▼ ':'<span style="color:'+RS_ROUGE+'">▲ ')+Math.abs(taux-tp).toFixed(0)+' pts</span> vs '+quoi+' précédent(e) ('+tp.toFixed(0)+' %)'))+'</div></div>'
-    +'<div class="psy-cmp"><div><span>Sans erreur</span><b style="color:'+RS_VERT+'">'+(ws.wr===null?'—':ws.wr.toFixed(0)+' %')+'</b><em>'+psyGP(ws)+'</em></div><div><span>Avec erreur</span><b style="color:'+RS_ROUGE+'">'+(wa.wr===null?'—':wa.wr.toFixed(0)+' %')+'</b><em>'+psyGP(wa)+'</em></div></div></div>';
+    +'<div class="psy-cmp"><div><span>Trades sans erreur</span><b style="color:'+RS_VERT+'">'+sans.length+'</b><em>sur '+n+'</em></div><div><span>Erreurs notées</span><b style="color:'+RS_ROUGE+'">'+errCompte(S).reduce(function(a,x){return a+x.n;},0)+'</b><em>'+errTend(errCompte(S).reduce(function(a,x){return a+x.n;},0),SP.length?errCompte(SP).reduce(function(a,x){return a+x.n;},0):null)+'</em></div></div></div>'
+    +(function(){ var E=errCompte(S), EP=errCompte(SP); return E.length?'<div style="margin-top:8px">'+E.slice(0,5).map(function(x){ var y=EP.filter(function(z){return z.k===x.k;})[0]; return errRow(x,E[0].n,SP.length?(y?y.n:0):undefined); }).join('')+'</div>':''; })();
   var fl=Object.keys(st.fam).sort(function(a,b){return st.fam[b].n-st.fam[a].n;}), top=fl[0], f=top?PSY_FAM.filter(function(x){return x.k===top;})[0]:null;
-  if(f)h+='<div class="psy-s" style="margin-top:8px">Famille la plus fréquente : <b style="color:var(--tp)">'+f.i+' '+f.n+'</b> · '+st.fam[top].n+' trade'+(st.fam[top].n>1?'s':'')+' : '+psyGP(st.fam[top])+'.</div>';
+  if(f)h+='<div class="psy-s" style="margin-top:8px">Famille la plus fréquente : <b style="color:var(--tp)">'+f.i+' '+f.n+'</b> · '+st.fam[top].n+' trade'+(st.fam[top].n>1?'s':'')+'.</div>';
   var ru=S.filter(function(t){return ctxOf(t).ru;}), ok=ru.filter(function(t){return ctxOf(t).ru==='o';}).length;
   if(ru.length>=3)h+=rsLigne('📏 Règles respectées',ok+' / '+ru.length,ok/ru.length>=.7?RS_VERT:(ok/ru.length>=.4?'#fbbf24':RS_ROUGE));
   var R=psyRegles();
@@ -8186,15 +8200,15 @@ function rsErreurs(){
   var head='<div class="ct">🧠 Tes erreurs en chiffres</div>';
   if(!avec.length){
     box.innerHTML='<div class="card" style="margin-bottom:12px">'+head
-      +'<div style="font-size:13px;color:var(--ts);line-height:1.6">Aucun trade n\'est taggé « erreur » en '+GLOBAL_YEAR+'. Quand tu notes un trade, coche tes erreurs (impatience, pas de setup, lot augmenté…) : ici, tu verras combien de trades tu gagnes ou perds quand tu les fais.</div></div>';
+      +'<div style="font-size:13px;color:var(--ts);line-height:1.6">Aucun trade n\'est taggé « erreur » en '+GLOBAL_YEAR+'. Quand tu notes un trade, coche tes erreurs (impatience, pas de setup, lot augmenté…) : ici, tu verras combien de fois tu les fais et si elles diminuent.</div></div>';
     return; }
   var WA=psyWL(avec), WS=psyWL(sans), base=psyWL(TY).wr;
-  var errB=psyBeh(TY,'psych_errors').sort(function(a,b){return b.n-a.n;}).slice(0,5);
+  var errB=errCompte(TY).slice(0,5);
   box.innerHTML='<div class="card" style="margin-bottom:12px">'+head
-   +'<div class="psy-cmp wide"><div><span>Sans erreur · '+WS.n+' trades</span><b style="color:'+RS_VERT+'">'+(WS.wr===null?'—':WS.wr.toFixed(0)+' %')+'</b><em>'+psyGP(WS)+'</em></div>'
-   +'<div><span>Avec erreur · '+WA.n+' trades</span><b style="color:'+RS_ROUGE+'">'+(WA.wr===null?'—':WA.wr.toFixed(0)+' %')+'</b><em>'+psyGP(WA)+'</em></div></div>'
-   +'<div class="psy-s" style="margin:6px 0 10px">Taux de réussite : trades gagnés sur trades gagnés + perdus. Ta moyenne : '+(base===null?'—':base.toFixed(0))+' %.</div>'
-   +errB.map(function(x){ return '<div class="beh"><div class="beh-n">'+wkEsc(x.k)+'<em>'+x.n+' trade'+(x.n>1?'s':'')+'</em></div>'+psyBar(x.w,x.l,x.b)+'<div class="beh-g">'+psyGP(x)+'</div><div class="beh-p">'+psyWRtxt(x.wr,base)+'</div></div>'; }).join('')
+   +'<div class="psy-cmp wide"><div><span>Trades sans erreur</span><b style="color:'+RS_VERT+'">'+WS.n+'</b><em>sur '+TY.length+'</em></div>'
+   +'<div><span>Trades avec erreur</span><b style="color:'+RS_ROUGE+'">'+WA.n+'</b><em>'+Math.round(WA.n/TY.length*100)+' % de tes trades</em></div></div>'
+   +'<div class="psy-s" style="margin:6px 0 10px">Une erreur est comptée même sur un trade gagnant.</div>'
+   +errB.map(function(x){ return errRow(x,errB[0].n); }).join('')
    +'<button class="btn btn-g" style="margin-top:10px" onclick="showGroupe(\'psy\')">Comprendre pourquoi →</button></div>';
 }
 
@@ -8326,8 +8340,8 @@ function tjDonneesJour(auj,pl){
   if(auj.length&&!errN)bien.push('Aucune erreur notée');
   Object.keys(bons).forEach(function(k){ var y=bons[k]; bien.push(wkEsc(k)+' ('+y.n+' trade'+(y.n>1?'s':'')+' : '+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'); });
   var mal=[];
-  Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;}).forEach(function(k){ var y=errs[k]; mal.push('<b>'+wkEsc(k)+'</b> : '+y.n+' trade'+(y.n>1?'s':'')+' ('+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'); });
-  if(sgN)mal.push('<b>Hors stratégie</b> : '+sgN+' trade'+(sgN>1?'s':''));
+  Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;}).forEach(function(k){ var y=errs[k]; mal.push('<b>'+wkEsc(k)+'</b> <span style="color:var(--ts)">('+psyFam(k).n+')</span> : '+y.n+' fois'); });
+  if(sgN)mal.push('<b>Hors stratégie</b> : '+sgN+' fois');
   if(ruN)mal.push('<b>Règles non respectées</b> : '+ruN+' trade'+(ruN>1?'s':''));
   if(risk.length)mal.push('<b>Risque au-dessus de ton plan</b> ('+tjRisquePlan()+' %) : '+risk.length+' trade'+(risk.length>1?'s':'')+' ('+risk.map(function(t){return parseFloat(t.risk_pct)+' %';}).join(', ')+')');
   ec.forEach(function(x){ mal.push('<b>Plan</b> : '+x); });
@@ -8631,9 +8645,9 @@ function rpData(S){
 }
 function rpStop(D){
   var out=[], base=D.wr;
-  D.errs.slice().sort(function(a,b){return (b.l-a.l)||(b.n-a.n);}).forEach(function(x){
-    out.push(['<b>'+wkEsc(x.k)+'</b>', x.n+' trade'+(x.n>1?'s':'')+' · '+x.w+' gagné'+(x.w>1?'s':'')+' · '+x.l+' perdu'+(x.l>1?'s':'')+' · '+rpM(x.net)]); });
-  if(D.hors.n)out.push(['<b>Trader hors de ma stratégie</b>', D.hors.n+' trade'+(D.hors.n>1?'s':'')+' · '+D.hors.w+' gagné'+(D.hors.w>1?'s':'')+' · '+D.hors.l+' perdu'+(D.hors.l>1?'s':'')]);
+  D.errs.forEach(function(x){
+    out.push(['<b>'+wkEsc(x.k)+'</b> <span style="color:#64748b;font-weight:400">· '+wkEsc(psyFam(x.k).n)+'</span>', x.n+' fois · '+Math.round(x.n/D.n*100)+' % des trades']); });
+  if(D.hors.n)out.push(['<b>Trader hors de ma stratégie</b>', D.hors.n+' fois · '+Math.round(D.hors.n/D.n*100)+' % des trades']);
   if(D.risk.length)out.push(['<b>Risquer plus de '+tjRisquePlan()+' % par trade</b>', D.risk.length+' trade'+(D.risk.length>1?'s':'')+' au-dessus du plan']);
   D.paires.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Forcer '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
   D.sess.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Trader en session '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
@@ -8684,6 +8698,19 @@ function rpCmp(D,D0,lab){
    +c('Trades propres',D.n?D.pro/D.n*100:null,D0.n?D0.pro/D0.n*100:null,function(v){return Math.round(v)+' pts';})
    +c('R par trade',D.rReal,D0.rReal,function(v){return v.toFixed(2)+' R';})+'</div></div>';
 }
+function rpErrTable(rows,n,prev){
+  if(!rows.length)return '<div class="rp-empty">Aucune erreur notée sur la période.</div>';
+  var mx=rows[0].n||1;
+  return '<table class="rp-t"><thead><tr><th>Erreur</th><th>Famille</th><th class="c">Nombre de fois</th><th class="c">% des trades</th>'+(prev?'<th class="c">vs avant</th>':'')+'<th style="width:120px"></th></tr></thead><tbody>'
+   +rows.map(function(x){ var p=prev?(prev.filter(function(y){return y.k===x.k;})[0]||{n:0}).n:null, d=p==null?'':(x.n===p?'=':(x.n<p?'<span style="color:#059669">▼ '+(p-x.n)+'</span>':'<span style="color:#dc2626">▲ '+(x.n-p)+'</span>'));
+     return '<tr><td><b>'+wkEsc(x.k)+'</b></td><td>'+wkEsc(psyFam(x.k).n)+'</td><td class="c"><b>'+x.n+'</b></td><td class="c">'+Math.round(x.n/n*100)+' %</td>'+(prev?'<td class="c">'+d+'</td>':'')+'<td><div class="rp-bar"><i style="width:'+Math.round(x.n/mx*100)+'%;background:#dc2626"></i></div></td></tr>'; }).join('')+'</tbody></table>';
+}
+function rpFamTable(S,S0){
+  var F=errFamCompte(S), F0=S0?errFamCompte(S0):null, tot=F.reduce(function(a,x){return a+x.n;},0)||1;
+  return '<table class="rp-t rp-mini"><thead><tr><th>Famille</th><th class="c">Erreurs</th><th class="c">% des erreurs</th>'+(F0?'<th class="c">vs avant</th>':'')+'<th>Détail</th></tr></thead><tbody>'
+   +F.map(function(c){ var p=F0?(F0.filter(function(y){return y.f.k===c.f.k;})[0]||{n:0}).n:null, d=p==null?'':(c.n===p?'=':(c.n<p?'<span style="color:#059669">▼ '+(p-c.n)+'</span>':'<span style="color:#dc2626">▲ '+(c.n-p)+'</span>'));
+     return '<tr><td><b>'+c.f.i+' '+wkEsc(c.f.n)+'</b></td><td class="c"><b>'+c.n+'</b></td><td class="c">'+Math.round(c.n/tot*100)+' %</td>'+(F0?'<td class="c">'+d+'</td>':'')+'<td style="white-space:normal">'+Object.keys(c.t).sort(function(a,b){return c.t[b]-c.t[a];}).map(function(k){return wkEsc(k)+' ×'+c.t[k];}).join(', ')+'</td></tr>'; }).join('')+'</tbody></table>';
+}
 function rpPsyTable(rows,base,vide){
   if(!rows.length)return '<div class="rp-empty">'+vide+'</div>';
   return '<table class="rp-t"><thead><tr><th>Comportement</th><th class="c">Trades</th><th class="c">Gagnés</th><th class="c">Perdus</th><th class="c">Win rate</th><th class="r">Net</th></tr></thead><tbody>'
@@ -8732,8 +8759,9 @@ function rpHTML(type,titre,S,notes,S0,lab0){
   var disc=function(l,a,b){ return '<div class="rp-d"><b>'+(b?Math.round(a/b*100)+' %':'—')+'</b><span>'+l+'</span><em>'+(b?a+' / '+b:'non renseigné')+'</em></div>'; };
   H+=sec('Psychologie')+'<div class="rp-dg">'
    +disc('Trades propres',D.pro,D.n)+disc('Stratégie respectée',D.sgO,D.sg)+disc('Règles respectées',D.ruO,D.ru)
-   +'<div class="rp-d"><b>'+rpPct(D.WS.wr)+' <small>vs</small> '+rpPct(D.WA.wr)+'</b><span>Win rate sans erreur / avec erreur</span><em>'+(D.n-D.nA)+' sans · '+D.nA+' avec</em></div></div>'
-   +'<div class="rp-sub">Erreurs</div>'+rpPsyTable(D.errs,D.wr,'Aucune erreur notée sur la période.')
+   +'<div class="rp-d" style="border-color:#dc2626"><b>'+D.errs.reduce(function(a,x){return a+x.n;},0)+'</b><span>Erreurs notées</span><em>'+D.nA+' trade'+(D.nA>1?'s':'')+' avec au moins une erreur</em></div></div>'
+   +'<div class="rp-sub">Erreurs</div>'+rpErrTable(D.errs,D.n,(D0&&D0.n)?D0.errs:null)
+   +(D.errs.length?'<div class="rp-sub">Par famille</div>'+rpFamTable(D.S,(D0&&D0.n)?D0.S:null):'')
    +(D.bons.length?'<div class="rp-sub">Bons réflexes</div>'+rpPsyTable(D.bons,D.wr,''):'')
    +'<div class="rp-sub">État mental avant le trade</div>'+rpMini(D.energie.concat(D.humeur),'État')+'<div class="rp-sub">Contexte du trade</div>'+rpMini(D.ctxs,'Situation')+'</div>';
   // Arrêter / garder
