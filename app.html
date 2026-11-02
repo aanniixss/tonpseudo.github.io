@@ -1148,6 +1148,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .wk-pl-j.ko{border-color:rgba(251,191,36,.4) !important;background:rgba(251,191,36,.08) !important;}
 .tj-verdict.low{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);color:#fde68a;}.tj-verdict.mid{background:rgba(var(--acr2),.12);border:1px solid rgba(var(--acr3),.4);color:var(--ac4);}
 .pa-card{margin-bottom:12px !important;}.pa-err{font-size:20px;font-weight:800;margin:2px 0 6px;color:var(--tp);}.pa-cands{display:flex;flex-direction:column;gap:8px;margin:10px 0;}.pa-cands button{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--bo);background:var(--card2,rgba(255,255,255,.04));color:var(--tp);font:inherit;cursor:pointer;text-align:left;}.pa-cands button:hover{border-color:var(--ac3);}.pa-cands em{font-style:normal;font-size:11px;color:var(--ts);}.pa-sel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bo);background:transparent;color:var(--ts);font:inherit;}.pa-win{text-align:center;padding:8px 4px;line-height:1.6;}.pa-w1{font-size:20px;font-weight:800;margin-bottom:6px;}
+.bl-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}.bl-nav{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--tp);}.bl-nav button{width:30px;height:30px;border-radius:9px;border:1px solid var(--bo);background:transparent;color:var(--tp);font-size:16px;cursor:pointer;}.bl-nav button:disabled{opacity:.3;cursor:default;}.tj-promesse{margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(var(--acr3),.12);border:1px solid rgba(var(--acr3),.3);font-size:13px;line-height:1.5;color:var(--tp);}.bl-row{display:flex;justify-content:space-between;gap:12px;padding:11px 12px;border-radius:12px;border:1px solid var(--bo);border-left-width:4px;margin-top:8px;}.bl-row[role=button]{cursor:pointer;}.bl-row[role=button]:hover{background:rgba(255,255,255,.03);}.bl-row.good{border-left-color:#34d399;}.bl-row.mid{border-left-color:#fbbf24;}.bl-row.low{border-left-color:#fb923c;}.bl-row.vide{opacity:.5;border-left-color:var(--bo);}.bl-l{min-width:0;}.bl-t{font-weight:700;font-size:13px;color:var(--tp);}.bl-s{font-size:11.5px;color:var(--ts);margin-top:2px;}.bl-e{font-size:11.5px;color:#fbbf24;margin-top:3px;}.bl-e.ok{color:#34d399;}.bl-x{font-size:11.5px;color:var(--ts);margin-top:3px;line-height:1.4;}.bl-v{font-weight:800;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums;}.bl-agg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px;}.bl-agg>div{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--bo);}.bl-agg>div>b{display:block;font-size:13px;color:var(--tp);line-height:1.35;}@media(max-width:560px){.bl-agg{grid-template-columns:1fr;}.bl-agg>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}.bl-agg span{text-align:right;}}.bl-agg span{font-size:11px;color:var(--ts);}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -8202,8 +8203,8 @@ function rsErreurs(){
 function tjKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
 function tjCiGet(){ try{ return JSON.parse(localStorage.getItem(lsKey('bk_ci_'+tjKey()))||'null'); }catch(e){ return null; } }
 function tjCiSet(k,v){ var c=tjCiGet()||{}; c[k]=(c[k]===v)?0:v; try{ localStorage.setItem(lsKey('bk_ci_'+tjKey()),JSON.stringify(c)); }catch(e){} initToday(); }
-function tjLeconGet(){ try{ return localStorage.getItem(lsKey('bk_lecon_'+tjKey()))||''; }catch(e){ return ''; } }
-function tjLeconSave(el){ try{ localStorage.setItem(lsKey('bk_lecon_'+tjKey()),el.value); }catch(e){} }
+function tjLeconGet(){ try{ return localStorage.getItem(lsKey('bk_lecon_'+(TJ_BKEY||tjKey())))||''; }catch(e){ return ''; } }
+function tjLeconSave(el){ try{ localStorage.setItem(lsKey('bk_lecon_'+(TJ_BKEY||tjKey())),el.value); }catch(e){} }
 function tjFlag(k){ try{ return localStorage.getItem(lsKey('bk_done_'+tjKey()+'_'+k))==='1'; }catch(e){ return false; } }
 function tjFlagSet(k){ try{ localStorage.setItem(lsKey('bk_done_'+tjKey()+'_'+k),'1'); }catch(e){} initToday(); }
 function tjAuj(){ var n=new Date().toDateString(); return sortedByDate(T.filter(function(t){return tDate(t).toDateString()===n;})); }
@@ -8278,6 +8279,7 @@ function initToday(){
   var H='<div class="card tj-hero"><div class="tj-h1">'+hello+' 👋</div><div class="tj-date">'+jour+'</div>'
    +'<div class="tj-state">'+(auj.length?'<b>'+auj.length+'</b> trade'+(auj.length>1?'s':'')+' noté'+(auj.length>1?'s':'')+' aujourd\'hui · <b class="gw">'+WA.w+'</b> gagné'+(WA.w>1?'s':'')+' · <b class="gl">'+WA.l+'</b> perdu'+(WA.l>1?'s':''):'Pas encore de trade aujourd\'hui. Lis ta feuille de route, puis trade sereinement.')+'</div>'
    +'<div class="tj-ci"><div class="qa-lbl">⚡ Comment tu te sens aujourd\'hui ?</div>'+row('en',[[1,'1 · épuisé'],[2,'2'],[3,'3'],[4,'4'],[5,'5 · au top']])+row('hu',[[1,'😟 Mal'],[2,'😐 Neutre'],[3,'🙂 Bien']])+'</div>'
+   +(function(){ var pr=tjPromesse(); return pr?'<div class="tj-promesse">📌 '+(tjNomJour(pr.d)==='Hier'?'Hier':'Le '+pr.d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'}))+', tu t\'es dit : <b>« '+wkEsc(pr.txt)+' »</b></div>':''; })()
    +'<button class="tj-cta" onclick="rdNewTrade()">＋ Noter un trade</button></div>';
   // journal à jour (doux)
   var dernier=T.length?sortedByDate(T)[T.length-1]:null;
@@ -8297,7 +8299,7 @@ function initToday(){
    +lim.map(function(x){ return '<div class="tj-lim"><span>'+x[0]+'</span><div class="dbar"><div style="width:'+Math.min(100,x[2]?x[1]/x[2]*100:0)+'%;background:'+x[3]+'"></div></div><b>'+x[4]+'</b></div>'; }).join('')
    +(lim.some(function(x){return x[3]==='#fbbf24';})?'<div class="psy-s" style="margin-top:6px">Tu as atteint ton repère : c\'est un bon moment pour faire une pause et décider calmement de la suite.</div>':'')
    +(auj.length?'<div style="overflow-x:auto;margin-top:10px"><table class="tbl" style="width:100%"><tbody>'+auj.map(function(t){ var d=tDate(t), c=ctxOf(t); return '<tr style="cursor:pointer" onclick="openTradeDetail(\''+String(t.id).replace(/\'/g,'')+'\')"><td>'+d.toTimeString().slice(0,5)+'</td><td><span class="pb" style="'+pbs(t.pair)+'">'+wkEsc(t.pair)+'</span></td><td>'+rpill(t.result)+'</td><td>'+(tjPropre(t)?'✨ propre':'<span style="color:var(--ts)">à ajuster</span>')+'</td><td style="color:var(--td);font-size:11px;white-space:normal">'+wkEsc(psyErrs(t).join(', '))+'</td></tr>'; }).join('')+'</tbody></table></div>':'')+'</div>';
-  H+='<div class="card" style="margin-bottom:12px"><div class="ct">🌙 Ton bilan du jour</div>'+tjBilan(auj,pl)+'</div>';
+  H+=tjBilanCard();
   H+='<details class="card tj-det"><summary>📐 Ta stratégie, jour après jour</summary>'+tjStrat(auj)+'</details>';
   H+='<details class="card tj-det"><summary>🗓 Ta routine</summary>'+tjRituels(auj)+'</details>';
   root.innerHTML=H;
@@ -8328,6 +8330,7 @@ function tjBilan(auj,pl){
   return '<div class="tj-verdict '+verdict[0]+'"><b>'+verdict[1]+'</b><span>'+verdict[2]+'</span></div>'
    +'<div class="psy-sub">Ce qui a bien marché</div>'+bien.map(function(x){ return '<div class="tj-li"><span>✅</span><div>'+x.charAt(0).toUpperCase()+x.slice(1)+'</div></div>'; }).join('')
    +'<div class="psy-sub">À ajuster demain (une seule chose)</div><div class="tj-li"><span>👉</span><div>'+demain+'</div></div>'
+   +tjDemainBox(demain)
    +'<div class="psy-s" style="margin-top:10px">En chiffres : '+psyGP(W)+' · résultat du jour '+rsArgent(net)+(errN?' · erreurs notées : '+Object.keys(errs).map(function(k){ var y=errs[k]; return wkEsc(k)+' ('+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'; }).join(', '):'')+'</div>'
    +tjLecon();
 }
@@ -8402,7 +8405,7 @@ function paChoisir(err){
 }
 function paChoisirSaisie(){ var el=document.getElementById('pa-autre'); if(el&&el.value)paChoisir(el.value); }
 function paRegleSave(el){ var pa=paGet(); pa.regle=el.value; paSet(pa); }
-function paAbandon(){ if(!confirm('Mettre ce plan de côté ? Tu pourras le reprendre plus tard.'))return; var pa=paGet(); pa.actif=null; paSet(pa); paRefresh(); }
+function paAbandon(){ var pa=paGet(); pa.actif=null; paSet(pa); paRefresh(); toast('Choisis l\'erreur à travailler'); }
 function paNeutralise(){
   var e=paEtat(); if(!e||!e.ok)return;
   var pa=e.pa; pa.fait.push({err:pa.actif,n:e.cur,date:Date.now()}); pa.actif=null; paSet(pa); paRefresh();
@@ -8413,7 +8416,7 @@ function paHTML(){
   if(!e){
     var c=paCandidats();
     if(T.length<10)return H+'<div class="psy-s" style="line-height:1.6">Note tes trades avec leurs erreurs. Dès que tu auras une dizaine de trades, je te proposerai <b>une seule erreur à travailler</b>, la plus fréquente chez toi.</div>'+histo+'</div>';
-    H+='<div class="psy-s" style="line-height:1.6">Une seule erreur à la fois. Tu l\'élimines, puis on passe à la suivante. Voilà celles qui reviennent le plus sur tes derniers trades :</div><div class="pa-cands">';
+    H+='<div class="psy-s" style="line-height:1.6">Tu travailles <b>une seule erreur à la fois</b>. Dès que tu fais <b>'+PA_OBJ+' trades d\'affilée sans elle</b>, elle est neutralisée et tu passes à la suivante.</div><div class="psy-s" style="line-height:1.6;margin-top:6px">Voici celles qui reviennent le plus. « 4 fois sur 30 » veut dire : sur tes 30 derniers trades, cette erreur était l\'erreur principale de 4 trades.</div><div class="pa-cands">';
     H+=c.map(function(x){ return '<button type="button" onclick="paChoisir(\''+x.k.replace(/\'/g,"\\'")+'\')"><b>'+wkEsc(x.k)+'</b><em>'+x.n+' fois sur '+x.tot+' trades</em></button>'; }).join('');
     if(!c.length)H+='<div class="psy-s">Aucune erreur notée récemment : bravo. Tu peux en choisir une toi-même ci-dessous.</div>';
     H+='</div><select id="pa-autre" class="pa-sel" onchange="paChoisirSaisie()"><option value="">Ou choisis une autre erreur…</option>'+PSY_ALL.map(function(x){return '<option>'+wkEsc(x)+'</option>';}).join('')+'</select>';
@@ -8430,7 +8433,8 @@ function paHTML(){
    +'<div class="psy-sub" style="margin-top:2px">Ma règle (avec mes mots)</div>'
    +'<textarea class="tj-lecon" rows="2" placeholder="Ex. : après une perte, j\'attends 30 minutes avant de reprendre." oninput="paRegleSave(this)">'+wkEsc(e.pa.regle||'')+'</textarea>'
    +'<div class="psy-s" style="margin-top:8px;line-height:1.6">'+(e.n===0?'Le compteur démarre à ton prochain trade.':(e.rech?'Il y a eu '+e.rech+' rechute'+(e.rech>1?'s':'')+' depuis le début : c\'est normal, le compteur repart et tu gardes ton meilleur score.':'Aucune rechute depuis le début du plan. Continue.'))+'</div>'
-   +'<div style="margin-top:8px"><button class="psy-use-i" onclick="paAbandon()">Mettre ce plan de côté</button></div>';
+   +'<div class="psy-s" style="margin-top:8px;line-height:1.6">Le compteur avance à chaque trade noté <b>sans</b> « '+wkEsc(e.pa.actif)+' ». S\'il revient, le compteur repart de 0 (ton meilleur score est gardé).</div>'
+   +'<div style="margin-top:8px"><button class="psy-use-i" onclick="paAbandon()">↩ Changer d\'erreur</button></div>';
   return H+histo+'</div>';
 }
 document.addEventListener('DOMContentLoaded',function(){
@@ -8438,6 +8442,113 @@ document.addEventListener('DOMContentLoaded',function(){
     var s=document.querySelector('#tj-body .tj-serie'); if(s)s.insertAdjacentHTML('afterend',paHTML()); };
   var _ip=window.initPsy; window.initPsy=initPsy=function(){ _ip.apply(this,arguments);
     var r=document.getElementById('psy-body'); if(r)r.insertAdjacentHTML('afterbegin',paHTML().replace('class="card pa-card"','class="card pa-card" style="margin-bottom:12px"')); };
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  BILANS EN CHAÎNE : jour → semaine → mois → année
+//  Chaque journée garde son bilan, sa promesse pour le lendemain et sa leçon.
+// ═══════════════════════════════════════════════════════════════════
+var TJ_BI=0, TJ_BKEY=null;
+function tjKeyOf(d){ return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function tjDemainGet(k){ try{ return localStorage.getItem(lsKey('bk_demain_'+(k||TJ_BKEY||tjKey())))||''; }catch(e){ return ''; } }
+function tjDemainSave(el){ try{ localStorage.setItem(lsKey('bk_demain_'+(TJ_BKEY||tjKey())),el.value); }catch(e){} }
+function tjLeconOf(k){ try{ return localStorage.getItem(lsKey('bk_lecon_'+k))||''; }catch(e){ return ''; } }
+// Jours de trading (plus récent d'abord), aujourd'hui toujours en tête
+function tjJours(){
+  var vu={}, out=[], auj=new Date(); auj.setHours(12,0,0,0); out.push(auj); vu[auj.toDateString()]=1;
+  sortedByDate(T).reverse().forEach(function(t){ var d=tDate(t); if(isNaN(d))return; var k=d.toDateString(); if(!vu[k]){ vu[k]=1; var x=new Date(d); x.setHours(12,0,0,0); out.push(x); } });
+  return out;
+}
+function tjTradesDu(d){ var k=d.toDateString(); return sortedByDate(T.filter(function(t){ return tDate(t).toDateString()===k; })); }
+function tjBiNav(dir){ var n=tjJours().length; TJ_BI=Math.max(0,Math.min(n-1,TJ_BI+dir)); var c=document.getElementById('tj-bilan'); if(c){ c.outerHTML=tjBilanCard(); } }
+function tjOuvrirJour(ds){ var J=tjJours(), i=J.findIndex(function(d){return d.toDateString()===ds;}); TJ_BI=i<0?0:i; showGroupe('today'); setTimeout(function(){ var c=document.getElementById('tj-bilan'); if(c)c.scrollIntoView({behavior:'smooth',block:'start'}); },150); }
+function tjNomJour(d){ var a=new Date(); a.setHours(12,0,0,0); var diff=Math.round((a-d)/86400000);
+  if(diff===0)return 'Aujourd\'hui'; if(diff===1)return 'Hier';
+  var s=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); return s.charAt(0).toUpperCase()+s.slice(1); }
+function tjBilanCard(){
+  var J=tjJours(); if(TJ_BI>=J.length)TJ_BI=0;
+  var d=J[TJ_BI], S=tjTradesDu(d); TJ_BKEY=tjKeyOf(d);
+  var body=tjBilan(S,planGet()); TJ_BKEY=tjKeyOf(d);
+  return '<div class="card" id="tj-bilan" style="margin-bottom:12px"><div class="bl-head"><div class="ct" style="margin:0">🌙 Bilan de la journée</div>'
+   +'<div class="bl-nav"><button onclick="tjBiNav(1)" '+(TJ_BI>=J.length-1?'disabled':'')+' aria-label="Journée précédente">‹</button><span>'+tjNomJour(d)+'</span><button onclick="tjBiNav(-1)" '+(TJ_BI===0?'disabled':'')+' aria-label="Journée suivante">›</button></div></div>'
+   +body+'</div>';
+}
+function tjDemainBox(sugg){
+  return '<div class="psy-sub">📌 Demain, je ne refais pas</div><textarea class="tj-lecon" rows="2" placeholder="'+wkEsc(String(sugg||'Ex. : reprendre un trade juste après une perte.').replace(/<[^>]+>/g,'').replace(/"/g,'\''))+'" oninput="tjDemainSave(this)">'+wkEsc(tjDemainGet())+'</textarea>'
+   +'<div class="psy-s" style="margin-top:4px">Je te le rappelle demain matin en haut de « Aujourd\'hui ».</div>';
+}
+// La promesse la plus récente (avant aujourd'hui)
+function tjPromesse(){
+  var J=tjJours().slice(1, 15);
+  for(var i=0;i<J.length;i++){ var v=tjDemainGet(tjKeyOf(J[i])).trim(); if(v)return {txt:v,d:J[i]}; }
+  return null;
+}
+// Résumé compact d'un ensemble de trades (pour les listes semaine / mois / année)
+function blResume(S){
+  var W=psyWL(S), net=S.reduce(function(a,t){return a+pnlOf(t);},0), pro=S.filter(tjPropre).length, c={};
+  S.forEach(function(t){ psyErrs(t).forEach(function(e){ c[e]=(c[e]||0)+1; }); });
+  var errs=Object.keys(c).sort(function(a,b){return c[b]-c[a];});
+  return {n:S.length,W:W,net:net,pro:pro,errs:errs,c:c};
+}
+function blEtat(r){ if(!r.n)return 'vide'; var p=r.pro/r.n; return p>=0.8?'good':(p>=0.5?'mid':'low'); }
+function blLigne(titre,S,extras,onclick){
+  var r=blResume(S), et=blEtat(r);
+  if(!r.n)return '<div class="bl-row vide"><div class="bl-t">'+titre+'</div><div class="bl-s">Pas de trade</div></div>';
+  return '<div class="bl-row '+et+'"'+(onclick?' role="button" tabindex="0" onclick="'+onclick+'"':'')+'>'
+   +'<div class="bl-l"><div class="bl-t">'+titre+'</div><div class="bl-s">'+r.n+' trade'+(r.n>1?'s':'')+' · '+psyGP(r.W)+' · <b>'+r.pro+'/'+r.n+'</b> propre'+(r.pro>1?'s':'')+'</div>'
+   +(r.errs.length?'<div class="bl-e">'+r.errs.slice(0,3).map(function(e){return wkEsc(e)+(r.c[e]>1?' ×'+r.c[e]:'');}).join(' · ')+'</div>':'<div class="bl-e ok">Aucune erreur notée</div>')
+   +(extras||[]).filter(function(x){return x&&x[1];}).map(function(x){ return '<div class="bl-x">'+x[0]+' '+wkEsc(x[1])+'</div>'; }).join('')+'</div>'
+   +'<div class="bl-v cu" style="color:'+(r.net>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(r.net)+'</div></div>';
+}
+function blAgg(S,quoi){ var r=blResume(S); if(!r.n)return '';
+  var top=r.errs[0];
+  return '<div class="bl-agg"><div><b>'+r.pro+'/'+r.n+'</b><span>trades propres ('+Math.round(r.pro/r.n*100)+' %)</span></div>'
+   +'<div><b>'+psyGP(r.W)+'</b><span>résultat '+rsArgent(r.net)+'</span></div>'
+   +'<div><b>'+(top?wkEsc(top)+' ×'+r.c[top]:'Aucune')+'</b><span>'+(top?'erreur la plus fréquente '+quoi:'erreur notée '+quoi)+'</span></div></div>';
+}
+// Semaine : la liste des journées
+function blSemaine(){
+  var el=document.getElementById('wk-days'); if(!el)return; var old=document.getElementById('wk-bilans'); if(old)old.remove();
+  var a=wkDebut(WK_OFF), H='<div class="card" id="wk-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans de la semaine</div><div class="psy-s" style="margin:-4px 0 10px">Chaque journée, avec ses erreurs et ce que tu t\'es promis. Touche une journée pour rouvrir son bilan complet.</div>'+blAgg(wkTrades(WK_OFF),'cette semaine');
+  for(var i=0;i<7;i++){ var d=new Date(a); d.setDate(d.getDate()+i); d.setHours(0,0,0,0); if(d>new Date())break; d.setHours(12,0,0,0);
+    var S=tjTradesDu(d), k=tjKeyOf(d); if(!S.length&&(d.getDay()===0||d.getDay()===6))continue;
+    H+=blLigne(tjNomJour(d),S,[['📌',tjDemainGet(k)],['💡',tjLeconOf(k)]],S.length?'tjOuvrirJour(\''+d.toDateString()+'\')':''); }
+  el.insertAdjacentHTML('afterend',H+'</div>');
+}
+// Mois : la liste des semaines
+function blMois(){
+  var el=document.getElementById('mo-weeks'); if(!el)return; var old=document.getElementById('mo-bilans'); if(old)old.remove();
+  var a=moDebut(MO_OFF), fin=new Date(a.getFullYear(),a.getMonth()+1,1), H='<div class="card" id="mo-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans du mois, semaine par semaine</div>'+blAgg(moTrades(MO_OFF),'ce mois-ci');
+  var lun=new Date(a); lun.setDate(lun.getDate()-((lun.getDay()+6)%7)); lun.setHours(0,0,0,0);
+  var now=new Date(), off0=wkDebut(0);
+  while(lun<fin&&lun<=now){
+    var lfin=new Date(lun); lfin.setDate(lfin.getDate()+7);
+    var S=T.filter(function(t){ var d=tDate(t); return d>=lun&&d<lfin&&d>=a&&d<fin; });
+    var n=wkNumero(lun), cle=n.an+'-S'+(n.sem<10?'0':'')+n.sem, off=Math.round((lun-off0)/(7*86400000));
+    var nm=function(c){ try{ return localStorage.getItem(lsKey('wk_'+cle+'_'+c))||''; }catch(e){ return ''; } };
+    H+=blLigne('Semaine '+n.sem,S,[['🔧',nm('mal')],['📏',nm('regle')]],S.length?'WK_OFF='+off+';showGroupe(\'progres\',\'semaine\')':'');
+    lun=lfin;
+  }
+  el.insertAdjacentHTML('afterend',H+'</div>');
+}
+// Année : la liste des mois (Tableau de bord)
+function blAnnee(){
+  var dash=document.getElementById('dashboard'); if(!dash)return; var old=document.getElementById('yr-bilans'); if(old)old.remove();
+  var Y=GLOBAL_YEAR, now=new Date(), TY=T.filter(function(t){return parseInt(t.trade_year)===Y;});
+  if(!TY.length)return;
+  var H='<div class="card" id="yr-bilans" style="margin-top:12px"><div class="ct">🌙 Ton année '+Y+', mois par mois</div>'+blAgg(TY,'cette année');
+  for(var m=0;m<12;m++){ if(Y===now.getFullYear()&&m>now.getMonth())break;
+    var S=TY.filter(function(t){return parseInt(t.trade_month)===m;}); if(!S.length)continue;
+    var off=(Y-now.getFullYear())*12+(m-now.getMonth()), cle=Y+'-'+(m+1);
+    var nm=function(c){ try{ return localStorage.getItem(lsKey('mo_'+cle+'_'+c))||''; }catch(e){ return ''; } };
+    H+=blLigne(MO_NOMS[m],S,[['🔧',nm('mal')],['📏',nm('regle')]],'MO_OFF='+off+';showGroupe(\'progres\',\'mois\')');
+  }
+  dash.insertAdjacentHTML('beforeend',H+'</div>');
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var _s=window.initSemaine; window.initSemaine=initSemaine=function(){ var r=_s.apply(this,arguments); try{ blSemaine(); }catch(e){ console.warn('blSemaine',e); } return r; };
+  var _m=window.initMois; window.initMois=initMois=function(){ var r=_m.apply(this,arguments); try{ blMois(); }catch(e){ console.warn('blMois',e); } return r; };
+  var _u=window.updateDash; window.updateDash=updateDash=function(){ var r=_u.apply(this,arguments); try{ blAnnee(); }catch(e){ console.warn('blAnnee',e); } return r; };
 });
 
 document.addEventListener('DOMContentLoaded',boot);
