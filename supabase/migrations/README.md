@@ -83,3 +83,10 @@ Les comptes dont tous les trades portent le même horodatage sont nommés
 `Import du JJ/MM` : c'est la signature d'un import CSV en un bloc. Si tu vois
 plusieurs comptes avec le même nombre de trades et le même P&L, c'est le même
 fichier importé plusieurs fois — tu peux les supprimer depuis l'app.
+
+
+## `003_psychologie_contexte.sql`
+
+Ajoute la colonne `ctx` aux trades (énergie, humeur, règles respectées, erreur principale
+confirmée). Facultatif : l'application fonctionne sans, mais ces informations ne sont alors
+pas conservées.
