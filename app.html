@@ -1156,6 +1156,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .jo-dg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:6px;}.jo-d{border-left:3px solid var(--ac3);padding:4px 10px;min-width:0;}.jo-d b{display:block;font-size:20px;font-weight:800;color:var(--tp);}.jo-d span{display:block;font-size:11.5px;color:var(--tp);font-weight:600;}.jo-d em{font-style:normal;font-size:11px;color:var(--ts);}@media(max-width:560px){.jo-dg{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .st-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bo);}.st-rn{font-size:12.5px;color:var(--tp);min-width:0;}.st-rn em{display:block;font-style:normal;font-size:11px;color:var(--ts);}.st-rv{display:flex;gap:12px;font-size:12.5px;font-weight:700;white-space:nowrap;}.tj-formule{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(var(--acr3),.1);border:1px solid rgba(var(--acr3),.25);font-size:12.5px;line-height:1.55;color:var(--tp);}.tj-nfp{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);font-size:13px;color:var(--tp);}
 .cy-card{margin-bottom:12px !important;border-color:rgba(248,113,113,.3) !important;}.cy-steps{display:flex;flex-direction:column;gap:8px;}.cy-st{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.45;}.cy-st>span{font-size:16px;width:22px;text-align:center;}.cy-st b{display:block;color:var(--tp);font-weight:600;}.cy-st em{display:block;font-style:normal;color:#34d399;font-size:12px;margin-top:2px;}.cy-apres{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.3);font-size:12.5px;line-height:1.55;color:var(--tp);}.cy-apres ol{margin:6px 0 0 18px;padding:0;}
+.qa-gf{margin:6px 0 2px;}.qa-gf>span{display:block;font-size:11px;font-weight:700;margin-bottom:4px;}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -7888,7 +7889,18 @@ var PSY_FAM=[
   {k:'etat',n:'Discipline & état',i:'🧠',c:'#34d399',t:['Pas concentré','Manque de discipline','Track record pas à jour'],r:'Pas de trade si mon énergie est à 2 ou moins.'}
 ];
 var PSY_ALL=[]; PSY_FAM.forEach(function(f){ f.t.forEach(function(x){PSY_ALL.push(x);}); });
-var PSY_GOOD=['Patient','Prix laissé saturer','Analyse MTF faite','Détaché de l\'argent','Processus suivi','Discipliné','Respect du plan','SL respecté','Calme','Confiant'];
+var PSY_GOOD_FAM=[
+  {k:'g_entree',n:'Analyse & entrée',i:'🎯',c:'#60a5fa',t:['Analyse MTF faite','Scénario clair','Prix laissé saturer','Entrée sur ma zone','Checklist complète']},
+  {k:'g_risque',n:'Risque',i:'⚖️',c:'#fbbf24',t:['SL posé avant d\'entrer','Risque respecté','Pas de levier excessif','Pas tradé NFP / IPC']},
+  {k:'g_gestion',n:'Gestion du trade',i:'🛠',c:'#a78bfa',t:['SL respecté','Laissé courir le trade','Sortie selon le plan']},
+  {k:'g_mental',n:'Mental',i:'🧘',c:'#34d399',t:['Patient','Calme','Détaché de l\'argent','Pas peur de perdre','Perte acceptée','Confiant']},
+  {k:'g_disc',n:'Discipline',i:'🧠',c:'#f472b6',t:['Processus suivi','Discipliné','Respect du plan','Track record à jour','Arrêt après ma limite']}
+];
+var PSY_GOOD=[]; PSY_GOOD_FAM.forEach(function(f){ f.t.forEach(function(x){PSY_GOOD.push(x);}); });
+var PSY_GOOD_ALIAS={'Patience':'Patient','Objectif':'Détaché de l\'argent','Aucune pression':'Calme'};
+function psyGoodFam(tag){ tag=PSY_GOOD_ALIAS[tag]||tag; for(var i=0;i<PSY_GOOD_FAM.length;i++)if(PSY_GOOD_FAM[i].t.indexOf(tag)>=0)return PSY_GOOD_FAM[i]; return {k:'g_autre',n:'Autre',i:'•',c:'#94a3b8',t:[]}; }
+function goodFamCompte(S){ var m={}; S.forEach(function(t){ tagsOf(t,'psych_good').forEach(function(k){ var f=psyGoodFam(k); var x=(m[f.k]=m[f.k]||{f:f,n:0,t:{}}); x.n++; x.t[k]=(x.t[k]||0)+1; }); });
+  return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return b.n-a.n;}); }
 var PSY_ALIAS={'SL déplacé':'Déplacer le SL','Revenge':'Revenge Trading','Pas de plan':'Trading sans plan','Lot augmenté':'Augmentation de lot'};
 function psyFam(tag){ tag=PSY_ALIAS[tag]||tag; for(var i=0;i<PSY_FAM.length;i++)if(PSY_FAM[i].t.indexOf(tag)>=0)return PSY_FAM[i]; return {k:'autre',n:'Autre',i:'•',c:'#94a3b8',t:[],r:''}; }
 function psyErrs(t){ return tagsOf(t,'psych_errors'); }
@@ -7994,7 +8006,7 @@ function qaPsyRender(){
       return '<button type="button" class="e '+(QA_P.prin===x?'sel':'')+'" onclick="qaPprin('+i+')">'+(QA_P.prin===x?'★ ':'')+wkEsc(x)+'</button>'; }).join('')+'</div>'; }
   if(QA_P.prin){ h+='<div class="qa-tags">'+QA_P.sec.map(function(x,i){ return '<button type="button" class="e sel" onclick="qaPsecDel('+i+')">'+wkEsc(x)+' ✕</button>'; }).join('')
       +'<select class="qa-sel2" onchange="qaPsec(this)"><option value="">+ une autre erreur…</option>'+PSY_ALL.filter(function(x){return x!==QA_P.prin&&QA_P.sec.indexOf(x)<0;}).map(function(x){return '<option>'+wkEsc(x)+'</option>';}).join('')+'</select></div>'; }
-  h+='<div class="qa-lbl">Ce qui a bien marché</div><div class="qa-tags">'+PSY_GOOD.map(function(x,i){ return '<button type="button" class="g '+(QA_P.good.indexOf(x)>=0?'sel':'')+'" onclick="qaPgood('+i+')">'+wkEsc(x)+'</button>'; }).join('')+'</div>';
+  h+='<div class="qa-lbl">🌱 Ma bonne psychologie sur ce trade</div>'+PSY_GOOD_FAM.map(function(f){ return '<div class="qa-gf"><span style="color:'+f.c+'">'+f.i+' '+f.n+'</span><div class="qa-tags">'+f.t.map(function(x){ var i=PSY_GOOD.indexOf(x); return '<button type="button" class="g '+(QA_P.good.indexOf(x)>=0?'sel':'')+'" onclick="qaPgood('+i+')">'+wkEsc(x)+'</button>'; }).join('')+'</div></div>'; }).join('');
   if(psyAUnRegle())h+='<div class="qa-lbl">📏 Mes règles respectées ?</div>'+row('ru',[['o','✅ Oui'],['n','❌ Non']]);
   h+='<div class="qa-lbl">📐 Trade conforme à ma stratégie ?</div>'+row('sg',[['o','✅ Oui'],['n','❌ Non']]);
   el.innerHTML=h;
@@ -8151,6 +8163,16 @@ function initPsy(){
      return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+c.n+' erreur'+(c.n>1?'s':'')+' · '+Math.round(c.n/totE*100)+' % de tes erreurs'+((a||b)?' · 4 sem. : '+errTend(a,b):'')+'</em></span>'
        +'<div class="psy-cb"><i style="width:'+Math.round(c.n/famC[0].n*100)+'%;background:'+f.c+'"></i></div><b class="err-n">'+c.n+'</b></summary>'
        +tl.map(function(x){ return '<div class="err-row sub"><div class="beh-n">'+wkEsc(x)+'</div><div class="psy-cb"><i style="width:'+Math.round(c.t[x]/c.n*100)+'%;background:'+f.c+'"></i></div><b>'+c.t[x]+' fois</b><span>'+Math.round(c.t[x]/TY.length*100)+' % des trades</span></div>'; }).join('')+'</details>'; }).join('')+'</div>';
+  // 3 bis. Familles de bonne psychologie
+  var gF=goodFamCompte(TY), totG=gF.reduce(function(a,x){return a+x.n;},0)||1;
+  var gcnt=function(a){ var m={}; a.forEach(function(x){ wkTrades(x.o).forEach(function(t){ tagsOf(t,'psych_good').forEach(function(p){ var k=psyGoodFam(p).k; m[k]=(m[k]||0)+1; }); }); }); return m; }, ga=gcnt(s4), gb=gcnt(p4);
+  var gTend=function(a,b){ if(a===b)return '<span style="color:var(--ts)">= stable</span>'; return a>b?'<span style="color:'+RS_VERT+'">▲ '+(a-b)+' de plus</span>':'<span style="color:var(--ts)">▼ '+(b-a)+' de moins</span>'; };
+  H+='<div class="card" style="margin-bottom:12px"><div class="ct">🌱 Tes familles de bonne psychologie</div><div class="psy-s" style="margin:-4px 0 10px">Ce que tu fais bien, regroupé en 5 familles : Analyse & entrée, Risque, Gestion du trade, Mental, Discipline. L\'objectif : que ces familles grandissent.</div>'
+   +(gF.length?gF.map(function(c){ var f=c.f, tl=Object.keys(c.t).sort(function(a,b){return c.t[b]-c.t[a];}), a=ga[f.k]||0, b=gb[f.k]||0;
+     return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+c.n+' fois · '+Math.round(c.n/totG*100)+' % de tes bons réflexes'+((a||b)?' · 4 sem. : '+gTend(a,b):'')+'</em></span>'
+       +'<div class="psy-cb"><i style="width:'+Math.round(c.n/gF[0].n*100)+'%;background:'+f.c+'"></i></div><b class="err-n">'+c.n+'</b></summary>'
+       +tl.map(function(x){ var g=TY.filter(function(t){return tagsOf(t,'psych_good').indexOf(x)>=0;}), W=psyWL(g); return '<div class="err-row sub"><div class="beh-n">'+wkEsc(x)+'</div><div class="psy-cb"><i style="width:'+Math.round(c.t[x]/c.n*100)+'%;background:'+f.c+'"></i></div><b>'+c.t[x]+' fois</b><span>'+psyGP(W)+' · '+psyWRtxt(W.wr,base)+'</span></div>'; }).join('')+'</details>'; }).join('')
+     :'<div class="psy-s">Aucun bon réflexe noté pour l\'instant. Coche-les à chaque trade : ils montrent ce qui marche chez toi.</div>')+'</div>';
   // 4. Quand tu craques
   var auto=psyAuto(T), bk={};
   TY.forEach(function(t){ var a=auto[t.id]; if(!a)return; var e=psyErrs(t).length>0;
@@ -8811,7 +8833,9 @@ function rpHTML(type,titre,S,notes,S0,lab0){
    +(function(){ var cs=cycleStats(D.S); return '<div class="rp-sub">🔁 Mon cycle de perte</div><div class="rp-kg" style="grid-template-columns:repeat(3,1fr)">'+K('Trades dans le cycle',cs.c,cs.n?Math.round(cs.c/cs.n*100)+' % des trades':'',cs.c?'#dc2626':'#059669')+K('Pertes venant du cycle',cs.pc+' / '+cs.pertes,cs.pertes?Math.round(cs.pc/cs.pertes*100)+' % de tes pertes':'aucune perte')+K('Coût du cycle',cs.pc?rpM(cs.perteCycle):'—','pertes des trades du cycle',cs.pc?'#dc2626':null)+'</div>'; })()
    +'<div class="rp-sub">Erreurs</div>'+rpErrTable(D.errs,D.n,(D0&&D0.n)?D0.errs:null)
    +(D.errs.length?'<div class="rp-sub">Par famille</div>'+rpFamTable(D.S,(D0&&D0.n)?D0.S:null):'')
-   +(D.bons.length?'<div class="rp-sub">Bons réflexes</div>'+rpPsyTable(D.bons,D.wr,''):'')
+   +(D.bons.length?'<div class="rp-sub">Bonne psychologie par famille</div>'+(function(){ var F=goodFamCompte(D.S), tot=F.reduce(function(a,x){return a+x.n;},0)||1;
+       return '<table class="rp-t rp-mini"><thead><tr><th>Famille</th><th class="c">Fois</th><th class="c">% des bons réflexes</th><th>Détail</th></tr></thead><tbody>'+F.map(function(c){ return '<tr><td><b>'+c.f.i+' '+wkEsc(c.f.n)+'</b></td><td class="c"><b>'+c.n+'</b></td><td class="c">'+Math.round(c.n/tot*100)+' %</td><td style="white-space:normal">'+Object.keys(c.t).sort(function(a,b){return c.t[b]-c.t[a];}).map(function(k){return wkEsc(k)+' ×'+c.t[k];}).join(', ')+'</td></tr>'; }).join('')+'</tbody></table>'; })()
+     +'<div class="rp-sub">Bons réflexes</div>'+rpPsyTable(D.bons,D.wr,''):'')
    +'<div class="rp-sub">État mental avant le trade</div>'+rpMini(D.energie.concat(D.humeur),'État')+'<div class="rp-sub">Contexte du trade</div>'+rpMini(D.ctxs,'Situation')+'</div>';
   // Arrêter / garder
   var st=rpStop(D), ga=rpGarde(D);
