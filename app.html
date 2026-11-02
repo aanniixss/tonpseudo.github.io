@@ -1155,6 +1155,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .rp-top{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;border-radius:11px;border:1px solid rgba(var(--acr3),.5);background:rgba(var(--acr3),.14);color:var(--tp);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;}.rp-top:hover{background:rgba(var(--acr3),.25);}.wk-navbar .rp-top{margin-left:auto;}.rp-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px 14px;border-radius:14px;border:1px solid var(--bo);background:var(--card);}.rp-topbar span{font-weight:700;color:var(--tp);font-size:13px;}
 .jo-dg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:6px;}.jo-d{border-left:3px solid var(--ac3);padding:4px 10px;min-width:0;}.jo-d b{display:block;font-size:20px;font-weight:800;color:var(--tp);}.jo-d span{display:block;font-size:11.5px;color:var(--tp);font-weight:600;}.jo-d em{font-style:normal;font-size:11px;color:var(--ts);}@media(max-width:560px){.jo-dg{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .st-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bo);}.st-rn{font-size:12.5px;color:var(--tp);min-width:0;}.st-rn em{display:block;font-style:normal;font-size:11px;color:var(--ts);}.st-rv{display:flex;gap:12px;font-size:12.5px;font-weight:700;white-space:nowrap;}.tj-formule{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(var(--acr3),.1);border:1px solid rgba(var(--acr3),.25);font-size:12.5px;line-height:1.55;color:var(--tp);}.tj-nfp{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);font-size:13px;color:var(--tp);}
+.cy-card{margin-bottom:12px !important;border-color:rgba(248,113,113,.3) !important;}.cy-steps{display:flex;flex-direction:column;gap:8px;}.cy-st{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.45;}.cy-st>span{font-size:16px;width:22px;text-align:center;}.cy-st b{display:block;color:var(--tp);font-weight:600;}.cy-st em{display:block;font-style:normal;color:#34d399;font-size:12px;margin-top:2px;}.cy-apres{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.3);font-size:12.5px;line-height:1.55;color:var(--tp);}.cy-apres ol{margin:6px 0 0 18px;padding:0;}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -7461,6 +7462,7 @@ var ST_SECTIONS=[
   ['analyse','📊 Analyse technique','Les outils que tu utilises.'],
   ['psycho','🧠 Mon mental','Tes principes psychologiques.'],
   ['formule','🔑 Ma formule','Ta formule de la réussite.'],
+  ['cycle','🔁 Mon cycle de perte (à casser)','Le scénario qui se répète quand tu perds, et ce que tu fais à la place.'],
   ['fonda','📰 Fondamental','Tes règles sur les annonces.'],
   ['marches','💱 Marchés et paires','Quelles paires, quels instruments ?'],
   ['sessions','🕐 Sessions et horaires','Quand trader, et quand ne pas trader.'],
@@ -7879,10 +7881,10 @@ document.addEventListener('DOMContentLoaded',function(){
 //  s'additionnent donc sans compter deux fois le même trade.
 // ═════════════════════════════════════════════════════════════════
 var PSY_FAM=[
-  {k:'entree',n:'Entrée',i:'🎯',c:'#60a5fa',t:['Précipitation (prix pas saturé)','Analyse floue','Trade pendant NFP / IPC','FOMO','Pas de setup','Trading sans plan','Entrée tardive','Contre la tendance','Mauvais timing','Biais de confirmation'],r:'Je n\'entre jamais sans mes conditions cochées (voir Stratégie).'},
-  {k:'risque',n:'Risque',i:'⚖️',c:'#fbbf24',t:['Risque pris en étant en bénéfice','Augmentation de lot','Double mise','Overtrading','Gourmandise'],r:'Maximum 3 trades par jour, toujours avec mon risque habituel.'},
+  {k:'entree',n:'Entrée',i:'🎯',c:'#60a5fa',t:['Pas de scénario','Entrée sur excitation','Précipitation (prix pas saturé)','Analyse floue','Trade pendant NFP / IPC','FOMO','Pas de setup','Trading sans plan','Entrée tardive','Contre la tendance','Mauvais timing','Biais de confirmation'],r:'Je n\'entre jamais sans mes conditions cochées (voir Stratégie).'},
+  {k:'risque',n:'Risque',i:'⚖️',c:'#fbbf24',t:['Levier trop élevé','Pas de stop loss','Mise trop grosse','Risque pris en étant en bénéfice','Augmentation de lot','Double mise','Overtrading','Gourmandise'],r:'Maximum 3 trades par jour, toujours avec mon risque habituel.'},
   {k:'gestion',n:'Gestion du trade',i:'🛠',c:'#a78bfa',t:['Over-managing','Sortie prématurée','Refus de couper la perte','Déplacer le SL'],r:'Une fois entré, je ne touche plus à mon stop.'},
-  {k:'emotion',n:'Émotion',i:'😤',c:'#f87171',t:['Perfectionnisme','Attaché à l\'argent','Peur','Peur de perdre','Revenge Trading','Excitation','Trading émotionnel','Impatience'],r:'Après 2 pertes de suite, je ferme la plateforme pendant 1 heure.'},
+  {k:'emotion',n:'Émotion',i:'😤',c:'#f87171',t:['Obsédé par l\'objectif du challenge','Perfectionnisme','Attaché à l\'argent','Peur','Peur de perdre','Revenge Trading','Excitation','Trading émotionnel','Impatience'],r:'Après 2 pertes de suite, je ferme la plateforme pendant 1 heure.'},
   {k:'etat',n:'Discipline & état',i:'🧠',c:'#34d399',t:['Pas concentré','Manque de discipline','Track record pas à jour'],r:'Pas de trade si mon énergie est à 2 ou moins.'}
 ];
 var PSY_ALL=[]; PSY_FAM.forEach(function(f){ f.t.forEach(function(x){PSY_ALL.push(x);}); });
@@ -8305,6 +8307,7 @@ function tjRoute(){
     var pire=ses.filter(function(x){return x.wr<=base-10;}).sort(function(a,b){return a.wr-b.wr;})[0];
     if(pire&&doux.length<2)doux.push(['🌙','La session <b>'+wkEsc(pire.k)+'</b> te réussit moins : '+tjPhrase(pire,base)+'.']);
   }
+  var lt=S[S.length-1]; if(lt&&typeof cycleDans==='function'&&tDate(lt).toDateString()===now.toDateString()&&cycleDans(lt))top.unshift(['🔁','<b>Ton cycle de perte vient d\'apparaître</b> sur ton dernier trade. Stop pour aujourd\'hui : ferme la plateforme, sors, bouge.']);
   var g=psyGarde(); if(g.niveau)doux.unshift(['🧘','Tu viens de perdre un trade : '+g.lignes[0].replace(/<\/?b>/g,'')+' Une petite pause avant le prochain peut faire du bien.']);
   return {top:top.slice(0,3),doux:doux.slice(0,2)};
 }
@@ -8400,6 +8403,7 @@ function tjBilan(auj,pl){
   H+=Q('4','Ce que je change demain');
   if(D.n)H+='<div class="tj-li"><span>👉</span><div>'+D.demain+'</div></div>';
   H+=tjDemainBox(D.n?D.demain:'');
+  if(D.W.l||D.net<0||apresGet())H+=apresHTML(D.net<0);
   H+=tjLecon();
   H+='<button class="tj-pdf" onclick="tjBilanPDF()">📄 Rapport de la journée en PDF</button>';
   return H;
@@ -8675,6 +8679,7 @@ function rpStop(D){
   var out=[], base=D.wr;
   D.errs.forEach(function(x){
     out.push(['<b>'+wkEsc(x.k)+'</b> <span style="color:#64748b;font-weight:400">· '+wkEsc(psyFam(x.k).n)+'</span>', x.n+' fois · '+Math.round(x.n/D.n*100)+' % des trades']); });
+  var cs=cycleStats(D.S); if(cs.c)out.unshift(['<b>🔁 Mon cycle de perte</b>', cs.c+' fois · '+cs.pc+' de mes '+cs.pertes+' pertes viennent de lui']);
   if(D.hors.n)out.push(['<b>Trader hors de ma stratégie</b>', D.hors.n+' fois · '+Math.round(D.hors.n/D.n*100)+' % des trades']);
   var CL=(typeof stChecklist==='function')?stChecklist():[], CS=D.S.filter(function(t){return ckOf(t)!==null;});
   if(CL.length&&CS.length){ var inc=CS.filter(function(t){ var c=ckOf(t); return !CL.every(function(x){return c.indexOf(x)>=0;}); }); if(inc.length)out.push(['<b>Entrer sans ma checklist complète</b>', inc.length+' fois · '+Math.round(inc.length/D.n*100)+' % des trades']); }
@@ -8803,6 +8808,7 @@ function rpHTML(type,titre,S,notes,S0,lab0){
   H+=sec('Psychologie')+'<div class="rp-dg">'
    +disc('Trades propres',D.pro,D.n)+disc('Stratégie respectée',D.sgO,D.sg)+disc('Règles respectées',D.ruO,D.ru)
    +'<div class="rp-d" style="border-color:#dc2626"><b>'+D.errs.reduce(function(a,x){return a+x.n;},0)+'</b><span>Erreurs notées</span><em>'+D.nA+' trade'+(D.nA>1?'s':'')+' avec au moins une erreur</em></div></div>'
+   +(function(){ var cs=cycleStats(D.S); return '<div class="rp-sub">🔁 Mon cycle de perte</div><div class="rp-kg" style="grid-template-columns:repeat(3,1fr)">'+K('Trades dans le cycle',cs.c,cs.n?Math.round(cs.c/cs.n*100)+' % des trades':'',cs.c?'#dc2626':'#059669')+K('Pertes venant du cycle',cs.pc+' / '+cs.pertes,cs.pertes?Math.round(cs.pc/cs.pertes*100)+' % de tes pertes':'aucune perte')+K('Coût du cycle',cs.pc?rpM(cs.perteCycle):'—','pertes des trades du cycle',cs.pc?'#dc2626':null)+'</div>'; })()
    +'<div class="rp-sub">Erreurs</div>'+rpErrTable(D.errs,D.n,(D0&&D0.n)?D0.errs:null)
    +(D.errs.length?'<div class="rp-sub">Par famille</div>'+rpFamTable(D.S,(D0&&D0.n)?D0.S:null):'')
    +(D.bons.length?'<div class="rp-sub">Bons réflexes</div>'+rpPsyTable(D.bons,D.wr,''):'')
@@ -9008,10 +9014,12 @@ var ST_DEFAUT={
   psycho:'• La patience, c\'est la clé\n• Ne pas être attaché à l\'argent ni au graphe\n• Pas de stress : gagner ne me fait ni chaud ni froid, c\'est un jeu\n• Perdre ne me fait rien : on récupère toujours (j\'ai déjà récupéré une perte de 9 000 €)\n• L\'échec fait partie du jeu : pas de réussite sans échec, pas de lumière sans obscurité\n• La perfection n\'existe pas : c\'est elle qui a le plus abîmé mon trading\n• Suivre le processus, travailler juste et correctement\n• Rester consistant',
   formule:'Travail + discipline + patience + ne pas être affecté par l\'argent ni attaché au trading + toujours réfléchir + ne pas avoir peur + ne pas perfectionner + ne pas être gourmand + faire confiance en Allah, en moi et au plan que j\'ai mis = réussite à 100 %',
   fonda:'• Ne pas trop regarder le fondamental\n• Ne pas trader l\'IPC ni le NFP',
-  check:['Analyse multi time frame faite (D1 et H4)','Direction claire : je vais avec le prix','Supports et résistances tracés','Pattern de continuation ou de retournement identifié','Confirmation : Fibonacci, trendline ou cassure','J\'achète en bas / je vends en haut de la zone','Le prix a saturé la zone : je ne me précipite pas','Aucun flou : je comprends ce que fait le graphe','Pas de NFP ni d\'IPC aujourd\'hui']
+  cycle:'Le scénario de la plupart de mes pertes :\n1. Je n\'analyse pas bien : je trace sans comprendre, je ne vois pas loin, je suis dans le flou, sans scénario.\n2. J\'entre quand ça bouge, je suis excité.\n3. Je lance direct avec un levier x5 et je mise gros en espérant.\n4. Je ne contrôle pas mon SL, ou je n\'en ai pas.\n5. Je suis attaché : je veux gagner gros maintenant, j\'ai les 10 % du challenge en tête.\n6. Après la grosse perte, je boude, je me fais du mal et je crois que j\'ai échoué dans la vie.\n\nÀ la place :\n• Pas de scénario clair, pas de trade.\n• Le prix bouge ? J\'attends qu\'il sature.\n• Risque normal, jamais de levier x5.\n• SL posé avant d\'entrer, toujours.\n• Je pense au processus, pas aux 10 % ni à l\'argent.\n• Après une perte : je ferme, je sors, je bouge. Une perte est un trade, pas ma vie.',
+  check:['J\'ai un scénario clair : où va le prix, où j\'ai tort','Mon stop loss est posé avant d\'entrer','Risque normal : pas de levier x5, pas de grosse mise','Analyse multi time frame faite (D1 et H4)','Direction claire : je vais avec le prix','Supports et résistances tracés','Pattern de continuation ou de retournement identifié','Confirmation : Fibonacci, trendline ou cassure','J\'achète en bas / je vends en haut de la zone','Le prix a saturé la zone : je ne me précipite pas','Aucun flou : je comprends ce que fait le graphe','Pas de NFP ni d\'IPC aujourd\'hui']
 };
+function stMigreCycle(){ var o=stGet(); if(o.cyV)return; var add=ST_DEFAUT.check.slice(0,3); o.check=o.check||[]; add.slice().reverse().forEach(function(x){ if(o.check.indexOf(x)<0)o.check.unshift(x); }); if(!(o.cycle||'').trim())o.cycle=ST_DEFAUT.cycle; o.cyV=1; stSet(o); }
 function stInitDefaut(){ var o=stGet(); var vide=!(o.principe||'').trim()&&!(o.check||[]).some(function(x){return (x||'').trim();});
-  if(vide){ var n=Object.assign({},ST_DEFAUT,{nom:o.nom||ST_DEFAUT.nom}); n.check=ST_DEFAUT.check.slice(); stSet(n); } }
+  if(vide){ var n=Object.assign({},ST_DEFAUT,{nom:o.nom||ST_DEFAUT.nom,cyV:1}); n.check=ST_DEFAUT.check.slice(); stSet(n); } else stMigreCycle(); }
 // NFP = 1er vendredi du mois
 function stNFP(d){ d=d||new Date(); return d.getDay()===5&&d.getDate()<=7; }
 // Checklist cochée sur un trade (textes des conditions réunies)
@@ -9054,6 +9062,65 @@ document.addEventListener('DOMContentLoaded',function(){
   var _pr=window.psyResetForm; window.psyResetForm=psyResetForm=function(){ _pr.apply(this,arguments); document.querySelectorAll('#f-ctx-ck .fck').forEach(function(e){e.classList.remove('sel');}); };
   var _qa=window.qaPsyApply; window.qaPsyApply=qaPsyApply=function(){ _qa.apply(this,arguments); fCkRender(); var ck=(window.QA_P&&QA_P.ck)||[]; document.querySelectorAll('#f-ctx-ck .fck').forEach(function(e){ if(ck.indexOf(e.textContent)>=0)e.classList.add('sel'); }); };
   setTimeout(function(){ try{ stInitDefaut(); fCkRender(); }catch(e){} },1500);
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  MON CYCLE DE PERTE : le scénario qui se répète, pour le voir venir et le casser
+// ═══════════════════════════════════════════════════════════════════
+var CYCLE=[
+  {t:'Pas de scénario',i:'🌫',l:'Je trace sans comprendre, je ne vois pas loin, je suis dans le flou',a:'Je trade seulement si j\'ai un scénario : où va le prix, où j\'ai tort.'},
+  {t:'Entrée sur excitation',i:'⚡',l:'J\'entre parce que ça bouge, je suis excité',a:'Le prix bouge ? J\'attends qu\'il sature. Pas de scénario, pas de trade.'},
+  {t:'Levier trop élevé',i:'📈',l:'Levier x5, je mise gros en espérant',a:'Risque normal : '+'1 % par trade, jamais plus.'},
+  {t:'Pas de stop loss',i:'🛑',l:'Je ne contrôle pas mon SL, ou je n\'en mets pas',a:'Le SL est posé AVANT d\'entrer. Sans SL, je n\'entre pas.'},
+  {t:'Obsédé par l\'objectif du challenge',i:'🎯',l:'Je veux gagner gros maintenant, je pense aux 10 % du challenge, je suis attaché au capital',a:'Je ne pense pas à l\'argent ni aux 10 %. Je pense au processus.'}
+];
+var CYCLE_TAGS=CYCLE.map(function(c){return c.t;}).concat(['Analyse floue','Attaché à l\'argent']);
+var CYCLE_ALIAS={'Pas de scénario':['Analyse floue'],'Levier trop élevé':['Mise trop grosse','Augmentation de lot'],'Pas de stop loss':['Déplacer le SL','SL déplacé'],'Obsédé par l\'objectif du challenge':['Attaché à l\'argent','Gourmandise']};
+function cycleSteps(t){ var e=psyErrs(t); return CYCLE.filter(function(c){ return [c.t].concat(CYCLE_ALIAS[c.t]||[]).some(function(x){return e.indexOf(x)>=0;}); }).length; }
+// Un trade est « dans le cycle » dès que 2 étapes ou plus sont présentes
+function cycleDans(t){ return cycleSteps(t)>=2; }
+function cycleStats(S){
+  S=sortedByDate(S||T); var c=S.filter(cycleDans), pertes=S.filter(function(t){return t.result==='LOSS';}), pc=pertes.filter(cycleDans);
+  var cur=0; for(var i=S.length-1;i>=0&&!cycleDans(S[i]);i--)cur++;
+  var best=0,run=0; S.forEach(function(t){ if(cycleDans(t))run=0; else{ run++; if(run>best)best=run; } });
+  var der=c.length?c[c.length-1]:null;
+  return {n:S.length,c:c.length,pertes:pertes.length,pc:pc.length,perteCycle:pc.reduce(function(a,t){return a+pnlOf(t);},0),cur:cur,best:best,der:der};
+}
+// Après une perte : comment je l'ai vécue (par journée)
+function apresGet(k){ try{ return localStorage.getItem(lsKey('bk_apres_'+(k||TJ_BKEY||tjKey())))||''; }catch(e){ return ''; } }
+function apresSet(v){ var k=TJ_BKEY||tjKey(); try{ if(apresGet(k)===v)localStorage.removeItem(lsKey('bk_apres_'+k)); else localStorage.setItem(lsKey('bk_apres_'+k),v); }catch(e){} var c=document.getElementById('tj-bilan'); if(c)c.outerHTML=tjBilanCard(); }
+var APRES=[['calme','🙂 Je suis resté calme'],['boude','😶 J\'ai boudé'],['mal','💔 Je me suis fait du mal']];
+function apresHTML(perte){
+  var v=apresGet();
+  var h='<div class="psy-sub">🔁 Après cette perte, comment tu l\'as vécue ?</div><div class="qa-row tj-row">'+APRES.map(function(a){ return '<button type="button" class="'+(v===a[0]?'sel':'')+'" onclick="apresSet(\''+a[0]+'\')">'+a[1]+'</button>'; }).join('')+'</div>';
+  if(v==='boude'||v==='mal'||perte)h+='<div class="cy-apres"><b>Ton plan après une perte</b><ol><li>Ferme la plateforme pour aujourd\'hui.</li><li>Sors : marche, sport, douche. Bouge ton corps.</li><li>Rappelle-toi : tu as déjà récupéré 9 000 €. Tu récupères toujours.</li><li>Une perte, c\'est un trade. Ce n\'est pas ta vie, et ce n\'est pas un échec de toi.</li><li>Demain, tu reviens avec un scénario clair, un SL posé et un risque normal.</li></ol></div>';
+  return h;
+}
+function cycleCardHTML(){
+  var s=cycleStats(T);
+  var H='<div class="card cy-card"><div class="tj-sl">🔁 Mon cycle de perte, à casser</div>'
+   +'<div class="cy-steps">'+CYCLE.map(function(c,i){ return '<div class="cy-st"><span>'+c.i+'</span><div><b>'+(i+1)+'. '+wkEsc(c.l)+'</b><em>👉 '+wkEsc(c.a)+'</em></div></div>'; }).join('')
+   +'<div class="cy-st"><span>💔</span><div><b>6. Après la perte : je boude, je me fais du mal, je crois que j\'ai échoué</b><em>👉 Une perte est un trade, pas ta vie. Ferme, sors, bouge. Tu récupères toujours.</em></div></div></div>';
+  if(s.n>=5){
+    H+='<div class="tj-sr" style="margin-top:12px"><div class="cu tj-sn">'+s.cur+'</div><div class="tj-st2"><div>trade'+(s.cur>1?'s':'')+' d\'affilée sans le cycle</div><em>Record : '+s.best+'</em></div></div>'
+     +'<div class="psy-s" style="line-height:1.6;margin-top:6px">'+(s.c?'Le cycle est apparu sur <b>'+s.c+'</b> trade'+(s.c>1?'s':'')+'. Il explique <b>'+s.pc+'</b> de tes '+s.pertes+' pertes'+(s.pertes?' ('+Math.round(s.pc/s.pertes*100)+' %)':'')+', soit '+rsArgent(s.perteCycle)+'.':'Le cycle n\'est jamais apparu dans tes trades notés. Continue.')+'</div>';
+  } else H+='<div class="psy-s" style="margin-top:8px;line-height:1.6">Quand une étape du cycle arrive, coche-la dans l\'ajout rapide (bloc « 🔁 Mon cycle »). Le track comptera tes trades sans le cycle et ce qu\'il te coûte.</div>';
+  return H+'</div>';
+}
+// Ajout rapide : cocher les étapes du cycle en un geste
+function qaCy(i){ var x=CYCLE[i].t; QA_P.sec=QA_P.sec||[];
+  if(QA_P.prin===x){ QA_P.prin=QA_P.sec.shift()||''; }
+  else if(QA_P.sec.indexOf(x)>=0){ QA_P.sec.splice(QA_P.sec.indexOf(x),1); }
+  else if(!QA_P.prin){ QA_P.prin=x; }
+  else QA_P.sec.push(x);
+  QA_P.fam=QA_P.prin?psyFam(QA_P.prin).k:''; qaPsyRender(); }
+function qaCyHTML(){ var sel=[QA_P.prin].concat(QA_P.sec||[]);
+  return '<div class="qa-lbl">🔁 Mon cycle de perte : une étape sur ce trade ?</div><div class="qa-tags">'+CYCLE.map(function(c,i){ var on=sel.indexOf(c.t)>=0; return '<button type="button" class="e '+(on?'sel':'')+'" onclick="qaCy('+i+')">'+c.i+' '+wkEsc(c.t)+'</button>'; }).join('')+'</div>'; }
+document.addEventListener('DOMContentLoaded',function(){
+  var _ps=window.qaPsyRender; window.qaPsyRender=qaPsyRender=function(){ _ps.apply(this,arguments); var el=document.getElementById('qa-s4'); if(!el)return;
+    var lbl=[].filter.call(el.querySelectorAll('.qa-lbl'),function(x){return /Une erreur sur ce trade/.test(x.textContent);})[0]; if(lbl)lbl.insertAdjacentHTML('beforebegin',qaCyHTML()); };
+  var _it=window.initToday; window.initToday=initToday=function(){ _it.apply(this,arguments); var p=document.querySelector('#tj-body .pa-card')||document.querySelector('#tj-body .tj-serie'); if(p)p.insertAdjacentHTML('afterend',cycleCardHTML()); };
+  var _ip=window.initPsy; window.initPsy=initPsy=function(){ _ip.apply(this,arguments); var p=document.querySelector('#psy-body .pa-card'); if(p)p.insertAdjacentHTML('afterend',cycleCardHTML().replace('class="card cy-card"','class="card cy-card" style="margin-bottom:12px"')); };
 });
 
 document.addEventListener('DOMContentLoaded',boot);
