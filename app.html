@@ -2242,7 +2242,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
         <div id="opt-fonda"><div style="color:var(--td);font-size:10px">Ajoute un biais fonda</div></div>
       </div>
       <div>
-        <div style="font-size:10px;color:var(--reb);letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">⚠ Erreurs (nb · % · $)</div>
+        <div style="font-size:10px;color:var(--reb);letter-spacing:1px;margin-bottom:10px;border-bottom:1px solid rgba(239,68,68,0.2);padding-bottom:5px">⚠ Erreurs (nombre de fois · trades perdus)</div>
         <div id="opt-err"><div style="color:var(--td);font-size:10px">Aucune erreur taguée</div></div>
       </div>
       <div>
@@ -2567,7 +2567,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
         <div><div class="tsec" style="font-size:10px;letter-spacing:2px;color:var(--gb);margin-bottom:8px">★ GRADE</div><div id="md-opt-grade"></div></div>
         <div><div class="tsec" style="font-size:10px;letter-spacing:2px;color:var(--bb);margin-bottom:8px">🌐 FONDA</div><div id="md-opt-fonda"></div></div>
       </div>
-      <div><div class="tsec" style="font-size:10px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS (NB · % · $)</div><div id="md-opt-errs"></div></div>
+      <div><div class="tsec" style="font-size:10px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ ERREURS (NOMBRE DE FOIS · TRADES PERDUS)</div><div id="md-opt-errs"></div></div>
       <div style="margin-top:10px"><div class="tsec" style="font-size:10px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ BONNE PSYCHO (NB · % · $)</div><div id="md-opt-good"></div></div>
     </div>
 
@@ -2878,7 +2878,7 @@ function buildCoachReport(){
   var lp=Math.abs(ty.filter(function(t){return t.result==='LOSS';}).reduce(function(s,t){return s+pnl(t);},0));
   var pf=lp>0?(wp/lp):null;
   function groupBy(key){var m={};ty.forEach(function(t){var k=t[key]||'—';if(!m[k])m[k]={n:0,net:0,w:0};m[k].n++;m[k].net+=pnl(t);if(t.result==='WIN')m[k].w++;});var a=Object.entries(m);a.sort(function(x,y){return y[1].net-x[1].net;});return a;}
-  function groupTag(field){var m={};ty.forEach(function(t){try{JSON.parse(t[field]||'[]').forEach(function(x){if(!m[x])m[x]={n:0,net:0,w:0};m[x].n++;m[x].net+=pnl(t);if(t.result==='WIN')m[x].w++;});}catch(e){}});return Object.entries(m);}
+  function groupTag(field){var m={};ty.forEach(function(t){try{JSON.parse(t[field]||'[]').forEach(function(x){if(!m[x])m[x]={n:0,net:0,w:0,l:0};m[x].n++;m[x].net+=pnl(t);if(t.result==='WIN')m[x].w++;else if(t.result==='LOSS')m[x].l++;});}catch(e){}});return Object.entries(m);}
   var byDay=groupBy('day'), bySess=groupBy('sess'), byPair=groupBy('pair');
   var setArr=groupTag('strats').sort(function(x,y){return y[1].net-x[1].net;});
   var errFreq=groupTag('psych_errors').sort(function(x,y){return y[1].n-x[1].n;});
@@ -2899,7 +2899,7 @@ function buildCoachReport(){
     if(wd[1].net<0&&wd[0]!==bd[0]) R.push('📅 Tu perds le plus le <b>'+wd[0]+'</b> ('+fmt(wd[1].net)+'). Évite-le ou réduis ta taille.');}
   if(bySess.length){var ws=bySess[bySess.length-1];if(ws[1].net<0) R.push('🕐 La session <b>'+ws[0]+'</b> te coûte ('+fmt(ws[1].net)+'). Sois beaucoup plus sélectif dessus.');}
   if(byPair.length){var wpr=byPair[byPair.length-1];if(wpr[1].net<0&&wpr[1].n>=2) R.push('💱 <b>'+wpr[0]+'</b> est négatif ('+fmt(wpr[1].net)+' sur '+wpr[1].n+' trades). À surveiller de près.');}
-  if(errFreq.length) R.push('⚠ Erreur la plus fréquente : <b>'+errFreq[0][0]+'</b> ('+errFreq[0][1].n+' fois). <b>Priorité n°1</b>.');
+  if(errFreq.length) R.push('⚠ Erreur la plus fréquente : <b>'+errFreq[0][0]+'</b> ('+errFreq[0][1].n+' fois, '+errFreq[0][1].l+' trade'+(errFreq[0][1].l>1?'s':'')+' perdu'+(errFreq[0][1].l>1?'s':'')+'). <b>Priorité n°1</b>.');
   if(setArr.length&&setArr[0][1].net>0) R.push('⬢ Ton setup le plus rentable : <b>'+setArr[0][0]+'</b> ('+fmt(setArr[0][1].net)+'). Fais-en ta spécialité.');
   if(pf!==null&&pf<1) R.push('📐 Profit factor < 1 ('+pf.toFixed(2)+') : vise des RR plus grands ou coupe tes pertes plus tôt.');
   if(!R.length) R.push('Tes indicateurs sont sains. Garde le cap 💪');
@@ -4676,6 +4676,12 @@ function buildReportDetailed(dimKey){
   const t1=document.getElementById('rep-det-t1'),t2=document.getElementById('rep-det-t2');
   if(t1)t1.textContent='Distribution des trades par '+dim.label;
   if(t2)t2.textContent='Performance (P&L net) par '+dim.label;
+  if(dimKey==='mistakes'){
+    if(t1)t1.textContent='Nombre de fois par erreur'; if(t2)t2.textContent='Trades perdus par erreur';
+    tb.innerHTML = keys.length ? keys.map(k=>{const o=g[k];return `<tr><td style="font-weight:600">${k}</td><td style="text-align:center">${o.n}</td><td style="color:var(--reb)">${o.n} fois</td><td style="text-align:right">—</td><td style="color:var(--reb);text-align:right">${errPerdus(o.l)}</td><td style="text-align:right;color:var(--ts)">${psyFam(k).n}</td></tr>`;}).join('') : '<tr><td colspan="6" style="text-align:center;padding:26px;color:var(--td)">Aucune erreur notée</td></tr>';
+    try{ buildRepDetCharts(keys, keys.map(k=>g[k].n), keys.map(k=>-g[k].l)); }catch(e){}
+    return;
+  }
   const rowHtml=k=>{const o=g[k],tot=o.w+o.l,wp=tot?o.w/tot*100:0;return `<tr>
     <td style="font-weight:600">${k}</td>
     <td style="text-align:center">${o.n}</td>
@@ -4959,7 +4965,7 @@ function downloadBilanPDF(){
   const tbl=(head,rows)=>`<table style="width:100%;border-collapse:collapse"><thead><tr>${head.map(h=>`<th ${th}>${h}</th>`).join('')}</tr></thead><tbody style="[TD]">${rows}</tbody></table>`.replace('[TD]','');
   const psychAgg=field=>{const m={};TS.forEach(t=>{let a;try{a=JSON.parse(t[field]||'[]');}catch(e){a=[];}a.forEach(x=>{if(!x)return;if(!m[x])m[x]={n:0,amt:0,w:0,l:0};m[x].n++;m[x].amt+=parseFloat(t.pnl_amt||0);if(t.result==='WIN')m[x].w++;else if(t.result==='LOSS')m[x].l++;});});return m;};
   const errG=psychAgg('psych_errors'), goodG=psychAgg('psych_good');
-  const psychRows=(g,mode)=>{const keys=Object.keys(g).sort((a,b)=>g[b].n-g[a].n);return keys.map(k=>`<tr><td>${k}</td><td>${g[k].n}</td><td>${(g[k].n/n*100).toFixed(0)}%</td><td style="text-align:right">${mode==='err'?psyFam(k).n:(g[k].w+' gagné'+(g[k].w>1?'s':'')+' · '+g[k].l+' perdu'+(g[k].l>1?'s':''))}</td></tr>`).join('')||'<tr><td colspan="4" style="color:#8a93a8">Aucune donnée taguée</td></tr>';};
+  const psychRows=(g,mode)=>{const keys=Object.keys(g).sort((a,b)=>g[b].n-g[a].n);return keys.map(k=>`<tr><td>${k}</td><td>${g[k].n}</td><td>${(g[k].n/n*100).toFixed(0)}%</td><td style="text-align:right">${mode==='err'?(psyFam(k).n+' · '+errPerdus(g[k].l)):(g[k].w+' gagné'+(g[k].w>1?'s':'')+' · '+g[k].l+' perdu'+(g[k].l>1?'s':''))}</td></tr>`).join('')||'<tr><td colspan="4" style="color:#8a93a8">Aucune donnée taguée</td></tr>';};
   const psychByMonth=field=>MN3.map((mn,m)=>{const mt=TS.filter(t=>parseInt(t.trade_month)===m);const em={};mt.forEach(t=>{let a;try{a=JSON.parse(t[field]||'[]');}catch(e){a=[];}a.forEach(x=>{if(!x)return;if(!em[x])em[x]={n:0,amt:0,w:0,l:0};em[x].n++;em[x].amt+=parseFloat(t.pnl_amt||0);if(t.result==='WIN')em[x].w++;else if(t.result==='LOSS')em[x].l++;});});const keys=Object.keys(em);if(!keys.length)return '';const tot=keys.reduce((a,k)=>a+em[k].n,0);const list=keys.sort((a,b)=>em[b].n-em[a].n).map(k=>`${k} <span style="color:#8a93a8">(${em[k].n}× · ${em[k].w}G ${em[k].l}P)</span>`).join(' &nbsp;·&nbsp; ');return `<tr><td style="white-space:nowrap;vertical-align:top"><b>${mn}</b></td><td style="text-align:right;white-space:nowrap;vertical-align:top">${tot}</td><td style="font-size:10px;vertical-align:top;line-height:1.7">${list}</td></tr>`;}).filter(Boolean).join('');
   const errByMonth=psychByMonth('psych_errors'), goodByMonth=psychByMonth('psych_good');
   const R=document.createElement('div'); R.id='bilan-pdf-root';
@@ -5378,11 +5384,11 @@ function initPsychStats(){
         const wr=(d.w/d.n*100).toFixed(0);
         const pnl=d.pnl.toFixed(0);
         const barW=Math.round(d.n/maxN*100);
-        const col=d.pnl>=0?'var(--grb)':'var(--reb)';
+        const perdus=TY.filter(t=>t.result==='LOSS'&&pjs(t.psych_errors).indexOf(k)>=0).length;
         return `<div style="margin-bottom:11px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
             <span style="font-size:10px;color:var(--reb);font-weight:600">${k}</span>
-            <span style="font-variant-numeric:tabular-nums;font-size:10px;color:var(--td)">${d.n}x · WR <span style="color:${parseFloat(wr)>=50?'var(--grb)':'var(--reb)'}">${wr}%</span> · <span style="color:${col}">${pnl>=0?'+':'-'}$${Math.abs(pnl)}</span></span>
+            <span style="font-variant-numeric:tabular-nums;font-size:10px;color:var(--reb);font-weight:700">${d.n} fois · ${errPerdus(perdus)}</span>
           </div>
           <div style="background:rgba(30,35,51,0.08);border-radius:20px;height:5px;overflow:hidden">
             <div style="width:${barW}%;height:100%;background:var(--reb);border-radius:20px;opacity:0.65"></div>
@@ -5497,17 +5503,10 @@ function renderRBars(elId, mapObj){
 // Erreurs : NOMBRE de fois (une erreur reste une erreur, peu importe le P&L)
 function renderErrCount(elId, trades){
   const el=document.getElementById(elId); if(!el) return;
-  const m={};
-  trades.forEach(t=>{ let a; try{a=pjs(t.psych_errors)}catch(e){a=[]} a.forEach(x=>{if(x){if(!m[x])m[x]={n:0,pct:0,amt:0}; m[x].n++; m[x].pct+=parseFloat(t.pnl_pct||0); m[x].amt+=parseFloat(t.pnl_amt||0);}}); });
-  const groups=Object.entries(m).sort((a,b)=>b[1].n-a[1].n);
-  if(!groups.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">Aucune erreur taguée</div>'; return; }
-  const max=Math.max(...groups.map(g=>g[1].n),1);
-  el.innerHTML=groups.map(([n,v])=>{
-    const w=Math.min(v.n/max*100,100);
-    const pctTxt=(v.pct>=0?'+':'')+v.pct.toFixed(1)+'%';
-    const amtTxt=(v.amt>=0?'+':'-')+'$'+Math.abs(v.amt).toFixed(0);
-    return `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;margin-bottom:3px;gap:8px"><span style="color:var(--reb);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600" title="${n}">${n}</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;font-size:10px"><span style="color:var(--reb);font-weight:700">${v.n}× fois</span> <span style="color:#f87171">· ${pctTxt} · ${amtTxt}</span></span></div><div style="background:rgba(43,43,61,0.5);border-radius:3px;height:4px"><div style="width:${w}%;height:100%;background:#ef4444;border-radius:3px"></div></div></div>`;
-  }).join('');
+  const E=errCompte(trades);
+  if(!E.length){ el.innerHTML='<div style="color:var(--td);font-size:10px;padding:6px 2px">Aucune erreur taguée</div>'; return; }
+  const max=E[0].n||1;
+  el.innerHTML=E.map(x=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;margin-bottom:3px;gap:8px"><span style="color:var(--reb);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${wkEsc(x.k)}">${wkEsc(x.k)}</span><span style="font-variant-numeric:tabular-nums;color:var(--reb);font-weight:700">${x.n} fois · ${errPerdus(x.l)}</span></div><div style="background:rgba(43,43,61,0.5);border-radius:3px;height:4px"><div style="width:${Math.round(x.n/max*100)}%;height:100%;background:#ef4444;border-radius:3px"></div></div></div>`).join('');
 }
 // Bonne psycho : nombre de fois + % + $
 function renderGoodFull(elId, trades){
@@ -5657,7 +5656,7 @@ function renderTagTable(elId, stats, color, forceRed){
   el.innerHTML=stats.map(([tag,v])=>{
     const wr=v.n?Math.round(v.w/v.n*100):0;
     const col=forceRed?'var(--reb)':(v.pnl>=0?'var(--grb)':'var(--reb)');
-    if(forceRed) return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--card2);border-left:3px solid ${color};margin-bottom:5px"><div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--tp);font-weight:600">${tag}</div><div style="font-size:10px;color:var(--td);margin-top:1px">${psyFam(tag).n}</div></div><div style="font-size:11px;font-weight:700;color:var(--reb)">${v.n} fois</div></div>`;
+    if(forceRed) return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--card2);border-left:3px solid ${color};margin-bottom:5px"><div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--tp);font-weight:600">${tag}</div><div style="font-size:10px;color:var(--td);margin-top:1px">${psyFam(tag).n}</div></div><div style="font-size:11px;font-weight:700;color:var(--reb);text-align:right">${v.n} fois<div style="font-size:10px;font-weight:600">${errPerdus(v.l)}</div></div></div>`;
     return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--card2);border-left:3px solid ${color};margin-bottom:5px">`
       +`<div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--tp);font-weight:600">${tag}</div>`
       +`<div style="font-size:10px;color:var(--td);margin-top:1px">${v.n}× · ${v.w}W/${v.l}L · WR ${wr}%</div></div>`
@@ -6201,7 +6200,7 @@ function genReport(mt, titleMain, titleSub){
   const goodKeys=Object.keys(goodMap).sort((a,b)=>goodMap[b].n-goodMap[a].n);
   const psychSection=(errKeys.length||goodKeys.length)?`<div class="section"><div class="section-title">🧠 Analyse Psychologique</div>
     ${errKeys.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:#ef4444;letter-spacing:2px;margin-bottom:10px">⚠ ERREURS PSYCHOLOGIQUES</div>
-      <table><thead><tr><th>Erreur</th><th>Fréquence</th><th>Win Rate</th><th>Impact $</th></tr></thead><tbody>${errKeys.map(k=>{const d=errMap[k];const wr=(d.w/d.n*100).toFixed(0);const cls=d.pnl>=0?'win':'loss';return`<tr><td style="font-weight:600">${k}</td><td>${d.n}x</td><td class="${parseFloat(wr)>=50?'win':'loss'}">${wr}%</td><td class="${cls}">${d.pnl>=0?'+':'-'}$${Math.abs(d.pnl).toFixed(0)}</td></tr>`;}).join('')}</tbody></table></div>`:''}
+      <table><thead><tr><th>Erreur</th><th>Nombre de fois</th><th>Trades perdus</th></tr></thead><tbody>${errKeys.map(k=>{const d=errMap[k];if(true){const pl=mt.filter(t=>t.result==='LOSS'&&pjs(t.psych_errors).indexOf(k)>=0).length;return`<tr><td style="font-weight:600">${k}</td><td>${d.n} fois</td><td class="loss">${pl}</td></tr>`;}const wr=(d.w/d.n*100).toFixed(0);const cls=d.pnl>=0?'win':'loss';return`<tr><td style="font-weight:600">${k}</td><td>${d.n}x</td><td class="${parseFloat(wr)>=50?'win':'loss'}">${wr}%</td><td class="${cls}">${d.pnl>=0?'+':'-'}$${Math.abs(d.pnl).toFixed(0)}</td></tr>`;}).join('')}</tbody></table></div>`:''}
     ${goodKeys.length?`<div><div style="font-size:10px;font-weight:700;color:#10b981;letter-spacing:2px;margin-bottom:10px">✅ BON MINDSET</div>
       <table><thead><tr><th>Mindset</th><th>Fréquence</th><th>Win Rate</th><th>Impact $</th></tr></thead><tbody>${goodKeys.map(k=>{const d=goodMap[k];const wr=(d.w/d.n*100).toFixed(0);const cls=d.pnl>=0?'win':'loss';return`<tr><td style="font-weight:600">${k}</td><td>${d.n}x</td><td class="${parseFloat(wr)>=50?'win':'loss'}">${wr}%</td><td class="${cls}">${d.pnl>=0?'+':'-'}$${Math.abs(d.pnl).toFixed(0)}</td></tr>`;}).join('')}</tbody></table></div>`:''}
   </div>`:'';
@@ -6633,10 +6632,10 @@ function renderPsych(){
     const avgR0=mean(base.map(tradeR)),avgPnl0=mean(base.map(t=>parseFloat(t.pnl_amt)||0));
     const tags={};
     S.forEach(t=>tagsOf(t,'psych_errors').forEach(er=>{(tags[er]=tags[er]||[]).push(t);}));
-    const rows=Object.entries(tags).map(([tag,list])=>({tag,n:list.length,pct:list.length/S.length*100,fam:psyFam(tag).n})).sort((a,b)=>b.n-a.n);
+    const rows=Object.entries(tags).map(([tag,list])=>({tag,n:list.length,l:list.filter(t=>t.result==='LOSS').length,pct:list.length/S.length*100,fam:psyFam(tag).n})).sort((a,b)=>b.n-a.n);
     if(!rows.length)eEl.innerHTML='<div style="padding:14px;color:var(--td);text-align:center">Aucune erreur taguée — tague tes erreurs psychologiques dans le journal pour débloquer cette analyse 🧠</div>';
-    else eEl.innerHTML='<table class="tbl" style="min-width:420px"><thead><tr><th>Erreur</th><th>Famille</th><th>Nombre de fois</th><th>% des trades</th></tr></thead><tbody>'+
-      rows.map(r=>'<tr><td>'+r.tag+'</td><td>'+r.fam+'</td><td>'+r.n+'</td><td>'+r.pct.toFixed(0)+' %</td></tr>').join('')+
+    else eEl.innerHTML='<table class="tbl" style="min-width:420px"><thead><tr><th>Erreur</th><th>Famille</th><th>Nombre de fois</th><th>Trades perdus</th><th>% des trades</th></tr></thead><tbody>'+
+      rows.map(r=>'<tr><td>'+r.tag+'</td><td>'+r.fam+'</td><td>'+r.n+'</td><td style="color:var(--reb);font-weight:700">'+r.l+'</td><td>'+r.pct.toFixed(0)+' %</td></tr>').join('')+
       '</tbody></table><div style="font-size:10px;color:var(--td);margin-top:7px">Chaque erreur est comptée, que le trade soit gagnant ou perdant.</div>';
   }
   // Bonnes habitudes
@@ -7115,7 +7114,7 @@ function initSemaine(){
     + rsLigne('Note moyenne du setup',etoiles.length?(mean(etoiles).toFixed(1)+' ★'):'—',null)
     + (disc?disc.comps.map(function(c){return rsLigne(c.l,Math.round(c.v)+' %',null);}).join(''):'')+'</div>'
    +'<div class="card" style="margin:0"><div class="ct">⚠️ Erreurs & bons réflexes</div>'
-    + (errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">· '+wkEsc(psyFam(e.k).n)+'</span>',e.n+' fois',RS_ROUGE);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée cette semaine.</div>')
+    + (errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">· '+wkEsc(psyFam(e.k).n)+'</span>',e.n+' fois · '+errPerdus(e.l),RS_ROUGE);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée cette semaine.</div>')
     + (bonL.length?'<div style="font-size:10px;letter-spacing:1px;color:var(--td);text-transform:uppercase;margin:12px 0 4px">Ce qui a bien marché</div>'
         +bonL.map(function(b){return rsLigne(wkEsc(b.k),'× '+b.n,RS_VERT);}).join(''):'')+'</div>';
 
@@ -7128,7 +7127,7 @@ function initSemaine(){
   var surj=j.filter(function(x){return x.P.n>=Math.max(4,moyJ*1.8);});
   if(surj.length)ins.push('⚡ Beaucoup de trades le <b>'+WK_JOURS[surj[0].d.getDay()]+'</b> ('+surj[0].P.n+') : attention au sur-trading.');
   if(rev)ins.push('🔥 <b>'+rev+'</b> trade'+(rev>1?'s':'')+' « revenge » (ouvert dans les 30 min après une perte).');
-  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' fois).');
+  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' fois, '+errPerdus(errL[0].l)+').');
   if(ser.maxPertes>=3)ins.push('⏸ Série de <b>'+ser.maxPertes+' pertes</b> : aurais-tu dû t\'arrêter après la 2ᵉ ?');
   var rk=S.filter(function(t){return (parseFloat(t.risk_pct)||0)>(DRSK||1)*1.1;}).length;
   if(rk)ins.push('🎯 <b>'+rk+'</b> trade'+(rk>1?'s':'')+' au-dessus de ton risque cible ('+(DRSK||1)+' %).');
@@ -7679,7 +7678,7 @@ function initMois(){
     +(disc?'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span class="cu" style="font-size:40px;font-weight:800;color:'+(disc.score>=70?RS_VERT:(disc.score>=50?'#fbbf24':RS_ROUGE))+'">'+disc.score+'</span><span style="color:var(--td);font-size:12px">/ 100'+(dp?' · mois précédent '+dp.score:'')+'</span></div>':'')
     +rsLigne('Trades « revenge »',rev,rev?RS_ROUGE:RS_VERT)+(disc?disc.comps.map(function(c){return rsLigne(c.l,Math.round(c.v)+' %',null);}).join(''):'')+'</div>'
     +'<div class="card" style="margin:0"><div class="ct">⚠️ Erreurs du mois</div>'
-    +(errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">· '+wkEsc(psyFam(e.k).n)+'</span>',e.n+' fois',RS_ROUGE);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée ce mois-ci.</div>')+'</div>';
+    +(errL.length?errL.map(function(e){return rsLigne(wkEsc(e.k)+' <span style="color:var(--td)">· '+wkEsc(psyFam(e.k).n)+'</span>',e.n+' fois · '+errPerdus(e.l),RS_ROUGE);}).join(''):'<div style="font-size:12px;color:var(--grb);padding:6px 0">Aucune erreur taguée ce mois-ci.</div>')+'</div>';
 
   // meilleurs / pires trades
   var tri=S.slice().sort(function(x,y){return (parseFloat(y.pnl_amt)||0)-(parseFloat(x.pnl_amt)||0);});
@@ -7693,7 +7692,7 @@ function initMois(){
   var verts=jr.filter(function(x){return x.v>=0;}).length; if(jr.length)ins.push('🗓 <b>'+verts+'</b> jour'+(verts>1?'s':'')+' gagnant'+(verts>1?'s':'')+' sur '+jr.length+' jours de trading.');
   if(SP.length&&P.net<PP.net)ins.push('↘ Mois moins bon que le précédent ('+rsArgent(P.net)+' contre '+rsArgent(PP.net)+').');
   if(SP.length&&P.net>=PP.net)ins.push('↗ Mois meilleur que le précédent ('+rsArgent(P.net)+' contre '+rsArgent(PP.net)+').');
-  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' fois).');
+  if(errL.length)ins.push('🧠 Erreur la plus fréquente : <b>'+wkEsc(errL[0].k)+'</b> ('+errL[0].n+' fois, '+errPerdus(errL[0].l)+').');
   if(rev)ins.push('🔥 <b>'+rev+'</b> trade'+(rev>1?'s':'')+' « revenge » ce mois-ci.');
   document.getElementById('mo-ins').innerHTML='<div class="ct">💡 À retenir</div><ul class="wk-ul">'+ins.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>';
   moHist(); moBilan();
@@ -8091,12 +8090,13 @@ function psyBeh(S,field){
   return Object.keys(m).map(function(k){ var x=m[k]; x.wr=(x.w+x.l)?x.w/(x.w+x.l)*100:null; return x; });
 }
 // Erreurs psychologiques : on compte seulement (combien de fois, % des trades). Jamais de gains associés.
-function errCompte(S){ var m={}; S.forEach(function(t){ psyErrs(t).forEach(function(k){ m[k]=(m[k]||0)+1; }); });
-  return Object.keys(m).map(function(k){ return {k:k,n:m[k],pct:S.length?m[k]/S.length*100:0,f:psyFam(k)}; }).sort(function(a,b){return b.n-a.n;}); }
-function errFamCompte(S){ var m={}; S.forEach(function(t){ psyErrs(t).forEach(function(k){ var f=psyFam(k); var x=(m[f.k]=m[f.k]||{f:f,n:0,t:{}}); x.n++; x.t[k]=(x.t[k]||0)+1; }); });
+function errPerdus(l){ return l+' trade'+(l>1?'s':'')+' perdu'+(l>1?'s':''); }
+function errCompte(S){ var m={}, L={}; S.forEach(function(t){ psyErrs(t).forEach(function(k){ m[k]=(m[k]||0)+1; if(t.result==='LOSS')L[k]=(L[k]||0)+1; }); });
+  return Object.keys(m).map(function(k){ return {k:k,n:m[k],l:L[k]||0,pct:S.length?m[k]/S.length*100:0,f:psyFam(k)}; }).sort(function(a,b){return b.n-a.n||b.l-a.l;}); }
+function errFamCompte(S){ var m={}; S.forEach(function(t){ psyErrs(t).forEach(function(k){ var f=psyFam(k); var x=(m[f.k]=m[f.k]||{f:f,n:0,l:0,t:{}}); x.n++; if(t.result==='LOSS')x.l++; x.t[k]=(x.t[k]||0)+1; }); });
   return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return b.n-a.n;}); }
 function errTend(a,b){ if(b==null)return ''; if(a===b)return '<span style="color:var(--ts)">= stable</span>'; return a<b?'<span style="color:'+RS_VERT+'">▼ '+(b-a)+' de moins</span>':'<span style="color:'+RS_ROUGE+'">▲ '+(a-b)+' de plus</span>'; }
-function errRow(x,max,prev){ return '<div class="err-row"><div class="beh-n">'+wkEsc(x.k)+'<em>'+x.f.i+' '+wkEsc(x.f.n)+'</em></div><div class="psy-cb"><i style="width:'+Math.min(100,x.n/Math.max(1,max)*100)+'%;background:'+RS_ROUGE+'"></i></div><b>'+x.n+' fois</b><span>'+x.pct.toFixed(0)+' % des trades'+(prev!==undefined?' · '+errTend(x.n,prev):'')+'</span></div>'; }
+function errRow(x,max,prev){ return '<div class="err-row"><div class="beh-n">'+wkEsc(x.k)+'<em>'+x.f.i+' '+wkEsc(x.f.n)+'</em></div><div class="psy-cb"><i style="width:'+Math.min(100,x.n/Math.max(1,max)*100)+'%;background:'+RS_ROUGE+'"></i></div><b>'+x.n+' fois</b><span><b class="gl" style="text-align:left">'+errPerdus(x.l||0)+'</b> · '+x.pct.toFixed(0)+' % des trades'+(prev!==undefined?' · '+errTend(x.n,prev):'')+'</span></div>'; }
 function psyBar(w,l,b){ var n=(w+l+b)||1; return '<div class="wl-bar"><i class="w" style="width:'+(w/n*100)+'%"></i><i class="b" style="width:'+(b/n*100)+'%"></i><i class="l" style="width:'+(l/n*100)+'%"></i></div>'; }
 function psyWRtxt(wr,base){ if(wr===null)return '—'; var c=(base!=null&&wr>=base+10)?RS_VERT:((base!=null&&wr<=base-10)?RS_ROUGE:'var(--tp)'); return '<b style="color:'+c+'">'+wr.toFixed(0)+' %</b>'; }
 function psyGP(x){ return '<b class="gw">'+x.w+'</b> gagné'+(x.w>1?'s':'')+' · <b class="gl">'+x.l+'</b> perdu'+(x.l>1?'s':''); }
@@ -8140,9 +8140,9 @@ function initPsy(){
   var totE=errCompte(TY).reduce(function(a,x){return a+x.n;},0)||1, famC=errFamCompte(TY);
   H+='<div class="card" style="margin-bottom:12px"><div class="ct">🧩 Tes familles d\'erreurs</div><div class="psy-s" style="margin:-4px 0 10px">Tes erreurs regroupées en 5 familles : Entrée, Risque, Gestion du trade, Émotion, Discipline & état. Touche une famille pour voir le détail.</div>'
    +famC.map(function(c){ var f=c.f, tl=Object.keys(c.t).sort(function(a,b){return c.t[b]-c.t[a];}), a=fa[f.k]||0, b=fb[f.k]||0;
-     return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+c.n+' erreur'+(c.n>1?'s':'')+' · '+Math.round(c.n/totE*100)+' % de tes erreurs'+((a||b)?' · 4 sem. : '+errTend(a,b):'')+'</em></span>'
+     return '<details class="psy-fam"><summary><span class="psy-fi" style="background:'+f.c+'22;color:'+f.c+'">'+f.i+'</span><span class="psy-fn">'+f.n+'<em>'+c.n+' erreur'+(c.n>1?'s':'')+' · '+errPerdus(c.l)+' · '+Math.round(c.n/totE*100)+' % de tes erreurs'+((a||b)?' · 4 sem. : '+errTend(a,b):'')+'</em></span>'
        +'<div class="psy-cb"><i style="width:'+Math.round(c.n/famC[0].n*100)+'%;background:'+f.c+'"></i></div><b class="err-n">'+c.n+'</b></summary>'
-       +tl.map(function(x){ return '<div class="err-row sub"><div class="beh-n">'+wkEsc(x)+'</div><div class="psy-cb"><i style="width:'+Math.round(c.t[x]/c.n*100)+'%;background:'+f.c+'"></i></div><b>'+c.t[x]+' fois</b><span>'+Math.round(c.t[x]/TY.length*100)+' % des trades</span></div>'; }).join('')+'</details>'; }).join('')+'</div>';
+       +tl.map(function(x){ return '<div class="err-row sub"><div class="beh-n">'+wkEsc(x)+'</div><div class="psy-cb"><i style="width:'+Math.round(c.t[x]/c.n*100)+'%;background:'+f.c+'"></i></div><b>'+c.t[x]+' fois</b><span>'+errPerdus(TY.filter(function(t){return t.result==="LOSS"&&psyErrs(t).indexOf(x)>=0;}).length)+' · '+Math.round(c.t[x]/TY.length*100)+' % des trades</span></div>'; }).join('')+'</details>'; }).join('')+'</div>';
   // 3 bis. Familles de bonne psychologie
   var gF=goodFamCompte(TY), totG=gF.reduce(function(a,x){return a+x.n;},0)||1;
   var gcnt=function(a){ var m={}; a.forEach(function(x){ wkTrades(x.o).forEach(function(t){ tagsOf(t,'psych_good').forEach(function(p){ var k=psyGoodFam(p).k; m[k]=(m[k]||0)+1; }); }); }); return m; }, ga=gcnt(s4), gb=gcnt(p4);
@@ -8368,7 +8368,7 @@ function tjDonneesJour(auj,pl){
   if(auj.length&&!errN)bien.push('Aucune erreur notée');
   Object.keys(bons).forEach(function(k){ var y=bons[k]; bien.push(wkEsc(k)+' ('+y.n+' trade'+(y.n>1?'s':'')+' : '+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'); });
   var mal=[];
-  Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;}).forEach(function(k){ var y=errs[k]; mal.push('<b>'+wkEsc(k)+'</b> <span style="color:var(--ts)">('+psyFam(k).n+')</span> : '+y.n+' fois'); });
+  Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;}).forEach(function(k){ var y=errs[k]; mal.push('<b>'+wkEsc(k)+'</b> <span style="color:var(--ts)">('+psyFam(k).n+')</span> : '+y.n+' fois · '+errPerdus(y.l)); });
   if(sgN)mal.push('<b>Hors stratégie</b> : '+sgN+' fois');
   if(ruN)mal.push('<b>Règles non respectées</b> : '+ruN+' trade'+(ruN>1?'s':''));
   if(risk.length)mal.push('<b>Risque au-dessus de ton plan</b> ('+tjRisquePlan()+' %) : '+risk.length+' trade'+(risk.length>1?'s':'')+' ('+risk.map(function(t){return parseFloat(t.risk_pct)+' %';}).join(', ')+')');
@@ -8680,9 +8680,9 @@ function rpData(S){
 function rpStop(D){
   var out=[], base=D.wr;
   D.errs.forEach(function(x){
-    out.push(['<b>'+wkEsc(x.k)+'</b> <span style="color:#64748b;font-weight:400">· '+wkEsc(psyFam(x.k).n)+'</span>', x.n+' fois · '+Math.round(x.n/D.n*100)+' % des trades']); });
+    out.push(['<b>'+wkEsc(x.k)+'</b> <span style="color:#64748b;font-weight:400">· '+wkEsc(psyFam(x.k).n)+'</span>', x.n+' fois · '+errPerdus(x.l)+' · '+Math.round(x.n/D.n*100)+' % des trades']); });
   var cs=cycleStats(D.S); if(cs.c)out.unshift(['<b>🔁 Mon cycle de perte</b>', cs.c+' fois · '+cs.pc+' de mes '+cs.pertes+' pertes viennent de lui']);
-  if(D.hors.n)out.push(['<b>Trader hors de ma stratégie</b>', D.hors.n+' fois · '+Math.round(D.hors.n/D.n*100)+' % des trades']);
+  if(D.hors.n)out.push(['<b>Trader hors de ma stratégie</b>', D.hors.n+' fois · '+errPerdus(D.hors.l)+' · '+Math.round(D.hors.n/D.n*100)+' % des trades']);
   var CL=(typeof stChecklist==='function')?stChecklist():[], CS=D.S.filter(function(t){return ckOf(t)!==null;});
   if(CL.length&&CS.length){ var inc=CS.filter(function(t){ var c=ckOf(t); return !CL.every(function(x){return c.indexOf(x)>=0;}); }); if(inc.length)out.push(['<b>Entrer sans ma checklist complète</b>', inc.length+' fois · '+Math.round(inc.length/D.n*100)+' % des trades']); }
   if(D.risk.length)out.push(['<b>Risquer plus de '+tjRisquePlan()+' % par trade</b>', D.risk.length+' trade'+(D.risk.length>1?'s':'')+' au-dessus du plan']);
@@ -8738,15 +8738,15 @@ function rpCmp(D,D0,lab){
 function rpErrTable(rows,n,prev){
   if(!rows.length)return '<div class="rp-empty">Aucune erreur notée sur la période.</div>';
   var mx=rows[0].n||1;
-  return '<table class="rp-t"><thead><tr><th>Erreur</th><th>Famille</th><th class="c">Nombre de fois</th><th class="c">% des trades</th>'+(prev?'<th class="c">vs avant</th>':'')+'<th style="width:120px"></th></tr></thead><tbody>'
+  return '<table class="rp-t"><thead><tr><th>Erreur</th><th>Famille</th><th class="c">Nombre de fois</th><th class="c">Trades perdus</th><th class="c">% des trades</th>'+(prev?'<th class="c">vs avant</th>':'')+'<th style="width:120px"></th></tr></thead><tbody>'
    +rows.map(function(x){ var p=prev?(prev.filter(function(y){return y.k===x.k;})[0]||{n:0}).n:null, d=p==null?'':(x.n===p?'=':(x.n<p?'<span style="color:#059669">▼ '+(p-x.n)+'</span>':'<span style="color:#dc2626">▲ '+(x.n-p)+'</span>'));
-     return '<tr><td><b>'+wkEsc(x.k)+'</b></td><td>'+wkEsc(psyFam(x.k).n)+'</td><td class="c"><b>'+x.n+'</b></td><td class="c">'+Math.round(x.n/n*100)+' %</td>'+(prev?'<td class="c">'+d+'</td>':'')+'<td><div class="rp-bar"><i style="width:'+Math.round(x.n/mx*100)+'%;background:#dc2626"></i></div></td></tr>'; }).join('')+'</tbody></table>';
+     return '<tr><td><b>'+wkEsc(x.k)+'</b></td><td>'+wkEsc(psyFam(x.k).n)+'</td><td class="c"><b>'+x.n+'</b></td><td class="c" style="color:#dc2626;font-weight:700">'+(x.l||0)+'</td><td class="c">'+Math.round(x.n/n*100)+' %</td>'+(prev?'<td class="c">'+d+'</td>':'')+'<td><div class="rp-bar"><i style="width:'+Math.round(x.n/mx*100)+'%;background:#dc2626"></i></div></td></tr>'; }).join('')+'</tbody></table>';
 }
 function rpFamTable(S,S0){
   var F=errFamCompte(S), F0=S0?errFamCompte(S0):null, tot=F.reduce(function(a,x){return a+x.n;},0)||1;
-  return '<table class="rp-t rp-mini"><thead><tr><th>Famille</th><th class="c">Erreurs</th><th class="c">% des erreurs</th>'+(F0?'<th class="c">vs avant</th>':'')+'<th>Détail</th></tr></thead><tbody>'
+  return '<table class="rp-t rp-mini"><thead><tr><th>Famille</th><th class="c">Erreurs</th><th class="c">Trades perdus</th><th class="c">% des erreurs</th>'+(F0?'<th class="c">vs avant</th>':'')+'<th>Détail</th></tr></thead><tbody>'
    +F.map(function(c){ var p=F0?(F0.filter(function(y){return y.f.k===c.f.k;})[0]||{n:0}).n:null, d=p==null?'':(c.n===p?'=':(c.n<p?'<span style="color:#059669">▼ '+(p-c.n)+'</span>':'<span style="color:#dc2626">▲ '+(c.n-p)+'</span>'));
-     return '<tr><td><b>'+c.f.i+' '+wkEsc(c.f.n)+'</b></td><td class="c"><b>'+c.n+'</b></td><td class="c">'+Math.round(c.n/tot*100)+' %</td>'+(F0?'<td class="c">'+d+'</td>':'')+'<td style="white-space:normal">'+Object.keys(c.t).sort(function(a,b){return c.t[b]-c.t[a];}).map(function(k){return wkEsc(k)+' ×'+c.t[k];}).join(', ')+'</td></tr>'; }).join('')+'</tbody></table>';
+     return '<tr><td><b>'+c.f.i+' '+wkEsc(c.f.n)+'</b></td><td class="c"><b>'+c.n+'</b></td><td class="c" style="color:#dc2626;font-weight:700">'+c.l+'</td><td class="c">'+Math.round(c.n/tot*100)+' %</td>'+(F0?'<td class="c">'+d+'</td>':'')+'<td style="white-space:normal">'+Object.keys(c.t).sort(function(a,b){return c.t[b]-c.t[a];}).map(function(k){return wkEsc(k)+' ×'+c.t[k];}).join(', ')+'</td></tr>'; }).join('')+'</tbody></table>';
 }
 function rpPsyTable(rows,base,vide){
   if(!rows.length)return '<div class="rp-empty">'+vide+'</div>';
