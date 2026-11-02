@@ -1149,6 +1149,8 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .tj-verdict.low{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);color:#fde68a;}.tj-verdict.mid{background:rgba(var(--acr2),.12);border:1px solid rgba(var(--acr3),.4);color:var(--ac4);}
 .pa-card{margin-bottom:12px !important;}.pa-err{font-size:20px;font-weight:800;margin:2px 0 6px;color:var(--tp);}.pa-cands{display:flex;flex-direction:column;gap:8px;margin:10px 0;}.pa-cands button{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--bo);background:var(--card2,rgba(255,255,255,.04));color:var(--tp);font:inherit;cursor:pointer;text-align:left;}.pa-cands button:hover{border-color:var(--ac3);}.pa-cands em{font-style:normal;font-size:11px;color:var(--ts);}.pa-sel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bo);background:transparent;color:var(--ts);font:inherit;}.pa-win{text-align:center;padding:8px 4px;line-height:1.6;}.pa-w1{font-size:20px;font-weight:800;margin-bottom:6px;}
 .bl-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}.bl-nav{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--tp);}.bl-nav button{width:30px;height:30px;border-radius:9px;border:1px solid var(--bo);background:transparent;color:var(--tp);font-size:16px;cursor:pointer;}.bl-nav button:disabled{opacity:.3;cursor:default;}.tj-promesse{margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(var(--acr3),.12);border:1px solid rgba(var(--acr3),.3);font-size:13px;line-height:1.5;color:var(--tp);}.bl-row{display:flex;justify-content:space-between;gap:12px;padding:11px 12px;border-radius:12px;border:1px solid var(--bo);border-left-width:4px;margin-top:8px;}.bl-row[role=button]{cursor:pointer;}.bl-row[role=button]:hover{background:rgba(255,255,255,.03);}.bl-row.good{border-left-color:#34d399;}.bl-row.mid{border-left-color:#fbbf24;}.bl-row.low{border-left-color:#fb923c;}.bl-row.vide{opacity:.5;border-left-color:var(--bo);}.bl-l{min-width:0;}.bl-t{font-weight:700;font-size:13px;color:var(--tp);}.bl-s{font-size:11.5px;color:var(--ts);margin-top:2px;}.bl-e{font-size:11.5px;color:#fbbf24;margin-top:3px;}.bl-e.ok{color:#34d399;}.bl-x{font-size:11.5px;color:var(--ts);margin-top:3px;line-height:1.4;}.bl-v{font-weight:800;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums;}.bl-agg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px;}.bl-agg>div{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--bo);}.bl-agg>div>b{display:block;font-size:13px;color:var(--tp);line-height:1.35;}@media(max-width:560px){.bl-agg{grid-template-columns:1fr;}.bl-agg>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}.bl-agg span{text-align:right;}}.bl-agg span{font-size:11px;color:var(--ts);}
+.bq-h{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:13px;font-weight:800;color:var(--tp);}.bq-h span{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(var(--acr3),.2);color:var(--ac3);font-size:11px;}.bq-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}.bq-kpi>div{min-width:0;padding:9px;border-radius:12px;border:1px solid var(--bo);background:rgba(255,255,255,.03);}.bq-kpi>div>b{display:block;font-size:13px;color:var(--tp);line-height:1.35;}.bq-kpi span{font-size:11px;color:var(--ts);}@media(max-width:560px){.bq-kpi{grid-template-columns:repeat(2,minmax(0,1fr));}}.tj-pdf{display:block;width:100%;margin-top:14px;padding:11px;border-radius:12px;border:1px solid rgba(var(--acr3),.4);background:rgba(var(--acr3),.1);color:var(--tp);font:inherit;font-weight:700;cursor:pointer;}.tj-pdf:hover{background:rgba(var(--acr3),.2);}
+.tj-avant{margin-bottom:12px !important;}.tj-avant summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--tp);list-style:none;}.tj-avant summary::-webkit-details-marker{display:none;}.tj-av-n{font-size:17px;font-weight:800;color:var(--tp);margin:10px 0 4px;}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -8305,34 +8307,65 @@ function initToday(){
   root.innerHTML=H;
 }
 
-function tjBilan(auj,pl){
-  if(!auj.length)return '<div class="psy-s" style="line-height:1.6">Pas de trade aujourd\'hui. Ne pas trader est aussi une décision : si c\'était voulu, c\'est une bonne journée.</div>'+tjLecon();
+// Bilan du jour en 4 questions : résultat, ce qui a marché, erreurs, ce que je change demain.
+function tjRisquePlan(){ return parseFloat((ACTIVE_ACCOUNT&&ACTIVE_ACCOUNT.risk)||DRSK)||1; }
+function tjRisqueTrop(t){ var r=parseFloat(t.risk_pct); return r>0&&r>tjRisquePlan()*1.1; }
+function tjDonneesJour(auj,pl){
   var W=psyWL(auj), net=auj.reduce(function(s,t){return s+pnlOf(t);},0), ec=planEcarts(auj,pl), pro=auj.filter(tjPropre).length;
   var sg=auj.filter(function(t){return ctxOf(t).sg;}), sgN=sg.filter(function(t){return ctxOf(t).sg==='n';}).length;
   var ru=auj.filter(function(t){return ctxOf(t).ru;}), ruN=ru.filter(function(t){return ctxOf(t).ru==='n';}).length;
   var errs={}, errN=0; auj.forEach(function(t){ var e=psyErrs(t); if(e.length)errN++; e.forEach(function(x){ var y=(errs[x]=errs[x]||{n:0,w:0,l:0}); y.n++; if(t.result==='WIN')y.w++; else if(t.result==='LOSS')y.l++; }); });
+  var bons={}; auj.forEach(function(t){ tagsOf(t,'psych_good').forEach(function(x){ var y=(bons[x]=bons[x]||{n:0,w:0,l:0}); y.n++; if(t.result==='WIN')y.w++; else if(t.result==='LOSS')y.l++; }); });
+  var risk=auj.filter(tjRisqueTrop);
   var bien=[];
   if(pro)bien.push('<b>'+pro+'</b> trade'+(pro>1?'s':'')+' propre'+(pro>1?'s':'')+' sur '+auj.length);
-  if((pl.maxTrades||pl.maxLoss||planPaires(pl).length)&&!ec.length)bien.push('tu es resté dans ton plan');
-  if(sg.length&&!sgN)bien.push('tous tes trades suivent ta stratégie');
-  if(ru.length&&!ruN)bien.push('tes règles ont été respectées');
-  if(!errN)bien.push('aucune erreur notée');
-  bien.push('tu as noté ta journée : ton suivi est à jour');
-  var propre=!ec.length&&!sgN&&!ruN&&!errN, verdict;
-  if(propre)verdict=['good','Belle journée propre 🌟','Tu as tenu ton plan, ta stratégie et tes règles. Reproduis la même chose demain.'];
-  else if(pro>=Math.ceil(auj.length/2))verdict=['mid','Bonne journée, un point à ajuster','La base est solide : il y a juste une chose à resserrer.'];
-  else verdict=['low','Une journée riche en enseignements','C\'est comme ça qu\'on progresse : une seule chose à retenir pour demain.'];
+  if((pl.maxTrades||pl.maxLoss||planPaires(pl).length)&&!ec.length)bien.push('Tu es resté dans ton plan');
+  if(sg.length&&!sgN)bien.push('Tous tes trades suivent ta stratégie');
+  if(ru.length&&!ruN)bien.push('Tes règles ont été respectées');
+  if(auj.length&&!risk.length&&auj.some(function(t){return parseFloat(t.risk_pct)>0;}))bien.push('Risque respecté sur chaque trade');
+  if(auj.length&&!errN)bien.push('Aucune erreur notée');
+  Object.keys(bons).forEach(function(k){ var y=bons[k]; bien.push(wkEsc(k)+' ('+y.n+' trade'+(y.n>1?'s':'')+' : '+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'); });
+  var mal=[];
+  Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;}).forEach(function(k){ var y=errs[k]; mal.push('<b>'+wkEsc(k)+'</b> : '+y.n+' trade'+(y.n>1?'s':'')+' ('+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'); });
+  if(sgN)mal.push('<b>Hors stratégie</b> : '+sgN+' trade'+(sgN>1?'s':''));
+  if(ruN)mal.push('<b>Règles non respectées</b> : '+ruN+' trade'+(ruN>1?'s':''));
+  if(risk.length)mal.push('<b>Risque au-dessus de ton plan</b> ('+tjRisquePlan()+' %) : '+risk.length+' trade'+(risk.length>1?'s':'')+' ('+risk.map(function(t){return parseFloat(t.risk_pct)+' %';}).join(', ')+')');
+  ec.forEach(function(x){ mal.push('<b>Plan</b> : '+x); });
   var R=psyRegles(), top=Object.keys(errs).sort(function(a,b){return errs[b].n-errs[a].n;})[0], demain;
   if(ec.length)demain='Garder tes repères : '+ec.join(' · ')+'.';
   else if(sgN)demain='Avant chaque entrée, passe tes conditions de stratégie en revue. Pas de condition, pas de trade.';
-  else if(top){ var f=psyFam(top), r=(R[f.k]||'').trim(); demain=r?'Ta règle : « '+wkEsc(r)+' ».':'Pour « '+wkEsc(top)+' », choisis une règle simple dans l\'onglet Psychologie.'; }
+  else if(risk.length)demain='Garder ton risque à '+tjRisquePlan()+' % par trade, pas plus.';
+  else if(top){ var f=psyFam(top), r=(R[f.k]||'').trim(); demain=r?'Ta règle contre « '+wkEsc(top)+' » : « '+wkEsc(r)+' ».':'Ne pas refaire « '+wkEsc(top)+' ». Choisis une règle simple dans l\'onglet Psychologie.'; }
   else demain='Rien à corriger : même plan, même sérénité.';
-  return '<div class="tj-verdict '+verdict[0]+'"><b>'+verdict[1]+'</b><span>'+verdict[2]+'</span></div>'
-   +'<div class="psy-sub">Ce qui a bien marché</div>'+bien.map(function(x){ return '<div class="tj-li"><span>✅</span><div>'+x.charAt(0).toUpperCase()+x.slice(1)+'</div></div>'; }).join('')
-   +'<div class="psy-sub">À ajuster demain (une seule chose)</div><div class="tj-li"><span>👉</span><div>'+demain+'</div></div>'
-   +tjDemainBox(demain)
-   +'<div class="psy-s" style="margin-top:10px">En chiffres : '+psyGP(W)+' · résultat du jour '+rsArgent(net)+(errN?' · erreurs notées : '+Object.keys(errs).map(function(k){ var y=errs[k]; return wkEsc(k)+' ('+y.w+' gagné'+(y.w>1?'s':'')+', '+y.l+' perdu'+(y.l>1?'s':'')+')'; }).join(', '):'')+'</div>'
-   +tjLecon();
+  var propre=auj.length&&!ec.length&&!sgN&&!ruN&&!errN&&!risk.length, verdict;
+  if(!auj.length)verdict=['good','Pas de trade','Ne pas trader est aussi une décision. Si c\'était voulu, c\'est une bonne journée.'];
+  else if(propre)verdict=['good','Belle journée propre 🌟','Tu as tenu ton plan, ta stratégie et tes règles. Reproduis la même chose demain.'];
+  else if(pro>=Math.ceil(auj.length/2))verdict=['mid','Bonne journée, un point à ajuster','La base est solide : il y a juste une chose à resserrer.'];
+  else verdict=['low','Une journée riche en enseignements','C\'est comme ça qu\'on progresse : une seule chose à retenir pour demain.'];
+  var ci=null; try{ ci=JSON.parse(localStorage.getItem(lsKey('bk_ci_'+(TJ_BKEY||tjKey())))||'null'); }catch(e){}
+  return {W:W,net:net,pro:pro,n:auj.length,sg:sg.length,sgN:sgN,ru:ru.length,ruN:ruN,ec:ec,risk:risk,errs:errs,bien:bien,mal:mal,demain:demain,verdict:verdict,ci:ci,trades:auj};
+}
+function tjBilan(auj,pl){
+  var D=tjDonneesJour(auj,pl);
+  var Q=function(n,t){ return '<div class="bq-h"><span>'+n+'</span>'+t+'</div>'; };
+  var li=function(ic,a){ return a.map(function(x){ return '<div class="tj-li"><span>'+ic+'</span><div>'+x+'</div></div>'; }).join(''); };
+  var H='<div class="tj-verdict '+D.verdict[0]+'"><b>'+D.verdict[1]+'</b><span>'+D.verdict[2]+'</span></div>';
+  // 1
+  H+=Q('1','Mon résultat');
+  if(D.n){ H+='<div class="bq-kpi"><div><b>'+D.n+'</b><span>trade'+(D.n>1?'s':'')+'</span></div><div><b>'+psyGP(D.W)+'</b><span>'+(D.W.b?D.W.b+' BE':'résultat')+'</span></div><div><b style="color:'+(D.net>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(D.net)+'</b><span>net</span></div><div><b>'+D.pro+'/'+D.n+'</b><span>trades propres</span></div></div>'
+    +'<div class="psy-s" style="margin-top:6px;line-height:1.6">Stratégie : '+(D.sg?(D.sg-D.sgN)+'/'+D.sg+' conformes':'non renseignée')+' · Règles : '+(D.ru?(D.ru-D.ruN)+'/'+D.ru+' respectées':'non renseignées')+' · Plan : '+(D.ec.length?'repère dépassé':'respecté')+(D.ci&&D.ci.en?' · Énergie '+D.ci.en+'/5':'')+'</div>'; }
+  else H+='<div class="psy-s">Aucun trade noté ce jour-là.</div>';
+  // 2
+  H+=Q('2','Ce qui a marché'); H+=D.bien.length?li('✅',D.bien):'<div class="psy-s">Note tes bons réflexes dans tes trades : ils apparaîtront ici.</div>';
+  // 3
+  H+=Q('3','Mes erreurs'); H+=D.mal.length?li('⚠️',D.mal):'<div class="psy-s">'+(D.n?'Aucune erreur. 👍':'—')+'</div>';
+  // 4
+  H+=Q('4','Ce que je change demain');
+  if(D.n)H+='<div class="tj-li"><span>👉</span><div>'+D.demain+'</div></div>';
+  H+=tjDemainBox(D.n?D.demain:'');
+  H+=tjLecon();
+  H+='<button class="tj-pdf" onclick="tjBilanPDF()">📄 Télécharger ce bilan en PDF</button>';
+  return H;
 }
 function tjLecon(){ return '<div class="psy-sub">Ta leçon du jour</div><textarea class="tj-lecon" rows="2" placeholder="Une phrase : ce que tu retiens d\'aujourd\'hui." oninput="tjLeconSave(this)">'+wkEsc(tjLeconGet())+'</textarea>'; }
 
@@ -8509,7 +8542,7 @@ function blAgg(S,quoi){ var r=blResume(S); if(!r.n)return '';
 // Semaine : la liste des journées
 function blSemaine(){
   var el=document.getElementById('wk-days'); if(!el)return; var old=document.getElementById('wk-bilans'); if(old)old.remove();
-  var a=wkDebut(WK_OFF), H='<div class="card" id="wk-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans de la semaine</div><div class="psy-s" style="margin:-4px 0 10px">Chaque journée, avec ses erreurs et ce que tu t\'es promis. Touche une journée pour rouvrir son bilan complet.</div>'+blAgg(wkTrades(WK_OFF),'cette semaine');
+  var a=wkDebut(WK_OFF), H='<div class="card" id="wk-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans de la semaine</div><div class="psy-s" style="margin:-4px 0 10px">Chaque journée, avec ses erreurs et ce que tu t\'es promis. Touche une journée pour rouvrir son bilan complet.</div>'+blAgg(wkTrades(WK_OFF),'cette semaine')+'<button class="tj-pdf" style="margin:8px 0 2px" onclick="blSemainePDF()">📄 Bilan de la semaine en PDF</button>';
   for(var i=0;i<7;i++){ var d=new Date(a); d.setDate(d.getDate()+i); d.setHours(0,0,0,0); if(d>new Date())break; d.setHours(12,0,0,0);
     var S=tjTradesDu(d), k=tjKeyOf(d); if(!S.length&&(d.getDay()===0||d.getDay()===6))continue;
     H+=blLigne(tjNomJour(d),S,[['📌',tjDemainGet(k)],['💡',tjLeconOf(k)]],S.length?'tjOuvrirJour(\''+d.toDateString()+'\')':''); }
@@ -8518,7 +8551,7 @@ function blSemaine(){
 // Mois : la liste des semaines
 function blMois(){
   var el=document.getElementById('mo-weeks'); if(!el)return; var old=document.getElementById('mo-bilans'); if(old)old.remove();
-  var a=moDebut(MO_OFF), fin=new Date(a.getFullYear(),a.getMonth()+1,1), H='<div class="card" id="mo-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans du mois, semaine par semaine</div>'+blAgg(moTrades(MO_OFF),'ce mois-ci');
+  var a=moDebut(MO_OFF), fin=new Date(a.getFullYear(),a.getMonth()+1,1), H='<div class="card" id="mo-bilans" style="margin-bottom:12px"><div class="ct">🌙 Tes bilans du mois, semaine par semaine</div>'+blAgg(moTrades(MO_OFF),'ce mois-ci')+'<button class="tj-pdf" style="margin:8px 0 2px" onclick="blMoisPDF()">📄 Bilan du mois en PDF</button>';
   var lun=new Date(a); lun.setDate(lun.getDate()-((lun.getDay()+6)%7)); lun.setHours(0,0,0,0);
   var now=new Date(), off0=wkDebut(0);
   while(lun<fin&&lun<=now){
@@ -8549,6 +8582,101 @@ document.addEventListener('DOMContentLoaded',function(){
   var _s=window.initSemaine; window.initSemaine=initSemaine=function(){ var r=_s.apply(this,arguments); try{ blSemaine(); }catch(e){ console.warn('blSemaine',e); } return r; };
   var _m=window.initMois; window.initMois=initMois=function(){ var r=_m.apply(this,arguments); try{ blMois(); }catch(e){ console.warn('blMois',e); } return r; };
   var _u=window.updateDash; window.updateDash=updateDash=function(){ var r=_u.apply(this,arguments); try{ blAnnee(); }catch(e){ console.warn('blAnnee',e); } return r; };
+});
+
+// ═══ PDF des bilans (jour, semaine, mois) ═══
+function bkTxt(h){ return String(h==null?'':h).replace(/<[^>]+>/g,''); }
+function bkPDF(inner,fichier){
+  if(typeof html2canvas==='undefined'||!(window.jspdf&&window.jspdf.jsPDF)){ toast('⏳ Librairie PDF en cours de chargement, réessaie dans 2 s'); return; }
+  toast('📄 Génération du PDF…');
+  var R=document.createElement('div'); R.id='bk-pdf';
+  R.style.cssText='position:fixed;left:-10000px;top:0;width:760px;background:#fff;color:#1e2333;font-family:Inter,Arial,sans-serif;padding:36px 40px;box-sizing:border-box;';
+  R.innerHTML='<style>.p-h{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1e2333;padding-bottom:12px;margin-bottom:18px}.p-h h1{font-size:22px;margin:0}.p-h small{color:#5b6478;font-size:12px}.p-v{padding:12px 14px;border-radius:10px;margin-bottom:16px;font-size:13px}.p-v b{display:block;font-size:15px;margin-bottom:2px}.p-v.good{background:#e7f8f0}.p-v.mid{background:#fff6e0}.p-v.low{background:#fff0e6}.p-q{font-size:14px;font-weight:800;margin:18px 0 8px;display:flex;gap:8px;align-items:center}.p-q span{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#1e2333;color:#fff;font-size:12px;align-items:center;justify-content:center}.p-k{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.p-k div{border:1px solid #e3e6ee;border-radius:8px;padding:8px 10px}.p-k b{display:block;font-size:15px}.p-k em{font-style:normal;font-size:11px;color:#5b6478}.p-l{font-size:12.5px;line-height:1.55;margin:3px 0}.p-n{border-left:3px solid #2563eb;background:#f3f6fd;padding:8px 10px;border-radius:6px;font-size:12.5px;margin:6px 0;white-space:pre-wrap}.p-s{font-size:11.5px;color:#5b6478}#bk-pdf table{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px}#bk-pdf th{text-align:left;color:#5b6478 !important;font-weight:600;border-bottom:1px solid #e3e6ee;padding:5px 4px;background:none !important}#bk-pdf td{color:#1e2333 !important;opacity:1 !important;background:none !important;border-bottom:1px solid #f0f2f6;padding:5px 4px;vertical-align:top}#bk-pdf tr{opacity:1 !important;animation:none !important;background:none !important}#bk-pdf .g{color:#0f9d6e !important}#bk-pdf .r{color:#d0344f !important}.p-f{margin-top:22px;font-size:10px;color:#9aa1b2;text-align:center}</style>'+inner+'<div class="p-f">BAKOU · généré le '+new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+'</div>';
+  document.body.appendChild(R);
+  setTimeout(function(){
+    html2canvas(R,{scale:2,backgroundColor:'#ffffff',windowWidth:760,logging:false}).then(function(canvas){
+      var pdf=new window.jspdf.jsPDF('p','mm','a4'), pw=210, ph=297, imgH=canvas.height*pw/canvas.width, img=canvas.toDataURL('image/jpeg',0.92), left=imgH, pos=0;
+      pdf.addImage(img,'JPEG',0,pos,pw,imgH); left-=ph;
+      while(left>0){ pos-=ph; pdf.addPage(); pdf.addImage(img,'JPEG',0,pos,pw,imgH); left-=ph; }
+      pdf.save(fichier); R.remove(); toast('✅ PDF téléchargé');
+    }).catch(function(e){ console.error('pdf',e); R.remove(); toast('❌ Erreur PDF : '+e.message); });
+  },200);
+}
+function bkPdfTrades(S){
+  if(!S.length)return '';
+  return '<table><thead><tr><th>Date</th><th>Paire</th><th>Sens</th><th>Résultat</th><th>P&L</th><th>R</th><th>Stratégie</th><th>Erreurs</th></tr></thead><tbody>'
+   +S.map(function(t){ var d=tDate(t), c=ctxOf(t), v=pnlOf(t), r=computeActualR(t);
+     return '<tr><td>'+d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+wkEsc(t.pair)+'</td><td>'+(t.dir==='SHORT'||t.dir==='SELL'?'Vente':'Achat')+'</td><td>'+wkEsc(t.result||'')+'</td><td class="'+(v>=0?'g':'r')+'">'+rsArgent(v)+'</td><td>'+(r>=0?'+':'')+r.toFixed(2)+'R</td><td>'+(c.sg==='o'?'Conforme':(c.sg==='n'?'Hors strat.':'—'))+'</td><td>'+(psyErrs(t).map(wkEsc).join(', ')||'—')+'</td></tr>'; }).join('')+'</tbody></table>';
+}
+function tjBilanPDF(){
+  var J=tjJours(), d=J[TJ_BI]||J[0]; TJ_BKEY=tjKeyOf(d);
+  var S=tjTradesDu(d), D=tjDonneesJour(S,planGet());
+  var date=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var dem=tjDemainGet().trim(), lec=tjLeconGet().trim();
+  var H='<div class="p-h"><div><small>BAKOU · Bilan de la journée</small><h1>'+date.charAt(0).toUpperCase()+date.slice(1)+'</h1></div><small>'+(ACTIVE_ACCOUNT?wkEsc(ACTIVE_ACCOUNT.name):'')+'</small></div>'
+   +'<div class="p-v '+D.verdict[0]+'"><b>'+bkTxt(D.verdict[1])+'</b>'+D.verdict[2]+'</div>'
+   +'<div class="p-q"><span>1</span>Mon résultat</div>'
+   +(D.n?'<div class="p-k"><div><b>'+D.n+'</b><em>trades</em></div><div><b>'+D.W.w+' / '+D.W.l+'</b><em>gagnés / perdus'+(D.W.b?' · '+D.W.b+' BE':'')+'</em></div><div><b class="'+(D.net>=0?'g':'r')+'">'+rsArgent(D.net)+'</b><em>net</em></div><div><b>'+D.pro+'/'+D.n+'</b><em>trades propres</em></div></div>'
+     +'<div class="p-s" style="margin-top:6px">Stratégie : '+(D.sg?(D.sg-D.sgN)+'/'+D.sg+' conformes':'non renseignée')+' · Règles : '+(D.ru?(D.ru-D.ruN)+'/'+D.ru+' respectées':'non renseignées')+' · Plan : '+(D.ec.length?'repère dépassé':'respecté')+(D.ci&&D.ci.en?' · Énergie '+D.ci.en+'/5':'')+'</div>':'<div class="p-l">Aucun trade ce jour-là.</div>')
+   +'<div class="p-q"><span>2</span>Ce qui a marché</div>'+(D.bien.length?D.bien.map(function(x){return '<div class="p-l">✓ '+x+'</div>';}).join(''):'<div class="p-l">—</div>')
+   +'<div class="p-q"><span>3</span>Mes erreurs</div>'+(D.mal.length?D.mal.map(function(x){return '<div class="p-l">• '+x+'</div>';}).join(''):'<div class="p-l">Aucune erreur.</div>')
+   +'<div class="p-q"><span>4</span>Ce que je change demain</div>'+(D.n?'<div class="p-l">→ '+D.demain+'</div>':'')
+   +(dem?'<div class="p-s" style="margin-top:8px">Demain, je ne refais pas :</div><div class="p-n">'+wkEsc(dem)+'</div>':'')
+   +(lec?'<div class="p-s" style="margin-top:8px">Ma leçon du jour :</div><div class="p-n">'+wkEsc(lec)+'</div>':'')
+   +(S.length?'<div class="p-q" style="margin-top:22px">Les trades de la journée</div>'+bkPdfTrades(S):'');
+  bkPDF(H,'BAKOU-bilan-'+dayKeyLocal(d)+'.pdf');
+}
+function bkPdfPeriode(titre,sous,S,lignes,notes,fichier){
+  var r=blResume(S);
+  var H='<div class="p-h"><div><small>BAKOU · '+sous+'</small><h1>'+titre+'</h1></div><small>'+(ACTIVE_ACCOUNT?wkEsc(ACTIVE_ACCOUNT.name):'')+'</small></div>'
+   +'<div class="p-q"><span>1</span>Mon résultat</div>'
+   +'<div class="p-k"><div><b>'+r.n+'</b><em>trades</em></div><div><b>'+r.W.w+' / '+r.W.l+'</b><em>gagnés / perdus</em></div><div><b class="'+(r.net>=0?'g':'r')+'">'+rsArgent(r.net)+'</b><em>net</em></div><div><b>'+r.pro+'/'+r.n+'</b><em>trades propres</em></div></div>'
+   +'<div class="p-q"><span>2</span>Mes erreurs</div>'+(r.errs.length?r.errs.map(function(e){ var x=S.filter(function(t){return psyErrs(t).indexOf(e)>=0;}), W=psyWL(x); return '<div class="p-l">• <b>'+wkEsc(e)+'</b> : '+x.length+' trade'+(x.length>1?'s':'')+' ('+W.w+' gagné'+(W.w>1?'s':'')+', '+W.l+' perdu'+(W.l>1?'s':'')+')</div>'; }).join(''):'<div class="p-l">Aucune erreur notée.</div>')
+   +'<div class="p-q"><span>3</span>Détail</div><table><thead><tr><th>Période</th><th>Trades</th><th>Gagnés / perdus</th><th>Propres</th><th>Net</th><th>Erreurs</th><th>Mes notes</th></tr></thead><tbody>'
+   +lignes.map(function(l){ var x=blResume(l.S); return '<tr><td><b>'+l.t+'</b></td><td>'+x.n+'</td><td>'+x.W.w+' / '+x.W.l+'</td><td>'+(x.n?x.pro+'/'+x.n:'—')+'</td><td class="'+(x.net>=0?'g':'r')+'">'+(x.n?rsArgent(x.net):'—')+'</td><td>'+(x.errs.slice(0,3).map(wkEsc).join(', ')||'—')+'</td><td>'+(l.notes||[]).filter(Boolean).map(wkEsc).join('<br>')+'</td></tr>'; }).join('')+'</tbody></table>'
+   +(notes&&notes.some(function(n){return n[1];})?'<div class="p-q"><span>4</span>Ce que je retiens</div>'+notes.filter(function(n){return n[1];}).map(function(n){return '<div class="p-s" style="margin-top:6px">'+n[0]+'</div><div class="p-n">'+wkEsc(n[1])+'</div>';}).join(''):'')
+   +'<div class="p-q" style="margin-top:22px">Tous les trades</div>'+bkPdfTrades(sortedByDate(S));
+  bkPDF(H,fichier);
+}
+function blSemainePDF(){
+  var a=wkDebut(WK_OFF), n=wkNumero(a), lignes=[];
+  for(var i=0;i<7;i++){ var d=new Date(a); d.setDate(d.getDate()+i); d.setHours(12,0,0,0); var S=tjTradesDu(d), k=tjKeyOf(d); if(!S.length)continue;
+    lignes.push({t:tjNomJour(d),S:S,notes:[tjDemainGet(k)?'Demain : '+tjDemainGet(k):'',tjLeconOf(k)?'Leçon : '+tjLeconOf(k):'']}); }
+  var z=new Date(a); z.setDate(z.getDate()+6);
+  bkPdfPeriode('Semaine '+n.sem+' · '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' → '+z.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}),'Bilan de la semaine',wkTrades(WK_OFF),lignes,
+    [['Ce qui a marché',wkNoteGet('ok')],['Ce que je dois corriger',wkNoteGet('mal')],['Ma règle pour la semaine prochaine',wkNoteGet('regle')]],'BAKOU-semaine-'+wkCle(WK_OFF)+'.pdf');
+}
+function blMoisPDF(){
+  var a=moDebut(MO_OFF), fin=new Date(a.getFullYear(),a.getMonth()+1,1), lignes=[], lun=new Date(a); lun.setDate(lun.getDate()-((lun.getDay()+6)%7)); lun.setHours(0,0,0,0);
+  while(lun<fin){ var lf=new Date(lun); lf.setDate(lf.getDate()+7);
+    var S=T.filter(function(t){ var d=tDate(t); return d>=lun&&d<lf&&d>=a&&d<fin; }), n=wkNumero(lun), cle=n.an+'-S'+(n.sem<10?'0':'')+n.sem;
+    var nm=function(c){ try{ return localStorage.getItem(lsKey('wk_'+cle+'_'+c))||''; }catch(e){ return ''; } };
+    if(S.length)lignes.push({t:'Semaine '+n.sem,S:S,notes:[nm('mal')?'À corriger : '+nm('mal'):'',nm('regle')?'Règle : '+nm('regle'):'']});
+    lun=lf; }
+  bkPdfPeriode(MO_NOMS[a.getMonth()]+' '+a.getFullYear(),'Bilan du mois',moTrades(MO_OFF),lignes,
+    [['Ce qui a marché',moNoteGet('ok')],['Ce que je dois corriger',moNoteGet('mal')],['Ma règle pour le mois prochain',moNoteGet('regle')]],'BAKOU-mois-'+moCle(MO_OFF)+'.pdf');
+}
+
+// ═══ Avant de trader : ta stratégie et tes repères, en haut d'Aujourd'hui ═══
+function tjAvantHTML(){
+  var st=stGet(), pl=planGet(), chk=(st.check||[]).filter(function(x){return (x||'').trim();});
+  var rep=['Risque : <b>'+tjRisquePlan()+' %</b> par trade'];
+  if(pl.maxTrades)rep.push('<b>'+pl.maxTrades+'</b> trades max');
+  if(pl.maxLoss)rep.push('pause à <b>−$'+Math.round(pl.maxLoss)+'</b>');
+  if(planPaires(pl).length)rep.push('paires : <b>'+planPaires(pl).map(wkEsc).join(', ')+'</b>');
+  var H='<details class="card tj-avant" open><summary>📐 Avant de trader : ma stratégie</summary>';
+  if(!chk.length&&!(st.principe||'').trim())H+='<div class="psy-s" style="line-height:1.6;margin-top:8px">Ta stratégie apparaîtra ici chaque matin. <button class="psy-use-i" onclick="showGroupe(\'strategie\')">Écrire ma stratégie</button></div>';
+  else{
+    if(st.nom)H+='<div class="tj-av-n">'+wkEsc(st.nom)+'</div>';
+    if((st.principe||'').trim())H+='<div class="psy-s" style="line-height:1.6;margin-bottom:6px">'+wkEsc(st.principe)+'</div>';
+    if(chk.length)H+='<div class="psy-sub" style="margin-top:6px">Avant chaque entrée</div>'+chk.map(function(c){ return '<div class="tj-li"><span>☐</span><div>'+wkEsc(c)+'</div></div>'; }).join('')+'<div class="psy-s" style="margin-top:4px">Pas toutes les conditions : pas de trade.</div>';
+  }
+  H+='<div class="psy-s" style="margin-top:10px">Mes repères : '+rep.join(' · ')+'</div></details>';
+  return H;
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var _it=window.initToday; window.initToday=initToday=function(){ _it.apply(this,arguments);
+    var h=document.querySelector('#tj-body .tj-hero'); if(h)h.insertAdjacentHTML('afterend',tjAvantHTML()); };
 });
 
 document.addEventListener('DOMContentLoaded',boot);
