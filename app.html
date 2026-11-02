@@ -8616,7 +8616,18 @@ function rpData(S){
     WA:psyWL(avec),WS:psyWL(sans),nA:avec.length,
     paires:rpGroupes(S,function(t){return t.pair;}), sess:rpGroupes(S,function(t){return t.sess;}),
     errs:rpTags(S,'psych_errors'), bons:rpTags(S,'psych_good'),
-    hors:psyWL(S.filter(function(t){return ctxOf(t).sg==='n';})), conf:psyWL(sgO)};
+    hors:psyWL(S.filter(function(t){return ctxOf(t).sg==='n';})), conf:psyWL(sgO),
+    dir:rpGroupes(S,function(t){ return (t.dir==='SHORT'||t.dir==='SELL')?'Short (vente)':((t.dir==='LONG'||t.dir==='BUY')?'Long (achat)':null); }),
+    jours:rpGroupes(S,function(t){ var d=tDate(t); return isNaN(d)?null:['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'][d.getDay()]; }).sort(function(a,b){ var o=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche']; return o.indexOf(a.k)-o.indexOf(b.k); }),
+    heures:rpGroupes(S,function(t){ var h=(t.entry_time&&/^\d{1,2}:/.test(t.entry_time))?parseInt(t.entry_time):tDate(t).getHours(); if(isNaN(h))return null; return (h<10?'0':'')+h+' h – '+((h+1)<10?'0':'')+(h+1)+' h'; }).sort(function(a,b){return a.k<b.k?-1:1;}),
+    setups:rpGroupes([].concat.apply([],S.map(function(t){ return tagsOf(t,'strats').map(function(k){ var c=Object.assign({},t); c.__s=k; return c; }); })),function(t){return t.__s;}),
+    sorties:rpGroupes(S,function(t){ return {TP:'Take profit',SL:'Stop loss',BE:'Break-even',MANUEL:'Sortie manuelle'}[t.cl]||null; }),
+    energie:rpGroupes(S,function(t){ var e=ctxOf(t).en; return e?(e<=2?'Énergie basse (1-2)':(e===3?'Énergie moyenne (3)':'Énergie haute (4-5)')):null; }),
+    humeur:rpGroupes(S,function(t){ var h=ctxOf(t).hu; return h?['','Humeur : mal','Humeur : neutre','Humeur : bien'][h]:null; }),
+    ctxs:(function(){ var A=psyAuto(S); return rpGroupes(S,function(t){ var a=A[t.id]; return a&&a.apres?'Juste après une perte':null; })
+      .concat(rpGroupes(S,function(t){ var a=A[t.id]; return a?(a.nth===1?'1er trade du jour':(a.nth<=3?'2e ou 3e trade du jour':'4e trade du jour ou plus')):null; })); })(),
+    serie:perfSeries(S), rMax:rk.length?Math.max.apply(null,rk.map(function(t){return parseFloat(t.risk_pct);})):null,
+    rDist:[['≤ −1 R',function(r){return r<=-1;}],['−1 à 0 R',function(r){return r>-1&&r<0;}],['0 à 1 R',function(r){return r>=0&&r<1;}],['1 à 2 R',function(r){return r>=1&&r<2;}],['≥ 2 R',function(r){return r>=2;}]].map(function(b){ return {k:b[0],n:S.filter(function(t){return b[1](computeActualR(t));}).length}; })};
 }
 function rpStop(D){
   var out=[], base=D.wr;
@@ -8624,8 +8635,10 @@ function rpStop(D){
     out.push(['<b>'+wkEsc(x.k)+'</b>', x.n+' trade'+(x.n>1?'s':'')+' · '+x.w+' gagné'+(x.w>1?'s':'')+' · '+x.l+' perdu'+(x.l>1?'s':'')+' · '+rpM(x.net)]); });
   if(D.hors.n)out.push(['<b>Trader hors de ma stratégie</b>', D.hors.n+' trade'+(D.hors.n>1?'s':'')+' · '+D.hors.w+' gagné'+(D.hors.w>1?'s':'')+' · '+D.hors.l+' perdu'+(D.hors.l>1?'s':'')]);
   if(D.risk.length)out.push(['<b>Risquer plus de '+tjRisquePlan()+' % par trade</b>', D.risk.length+' trade'+(D.risk.length>1?'s':'')+' au-dessus du plan']);
-  D.paires.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Forcer '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de réussite · '+rpM(x.net)]); });
-  D.sess.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Trader en session '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de réussite · '+rpM(x.net)]); });
+  D.paires.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Forcer '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
+  D.sess.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Trader en session '+wkEsc(x.k)+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
+  D.ctxs.filter(function(x){return x.n>=2&&x.net<0&&x.wr!=null&&base!=null&&x.wr<base;}).forEach(function(x){ out.push(['<b>'+wkEsc(x.k)+'</b> : tu performes moins', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
+  D.energie.filter(function(x){return x.n>=2&&x.net<0;}).forEach(function(x){ out.push(['<b>Trader en '+wkEsc(x.k.toLowerCase())+'</b>', rpN(x.n,'trade')+' · '+rpPct(x.wr)+' de win rate · '+rpM(x.net)]); });
   return out;
 }
 function rpGarde(D){
@@ -8633,7 +8646,9 @@ function rpGarde(D){
   var bp=D.paires.filter(function(x){return x.net>0;})[0], bs=D.sess.filter(function(x){return x.net>0;})[0];
   if(bp)out.push(['<b>'+wkEsc(bp.k)+'</b> est ta meilleure paire', rpN(bp.n,'trade')+' · '+rpPct(bp.wr)+' · '+rpM(bp.net)]);
   if(bs)out.push(['<b>Session '+wkEsc(bs.k)+'</b> est ta meilleure session', rpN(bs.n,'trade')+' · '+rpPct(bs.wr)+' · '+rpM(bs.net)]);
-  if(D.conf.n)out.push(['<b>Trades conformes à ta stratégie</b>', rpN(D.conf.n,'trade')+' · '+rpPct(D.conf.wr)+' de réussite']);
+  if(D.conf.n)out.push(['<b>Trades conformes à ta stratégie</b>', rpN(D.conf.n,'trade')+' · '+rpPct(D.conf.wr)+' de win rate']);
+  var bd=D.dir.filter(function(x){return x.net>0;})[0]; if(bd&&D.dir.length>1)out.push(['<b>'+wkEsc(bd.k)+'</b> te réussit mieux', rpN(bd.n,'trade')+' · '+rpPct(bd.wr)+' · '+rpM(bd.net)]);
+  var bset=D.setups.filter(function(x){return x.net>0;})[0]; if(bset)out.push(['<b>Setup '+wkEsc(bset.k)+'</b>', rpN(bset.n,'trade')+' · '+rpPct(bset.wr)+' · '+rpM(bset.net)]);
   D.bons.slice(0,3).forEach(function(x){ out.push(['<b>'+wkEsc(x.k)+'</b>', x.n+' trade'+(x.n>1?'s':'')+' · '+x.w+' gagné'+(x.w>1?'s':'')+' · '+x.l+' perdu'+(x.l>1?'s':'')]); });
   return out;
 }
@@ -8649,55 +8664,89 @@ function rpCourbe(eq){
 function rpTable(rows,titre){
   if(!rows.length)return '<div class="rp-empty">Aucune donnée</div>';
   var mx=Math.max.apply(null,rows.map(function(x){return Math.abs(x.net);}).concat([1]));
-  return '<table class="rp-t"><thead><tr><th>'+titre+'</th><th class="c">Trades</th><th class="c">Gagnés</th><th class="c">Perdus</th><th class="c">Réussite</th><th class="c">R moyen</th><th class="r">Net</th><th style="width:110px"></th></tr></thead><tbody>'
+  return '<table class="rp-t"><thead><tr><th>'+titre+'</th><th class="c">Trades</th><th class="c">Gagnés</th><th class="c">Perdus</th><th class="c">Win rate</th><th class="c">R moyen</th><th class="r">Net</th><th style="width:110px"></th></tr></thead><tbody>'
    +rows.map(function(x){ var w=Math.round(Math.abs(x.net)/mx*100), c=x.net>=0?'#059669':'#dc2626';
      return '<tr><td><b>'+wkEsc(x.k)+'</b></td><td class="c">'+x.n+'</td><td class="c">'+x.w+'</td><td class="c">'+x.l+'</td><td class="c">'+rpPct(x.wr)+'</td><td class="c">'+(x.rAvg>=0?'+':'')+x.rAvg.toFixed(2)+'</td><td class="r" style="color:'+c+'"><b>'+rpM(x.net)+'</b></td><td><div class="rp-bar"><i style="width:'+w+'%;background:'+c+'"></i></div></td></tr>'; }).join('')+'</tbody></table>';
 }
+function rpMini(rows,titre){
+  if(!rows.length)return '<div class="rp-empty">Non renseigné</div>';
+  return '<table class="rp-t rp-mini"><thead><tr><th>'+titre+'</th><th class="c">Trades</th><th class="c">G / P</th><th class="c">Win rate</th><th class="r">Net</th></tr></thead><tbody>'
+   +rows.map(function(x){ return '<tr><td><b>'+wkEsc(x.k)+'</b></td><td class="c">'+x.n+'</td><td class="c">'+x.w+' / '+x.l+'</td><td class="c">'+rpPct(x.wr)+'</td><td class="r" style="color:'+(x.net>=0?'#059669':'#dc2626')+'"><b>'+rpM(x.net)+'</b></td></tr>'; }).join('')+'</tbody></table>';
+}
+function rpCmp(D,D0,lab){
+  if(!D0||!D0.n)return '';
+  var c=function(l,a,b,f,inv){ if(a==null||b==null||!isFinite(a)||!isFinite(b))return '<div><span>'+l+'</span><b>—</b></div>'; var d=a-b, up=inv?d<0:d>0, z=Math.abs(d)<1e-9;
+    return '<div><span>'+l+'</span><b style="color:'+(z?'#64748b':(up?'#059669':'#dc2626'))+'">'+(z?'= stable':(d>0?'▲ ':'▼ ')+f(Math.abs(d)))+'</b></div>'; };
+  return '<div class="rp-cmp"><div class="rp-cl">Par rapport à '+lab+'</div><div class="rp-cg">'
+   +c('Net',D.net,D0.net,function(v){return '$'+Math.round(v).toLocaleString('fr-FR');})
+   +c('Win rate',D.wr,D0.wr,function(v){return Math.round(v)+' pts';})
+   +c('Profit factor',D.pf,D0.pf,function(v){return v.toFixed(2);})
+   +c('Trades propres',D.n?D.pro/D.n*100:null,D0.n?D0.pro/D0.n*100:null,function(v){return Math.round(v)+' pts';})
+   +c('R par trade',D.rReal,D0.rReal,function(v){return v.toFixed(2)+' R';})+'</div></div>';
+}
 function rpPsyTable(rows,base,vide){
   if(!rows.length)return '<div class="rp-empty">'+vide+'</div>';
-  return '<table class="rp-t"><thead><tr><th>Comportement</th><th class="c">Trades</th><th class="c">Gagnés</th><th class="c">Perdus</th><th class="c">Réussite</th><th class="r">Net</th></tr></thead><tbody>'
+  return '<table class="rp-t"><thead><tr><th>Comportement</th><th class="c">Trades</th><th class="c">Gagnés</th><th class="c">Perdus</th><th class="c">Win rate</th><th class="r">Net</th></tr></thead><tbody>'
    +rows.map(function(x){ var d=(x.wr!=null&&base!=null)?x.wr-base:null;
      return '<tr><td><b>'+wkEsc(x.k)+'</b></td><td class="c">'+x.n+'</td><td class="c">'+x.w+'</td><td class="c">'+x.l+'</td><td class="c">'+rpPct(x.wr)+(d!=null&&Math.abs(d)>=5?' <span style="color:'+(d>0?'#059669':'#dc2626')+';font-size:10px">'+(d>0?'▲':'▼')+Math.abs(Math.round(d))+'</span>':'')+'</td><td class="r" style="color:'+(x.net>=0?'#059669':'#dc2626')+'">'+rpM(x.net)+'</td></tr>'; }).join('')+'</tbody></table>';
 }
 function rpListe(a,ic,cls){ return a.map(function(x){ return '<div class="rp-li '+cls+'"><span>'+ic+'</span><div>'+x[0]+'<em>'+x[1]+'</em></div></div>'; }).join(''); }
-function rpHTML(type,titre,S,notes){
-  var D=rpData(S), acc=ACTIVE_ACCOUNT?wkEsc(ACTIVE_ACCOUNT.name):'';
+function rpHTML(type,titre,S,notes,S0,lab0){
+  var D=rpData(S), D0=S0?rpData(S0):null, acc=ACTIVE_ACCOUNT?wkEsc(ACTIVE_ACCOUNT.name):'', num=0;
+  var sec=function(t){ num++; return '<div class="rp-sec"><div class="rp-h2"><span>'+(num<10?'0':'')+num+'</span>'+t+'</div>'; };
   var K=function(l,v,s,c){ return '<div class="rp-k"><span>'+l+'</span><b'+(c?' style="color:'+c+'"':'')+'>'+v+'</b><em>'+s+'</em></div>'; };
   var pf=D.pf===null?'—':(isFinite(D.pf)?D.pf.toFixed(2):'∞');
   var H='<div class="rp-sec rp-head"><div class="rp-brand">BAKOU<span>Rapport de performance</span></div><div class="rp-ht"><small>'+type+'</small><h1>'+titre+'</h1><div class="rp-acc">'+acc+(CAP>0?' · capital $'+Math.round(CAP).toLocaleString('fr-FR'):'')+'</div></div></div>';
-  if(!D.n){ return H+'<div class="rp-sec"><div class="rp-empty" style="padding:30px">Aucun trade sur cette période.</div></div>'+rpNotes(notes); }
-  // 1. Résultats
-  H+='<div class="rp-sec"><div class="rp-h2"><span>01</span>Résultats</div><div class="rp-kg">'
+  if(!D.n){ return H+'<div class="rp-sec"><div class="rp-empty" style="padding:30px">Aucun trade sur cette période.</div></div>'+rpNotes(notes,1); }
+  // Résultats
+  H+=sec('Résultats')+'<div class="rp-kg">'
    +K('Bénéfice net',rpM(D.net),(D.pct!=null?(D.pct>=0?'+':'−')+Math.abs(D.pct).toFixed(2)+' % du capital':''),D.net>=0?'#059669':'#dc2626')
-   +K('Trades',D.n,rpN(D.P.w,'gagné')+' · '+rpN(D.P.l,'perdu')+' · '+D.P.be+' BE')
-   +K('Taux de réussite',rpPct(D.wr),'hors break-even')
+   +K('Win rate',rpPct(D.wr),rpN(D.P.w,'gagné')+' · '+rpN(D.P.l,'perdu')+' (hors BE)')
+   +K('Trades',D.n,D.P.be+' break-even')
    +K('Profit factor',pf,'gains ÷ pertes')
    +K('RR moyen prévu',D.rr?'1 : '+D.rr.toFixed(2):'—','objectif par trade')
    +K('R réalisé',(D.rTot>=0?'+':'')+D.rTot.toFixed(2)+' R',(D.rReal>=0?'+':'')+D.rReal.toFixed(2)+' R par trade',D.rTot>=0?'#059669':'#dc2626')
    +K('Gain moyen',D.P.w?rpM(D.P.gainMoy):'—','perte moyenne '+(D.P.l?rpM(-D.P.perteMoy):'—')+(D.P.ratioGainPerte?' · ratio '+D.P.ratioGainPerte.toFixed(2):''))
    +K('Pire repli',D.dd?rpM(-D.dd):'—',D.ddPct!=null&&D.dd?'−'+D.ddPct.toFixed(2)+' % du capital':'du plus haut au plus bas')
-   +'</div>'+(D.eq.length>=3?'<div class="rp-curve"><div class="rp-cl">Évolution du résultat, trade par trade</div>'+rpCourbe(D.eq)+'</div>':'')+'</div>';
-  // 2. Paires  3. Sessions
-  H+='<div class="rp-sec"><div class="rp-h2"><span>02</span>Paires</div>'+rpTable(D.paires,'Paire')+'</div>';
-  H+='<div class="rp-sec"><div class="rp-h2"><span>03</span>Sessions</div>'+rpTable(D.sess,'Session')+'</div>';
-  // 4. Psychologie
+   +K('Moyenne par trade',rpM(D.n?D.net/D.n:0),'net ÷ trades',D.net>=0?'#059669':'#dc2626')
+   +K('Meilleur trade',rpM(Math.max.apply(null,D.S.map(pnlOf))),'pire '+rpM(Math.min.apply(null,D.S.map(pnlOf))))
+   +K('Série de gains',D.serie.maxGains,'trades gagnants d\'affilée (max)')
+   +K('Série de pertes',D.serie.maxPertes,'trades perdants d\'affilée (max)')
+   +'</div>'+rpCmp(D,D0,lab0)+(D.eq.length>=3?'<div class="rp-curve"><div class="rp-cl">Évolution du résultat, trade par trade</div>'+rpCourbe(D.eq)+'</div>':'')+'</div>';
+  H+=sec('Paires')+rpTable(D.paires,'Paire')+'</div>';
+  H+=sec('Sessions')+rpTable(D.sess,'Session')+'</div>';
+  H+=sec('Quand tu trades')+'<div class="rp-2c"><div><div class="rp-sub" style="margin-top:0">Direction</div>'+rpMini(D.dir,'Sens')+'</div><div><div class="rp-sub" style="margin-top:0">Jours</div>'+rpMini(D.jours,'Jour')+'</div></div>'
+   +'<div class="rp-sub">Heures d\'entrée</div>'+rpMini(D.heures,'Créneau')+'</div>';
+  if(D.setups.length)H+=sec('Setups')+rpTable(D.setups,'Setup')+'</div>';
+  // Risque
+  var bar=Math.max.apply(null,D.rDist.map(function(x){return x.n;}).concat([1]));
+  H+=sec('Gestion du risque')+'<div class="rp-kg" style="grid-template-columns:repeat(4,1fr)">'
+   +K('Risque moyen',D.rAvg!=null?D.rAvg.toFixed(2)+' %':'—','par trade · plan '+tjRisquePlan()+' %')
+   +K('Risque max',D.rMax!=null?D.rMax.toFixed(2)+' %':'—','sur un trade')
+   +K('Au-dessus du plan',D.risk.length,D.risk.length?'trade'+(D.risk.length>1?'s':'')+' à surveiller':'risque respecté',D.risk.length?'#dc2626':'#059669')
+   +K('Trades propres',D.n?Math.round(D.pro/D.n*100)+' %':'—',D.pro+' / '+D.n)
+   +'</div><div class="rp-2c" style="margin-top:12px"><div><div class="rp-sub" style="margin-top:0">Répartition des résultats en R</div>'
+   +D.rDist.map(function(x){ return '<div class="rp-dist"><span>'+x.k+'</span><div class="rp-bar"><i style="width:'+Math.round(x.n/bar*100)+'%;background:#2563eb"></i></div><b>'+x.n+'</b></div>'; }).join('')
+   +'</div><div><div class="rp-sub" style="margin-top:0">Sorties</div>'+rpMini(D.sorties,'Sortie')+'</div></div></div>';
+  // Psychologie
   var disc=function(l,a,b){ return '<div class="rp-d"><b>'+(b?Math.round(a/b*100)+' %':'—')+'</b><span>'+l+'</span><em>'+(b?a+' / '+b:'non renseigné')+'</em></div>'; };
-  H+='<div class="rp-sec"><div class="rp-h2"><span>04</span>Psychologie</div><div class="rp-dg">'
+  H+=sec('Psychologie')+'<div class="rp-dg">'
    +disc('Trades propres',D.pro,D.n)+disc('Stratégie respectée',D.sgO,D.sg)+disc('Règles respectées',D.ruO,D.ru)
-   +'<div class="rp-d"><b>'+rpPct(D.WS.wr)+' <small>vs</small> '+rpPct(D.WA.wr)+'</b><span>Réussite sans erreur / avec erreur</span><em>'+(D.n-D.nA)+' sans · '+D.nA+' avec</em></div></div>'
+   +'<div class="rp-d"><b>'+rpPct(D.WS.wr)+' <small>vs</small> '+rpPct(D.WA.wr)+'</b><span>Win rate sans erreur / avec erreur</span><em>'+(D.n-D.nA)+' sans · '+D.nA+' avec</em></div></div>'
    +'<div class="rp-sub">Erreurs</div>'+rpPsyTable(D.errs,D.wr,'Aucune erreur notée sur la période.')
-   +(D.bons.length?'<div class="rp-sub">Bons réflexes</div>'+rpPsyTable(D.bons,D.wr,''):'')+'</div>';
-  // 5. Ce que je dois arrêter / garder
+   +(D.bons.length?'<div class="rp-sub">Bons réflexes</div>'+rpPsyTable(D.bons,D.wr,''):'')
+   +'<div class="rp-sub">État mental avant le trade</div>'+rpMini(D.energie.concat(D.humeur),'État')+'<div class="rp-sub">Contexte du trade</div>'+rpMini(D.ctxs,'Situation')+'</div>';
+  // Arrêter / garder
   var st=rpStop(D), ga=rpGarde(D);
-  H+='<div class="rp-sec"><div class="rp-h2"><span>05</span>Ce que je dois arrêter · ce que je garde</div><div class="rp-2c"><div><div class="rp-sub" style="margin-top:0;color:#dc2626">À arrêter</div>'
+  H+=sec('Ce que je dois arrêter · ce que je garde')+'<div class="rp-2c"><div><div class="rp-sub" style="margin-top:0;color:#dc2626">À arrêter</div>'
    +(st.length?rpListe(st,'✕','stop'):'<div class="rp-empty">Rien à arrêter sur cette période.</div>')
    +'</div><div><div class="rp-sub" style="margin-top:0;color:#059669">À garder</div>'+(ga.length?rpListe(ga,'✓','keep'):'<div class="rp-empty">—</div>')+'</div></div></div>';
-  return H+rpNotes(notes);
+  return H+rpNotes(notes,num+1);
 }
-function rpNotes(notes){
+function rpNotes(notes,num){
   var n=(notes||[]).filter(function(x){return x[1]&&String(x[1]).trim();});
   if(!n.length)return '';
-  return '<div class="rp-sec"><div class="rp-h2"><span>06</span>Mes engagements</div>'+n.map(function(x){ return '<div class="rp-note"><span>'+x[0]+'</span>'+wkEsc(x[1])+'</div>'; }).join('')+'</div>';
+  return '<div class="rp-sec"><div class="rp-h2"><span>'+(num<10?'0':'')+num+'</span>Mes engagements</div>'+n.map(function(x){ return '<div class="rp-note"><span>'+x[0]+'</span>'+wkEsc(x[1])+'</div>'; }).join('')+'</div>';
 }
 var RP_CSS='#bk-rp{position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#0f172a;font-family:Inter,Arial,sans-serif;box-sizing:border-box;-webkit-font-smoothing:antialiased}'
  +'#bk-rp *{box-sizing:border-box}#bk-rp .rp-sec{padding:0 48px 16px}'
@@ -8716,27 +8765,37 @@ var RP_CSS='#bk-rp{position:fixed;left:-10000px;top:0;width:794px;background:#ff
  +'#bk-rp .rp-li{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border-radius:8px;margin-bottom:5px;font-size:12px}#bk-rp .rp-li span{font-weight:900;width:16px;text-align:center}#bk-rp .rp-li em{display:block;font-style:normal;font-size:11px;color:#64748b;margin-top:2px}'
  +'#bk-rp .rp-li.stop{background:#fef2f2;border-left:3px solid #dc2626}#bk-rp .rp-li.stop span{color:#dc2626}#bk-rp .rp-li.keep{background:#f0fdf4;border-left:3px solid #059669}#bk-rp .rp-li.keep span{color:#059669}'
  +'#bk-rp .rp-note{border-left:3px solid #2563eb;background:#f1f5ff;padding:9px 12px;border-radius:6px;font-size:12.5px;margin-bottom:8px;white-space:pre-wrap}#bk-rp .rp-note span{display:block;font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:#2563eb;font-weight:800;margin-bottom:3px}'
- +'#bk-rp .rp-empty{font-size:12px;color:#64748b;padding:6px 0}';
-function rpPDF(type,titre,S,notes,fichier){
+ +'#bk-rp .rp-empty{font-size:12px;color:#64748b;padding:6px 0}#bk-rp .rp-mini{font-size:11px}#bk-rp .rp-mini td{padding:6px 5px;white-space:nowrap}#bk-rp .rp-cmp{margin-top:12px;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px}#bk-rp .rp-cg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:4px}#bk-rp .rp-cg span{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:#64748b;font-weight:700}#bk-rp .rp-cg b{font-size:13px}#bk-rp .rp-dist{display:grid;grid-template-columns:70px 1fr 26px;gap:8px;align-items:center;font-size:11px;margin:6px 0}#bk-rp .rp-dist b{text-align:right}';
+function rpPDF(type,titre,S,notes,fichier,S0,lab0){
   if(typeof html2canvas==='undefined'||!(window.jspdf&&window.jspdf.jsPDF)){ toast('⏳ Librairie PDF en cours de chargement, réessaie dans 2 s'); return; }
   toast('📄 Génération du rapport…');
   var R=document.createElement('div'); R.id='bk-rp';
-  R.innerHTML='<style>'+RP_CSS+'</style>'+rpHTML(type,titre,S,notes);
+  R.innerHTML='<style>'+RP_CSS+'</style>'+rpHTML(type,titre,S,notes,S0,lab0);
   document.body.appendChild(R);
   setTimeout(function(){
-    var W=R.offsetWidth, pageH=Math.floor(W*297/210), marge=30;
-    // découpe aux limites des sections pour ne jamais couper un bloc
-    var secs=[].slice.call(R.querySelectorAll('.rp-sec')).map(function(s){ return {t:s.offsetTop,b:s.offsetTop+s.offsetHeight}; });
-    var cuts=[0], debut=0;
-    secs.forEach(function(s){ if(s.b-debut>pageH-marge&&s.t>debut){ cuts.push(s.t); debut=s.t; } });
-    cuts.push(R.offsetHeight);
+    var W=R.offsetWidth, pageH=Math.floor(W*297/210), HAUT=24, PIED=40, top0=R.getBoundingClientRect().top, total=R.offsetHeight;
+    // points de coupe possibles : début d'une section, d'un sous-titre, d'une ligne de tableau, d'un bloc
+    var pts=[].slice.call(R.querySelectorAll('.rp-sec,.rp-sub,.rp-t tbody tr:not(:first-child),.rp-li,.rp-kg,.rp-cmp,.rp-curve,.rp-dg,.rp-2c,.rp-dist,.rp-note'))
+      .map(function(e){ return Math.round(e.getBoundingClientRect().top-top0); }).filter(function(v){return v>0;});
+    pts=pts.filter(function(v,i){return pts.indexOf(v)===i;}).sort(function(a,b){return a-b;});
+    var cuts=[0], debut=0, garde=0;
+    while(total-debut>pageH-(cuts.length>1?HAUT:0)-PIED&&garde++<60){
+      var dispo=pageH-(cuts.length>1?HAUT:0)-PIED, best=null;
+      pts.forEach(function(v){ if(v>debut+40&&v-debut<=dispo)best=v; });
+      // préférer couper au début d'une section si elle commence dans le dernier tiers de la page
+      var secs=pts.filter(function(v){ return v>debut+dispo*0.6&&v-debut<=dispo&&[].some.call(R.querySelectorAll('.rp-sec'),function(e){return Math.round(e.getBoundingClientRect().top-top0)===v;}); });
+      if(secs.length)best=secs[secs.length-1];
+      if(best===null)best=debut+dispo;
+      cuts.push(best); debut=best;
+    }
+    cuts.push(total);
     html2canvas(R,{scale:2,backgroundColor:'#ffffff',windowWidth:W,logging:false}).then(function(cv){
       var k=cv.width/W, pdf=new window.jspdf.jsPDF('p','mm','a4'), tot=cuts.length-1;
       for(var i=0;i<tot;i++){
         var y0=Math.round(cuts[i]*k), h=Math.round((cuts[i+1]-cuts[i])*k), pc=document.createElement('canvas');
         pc.width=cv.width; pc.height=Math.round(pageH*k); var c=pc.getContext('2d'); c.fillStyle='#fff'; c.fillRect(0,0,pc.width,pc.height);
-        var off=i===0?0:Math.round(24*k);
-        c.drawImage(cv,0,y0,cv.width,Math.min(h,pc.height-off-Math.round(30*k)),0,off,cv.width,Math.min(h,pc.height-off-Math.round(30*k)));
+        var off=i===0?0:Math.round(HAUT*k), hh=Math.min(h,pc.height-off-Math.round(PIED*k));
+        c.drawImage(cv,0,y0,cv.width,hh,0,off,cv.width,hh);
         c.fillStyle='#94a3b8'; c.font=(10*k)+'px Inter, Arial'; c.textAlign='center';
         c.fillText('BAKOU · '+titre+' · page '+(i+1)+' / '+tot,pc.width/2,pc.height-Math.round(14*k));
         if(i>0)pdf.addPage();
@@ -8750,20 +8809,21 @@ function rpPDF(type,titre,S,notes,fichier){
 function tjBilanPDF(){
   var J=tjJours(), d=J[TJ_BI]||J[0]; TJ_BKEY=tjKeyOf(d);
   var date=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  rpPDF('Bilan de la journée',date.charAt(0).toUpperCase()+date.slice(1),tjTradesDu(d),[['Demain, je ne refais pas',tjDemainGet()],['Ma leçon du jour',tjLeconGet()]],'BAKOU-bilan-'+dayKeyLocal(d)+'.pdf');
+  var dp=J[(TJ_BI||0)+1];
+  rpPDF('Bilan de la journée',date.charAt(0).toUpperCase()+date.slice(1),tjTradesDu(d),[['Demain, je ne refais pas',tjDemainGet()],['Ma leçon du jour',tjLeconGet()]],'BAKOU-bilan-'+dayKeyLocal(d)+'.pdf',dp?tjTradesDu(dp):null,dp?'la journée précédente ('+dp.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+')':'');
 }
 function blSemainePDF(){
   var a=wkDebut(WK_OFF), n=wkNumero(a), z=new Date(a); z.setDate(z.getDate()+6);
   rpPDF('Bilan de la semaine','Semaine '+n.sem+' · '+a.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' au '+z.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}),wkTrades(WK_OFF),
-    [['Ce qui a marché',wkNoteGet('ok')],['Ce que je dois corriger',wkNoteGet('mal')],['Ma règle pour la semaine prochaine',wkNoteGet('regle')]],'BAKOU-semaine-'+wkCle(WK_OFF)+'.pdf');
+    [['Ce qui a marché',wkNoteGet('ok')],['Ce que je dois corriger',wkNoteGet('mal')],['Ma règle pour la semaine prochaine',wkNoteGet('regle')]],'BAKOU-semaine-'+wkCle(WK_OFF)+'.pdf',wkTrades(WK_OFF-1),'la semaine précédente');
 }
 function blMoisPDF(){
   var a=moDebut(MO_OFF);
   rpPDF('Bilan du mois',MO_NOMS[a.getMonth()]+' '+a.getFullYear(),moTrades(MO_OFF),
-    [['Ce qui a marché',moNoteGet('ok')],['Ce que je dois corriger',moNoteGet('mal')],['Ma règle pour le mois prochain',moNoteGet('regle')]],'BAKOU-mois-'+moCle(MO_OFF)+'.pdf');
+    [['Ce qui a marché',moNoteGet('ok')],['Ce que je dois corriger',moNoteGet('mal')],['Ma règle pour le mois prochain',moNoteGet('regle')]],'BAKOU-mois-'+moCle(MO_OFF)+'.pdf',moTrades(MO_OFF-1),'le mois précédent');
 }
 function blAnneePDF(){
-  var Y=GLOBAL_YEAR; rpPDF('Bilan de l\'année','Année '+Y,T.filter(function(t){return parseInt(t.trade_year)===Y;}),[],'BAKOU-annee-'+Y+'.pdf');
+  var Y=GLOBAL_YEAR; rpPDF('Bilan de l\'année','Année '+Y,T.filter(function(t){return parseInt(t.trade_year)===Y;}),[],'BAKOU-annee-'+Y+'.pdf',T.filter(function(t){return parseInt(t.trade_year)===Y-1;}),'l\'année '+(Y-1));
 }
 
 // ═══ Avant de trader : ta stratégie et tes repères, en haut d'Aujourd'hui ═══
