@@ -1157,6 +1157,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .st-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bo);}.st-rn{font-size:12.5px;color:var(--tp);min-width:0;}.st-rn em{display:block;font-style:normal;font-size:11px;color:var(--ts);}.st-rv{display:flex;gap:12px;font-size:12.5px;font-weight:700;white-space:nowrap;}.tj-formule{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(var(--acr3),.1);border:1px solid rgba(var(--acr3),.25);font-size:12.5px;line-height:1.55;color:var(--tp);}.tj-nfp{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);font-size:13px;color:var(--tp);}
 .cy-card{margin-bottom:12px !important;border-color:rgba(248,113,113,.3) !important;}.cy-steps{display:flex;flex-direction:column;gap:8px;}.cy-st{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.45;}.cy-st>span{font-size:16px;width:22px;text-align:center;}.cy-st b{display:block;color:var(--tp);font-weight:600;}.cy-st em{display:block;font-style:normal;color:#34d399;font-size:12px;margin-top:2px;}.cy-apres{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.3);font-size:12.5px;line-height:1.55;color:var(--tp);}.cy-apres ol{margin:6px 0 0 18px;padding:0;}
 .qa-gf{margin:6px 0 2px;}.qa-gf>span{display:block;font-size:11px;font-weight:700;margin-bottom:4px;}
+.tags .tsub{flex-basis:100%;font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--td);margin:4px 0 0;}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
 .tj-sr{display:flex;align-items:center;gap:16px;}.tj-sn{font-size:64px;font-weight:800;line-height:1;color:var(--tp);font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(var(--acr3),.45);}
 .tj-st2{font-size:15px;font-weight:700;color:var(--tp);}.tj-st2 em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ts);margin-top:2px;}
@@ -1781,74 +1782,62 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
 
     <!-- STRATÉGIE -->
     <div style="margin-bottom:12px">
-      <div class="tsec">⬢ Stratégie d'Entrée</div>
+      <div class="tsec">⬢ Type d'entrée</div>
       <div class="tags" id="strat-tags">
         <span class="tag strat" onclick="toggleTag(this)">Anticipation</span>
         <span class="tag strat" onclick="toggleTag(this)">Cassure</span>
         <span class="tag strat" onclick="toggleTag(this)">Retest</span>
         <span class="tag strat" onclick="toggleTag(this)">Pullback</span>
-        <span class="tag strat" onclick="toggleTag(this)">Range Breakout</span>
-        <span class="tag strat" onclick="toggleTag(this)">Trend Following</span>
-        <span class="tag strat" onclick="toggleTag(this)">Counter Trend</span>
-        <span class="tag strat" onclick="toggleTag(this)">News Setup</span>
-        <span class="tag strat" onclick="toggleTag(this)">Killzone</span>
-        <span class="tag strat" onclick="toggleTag(this)">ICT Concept</span>
-        <span class="tag strat" onclick="toggleTag(this)">Smart Money</span>
+        <span class="tag strat" onclick="toggleTag(this)">Cassure de range</span>
+        <span class="tag strat" onclick="toggleTag(this)">Suivi de tendance</span>
+        <span class="tag strat" onclick="toggleTag(this)">Contre-tendance</span>
       </div>
     </div>
 
     <!-- CONFIRMATIONS -->
     <div style="margin-bottom:12px">
-      <div class="tsec">✦ Confirmations Techniques</div>
+      <div class="tsec">✦ Confirmations techniques</div>
       <div class="tags" id="conf-tags">
-        <span class="tag conf" onclick="toggleTag(this)">BOS</span>
-        <span class="tag conf" onclick="toggleTag(this)">ChoCh</span>
-        <span class="tag conf" onclick="toggleTag(this)">FVG</span>
-        <span class="tag conf" onclick="toggleTag(this)">OB (Order Block)</span>
-        <span class="tag conf" onclick="toggleTag(this)">BB (Breaker Block)</span>
-        <span class="tag conf" onclick="toggleTag(this)">Liquidity Grab</span>
-        <span class="tag conf" onclick="toggleTag(this)">Equal Highs/Lows</span>
-        <span class="tag conf" onclick="toggleTag(this)">Inducement</span>
-        <span class="tag conf" onclick="toggleTag(this)">Mitigation</span>
-        <span class="tag conf" onclick="toggleTag(this)">Imbalance</span>
-        <span class="tag conf" onclick="toggleTag(this)">Structure HTF</span>
-        <span class="tag conf" onclick="toggleTag(this)">Structure LTF</span>
         <span class="tag conf" onclick="toggleTag(this)">Support / Résistance</span>
+        <span class="tag conf" onclick="toggleTag(this)">Trendline</span>
+        <span class="tag conf" onclick="toggleTag(this)">Cassure de trendline</span>
+        <span class="tag conf" onclick="toggleTag(this)">Cassure + retest</span>
         <span class="tag conf" onclick="toggleTag(this)">Fibonacci</span>
-        <span class="tag conf" onclick="toggleTag(this)">Divergence RSI</span>
-        <span class="tag conf" onclick="toggleTag(this)">Volume Spike</span>
-        <span class="tag conf" onclick="toggleTag(this)">EMA Cross</span>
-        <span class="tag conf" onclick="toggleTag(this)">VWAP</span>
-        <span class="tag conf" onclick="toggleTag(this)">PDH / PDL</span>
-        <span class="tag conf" onclick="toggleTag(this)">Open Range</span>
-        <span class="tag conf" onclick="toggleTag(this)">Sweep + Reversal</span>
+        <span class="tag conf" onclick="toggleTag(this)">Fibo 38,2 %</span>
+        <span class="tag conf" onclick="toggleTag(this)">Fibo 50 %</span>
+        <span class="tag conf" onclick="toggleTag(this)">Fibo 61,8 %</span>
+        <span class="tag conf" onclick="toggleTag(this)">Fibo 78,6 %</span>
+        <span class="tag conf" onclick="toggleTag(this)">Extension Fibo</span>
+        <span class="tag conf" onclick="toggleTag(this)">Prix saturé sur la zone</span>
+        <span class="tag conf" onclick="toggleTag(this)">Confluence D1 / H4</span>
       </div>
     </div>
 
     <!-- PATTERNS -->
     <div style="margin-bottom:16px">
-      <div class="tsec">◎ Patterns Price Action</div>
+      <div class="tsec">◎ Figures chartistes (price action)</div>
       <div class="tags" id="pat-tags">
-        <span class="tag pat" onclick="toggleTag(this)">Pin Bar</span>
-        <span class="tag pat" onclick="toggleTag(this)">Engulfing Bull</span>
-        <span class="tag pat" onclick="toggleTag(this)">Engulfing Bear</span>
-        <span class="tag pat" onclick="toggleTag(this)">Doji</span>
-        <span class="tag pat" onclick="toggleTag(this)">Morning Star</span>
-        <span class="tag pat" onclick="toggleTag(this)">Evening Star</span>
-        <span class="tag pat" onclick="toggleTag(this)">Inside Bar</span>
-        <span class="tag pat" onclick="toggleTag(this)">Outside Bar</span>
-        <span class="tag pat" onclick="toggleTag(this)">Double Top</span>
-        <span class="tag pat" onclick="toggleTag(this)">Double Bottom</span>
-        <span class="tag pat" onclick="toggleTag(this)">H&S</span>
-        <span class="tag pat" onclick="toggleTag(this)">H&S Inversé</span>
-        <span class="tag pat" onclick="toggleTag(this)">Triangle Asc.</span>
-        <span class="tag pat" onclick="toggleTag(this)">Triangle Desc.</span>
-        <span class="tag pat" onclick="toggleTag(this)">Wedge</span>
-        <span class="tag pat" onclick="toggleTag(this)">Flag Bull</span>
-        <span class="tag pat" onclick="toggleTag(this)">Flag Bear</span>
-        <span class="tag pat" onclick="toggleTag(this)">3 Drives</span>
-        <span class="tag pat" onclick="toggleTag(this)">Shark</span>
-        <span class="tag pat" onclick="toggleTag(this)">Gartley</span>
+        <div class="tsub">↩ Retournement</div>
+        <span class="tag pat" onclick="toggleTag(this)">Double sommet</span>
+        <span class="tag pat" onclick="toggleTag(this)">Double creux</span>
+        <span class="tag pat" onclick="toggleTag(this)">Épaule-tête-épaule</span>
+        <span class="tag pat" onclick="toggleTag(this)">Épaule-tête-épaule inversé</span>
+        <span class="tag pat" onclick="toggleTag(this)">Mèche de rejet (Pin Bar)</span>
+        <span class="tag pat" onclick="toggleTag(this)">Avalement haussier</span>
+        <span class="tag pat" onclick="toggleTag(this)">Avalement baissier</span>
+        <span class="tag pat" onclick="toggleTag(this)">Étoile du matin</span>
+        <span class="tag pat" onclick="toggleTag(this)">Étoile du soir</span>
+        <span class="tag pat" onclick="toggleTag(this)">Doji (indécision)</span>
+        <div class="tsub">➡ Continuation</div>
+        <span class="tag pat" onclick="toggleTag(this)">Drapeau haussier</span>
+        <span class="tag pat" onclick="toggleTag(this)">Drapeau baissier</span>
+        <span class="tag pat" onclick="toggleTag(this)">Triangle ascendant</span>
+        <span class="tag pat" onclick="toggleTag(this)">Triangle descendant</span>
+        <span class="tag pat" onclick="toggleTag(this)">Triangle symétrique</span>
+        <span class="tag pat" onclick="toggleTag(this)">Biseau</span>
+        <span class="tag pat" onclick="toggleTag(this)">Bougie incluse (Inside Bar)</span>
+        <span class="tag pat" onclick="toggleTag(this)">Bougie englobante (Outside Bar)</span>
+        <span class="tag pat" onclick="toggleTag(this)">Harmonique (Gartley, Shark…)</span>
       </div>
     </div>
 
@@ -1888,24 +1877,14 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
       <div class="tags" id="pgood-tags">
         <span class="tag pgood" onclick="toggleTag(this)">Confiant</span>
         <span class="tag pgood" onclick="toggleTag(this)">Patient</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Objectif</span>
         <span class="tag pgood" onclick="toggleTag(this)">Discipliné</span>
         <span class="tag pgood" onclick="toggleTag(this)">Focus total</span>
         <span class="tag pgood" onclick="toggleTag(this)">Respect du plan</span>
         <span class="tag pgood" onclick="toggleTag(this)">SL respecté</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Détaché du résultat</span>
         <span class="tag pgood" onclick="toggleTag(this)">En flow</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Gestionnaire du risque</span>
         <span class="tag pgood" onclick="toggleTag(this)">Calme</span>
         <span class="tag pgood" onclick="toggleTag(this)">Lucide</span>
         <span class="tag pgood" onclick="toggleTag(this)">Humble</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Process avant résultat</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Attente du setup</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Gestion émotionnelle</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Accept les pertes</span>
-        <span class="tag pgood" onclick="toggleTag(this)">TP laissé courir</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Analyse avant entrée</span>
-        <span class="tag pgood" onclick="toggleTag(this)">Aucune pression</span>
       </div>
       <div id="f-pmain-wrap" class="fld" style="display:none;margin-top:10px"><label>★ Erreur principale (celle qui classe le trade)</label><select id="f-pmain" onchange="pmainSet(this)"></select></div>
       <div class="fg" style="margin-top:12px">
@@ -2778,16 +2757,16 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
     </div>
     <div class="fld" style="margin-bottom:14px"><label>Analyse Fondamentale</label><select id="edit-fon"><option value="">— Non considérée —</option><option value="1">⭐ 1/5 — Contre la fonda</option><option value="2">⭐⭐ 2/5 — Neutre négatif</option><option value="3">⭐⭐⭐ 3/5 — Neutre</option><option value="4">⭐⭐⭐⭐ 4/5 — Favorable</option><option value="5">⭐⭐⭐⭐⭐ 5/5 — Très favorable</option></select></div>
     <div style="margin-bottom:12px">
-      <div class="tsec">⬢ Stratégie d'Entrée</div>
-      <div class="tags" id="edit-strat-tags"><span class="tag strat" onclick="toggleTag(this)">Anticipation</span><span class="tag strat" onclick="toggleTag(this)">Cassure</span><span class="tag strat" onclick="toggleTag(this)">Retest</span><span class="tag strat" onclick="toggleTag(this)">Pullback</span><span class="tag strat" onclick="toggleTag(this)">Range Breakout</span><span class="tag strat" onclick="toggleTag(this)">Trend Following</span><span class="tag strat" onclick="toggleTag(this)">Counter Trend</span><span class="tag strat" onclick="toggleTag(this)">News Setup</span><span class="tag strat" onclick="toggleTag(this)">Killzone</span><span class="tag strat" onclick="toggleTag(this)">ICT Concept</span><span class="tag strat" onclick="toggleTag(this)">Smart Money</span></div>
+      <div class="tsec">⬢ Type d'entrée</div>
+      <div class="tags" id="edit-strat-tags"><span class="tag strat" onclick="toggleTag(this)">Anticipation</span><span class="tag strat" onclick="toggleTag(this)">Cassure</span><span class="tag strat" onclick="toggleTag(this)">Retest</span><span class="tag strat" onclick="toggleTag(this)">Pullback</span><span class="tag strat" onclick="toggleTag(this)">Cassure de range</span><span class="tag strat" onclick="toggleTag(this)">Suivi de tendance</span><span class="tag strat" onclick="toggleTag(this)">Contre-tendance</span></div>
     </div>
     <div style="margin-bottom:12px">
-      <div class="tsec">✦ Confirmations Techniques</div>
-      <div class="tags" id="edit-conf-tags"><span class="tag conf" onclick="toggleTag(this)">BOS</span><span class="tag conf" onclick="toggleTag(this)">ChoCh</span><span class="tag conf" onclick="toggleTag(this)">FVG</span><span class="tag conf" onclick="toggleTag(this)">OB (Order Block)</span><span class="tag conf" onclick="toggleTag(this)">BB (Breaker Block)</span><span class="tag conf" onclick="toggleTag(this)">Liquidity Grab</span><span class="tag conf" onclick="toggleTag(this)">Equal Highs/Lows</span><span class="tag conf" onclick="toggleTag(this)">Inducement</span><span class="tag conf" onclick="toggleTag(this)">Mitigation</span><span class="tag conf" onclick="toggleTag(this)">Imbalance</span><span class="tag conf" onclick="toggleTag(this)">Structure HTF</span><span class="tag conf" onclick="toggleTag(this)">Structure LTF</span><span class="tag conf" onclick="toggleTag(this)">Support / Résistance</span><span class="tag conf" onclick="toggleTag(this)">Fibonacci</span><span class="tag conf" onclick="toggleTag(this)">Divergence RSI</span><span class="tag conf" onclick="toggleTag(this)">Volume Spike</span><span class="tag conf" onclick="toggleTag(this)">EMA Cross</span><span class="tag conf" onclick="toggleTag(this)">VWAP</span><span class="tag conf" onclick="toggleTag(this)">PDH / PDL</span><span class="tag conf" onclick="toggleTag(this)">Open Range</span><span class="tag conf" onclick="toggleTag(this)">Sweep + Reversal</span></div>
+      <div class="tsec">✦ Confirmations techniques</div>
+      <div class="tags" id="edit-conf-tags"><span class="tag conf" onclick="toggleTag(this)">Support / Résistance</span><span class="tag conf" onclick="toggleTag(this)">Trendline</span><span class="tag conf" onclick="toggleTag(this)">Cassure de trendline</span><span class="tag conf" onclick="toggleTag(this)">Cassure + retest</span><span class="tag conf" onclick="toggleTag(this)">Fibonacci</span><span class="tag conf" onclick="toggleTag(this)">Fibo 38,2 %</span><span class="tag conf" onclick="toggleTag(this)">Fibo 50 %</span><span class="tag conf" onclick="toggleTag(this)">Fibo 61,8 %</span><span class="tag conf" onclick="toggleTag(this)">Fibo 78,6 %</span><span class="tag conf" onclick="toggleTag(this)">Extension Fibo</span><span class="tag conf" onclick="toggleTag(this)">Prix saturé sur la zone</span><span class="tag conf" onclick="toggleTag(this)">Confluence D1 / H4</span></div>
     </div>
     <div style="margin-bottom:16px">
-      <div class="tsec">◎ Patterns Price Action</div>
-      <div class="tags" id="edit-pat-tags"><span class="tag pat" onclick="toggleTag(this)">Pin Bar</span><span class="tag pat" onclick="toggleTag(this)">Engulfing Bull</span><span class="tag pat" onclick="toggleTag(this)">Engulfing Bear</span><span class="tag pat" onclick="toggleTag(this)">Doji</span><span class="tag pat" onclick="toggleTag(this)">Morning Star</span><span class="tag pat" onclick="toggleTag(this)">Evening Star</span><span class="tag pat" onclick="toggleTag(this)">Inside Bar</span><span class="tag pat" onclick="toggleTag(this)">Outside Bar</span><span class="tag pat" onclick="toggleTag(this)">Double Top</span><span class="tag pat" onclick="toggleTag(this)">Double Bottom</span><span class="tag pat" onclick="toggleTag(this)">H&S</span><span class="tag pat" onclick="toggleTag(this)">H&S Inversé</span><span class="tag pat" onclick="toggleTag(this)">Triangle Asc.</span><span class="tag pat" onclick="toggleTag(this)">Triangle Desc.</span><span class="tag pat" onclick="toggleTag(this)">Wedge</span><span class="tag pat" onclick="toggleTag(this)">Flag Bull</span><span class="tag pat" onclick="toggleTag(this)">Flag Bear</span><span class="tag pat" onclick="toggleTag(this)">3 Drives</span><span class="tag pat" onclick="toggleTag(this)">Shark</span><span class="tag pat" onclick="toggleTag(this)">Gartley</span></div>
+      <div class="tsec">◎ Figures chartistes (price action)</div>
+      <div class="tags" id="edit-pat-tags"><div class="tsub">↩ Retournement</div><span class="tag pat" onclick="toggleTag(this)">Double sommet</span><span class="tag pat" onclick="toggleTag(this)">Double creux</span><span class="tag pat" onclick="toggleTag(this)">Épaule-tête-épaule</span><span class="tag pat" onclick="toggleTag(this)">Épaule-tête-épaule inversé</span><span class="tag pat" onclick="toggleTag(this)">Mèche de rejet (Pin Bar)</span><span class="tag pat" onclick="toggleTag(this)">Avalement haussier</span><span class="tag pat" onclick="toggleTag(this)">Avalement baissier</span><span class="tag pat" onclick="toggleTag(this)">Étoile du matin</span><span class="tag pat" onclick="toggleTag(this)">Étoile du soir</span><span class="tag pat" onclick="toggleTag(this)">Doji (indécision)</span><div class="tsub">➡ Continuation</div><span class="tag pat" onclick="toggleTag(this)">Drapeau haussier</span><span class="tag pat" onclick="toggleTag(this)">Drapeau baissier</span><span class="tag pat" onclick="toggleTag(this)">Triangle ascendant</span><span class="tag pat" onclick="toggleTag(this)">Triangle descendant</span><span class="tag pat" onclick="toggleTag(this)">Triangle symétrique</span><span class="tag pat" onclick="toggleTag(this)">Biseau</span><span class="tag pat" onclick="toggleTag(this)">Bougie incluse (Inside Bar)</span><span class="tag pat" onclick="toggleTag(this)">Bougie englobante (Outside Bar)</span><span class="tag pat" onclick="toggleTag(this)">Harmonique (Gartley, Shark…)</span></div>
     </div>
     <div style="margin-bottom:12px">
       <div class="tsec" style="font-size:10px;letter-spacing:2px;color:var(--reb);margin-bottom:8px">⚠ Erreurs Psychologiques</div>
@@ -2798,7 +2777,7 @@ html[data-theme="light"] .bnav .bnav-plus b{box-shadow:0 12px 28px -6px rgba(var
     <div style="margin-bottom:16px">
       <div class="tsec" style="font-size:10px;letter-spacing:2px;color:var(--grb);margin-bottom:8px">✅ Bonne Psychologie</div>
       <div class="tags" id="edit-pgood-tags">
-        <span class="tag pgood" onclick="toggleTag(this)">Confiant</span><span class="tag pgood" onclick="toggleTag(this)">Patient</span><span class="tag pgood" onclick="toggleTag(this)">Objectif</span><span class="tag pgood" onclick="toggleTag(this)">Discipliné</span><span class="tag pgood" onclick="toggleTag(this)">Focus total</span><span class="tag pgood" onclick="toggleTag(this)">Respect du plan</span><span class="tag pgood" onclick="toggleTag(this)">SL respecté</span><span class="tag pgood" onclick="toggleTag(this)">Détaché du résultat</span><span class="tag pgood" onclick="toggleTag(this)">En flow</span><span class="tag pgood" onclick="toggleTag(this)">Gestionnaire du risque</span><span class="tag pgood" onclick="toggleTag(this)">Calme</span><span class="tag pgood" onclick="toggleTag(this)">Lucide</span><span class="tag pgood" onclick="toggleTag(this)">Humble</span><span class="tag pgood" onclick="toggleTag(this)">Process avant résultat</span><span class="tag pgood" onclick="toggleTag(this)">Attente du setup</span><span class="tag pgood" onclick="toggleTag(this)">Gestion émotionnelle</span><span class="tag pgood" onclick="toggleTag(this)">Accept les pertes</span><span class="tag pgood" onclick="toggleTag(this)">TP laissé courir</span><span class="tag pgood" onclick="toggleTag(this)">Analyse avant entrée</span><span class="tag pgood" onclick="toggleTag(this)">Aucune pression</span>
+        <span class="tag pgood" onclick="toggleTag(this)">Confiant</span><span class="tag pgood" onclick="toggleTag(this)">Patient</span><span class="tag pgood" onclick="toggleTag(this)">Discipliné</span><span class="tag pgood" onclick="toggleTag(this)">Focus total</span><span class="tag pgood" onclick="toggleTag(this)">Respect du plan</span><span class="tag pgood" onclick="toggleTag(this)">SL respecté</span><span class="tag pgood" onclick="toggleTag(this)">En flow</span><span class="tag pgood" onclick="toggleTag(this)">Calme</span><span class="tag pgood" onclick="toggleTag(this)">Lucide</span><span class="tag pgood" onclick="toggleTag(this)">Humble</span>
       </div>
     </div>
     <div style="margin-bottom:16px">
@@ -7893,11 +7872,11 @@ var PSY_GOOD_FAM=[
   {k:'g_entree',n:'Analyse & entrée',i:'🎯',c:'#60a5fa',t:['Analyse MTF faite','Scénario clair','Prix laissé saturer','Entrée sur ma zone','Checklist complète']},
   {k:'g_risque',n:'Risque',i:'⚖️',c:'#fbbf24',t:['SL posé avant d\'entrer','Risque respecté','Pas de levier excessif','Pas tradé NFP / IPC']},
   {k:'g_gestion',n:'Gestion du trade',i:'🛠',c:'#a78bfa',t:['SL respecté','Laissé courir le trade','Sortie selon le plan']},
-  {k:'g_mental',n:'Mental',i:'🧘',c:'#34d399',t:['Patient','Calme','Détaché de l\'argent','Pas peur de perdre','Perte acceptée','Confiant']},
+  {k:'g_mental',n:'Mental',i:'🧘',c:'#34d399',t:['Patient','Calme','Détaché de l\'argent','Pas peur de perdre','Perte acceptée','Confiant','Focus total','Lucide','En flow','Humble']},
   {k:'g_disc',n:'Discipline',i:'🧠',c:'#f472b6',t:['Processus suivi','Discipliné','Respect du plan','Track record à jour','Arrêt après ma limite']}
 ];
 var PSY_GOOD=[]; PSY_GOOD_FAM.forEach(function(f){ f.t.forEach(function(x){PSY_GOOD.push(x);}); });
-var PSY_GOOD_ALIAS={'Patience':'Patient','Objectif':'Détaché de l\'argent','Aucune pression':'Calme'};
+var PSY_GOOD_ALIAS={'Patience':'Patient','Objectif':'Détaché de l\'argent','Aucune pression':'Calme','Accept les pertes':'Perte acceptée','TP laissé courir':'Laissé courir le trade','Détaché du résultat':'Détaché de l\'argent','Analyse avant entrée':'Analyse MTF faite','Attente du setup':'Prix laissé saturer','Gestionnaire du risque':'Risque respecté','Process avant résultat':'Processus suivi','Gestion émotionnelle':'Calme'};
 function psyGoodFam(tag){ tag=PSY_GOOD_ALIAS[tag]||tag; for(var i=0;i<PSY_GOOD_FAM.length;i++)if(PSY_GOOD_FAM[i].t.indexOf(tag)>=0)return PSY_GOOD_FAM[i]; return {k:'g_autre',n:'Autre',i:'•',c:'#94a3b8',t:[]}; }
 function goodFamCompte(S){ var m={}; S.forEach(function(t){ tagsOf(t,'psych_good').forEach(function(k){ var f=psyGoodFam(k); var x=(m[f.k]=m[f.k]||{f:f,n:0,t:{}}); x.n++; x.t[k]=(x.t[k]||0)+1; }); });
   return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return b.n-a.n;}); }
@@ -8084,11 +8063,12 @@ function psyRulesBar(){
 }
 
 // Étiquettes d'erreur rangées par famille (sans rien changer aux données)
-function psyGroupTags(id){
-  var box=document.getElementById(id); if(!box||box.dataset.grouped)return;
+function psyGroupTags(id,bon){
+  var box=document.getElementById(id); if(!box)return;
   var spans=Array.prototype.slice.call(box.querySelectorAll('.tag')); if(!spans.length)return;
-  var fams=PSY_FAM.concat([{k:'autre',n:'Autre',i:'•',t:[]}]), by={};
-  spans.forEach(function(sp){ var k=psyFam(sp.textContent.trim()).k; (by[k]=by[k]||[]).push(sp); });
+  var fams=(bon?PSY_GOOD_FAM:PSY_FAM).concat([{k:bon?'g_autre':'autre',n:'Autre',i:'•',t:[]}]), by={}, ff=bon?psyGoodFam:psyFam;
+  var ordre=bon?PSY_GOOD:PSY_ALL; spans.sort(function(a,b){ var ia=ordre.indexOf(a.textContent.trim()), ib=ordre.indexOf(b.textContent.trim()); return (ia<0?999:ia)-(ib<0?999:ib); });
+  spans.forEach(function(sp){ var k=ff(sp.textContent.trim()).k; (by[k]=by[k]||[]).push(sp); });
   box.innerHTML=''; box.dataset.grouped='1';
   fams.forEach(function(f){ if(!by[f.k])return; var g=document.createElement('div'); g.className='tag-fam';
     g.innerHTML='<div class="tag-fam-h">'+f.i+' '+f.n+'</div><div class="tag-fam-b"></div>';
@@ -9078,6 +9058,7 @@ document.addEventListener('DOMContentLoaded',function(){
   var have=function(box){ return [].map.call(box.querySelectorAll('.tag'),function(e){return e.textContent.trim();}); };
   if(pe){ var h1=have(pe); PSY_ALL.forEach(function(x){ if(h1.indexOf(x)<0)pe.insertAdjacentHTML('beforeend','<span class="tag perr" onclick="toggleTag(this)">'+wkEsc(x)+'</span>'); }); }
   if(pg){ var h2=have(pg); PSY_GOOD.forEach(function(x){ if(h2.indexOf(x)<0)pg.insertAdjacentHTML('beforeend','<span class="tag pgood" onclick="toggleTag(this)">'+wkEsc(x)+'</span>'); }); }
+  psyGroupTags('perr-tags'); psyGroupTags('pgood-tags',true);
   var sg=document.getElementById('f-ctx-sg'); if(sg&&sg.closest('.fg'))sg.closest('.fg').insertAdjacentHTML('afterend','<div class="fld" id="f-ctx-ck" style="margin-top:10px"></div>');
   var _is=window.initStrategie; window.initStrategie=initStrategie=function(){ stInitDefaut(); _is.apply(this,arguments); var b=document.getElementById('st-stats'); if(b)b.remove(); var c=document.getElementById('st-checks'); if(c&&c.closest('.card'))c.closest('.card').insertAdjacentHTML('afterend','<div id="st-stats">'+stStatsHTML()+'</div>'); };
   var _ps=window.qaPsyRender; window.qaPsyRender=qaPsyRender=function(){ _ps.apply(this,arguments); var el=document.getElementById('qa-s4'); if(!el)return; var lbl=[].filter.call(el.querySelectorAll('.qa-lbl'),function(x){return /conforme à ma stratégie/.test(x.textContent);})[0]; if(lbl)lbl.insertAdjacentHTML('beforebegin',qaCkHTML()); };
@@ -9145,6 +9126,28 @@ document.addEventListener('DOMContentLoaded',function(){
     var lbl=[].filter.call(el.querySelectorAll('.qa-lbl'),function(x){return /Une erreur sur ce trade/.test(x.textContent);})[0]; if(lbl)lbl.insertAdjacentHTML('beforebegin',qaCyHTML()); };
   var _it=window.initToday; window.initToday=initToday=function(){ _it.apply(this,arguments); var p=document.querySelector('#tj-body .pa-card')||document.querySelector('#tj-body .tj-serie'); if(p)p.insertAdjacentHTML('afterend',cycleCardHTML()); };
   var _ip=window.initPsy; window.initPsy=initPsy=function(){ _ip.apply(this,arguments); var p=document.querySelector('#psy-body .pa-card'); if(p)p.insertAdjacentHTML('afterend',cycleCardHTML().replace('class="card cy-card"','class="card cy-card" style="margin-bottom:12px"')); };
+});
+
+
+// ═══ Étiquettes en français : les anciens noms anglais des trades enregistrés sont traduits ═══
+var TAG_RENAME={'Range Breakout':'Cassure de range','Trend Following':'Suivi de tendance','Counter Trend':'Contre-tendance',
+  'Pin Bar':'Mèche de rejet (Pin Bar)','Engulfing Bull':'Avalement haussier','Engulfing Bear':'Avalement baissier','Doji':'Doji (indécision)','Morning Star':'Étoile du matin','Evening Star':'Étoile du soir',
+  'Inside Bar':'Bougie incluse (Inside Bar)','Outside Bar':'Bougie englobante (Outside Bar)','Double Top':'Double sommet','Double Bottom':'Double creux','H&S':'Épaule-tête-épaule','H&S Inversé':'Épaule-tête-épaule inversé',
+  'Triangle Asc.':'Triangle ascendant','Triangle Desc.':'Triangle descendant','Wedge':'Biseau','Flag Bull':'Drapeau haussier','Flag Bear':'Drapeau baissier','3 Drives':'Harmonique (Gartley, Shark…)','Shark':'Harmonique (Gartley, Shark…)','Gartley':'Harmonique (Gartley, Shark…)'};
+function tagRenameTrade(t){ var g=pjs(t.psych_good); if(g.length){ var gb=[]; g.forEach(function(x){ var y=PSY_GOOD_ALIAS[x]||x; if(gb.indexOf(y)<0)gb.push(y); }); var gj=JSON.stringify(gb); if(gj!==t.psych_good)t.psych_good=gj; }
+  ['strats','confs','pats'].forEach(function(f){ var a=pjs(t[f]); if(!a.length)return; var b=[]; a.forEach(function(x){ var y=TAG_RENAME[x]||x; if(b.indexOf(y)<0)b.push(y); }); var j=JSON.stringify(b); if(j!==t[f])t[f]=j; }); }
+document.addEventListener('DOMContentLoaded',function(){
+  var _lt=window.loadTrades; window.loadTrades=loadTrades=async function(){ var r=await _lt.apply(this,arguments); try{ T.forEach(tagRenameTrade); renderTable(); updateDash(); }catch(e){} return r; };
+  // la fenêtre de modification reçoit aussi les nouvelles erreurs et les bons réflexes
+  var ins=function(id,list,cls){ var box=document.getElementById(id); if(!box)return; var have=[].map.call(box.querySelectorAll('.tag'),function(e){return e.textContent.trim();}); list.forEach(function(x){ if(have.indexOf(x)<0)box.insertAdjacentHTML('beforeend','<span class="tag '+cls+'" onclick="toggleTag(this)">'+wkEsc(x)+'</span>'); }); };
+  ins('edit-perr-tags',PSY_ALL,'perr'); ins('edit-pgood-tags',PSY_GOOD,'pgood'); psyGroupTags('edit-perr-tags'); psyGroupTags('edit-pgood-tags',true);
+  // une étiquette ancienne d'un trade (ex. BOS) reste visible et cochée : rien n'est perdu en modifiant
+  var _oe=window.openEditTrade; window.openEditTrade=openEditTrade=function(id){ var r=_oe.apply(this,arguments); try{
+    var t=T.find(function(x){return String(x.id)===String(id);}); if(!t)return r;
+    [['edit-strat-tags','strats','strat'],['edit-conf-tags','confs','conf'],['edit-pat-tags','pats','pat'],['edit-perr-tags','psych_errors','perr'],['edit-pgood-tags','psych_good','pgood']].forEach(function(c){
+      var box=document.getElementById(c[0]); if(!box)return; var have=[].map.call(box.querySelectorAll('.tag'),function(e){return e.textContent;});
+      pjs(t[c[1]]).forEach(function(x,i){ if(have.indexOf(x)<0){ box.insertAdjacentHTML('beforeend','<span class="tag '+c[2]+' sel" onclick="toggleTag(this)"'+(c[1]==='psych_errors'?' data-ord="'+(i+1)+'"':'')+'>'+wkEsc(x)+'</span>'); } }); });
+  }catch(e){ console.warn('edit tags',e); } return r; };
 });
 
 document.addEventListener('DOMContentLoaded',boot);
