@@ -9024,7 +9024,8 @@ var ST_DEFAUT={
   check:['J\'ai un scénario clair : où va le prix, où j\'ai tort','Mon stop loss est posé avant d\'entrer','Risque normal : pas de levier x5, pas de grosse mise','Analyse multi time frame faite (D1 et H4)','Direction claire : je vais avec le prix','Supports et résistances tracés','Pattern de continuation ou de retournement identifié','Confirmation : Fibonacci, trendline ou cassure','J\'achète en bas / je vends en haut de la zone','Le prix a saturé la zone : je ne me précipite pas','Aucun flou : je comprends ce que fait le graphe','Pas de NFP ni d\'IPC aujourd\'hui']
 };
 function stMigreCycle(){ var o=stGet(); if(o.cyV)return; var add=ST_DEFAUT.check.slice(0,3); o.check=o.check||[]; add.slice().reverse().forEach(function(x){ if(o.check.indexOf(x)<0)o.check.unshift(x); }); if(!(o.cycle||'').trim())o.cycle=ST_DEFAUT.cycle; o.cyV=1; stSet(o); }
-function stInitDefaut(){ var o=stGet(); var vide=!(o.principe||'').trim()&&!(o.check||[]).some(function(x){return (x||'').trim();});
+function stInitDefaut(){ if(typeof SYNC!=='undefined'&&OWNER_UUID&&SYNC.on&&!SYNC.last)return; /* attendre la synchro pour ne pas écraser la stratégie d'un autre appareil */
+  var o=stGet(); var vide=!(o.principe||'').trim()&&!(o.check||[]).some(function(x){return (x||'').trim();});
   if(vide){ var n=Object.assign({},ST_DEFAUT,{nom:o.nom||ST_DEFAUT.nom,cyV:1}); n.check=ST_DEFAUT.check.slice(); stSet(n); } else stMigreCycle(); }
 // NFP = 1er vendredi du mois
 function stNFP(d){ d=d||new Date(); return d.getDay()===5&&d.getDate()<=7; }
@@ -9150,6 +9151,60 @@ document.addEventListener('DOMContentLoaded',function(){
       var box=document.getElementById(c[0]); if(!box)return; var have=[].map.call(box.querySelectorAll('.tag'),function(e){return e.textContent;});
       pjs(t[c[1]]).forEach(function(x,i){ if(have.indexOf(x)<0){ box.insertAdjacentHTML('beforeend','<span class="tag '+c[2]+' sel" onclick="toggleTag(this)"'+(c[1]==='psych_errors'?' data-ord="'+(i+1)+'"':'')+'>'+wkEsc(x)+'</span>'); } }); });
   }catch(e){ console.warn('edit tags',e); } return r; };
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  SYNCHRONISATION PC ⇄ TÉLÉPHONE (Supabase, table user_kv)
+//  Stratégie, bilans, promesses, leçons, plan, règles, notes de semaine et de mois, objectifs.
+//  La dernière modification gagne, clé par clé.
+// ═══════════════════════════════════════════════════════════════════
+var SYNC={on:false,applying:false,ts:{},q:{},timer:null,busy:false,last:0};
+function syncSuf(){ return OWNER_UUID?'__'+OWNER_UUID.slice(0,8):null; }
+function syncTsKey(){ return 'bk_sync_ts'+(syncSuf()||''); }
+function syncKeyOk(k){ var suf=syncSuf(); if(!suf||!k)return false; if(/^(bk_sync_ts|bk_sync_ok|tr_accounts_list|tr_active_account)/.test(k))return false;
+  return (k.length>suf.length&&k.slice(-suf.length)===suf)||k.indexOf('tr_goals_')===0; }
+function syncTsSave(){ try{ SYNC.applying=true; localStorage.setItem(syncTsKey(),JSON.stringify(SYNC.ts)); }catch(e){} SYNC.applying=false; }
+function syncQueue(k,v){ SYNC.ts[k]=Date.now(); SYNC.q[k]=v; syncTsSave(); clearTimeout(SYNC.timer); SYNC.timer=setTimeout(syncPush,1200); }
+async function syncPush(){
+  if(!SYNC.on||SYNC.busy)return; var keys=Object.keys(SYNC.q); if(!keys.length)return;
+  SYNC.busy=true; var rows=keys.map(function(k){ return {owner_uuid:OWNER_UUID,k:k,v:SYNC.q[k],updated_at:new Date(SYNC.ts[k]||Date.now()).toISOString()}; });
+  try{ var r=await sb.from('user_kv').upsert(rows); if(!r||!r.error){ keys.forEach(function(k){ delete SYNC.q[k]; }); } else console.warn('sync push',r.error); }catch(e){ console.warn('sync push',e); }
+  SYNC.busy=false; if(Object.keys(SYNC.q).length){ clearTimeout(SYNC.timer); SYNC.timer=setTimeout(syncPush,4000); }
+}
+async function syncPull(rafraichir){
+  if(!SYNC.on)return;
+  var res; try{ res=await sb.from('user_kv').select('k,v,updated_at'); }catch(e){ return; }
+  if(!res||res.error){ console.warn('sync pull',res&&res.error); return; }
+  var remote={}, change=false;
+  (res.data||[]).forEach(function(r){ remote[r.k]=r; var rt=Date.parse(r.updated_at)||0, lt=SYNC.ts[r.k]||0;
+    if(rt>lt&&!(r.k in SYNC.q)){ SYNC.applying=true; try{ if(r.v==null)localStorage.removeItem(r.k); else if(localStorage.getItem(r.k)!==r.v){ localStorage.setItem(r.k,r.v); change=true; } }catch(e){} SYNC.applying=false; SYNC.ts[r.k]=rt; } });
+  // envoie ce qui n'existe que sur cet appareil (ou qui est plus récent ici)
+  for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(!syncKeyOk(k))continue;
+    var rr=remote[k], rt=rr?(Date.parse(rr.updated_at)||0):0;
+    if(!rr){ if(!SYNC.ts[k])SYNC.ts[k]=Date.now(); SYNC.q[k]=localStorage.getItem(k); }
+    else if((SYNC.ts[k]||0)>rt){ SYNC.q[k]=localStorage.getItem(k); } }
+  syncTsSave(); SYNC.last=Date.now(); syncPush();
+  if(change&&rafraichir!==false){ try{ initSection(DERNIERE_VUE[GROUPE_ACTIF]||GROUPE_ACTIF); }catch(e){} try{ if(typeof fCkRender==='function')fCkRender(); }catch(e){} }
+  return change;
+}
+async function syncStart(){
+  if(!OWNER_UUID||!sb)return;
+  try{ SYNC.ts=JSON.parse(localStorage.getItem(syncTsKey())||'{}')||{}; }catch(e){ SYNC.ts={}; }
+  SYNC.on=true; var c=await syncPull(true);
+  try{ stInitDefaut(); if(typeof fCkRender==='function')fCkRender(); if(GROUPE_ACTIF==='today'||GROUPE_ACTIF==='strategie')initSection(DERNIERE_VUE[GROUPE_ACTIF]||GROUPE_ACTIF); }catch(e){}
+  try{ if(!localStorage.getItem('bk_sync_ok'+syncSuf())){ localStorage.setItem('bk_sync_ok'+syncSuf(),'1'); toast('☁️ Tes notes et ta stratégie sont maintenant synchronisées sur tous tes appareils'); } }catch(e){}
+  return c;
+}
+(function(){
+  var S=Storage.prototype, _set=S.setItem, _rem=S.removeItem;
+  S.setItem=function(k,v){ _set.call(this,k,v); try{ if(this===window.localStorage&&SYNC.on&&!SYNC.applying&&syncKeyOk(k))syncQueue(k,String(v)); }catch(e){} };
+  S.removeItem=function(k){ _rem.call(this,k); try{ if(this===window.localStorage&&SYNC.on&&!SYNC.applying&&syncKeyOk(k))syncQueue(k,null); }catch(e){} };
+})();
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&SYNC.on&&Date.now()-SYNC.last>15000)syncPull(true); else if(document.visibilityState==='hidden')syncPush(); });
+window.addEventListener('online',function(){ if(SYNC.on)syncPull(true); });
+document.addEventListener('DOMContentLoaded',function(){
+  var _sa=window.startApp; if(typeof _sa!=='function')return;
+  window.startApp=startApp=async function(){ var r=await _sa.apply(this,arguments); try{ await syncStart(); }catch(e){ console.warn('sync',e); } return r; };
 });
 
 document.addEventListener('DOMContentLoaded',boot);
