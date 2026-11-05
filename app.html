@@ -1195,7 +1195,7 @@ html[data-theme="light"] .tj-verdict.good{color:#065f46;}html[data-theme="light"
 .lb-img{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;touch-action:pinch-zoom pan-x pan-y;}.lb-img img{max-width:100%;max-height:100%;object-fit:contain;}
 .lb-note{color:#cbd5e1;font-size:13px;line-height:1.5;padding:4px 18px;max-height:22vh;overflow:auto;white-space:pre-wrap;}.lb-nav{display:flex;justify-content:center;align-items:center;gap:22px;padding:10px 0 16px;color:#94a3b8;font-size:13px;}
 .gal-f{display:flex;gap:8px;flex-wrap:wrap;}.gal-f select{flex:1;min-width:140px;padding:9px 10px;border-radius:10px;border:1px solid var(--bo);background:var(--card2);color:var(--tp);font:inherit;}
-.gal-card{margin-bottom:12px !important;}.gal-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;cursor:pointer;}
+.gal-card{margin-bottom:12px !important;}.gal-sub{margin-top:12px;font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--td);}.gal-seg{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}.gal-seg button{flex:1 1 auto;min-width:0;padding:9px 8px;border-radius:10px;border:1px solid var(--bo);background:transparent;color:var(--ts);font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}.gal-seg button.on{background:rgba(var(--acr3),.18);border-color:rgba(var(--acr3),.55);color:var(--tp);}.gal-seg em{font-style:normal;opacity:.7;font-weight:600;}.gal-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;cursor:pointer;}
 .gal-row{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px;-webkit-overflow-scrolling:touch;}.gal-th{flex:0 0 auto;width:140px;cursor:zoom-in;}.gal-th img{width:140px;height:88px;object-fit:cover;border-radius:9px;border:1px solid var(--bo);display:block;background:var(--card2);}.gal-th span{display:block;font-size:10.5px;color:var(--td);margin-top:3px;font-weight:600;}
 .gal-notes{margin-top:8px;font-size:12px;color:var(--ts);line-height:1.5;display:flex;flex-direction:column;gap:3px;}.gal-notes b{color:var(--tp);margin-right:4px;}
 .tj-serie{margin-bottom:12px !important;}.tj-sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin-bottom:8px;}
@@ -9302,8 +9302,8 @@ function mtfLoadEdit(t){ var o=mtfParse(t); MTF.e={}; MTF_TF.forEach(function(x)
   mtfRender('e'); mtfUrls(MTF_TF.map(function(x){ return o[x[0]]&&o[x[0]].p; })).then(function(){ mtfRender('e'); }); }
 // ── Images d'un trade (pour la fiche, la galerie et la visionneuse) ──
 function tradeImgs(t){ var o=mtfParse(t), a=[];
-  MTF_TF.forEach(function(x){ var e=o[x[0]]; if(e&&(e.p||e.d))a.push({cap:x[1],p:e.p||'',src:mtfSrc(e),n:e.n||''}); });
-  [['photo_av','Avant · analyse'],['photo_co','En cours · gestion'],['photo_ap','Après · résultat']].forEach(function(x){ if(t[x[0]])a.push({cap:x[1],p:'',src:t[x[0]],n:''}); });
+  MTF_TF.forEach(function(x){ var e=o[x[0]]; if(e&&(e.p||e.d))a.push({g:'mtf',cap:x[1],p:e.p||'',src:mtfSrc(e),n:e.n||''}); });
+  [['photo_av','Avant · analyse'],['photo_co','En cours · gestion'],['photo_ap','Après · résultat']].forEach(function(x){ if(t[x[0]])a.push({g:'shot',cap:x[1],p:'',src:t[x[0]],n:''}); });
   return a; }
 function tradeHasImg(t){ return mtfHasImg(t)||!!(t.photo_av||t.photo_co||t.photo_ap); }
 // ── Visionneuse plein écran ──
@@ -9317,21 +9317,23 @@ function lbShow(){ var it=LB.items[LB.i]; if(!it)return; var im=document.getElem
 function lbGo(d){ if(!LB.items.length)return; LB.i=(LB.i+d+LB.items.length)%LB.items.length; lbShow(); }
 function lbClose(){ var d=document.getElementById('bk-lb'); if(d)d.classList.remove('show'); }
 document.addEventListener('keydown',function(e){ var d=document.getElementById('bk-lb'); if(!d||!d.classList.contains('show'))return; if(e.key==='Escape')lbClose(); else if(e.key==='ArrowRight')lbGo(1); else if(e.key==='ArrowLeft')lbGo(-1); });
-function lbTrade(id,i){ var t=T.find(function(x){return String(x.id)===String(id);}); if(!t)return; var d=tDate(t), lab=wkEsc(t.pair)+' · '+d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
-  lbOpen(tradeImgs(t).map(function(x){ return Object.assign({t:t.pair+' · '+d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})},x); }),i); }
+function lbTrade(id,i,g){ var t=T.find(function(x){return String(x.id)===String(id);}); if(!t)return; var d=tDate(t);
+  lbOpen(tradeImgs(t).filter(function(x){ return !g||x.g===g; }).map(function(x){ return Object.assign({t:t.pair+' · '+d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})},x); }),i); }
 // ── Fiche du trade : bloc analyse multi-unités ──
 function mtfDetailHTML(t){ var o=mtfParse(t), ks=MTF_TF.filter(function(x){ return o[x[0]]; }); if(!ks.length)return '';
-  var imgs=tradeImgs(t);
+  var imgs=tradeImgs(t).filter(function(x){ return x.g==='mtf'; });
   return '<div class="td-mtf"><div class="td-psy-h">🔭 Analyse multi-unités</div><div class="mtf-grid">'+ks.map(function(x){ var e=o[x[0]], idx=imgs.findIndex(function(im){ return im.cap===x[1]; });
-    return '<div class="mtf-c"><div class="mtf-h">'+x[1]+'</div>'+((e.p||e.d)?'<div class="mtf-img has" onclick="lbTrade(\''+String(t.id).replace(/\'/g,'')+'\','+idx+')"><img src="'+mtfSrc(e)+'" '+(e.p?'data-mtf-p="'+e.p+'"':'')+' alt="'+x[1]+'"></div>':'')+(e.n?'<div class="mtf-n">'+wkEsc(e.n)+'</div>':'')+'</div>'; }).join('')+'</div></div>'; }
+    return '<div class="mtf-c"><div class="mtf-h">'+x[1]+'</div>'+((e.p||e.d)?'<div class="mtf-img has" onclick="lbTrade(\''+String(t.id).replace(/\'/g,'')+'\','+idx+',\'mtf\')"><img src="'+mtfSrc(e)+'" '+(e.p?'data-mtf-p="'+e.p+'"':'')+' alt="'+x[1]+'"></div>':'')+(e.n?'<div class="mtf-n">'+wkEsc(e.n)+'</div>':'')+'</div>'; }).join('')+'</div></div>'; }
 // ── Galerie « Mes analyses » ──
-var GAL={pair:'',res:'',lim:30};
+var GAL={pair:'',res:'',type:'',lim:30};
 function initAnalyses(){
   var root=document.getElementById('analyses'); if(!root)return;
   var S=sortedByDate(T.filter(tradeHasImg)).reverse();
   var pairs=[]; S.forEach(function(t){ if(pairs.indexOf(t.pair)<0)pairs.push(t.pair); });
-  var F=S.filter(function(t){ return (!GAL.pair||t.pair===GAL.pair)&&(!GAL.res||t.result===GAL.res); });
+  var F=S.filter(function(t){ return (!GAL.pair||t.pair===GAL.pair)&&(!GAL.res||t.result===GAL.res)&&(!GAL.type||tradeImgs(t).some(function(x){return x.g===GAL.type;})); });
+  var nM=S.filter(function(t){return tradeImgs(t).some(function(x){return x.g==='mtf';});}).length, nS=S.filter(function(t){return tradeImgs(t).some(function(x){return x.g==='shot';});}).length;
   var H='<div class="card" style="margin-bottom:12px"><div class="ct">📸 Mes analyses</div><div class="psy-s" style="margin:-4px 0 10px;line-height:1.6">Tous tes graphiques, du plus récent au plus ancien : ton analyse D1 → H4 → H1 → 15 min et tes captures avant / pendant / après. Touche une image pour l\'agrandir (glisse pour passer à la suivante), touche le titre pour ouvrir la fiche du trade.</div>'
+   +'<div class="gal-seg">'+[['','Tout',S.length],['mtf','🔭 Multi-TF',nM],['shot','📷 Screens',nS]].map(function(o){ return '<button class="'+(GAL.type===o[0]?'on':'')+'" onclick="GAL.type=\''+o[0]+'\';GAL.lim=30;initAnalyses()">'+o[1]+' <em>'+o[2]+'</em></button>'; }).join('')+'</div>'
    +'<div class="gal-f"><select onchange="GAL.pair=this.value;GAL.lim=30;initAnalyses()"><option value="">Toutes les paires</option>'+pairs.map(function(p){ return '<option'+(GAL.pair===p?' selected':'')+'>'+wkEsc(p)+'</option>'; }).join('')+'</select>'
    +'<select onchange="GAL.res=this.value;GAL.lim=30;initAnalyses()">'+[['','Tous les résultats'],['WIN','Gagnants'],['LOSS','Perdants'],['BE','Break-even']].map(function(o){ return '<option value="'+o[0]+'"'+(GAL.res===o[0]?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select></div>'
    +'<div class="psy-s" style="margin-top:8px">'+F.length+' trade'+(F.length>1?'s':'')+' avec des graphiques</div></div>';
@@ -9340,8 +9342,9 @@ function initAnalyses(){
   F.slice(0,GAL.lim).forEach(function(t){ var d=tDate(t), v=pnlOf(t), imgs=tradeImgs(t), id=String(t.id).replace(/\'/g,''), o=mtfParse(t);
     imgs.forEach(function(im){ if(im.p)paths.push(im.p); });
     H+='<div class="card gal-card"><div class="gal-h" onclick="openTradeDetail(\''+id+'\')"><div><span class="pb" style="'+pbs(t.pair)+'">'+wkEsc(t.pair)+'</span> '+rpill(t.result)+'<div class="psy-s" style="margin-top:4px">'+d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric'})+(pjs(t.strats).length?' · '+pjs(t.strats).map(wkEsc).join(', '):'')+'</div></div><b style="color:'+(v>=0?RS_VERT:RS_ROUGE)+'">'+rsArgent(v)+'</b></div>'
-      +'<div class="gal-row">'+imgs.map(function(im,i){ return '<div class="gal-th" onclick="lbTrade(\''+id+'\','+i+')"><img loading="lazy" src="'+(im.src||'')+'" '+(im.p?'data-mtf-p="'+im.p+'"':'')+' alt="'+im.cap+'"><span>'+im.cap+'</span></div>'; }).join('')+'</div>'
-      +(MTF_TF.some(function(x){ return o[x[0]]&&o[x[0]].n; })?'<div class="gal-notes">'+MTF_TF.filter(function(x){ return o[x[0]]&&o[x[0]].n; }).map(function(x){ return '<div><b>'+x[1]+'</b> '+wkEsc(o[x[0]].n)+'</div>'; }).join('')+'</div>':'')+'</div>'; });
+      +[['mtf','🔭 Analyse multi-unités'],['shot','📷 Screens du trade']].filter(function(gr){ return !GAL.type||GAL.type===gr[0]; }).map(function(gr){ var L=imgs.filter(function(x){return x.g===gr[0];}); if(!L.length)return '';
+          return '<div class="gal-sub">'+gr[1]+'</div><div class="gal-row">'+L.map(function(im,i){ return '<div class="gal-th" onclick="lbTrade(\''+id+'\','+i+',\''+gr[0]+'\')"><img loading="lazy" src="'+(im.src||'')+'" '+(im.p?'data-mtf-p="'+im.p+'"':'')+' alt="'+im.cap+'"><span>'+im.cap+'</span></div>'; }).join('')+'</div>'
+            +(gr[0]==='mtf'&&MTF_TF.some(function(x){ return o[x[0]]&&o[x[0]].n; })?'<div class="gal-notes">'+MTF_TF.filter(function(x){ return o[x[0]]&&o[x[0]].n; }).map(function(x){ return '<div><b>'+x[1]+'</b> '+wkEsc(o[x[0]].n)+'</div>'; }).join('')+'</div>':''); }).join('')+'</div>'; });
   if(F.length>GAL.lim)H+='<button class="tj-pdf" onclick="GAL.lim+=30;initAnalyses()">Voir plus ('+(F.length-GAL.lim)+' restants)</button>';
   root.innerHTML=H; mtfUrls(paths).then(function(){ mtfFill(root); });
 }
@@ -9365,7 +9368,7 @@ document.addEventListener('DOMContentLoaded',function(){
       var ph=document.getElementById('tdm-photos'); if(ph)ph.insertAdjacentHTML('beforebegin',h); else (m.querySelector('.modal')||m).insertAdjacentHTML('beforeend',h);
       var o=mtfParse(t); mtfUrls(MTF_TF.map(function(x){ return o[x[0]]&&o[x[0]].p; })).then(function(){ mtfFill(m); });
       // les captures existantes s'ouvrent aussi en grand
-      var imgs=tradeImgs(t); document.querySelectorAll('#tdm-photos-grid img').forEach(function(im,i){ im.style.cursor='zoom-in'; im.onclick=function(){ var k=imgs.findIndex(function(x){ return x.src===im.src; }); lbTrade(t.id,k<0?0:k); }; });
+      var imgs=tradeImgs(t).filter(function(x){ return x.g==='shot'; }); document.querySelectorAll('#tdm-photos-grid img').forEach(function(im,i){ im.style.cursor='zoom-in'; im.onclick=function(){ var k=imgs.findIndex(function(x){ return x.src===im.src; }); lbTrade(t.id,k<0?0:k,'shot'); }; });
     }catch(e){ console.warn('mtf fiche',e); } return r; };
 });
 
